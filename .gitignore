@@ -1,0 +1,11 @@
+/.lake
+/build
+*~
+*.olean
+*.ilean
+*.c
+*.o
+*.dylib
+*.dll
+*.so
+.lake.old

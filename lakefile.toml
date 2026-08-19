@@ -1,0 +1,15 @@
+name = "Formalization"
+version = "0.1.0"
+keywords = ["math", "formalization", "combinatorics", "graph-theory", "geometry"]
+defaultTargets = ["Formalization"]
+
+[lean_options]
+pp.unicode.fun = true
+autoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+
+[[lean_lib]]
+name = "Formalization"
