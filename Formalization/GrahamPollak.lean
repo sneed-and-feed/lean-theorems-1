@@ -161,8 +161,52 @@ lemma bipartite_sum_eq (n m : ℕ) (L R : Fin m → Finset (Fin n))
     exact (sum_pair_indicator (fun k => i ∈ L k ∧ j ∈ R k) (fun k => j ∈ L k ∧ i ∈ R k) h_disj h_uniq (x i * x j)).symm
   · simp
 
+/-- Linear map associated with Graham-Pollak bipartite decomposition. -/
+def gpLinearMap (n m : ℕ) (L : Fin m → Finset (Fin n)) : (Fin n → ℝ) →ₗ[ℝ] (ℝ × (Fin m → ℝ)) where
+  toFun x := (∑ i, x i, fun k => ∑ i ∈ L k, x i)
+  map_add' x y := by
+    ext
+    · simp only [Pi.add_apply, sum_add_distrib, Prod.fst_add]
+    · simp only [Pi.add_apply, sum_add_distrib, Prod.snd_add]
+  map_smul' c x := by
+    ext
+    · simp only [Pi.smul_apply, smul_eq_mul, mul_sum, RingHom.id_apply, Prod.smul_fst]
+    · simp only [Pi.smul_apply, smul_eq_mul, mul_sum, RingHom.id_apply, Prod.smul_snd]
+
+lemma gpLinearMap_injective (n m : ℕ) (L R : Fin m → Finset (Fin n))
+    (h : IsCompleteBipartitePartition n m L R) :
+    Function.Injective (gpLinearMap n m L) := by
+  rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+  intro x hx
+  have h_sum_zero : ∑ i : Fin n, x i = 0 := by
+    have h1 : (gpLinearMap n m L x).1 = (0 : ℝ × (Fin m → ℝ)).1 := by rw [hx]
+    exact h1
+  have h_L_zero : ∀ k : Fin m, ∑ i ∈ L k, x i = 0 := by
+    intro k
+    have h2 : (gpLinearMap n m L x).2 = (0 : ℝ × (Fin m → ℝ)).2 := by rw [hx]
+    exact congr_fun h2 k
+  have h_prod_zero : ∑ k : Fin m, (∑ i ∈ L k, x i) * (∑ j ∈ R k, x j) = 0 := by
+    apply Finset.sum_eq_zero
+    intro k _
+    rw [h_L_zero k, zero_mul]
+  have h_cross : (∑ i : Fin n, ∑ j : Fin n, if i < j then x i * x j else 0) = 0 := by
+    rw [bipartite_sum_eq n m L R h x, h_prod_zero]
+  have h_sq_id := sum_sq_identity n x
+  rw [h_sum_zero, h_cross, mul_zero, add_zero, sq, mul_zero] at h_sq_id
+  have h_sum_sq : ∑ i : Fin n, (x i) ^ 2 = 0 := h_sq_id.symm
+  have h_nonneg : ∀ i ∈ (univ : Finset (Fin n)), 0 ≤ (x i) ^ 2 := fun i _ => sq_nonneg (x i)
+  rw [Finset.sum_eq_zero_iff_of_nonneg h_nonneg] at h_sum_sq
+  ext i
+  have h_xi_sq : (x i) ^ 2 = 0 := h_sum_sq i (Finset.mem_univ i)
+  have h_xi : x i = 0 := sq_eq_zero_iff.mp h_xi_sq
+  exact h_xi
+
+
 /-- Main Theorem: Graham-Pollak Theorem (1971 / Tverberg 1982). -/
 theorem graham_pollak (n m : ℕ) (L R : Fin m → Finset (Fin n))
     (h : IsCompleteBipartitePartition n m L R) :
     n - 1 ≤ m := by
-  sorry
+  have hinj := gpLinearMap_injective n m L R h
+  have h_rank := LinearMap.finrank_le_finrank_of_injective hinj
+  simp only [Module.finrank_fin_fun, Module.finrank_prod, Module.finrank_self] at h_rank
+  omega
