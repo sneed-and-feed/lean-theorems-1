@@ -22,7 +22,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
 | 11 | **Erdős–Ko–Rado Theorem on Intersecting Families** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Katona (1972) |
 | 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
-| 13 | **Hall's Marriage Theorem** *(In Progress)* | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
+| 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** *(In Progress)* | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** *(In Progress)* | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
 
@@ -158,6 +158,18 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
   3. **1D Parametrization & Projection (`collinear_iff_param`, `pythagorean_decomp`):** Parametrizes any point on $\text{line}(a_0, b_0)$ as $r(t) = a_0 + t(b_0 - a_0)$ via dot products. Establishes the Pythagorean distance decomposition from $a = r(t_a)$ to $p_0$ via the orthogonal projection $q_0 = r(t_q)$.
   4. **Kelly's Closer-Pair Ordering Contradiction (`exists_closer_pair_1d`):** Proves that among three distinct points $a_0, b_0, c$ on $L_0$ and the projection parameter $t_q$, there exists a pair of parameters $t_i, t_j$ satisfying $(t_j - t_i)^2 \le (t_i - t_q)^2$. Shows that the new pair $(b = r(t_j), \text{line}(p_0, a = r(t_i)))$ has strictly smaller squared distance than $(p_0, a_0, b_0)$, establishing by contradiction that $L_0$ contains exactly 2 points of $S$.
 
+### 13. Hall's Marriage Theorem (Freek Wiedijk #87)
+* **Module:** [`Formalization/HallMarriage.lean`](Formalization/HallMarriage.lean)
+* **Theorem:** `hall_marriage_theorem`, `hall_marriage_necessary`
+* **Mathematical Statement:** Let $A_1, \dots, A_n$ be a finite collection of finite sets indexed by a finite type $\iota$. A **System of Distinct Representatives (SDR)** (or transversal) is an injective choice function $f : \iota \to \alpha$ with $\forall i \in \iota, f(i) \in A_i$.
+  An SDR exists if and only if **Hall's Marriage Condition** holds: for every subset of indices $J \subseteq \iota$,
+  $$\left| \bigcup_{i \in J} A_i \right| \ge |J|$$
+* **Formalization Highlights & Proof Technique:**
+  1. **Halmos & Vaughan Strong Induction (`hall_marriage_finset`):** Formulates and machine-proves the existence of partial SDRs for arbitrary subfamilies $S \subseteq \iota$ over any indexed family $A : \iota \to \text{Finset } \alpha$ by strong induction on $n = |S|$.
+  2. **Tight Subfamily Reduction (Case 1):** If there exists a non-empty proper tight subset $J_0 \subset S$ ($0 < |J_0| < |S|$) with $|\bigcup_{i \in J_0} A_i| = |J_0|$, extracts an SDR $f_1$ on $J_0$ with image $T = \bigcup_{i \in J_0} A_i$. On $K = S \setminus J_0$, defines the reduced family $A'_i = A_i \setminus T$, proves that $A'$ preserves Hall's condition on $K$ via `union_biUnion` and `union_sdiff_self_right`, obtains $f_2$ on $K$ disjoint from $T$, and stitches $f_1$ and $f_2$.
+  3. **Non-Tight Case Reduction (Case 2):** If no proper non-empty tight subset exists, every non-empty $J \subset S$ strictly satisfies $|\bigcup_{i \in J} A_i| \ge |J| + 1$. Isolates an index $i_0 \in S$ and an element $x \in A_{i_0}$, reduces to $K = S \setminus \{i_0\}$ with trimmed sets $A'_i = A_i \setminus \{x\}$, proves Hall's condition on $K$ via `card_sdiff_singleton_ge`, obtains $f_0$ on $K$, and sets $f(i_0) = x$.
+  4. **Global Equivalence on `Finset.univ`:** Instantiates the finset induction on $S = \text{Finset.univ}$ to deduce the full bidirectional equivalence `(∃ f : ι → α, IsSDR A f) ↔ HallCondition A`, handling both empty and inhabited index types $\iota$.
+
 ---
 
 ## Repository Structure
@@ -178,7 +190,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── SchursTheorem.lean                # Schur's Theorem on Sum-Free Partitions & Ramsey Triangles
 │   ├── ErdosKoRado.lean                  # Erdős–Ko–Rado Theorem & Katona's Circle Method
 │   ├── SylvesterGallai.lean              # Sylvester–Gallai Theorem (Freek Wiedijk #98)
-│   ├── HallMarriage.lean                 # Hall's Marriage Theorem (Freek Wiedijk #87) [Stub]
+│   ├── HallMarriage.lean                 # Hall's Marriage Theorem (Freek Wiedijk #87)
 │   ├── FriendshipTheorem.lean            # The Friendship Theorem (Erdős–Rényi–Sós) [Stub]
 │   └── RadonHelly.lean                   # Radon's Lemma & Helly's Theorem (Freek Wiedijk #99) [Stub]
 ├── lakefile.toml                         # Lake build system manifest
@@ -236,11 +248,13 @@ lake build Formalization.RadonHelly
 8. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
 9. **Gallai, T.** (1944). *Solution to Problem 4065*. The American Mathematical Monthly, 51(3), 169–171.
 10. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
-11. **Katona, G. O. H.** (1972). *A simple proof of the Erdös-Chao Ko-Rado theorem*. Journal of Combinatorial Theory, Series B, 13(2), 183–184.
-12. **Kelly, L. M.** (1948). *A simple proof of the Sylvester-Gallai theorem*. In H. S. M. Coxeter, *Projective Geometry*, University of Toronto Press.
-13. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
-14. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
-15. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
-16. **Sylvester, J. J.** (1893). *Mathematical Question 11851*. Educational Times, 59, 98.
-17. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
-18. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
+11. **Hall, P.** (1935). *On representatives of subsets*. Journal of the London Mathematical Society, 10(1), 26–30.
+12. **Halmos, P. R., & Vaughan, H. E.** (1950). *The marriage problem*. American Journal of Mathematics, 72(1), 214–215.
+13. **Katona, G. O. H.** (1972). *A simple proof of the Erdös-Chao Ko-Rado theorem*. Journal of Combinatorial Theory, Series B, 13(2), 183–184.
+14. **Kelly, L. M.** (1948). *A simple proof of the Sylvester-Gallai theorem*. In H. S. M. Coxeter, *Projective Geometry*, University of Toronto Press.
+15. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
+16. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
+17. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
+18. **Sylvester, J. J.** (1893). *Mathematical Question 11851*. Educational Times, 59, 98.
+19. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
+20. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
