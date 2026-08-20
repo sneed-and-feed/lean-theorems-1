@@ -21,7 +21,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
 | 11 | **Erdős–Ko–Rado Theorem on Intersecting Families** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Katona (1972) |
-| 12 | **Sylvester–Gallai Theorem** *(In Progress)* | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
+| 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
 | 13 | **Hall's Marriage Theorem** *(In Progress)* | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** *(In Progress)* | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** *(In Progress)* | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
@@ -147,6 +147,17 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
   3. **Double Counting Summation (`erdos_ko_rado`):** Double-counts the incidence sum $\sum_{e \in \alpha \simeq \mathbb{Z}/n\mathbb{Z}} \sum_{i \in \mathbb{Z}/n\mathbb{Z}} \mathbf{1}_{\{e^{-1}(\text{arc}(i)) \in \mathcal{F}\}}$, upper-bounding by $k \cdot n!$ via Katona's arc lemma and evaluating to $n |\mathcal{F}| k! (n-k)!$.
   4. **Exact Factorial Cancellation (`choose_bound_of_double_counting`):** Cancels $n k$ to obtain $|\mathcal{F}| (k-1)! (n-k)! \le (n-1)!$, and applies `Nat.choose_mul_factorial_mul_factorial` to deduce $|\mathcal{F}| \le \binom{n-1}{k-1}$.
 
+### 12. Sylvester–Gallai Theorem on Ordinary Lines (Freek Wiedijk #98)
+* **Module:** [`Formalization/SylvesterGallai.lean`](Formalization/SylvesterGallai.lean)
+* **Theorem:** `sylvester_gallai`
+* **Mathematical Statement:** Let $S \subset \mathbb{R}^2$ be a finite set of points in the Euclidean plane. If not all points of $S$ lie on a single straight line ($\neg \text{SetCollinear } S$), then there exists an **ordinary line**—a straight line passing through *exactly two* points of $S$:
+  $$\exists p \in S, \, \exists q \in S, \, p \ne q \wedge \text{IsOrdinaryLine } S \, p \, q$$
+* **Formalization Highlights & Proof Technique:**
+  1. **Self-Contained 2D Cartesian Geometry (`cross`, `dot`, `sqNorm`, `signedArea`):** Formalizes planar coordinates without metric space overhead. Proves signed area antisymmetry, cyclic invariance, and equivalence with collinearity.
+  2. **Candidate Point-Line Triples & Global Minimization (`candidateTriples`, `distSq`):** Filters $S \times S \times S$ to candidate triples $(p, a, b)$ with $a \ne b$ and $p \notin \text{line}(a, b)$. Uses `Finset.exists_min_image` on the squared distance metric $\text{distSq}(p, a, b) = \frac{(\text{signedArea}(a, b, p))^2}{\|b - a\|^2}$ to extract a minimal triple $(p_0, a_0, b_0)$.
+  3. **1D Parametrization & Projection (`collinear_iff_param`, `pythagorean_decomp`):** Parametrizes any point on $\text{line}(a_0, b_0)$ as $r(t) = a_0 + t(b_0 - a_0)$ via dot products. Establishes the Pythagorean distance decomposition from $a = r(t_a)$ to $p_0$ via the orthogonal projection $q_0 = r(t_q)$.
+  4. **Kelly's Closer-Pair Ordering Contradiction (`exists_closer_pair_1d`):** Proves that among three distinct points $a_0, b_0, c$ on $L_0$ and the projection parameter $t_q$, there exists a pair of parameters $t_i, t_j$ satisfying $(t_j - t_i)^2 \le (t_i - t_q)^2$. Shows that the new pair $(b = r(t_j), \text{line}(p_0, a = r(t_i)))$ has strictly smaller squared distance than $(p_0, a_0, b_0)$, establishing by contradiction that $L_0$ contains exactly 2 points of $S$.
+
 ---
 
 ## Repository Structure
@@ -165,7 +176,11 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── SpernersLemma.lean                # Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
 │   ├── DeBruijnErdos.lean                # De Bruijn–Erdős Theorem on Incidence Geometry
 │   ├── SchursTheorem.lean                # Schur's Theorem on Sum-Free Partitions & Ramsey Triangles
-│   └── ErdosKoRado.lean                  # Erdős–Ko–Rado Theorem & Katona's Circle Method
+│   ├── ErdosKoRado.lean                  # Erdős–Ko–Rado Theorem & Katona's Circle Method
+│   ├── SylvesterGallai.lean              # Sylvester–Gallai Theorem (Freek Wiedijk #98)
+│   ├── HallMarriage.lean                 # Hall's Marriage Theorem (Freek Wiedijk #87) [Stub]
+│   ├── FriendshipTheorem.lean            # The Friendship Theorem (Erdős–Rényi–Sós) [Stub]
+│   └── RadonHelly.lean                   # Radon's Lemma & Helly's Theorem (Freek Wiedijk #99) [Stub]
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
@@ -219,10 +234,13 @@ lake build Formalization.RadonHelly
 6. **Dirac, G. A.** (1952). *Some theorems on abstract graphs*. Proceedings of the London Mathematical Society, 3(1), 69–81.
 7. **Erdős, P., Ko, C., & Rado, R.** (1961). *Intersection theorems for systems of finite sets*. The Quarterly Journal of Mathematics, 12(1), 313–320.
 8. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
-9. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
-10. **Katona, G. O. H.** (1972). *A simple proof of the Erdös-Chao Ko-Rado theorem*. Journal of Combinatorial Theory, Series B, 13(2), 183–184.
-11. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
-12. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
-13. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
-14. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
-15. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
+9. **Gallai, T.** (1944). *Solution to Problem 4065*. The American Mathematical Monthly, 51(3), 169–171.
+10. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
+11. **Katona, G. O. H.** (1972). *A simple proof of the Erdös-Chao Ko-Rado theorem*. Journal of Combinatorial Theory, Series B, 13(2), 183–184.
+12. **Kelly, L. M.** (1948). *A simple proof of the Sylvester-Gallai theorem*. In H. S. M. Coxeter, *Projective Geometry*, University of Toronto Press.
+13. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
+14. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
+15. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
+16. **Sylvester, J. J.** (1893). *Mathematical Question 11851*. Educational Times, 59, 98.
+17. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
+18. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
