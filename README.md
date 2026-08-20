@@ -17,6 +17,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 5 | **Ore's & Dirac's Theorems** | [`ore_hamiltonian`](Formalization/OreHamiltonian.lean), [`dirac_hamiltonian`](Formalization/OreHamiltonian.lean) | Structural Graph Theory | Ore (1960), Dirac (1952) |
 | 6 | **Descartes's Rule of Signs** | [`descartes_rule_of_signs`](Formalization/DescartesSigns.lean) | Real Algebraic Geometry & Polynomials | Descartes (1637), Wiedijk #73 |
 | 7 | **Euler's Polyhedron Formula** | [`euler_polyhedron_formula`](Formalization/EulerPolyhedron.lean), [`euler_connected_graph`](Formalization/EulerPolyhedron.lean) | Topological Graph Theory & Topology | Euler (1758), Cauchy (1813), Wiedijk #13 |
+| 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
 
 ---
 
@@ -95,6 +96,19 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
   1. **Inductive Combinatorial Planar Maps:** Formalizes `PlanarMap` with constructors for base vertices, pendant edge extensions, and face-splitting edges, establishing $V + F = E + 2$ and $\chi(P) = 2$ by structural induction.
   2. **Bridge to Mathlib `SimpleGraph`:** For any finite connected graph $G$ with spanning tree $T$, defines the face count $F = |E_G| - |E_T| + 1$ and proves $(|V| : \mathbb{Z}) - (|E_G| : \mathbb{Z}) + F = 2$ using Mathlib's `IsTree.card_edgeFinset` ($|E_T| + 1 = |V|$).
 
+### 8. Sperner's Lemma in 1D and 2D
+* **Module:** [`Formalization/SpernersLemma.lean`](Formalization/SpernersLemma.lean)
+* **Theorems:** `sperner_1d_parity`, `sperner_1d_exists`, `sperner_2d_parity`, `sperner_2d_odd`, `sperner_2d_exists`
+* **Mathematical Statement:** 
+  - **1D Sperner:** For any coloring $f : \{0, \dots, n\} \to \{0, 1\}$, the number of color-switching steps $\sum_{i=0}^{n-1} [f(i) \ne f(i+1)]$ has the same parity as $[f(0) \ne f(n)]$. In particular, different boundary labels guarantee at least one bicolored segment.
+  - **2D Sperner:** For any 2D triangulation $T$ (simplicial surface with boundary where every edge is shared by 1 or 2 triangles) with vertex coloring $c : V \to \{0, 1, 2\}$, the number of panchromatic (fully labeled $\{0, 1, 2\}$) triangles and the number of boundary $0$-$1$ edges share the same parity modulo 2:
+    $$|\{t \in T \mid c(t) = \{0, 1, 2\}\}| \equiv |E_{\text{bd}}^{01}| \pmod 2$$
+    In particular, an odd number of boundary $0$-$1$ edges guarantees the existence of at least one panchromatic triangle.
+* **Formalization Technique:**
+  1. **1D Discrete Path Induction:** Formalizes `switchCount` and proves `Odd (switchCount f) ↔ f 0 ≠ f (Fin.last n)` by induction on $n$ with full algebraic reduction in `Fin 2`.
+  2. **Local Door-Count Invariant (`triangleDoorCount_mod_two`):** Machine-checks all 27 colorings in `Fin 3` via `decide`, establishing that $\text{doorCount}(t) \equiv [t \text{ is panchromatic}] \pmod 2$.
+  3. **Global Double Counting (`double_counting_sum_eq`):** Swaps sums over triangles and edges to prove $\sum_{t \in T} \text{doorCount}(t) = |E_{\text{bd}}^{01}| + 2 \cdot |E_{\text{int}}^{01}|$, deducing the parity invariant modulo 2.
+
 ---
 
 ## Repository Structure
@@ -109,7 +123,8 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── BollobasTwoFamilies.lean          # Bollobás's Two Families Theorem (Set Pairs Inequality)
 │   ├── OreHamiltonian.lean               # Ore's & Dirac's Theorems on Hamiltonian Graphs
 │   ├── DescartesSigns.lean               # Descartes's Rule of Signs (Freek Wiedijk #73)
-│   └── EulerPolyhedron.lean              # Euler's Polyhedron Formula (Freek Wiedijk #13)
+│   ├── EulerPolyhedron.lean              # Euler's Polyhedron Formula (Freek Wiedijk #13)
+│   └── SpernersLemma.lean                # Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
@@ -141,6 +156,7 @@ lake build Formalization.OreHamiltonian
 lake build Formalization.DesarguesVector
 lake build Formalization.DescartesSigns
 lake build Formalization.EulerPolyhedron
+lake build Formalization.SpernersLemma
 ```
 
 ---
@@ -155,5 +171,6 @@ lake build Formalization.EulerPolyhedron
 6. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
 7. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
 8. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
-9. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
-10. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
+9. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
+10. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
+11. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/

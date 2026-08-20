@@ -5,3 +5,4 @@ import Formalization.BondyInducedSubsets
 import Formalization.DesarguesVector
 import Formalization.DescartesSigns
 import Formalization.EulerPolyhedron
+import Formalization.SpernersLemma
