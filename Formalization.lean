@@ -8,3 +8,4 @@ import Formalization.EulerPolyhedron
 import Formalization.SpernersLemma
 import Formalization.DeBruijnErdos
 import Formalization.SchursTheorem
+import Formalization.ErdosKoRado

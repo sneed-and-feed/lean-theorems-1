@@ -20,6 +20,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
+| 11 | **Erdős–Ko–Rado Theorem on Intersecting Families** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Katona (1972) |
 
 ---
 
@@ -129,6 +130,21 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 
 ---
 
+### 11. Erdős–Ko–Rado Theorem on Intersecting Families
+* **Module:** [`Formalization/ErdosKoRado.lean`](Formalization/ErdosKoRado.lean)
+* **Theorems:** `erdos_ko_rado`, `erdos_ko_rado_disjoint_pair`, `erdos_ko_rado_powersetCard`, `katona_arc_lemma`
+* **Mathematical Statement:**
+  Let $n \ge 2k$ with $k \ge 1$, and let $\mathcal{F}$ be an intersecting family of $k$-element subsets of an $n$-element universe $\alpha$ (i.e. $\forall A, B \in \mathcal{F}, \neg \text{Disjoint } A \, B$). Then:
+  $$|\mathcal{F}| \le \binom{n-1}{k-1}$$
+  Equivalently, if $|\mathcal{F}| > \binom{n-1}{k-1}$, then $\mathcal{F}$ contains at least two disjoint sets.
+* **Formalization Technique:**
+  1. **Katona's Circle Method (`cyclicArc`, `katona_arc_lemma`):** Embeds elements on the cyclic group $\mathbb{Z}/n\mathbb{Z}$. A cyclic arc of length $k$ starting at $i$ is $A_i = \{i, i+1, \dots, i+k-1\}$. For $2k \le n$, pairs of arcs $(A_r, A_{r-k})$ are disjoint, partitioning non-zero intersecting shifts into disjoint pairs. Hence any pairwise intersecting collection of cyclic arcs has size at most $k$.
+  2. **Shift Invariance & Fiber Cardinality (`arcOf`, `card_fiber_arcOf`):** Connects bijections $e : \alpha \simeq \mathbb{Z}/n\mathbb{Z}$ with Mathlib's `Numbering α` (`KatonaCircle`). For every fixed $k$-set $A \in \mathcal{F}$ and every shift index $i \in \mathbb{Z}/n\mathbb{Z}$, the fiber of bijections mapping $A$ to the arc at $i$ has exact cardinality $k! (n-k)!$.
+  3. **Double Counting Summation (`erdos_ko_rado`):** Double-counts the incidence sum $\sum_{e \in \alpha \simeq \mathbb{Z}/n\mathbb{Z}} \sum_{i \in \mathbb{Z}/n\mathbb{Z}} \mathbf{1}_{\{e^{-1}(\text{arc}(i)) \in \mathcal{F}\}}$, upper-bounding by $k \cdot n!$ via Katona's arc lemma and evaluating to $n |\mathcal{F}| k! (n-k)!$.
+  4. **Exact Factorial Cancellation (`choose_bound_of_double_counting`):** Cancels $n k$ to obtain $|\mathcal{F}| (k-1)! (n-k)! \le (n-1)!$, and applies `Nat.choose_mul_factorial_mul_factorial` to deduce $|\mathcal{F}| \le \binom{n-1}{k-1}$.
+
+---
+
 ## Repository Structure
 
 ```text
@@ -144,7 +160,8 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── EulerPolyhedron.lean              # Euler's Polyhedron Formula (Freek Wiedijk #13)
 │   ├── SpernersLemma.lean                # Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
 │   ├── DeBruijnErdos.lean                # De Bruijn–Erdős Theorem on Incidence Geometry
-│   └── SchursTheorem.lean                # Schur's Theorem on Sum-Free Partitions & Ramsey Triangles
+│   ├── SchursTheorem.lean                # Schur's Theorem on Sum-Free Partitions & Ramsey Triangles
+│   └── ErdosKoRado.lean                  # Erdős–Ko–Rado Theorem & Katona's Circle Method
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
@@ -179,6 +196,7 @@ lake build Formalization.EulerPolyhedron
 lake build Formalization.SpernersLemma
 lake build Formalization.DeBruijnErdos
 lake build Formalization.SchursTheorem
+lake build Formalization.ErdosKoRado
 ```
 
 ---
@@ -191,10 +209,12 @@ lake build Formalization.SchursTheorem
 4. **de Bruijn, N. G., & Erdős, P.** (1948). *On a combinatorial problem*. Indagationes Mathematicae, 10, 421–423.
 5. **Descartes, R.** (1637). *La Géométrie*. Discours de la méthode, Leyden.
 6. **Dirac, G. A.** (1952). *Some theorems on abstract graphs*. Proceedings of the London Mathematical Society, 3(1), 69–81.
-7. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
-8. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
-9. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
-10. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
-11. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
-12. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
-13. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
+7. **Erdős, P., Ko, C., & Rado, R.** (1961). *Intersection theorems for systems of finite sets*. The Quarterly Journal of Mathematics, 12(1), 313–320.
+8. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
+9. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
+10. **Katona, G. O. H.** (1972). *A simple proof of the Erdös-Chao Ko-Rado theorem*. Journal of Combinatorial Theory, Series B, 13(2), 183–184.
+11. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
+12. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
+13. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
+14. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
+15. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
