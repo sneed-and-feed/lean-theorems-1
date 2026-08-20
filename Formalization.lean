@@ -13,3 +13,7 @@ import Formalization.SylvesterGallai
 import Formalization.HallMarriage
 import Formalization.FriendshipTheorem
 import Formalization.RadonHelly
+import Formalization.TverbergsTheorem
+import Formalization.DilworthTheorem
+import Formalization.ArtGalleryTheorem
+import Formalization.CauchyArmLemma
