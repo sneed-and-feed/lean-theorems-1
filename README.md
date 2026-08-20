@@ -26,7 +26,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
 | 16 | **Tverberg's Theorem** *(In Progress)* | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966) |
-| 17 | **Dilworth's Decomposition Theorem** *(In Progress)* | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Perles (1963) |
+| 17 | **Dilworth's Decomposition Theorem** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Perles (1963) |
 | 18 | **Chvátal's Art Gallery Theorem** *(In Progress)* | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
 | 19 | **Cauchy's Arm Lemma & Convex Rigidity** *(In Progress)* | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813) |
 
@@ -211,6 +211,24 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 
 ---
 
+### 17. Dilworth's Decomposition Theorem for Posets (1950)
+* **Module:** [`Formalization/DilworthTheorem.lean`](Formalization/DilworthTheorem.lean)
+* **Theorems:** `dilworth_theorem`, `dilworth_duality`
+* **Mathematical Statement:**
+  - **Dilworth's Theorem (1950):** In any finite partially ordered set $(P, \le)$, if every antichain has cardinality at most $k$, then $P$ can be partitioned into $k$ chains:
+    $$\forall A \subseteq P, \operatorname{IsAntichain}(A) \implies |A| \le k \implies \exists C_1, \dots, C_k \text{ chains s.t. } P = \bigsqcup_{i=1}^k C_i$$
+  - **Min-Max Duality Theorem:** The maximum size of an antichain equals the minimum number of chains required to cover the poset:
+    $$\max \{|A| \mid A \text{ is an antichain}\} = \min \{k \mid P \text{ is covered by } k \text{ chains}\}$$
+* **Formalization Highlights & First-Principles Proof Technique (Perles 1963 / Tverberg 1967 Induction):**
+  1. **Maximal Chain Extraction (`exists_maximal_chain`):** Maximizes cardinality over all chains in $S$, extracting a maximal chain $C \subseteq S$ equipped with boundary extrema $c_{\max}, c_{\min} \in C$ that are maximal/minimal in the ambient set $S$.
+  2. **Non-Trivial Lower & Upper Cones (`lowerCone`, `upperCone`):** For a maximal antichain $A = \{a_1, \dots, a_k\} \subseteq S \setminus C$, defines $S^- = \{x \in S \mid \exists a \in A, x \le a\}$ and $S^+ = \{x \in S \mid \exists a \in A, a \le x\}$. Proves $S^- \cap S^+ = A$ (`lowerCone_inter_upperCone`) and $S^- \cup S^+ = S$ (`lowerCone_union_upperCone`) from antichain maximality.
+  3. **Strict Cardinality Reduction (`lowerCone_card_lt`, `upperCone_card_lt`):** Establishes that $c_{\max} \notin S^-$ and $c_{\min} \notin S^+$, proving $|S^-| < |S|$ and $|S^+| < |S|$ and enabling strong induction on finite sets.
+  4. **Bijective Chain Alignment (`align_chain_cover`):** Applies the Pigeonhole Principle and antichain intersection uniqueness (`chain_inter_antichain_subsingleton`) to construct a permutation $\tau$ aligning chains such that the $i$-th chain in both decompositions contains $a_i \in A$.
+  5. **Cone Chain Gluing (`glue_chain_covers`):** Glues aligned chains $C_i = C_i^- \cup C_i^+$ across the cut $A$, machine-checking comparability by transitivity ($u \le a_i \le v$) and disjointness.
+  6. **Min-Max Duality (`dilworth_duality`):** Proves that any chain cover of size $k$ with antichain of size $w$ satisfies $w \le k$ since $|C_i \cap A| \le 1$, establishing exact min-max duality.
+
+---
+
 ## Repository Structure
 
 ```text
@@ -233,7 +251,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── FriendshipTheorem.lean            # The Friendship Theorem (Erdős–Rényi–Sós 1966)
 │   ├── RadonHelly.lean                   # Radon's Lemma & Helly's Theorem (Freek Wiedijk #99)
 │   ├── TverbergsTheorem.lean             # Tverberg's Theorem on Intersecting Convex Hulls [Stub]
-│   ├── DilworthTheorem.lean              # Dilworth's Decomposition Theorem for Posets [Stub]
+│   ├── DilworthTheorem.lean              # Dilworth's Decomposition Theorem for Posets
 │   ├── ArtGalleryTheorem.lean            # Chvátal's Art Gallery Theorem & Fisk's 3-Coloring [Stub]
 │   └── CauchyArmLemma.lean               # Cauchy's Arm Lemma and Convex Rigidity [Stub]
 ├── lakefile.toml                         # Lake build system manifest
