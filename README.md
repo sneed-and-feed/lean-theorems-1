@@ -18,6 +18,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 6 | **Descartes's Rule of Signs** | [`descartes_rule_of_signs`](Formalization/DescartesSigns.lean) | Real Algebraic Geometry & Polynomials | Descartes (1637), Wiedijk #73 |
 | 7 | **Euler's Polyhedron Formula** | [`euler_polyhedron_formula`](Formalization/EulerPolyhedron.lean), [`euler_connected_graph`](Formalization/EulerPolyhedron.lean) | Topological Graph Theory & Topology | Euler (1758), Cauchy (1813), Wiedijk #13 |
 | 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
+| 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 
 ---
 
@@ -96,18 +97,34 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
   1. **Inductive Combinatorial Planar Maps:** Formalizes `PlanarMap` with constructors for base vertices, pendant edge extensions, and face-splitting edges, establishing $V + F = E + 2$ and $\chi(P) = 2$ by structural induction.
   2. **Bridge to Mathlib `SimpleGraph`:** For any finite connected graph $G$ with spanning tree $T$, defines the face count $F = |E_G| - |E_T| + 1$ and proves $(|V| : \mathbb{Z}) - (|E_G| : \mathbb{Z}) + F = 2$ using Mathlib's `IsTree.card_edgeFinset` ($|E_T| + 1 = |V|$).
 
+---
+
 ### 8. Sperner's Lemma in 1D and 2D
 * **Module:** [`Formalization/SpernersLemma.lean`](Formalization/SpernersLemma.lean)
 * **Theorems:** `sperner_1d_parity`, `sperner_1d_exists`, `sperner_2d_parity`, `sperner_2d_odd`, `sperner_2d_exists`
 * **Mathematical Statement:** 
   - **1D Sperner:** For any coloring $f : \{0, \dots, n\} \to \{0, 1\}$, the number of color-switching steps $\sum_{i=0}^{n-1} [f(i) \ne f(i+1)]$ has the same parity as $[f(0) \ne f(n)]$. In particular, different boundary labels guarantee at least one bicolored segment.
   - **2D Sperner:** For any 2D triangulation $T$ (simplicial surface with boundary where every edge is shared by 1 or 2 triangles) with vertex coloring $c : V \to \{0, 1, 2\}$, the number of panchromatic (fully labeled $\{0, 1, 2\}$) triangles and the number of boundary $0$-$1$ edges share the same parity modulo 2:
-    $$|\{t \in T \mid c(t) = \{0, 1, 2\}\}| \equiv |E_{\text{bd}}^{01}| \pmod 2$$
+     $$|\{t \in T \mid c(t) = \{0, 1, 2\}\}| \equiv |E_{\text{bd}}^{01}| \pmod 2$$
     In particular, an odd number of boundary $0$-$1$ edges guarantees the existence of at least one panchromatic triangle.
 * **Formalization Technique:**
   1. **1D Discrete Path Induction:** Formalizes `switchCount` and proves `Odd (switchCount f) ↔ f 0 ≠ f (Fin.last n)` by induction on $n$ with full algebraic reduction in `Fin 2`.
   2. **Local Door-Count Invariant (`triangleDoorCount_mod_two`):** Machine-checks all 27 colorings in `Fin 3` via `decide`, establishing that $\text{doorCount}(t) \equiv [t \text{ is panchromatic}] \pmod 2$.
   3. **Global Double Counting (`double_counting_sum_eq`):** Swaps sums over triangles and edges to prove $\sum_{t \in T} \text{doorCount}(t) = |E_{\text{bd}}^{01}| + 2 \cdot |E_{\text{int}}^{01}|$, deducing the parity invariant modulo 2.
+
+---
+
+### 9. De Bruijn–Erdős Theorem on Incidence Geometry
+* **Module:** [`Formalization/DeBruijnErdos.lean`](Formalization/DeBruijnErdos.lean)
+* **Theorems:** `de_bruijn_erdos`, `de_bruijn_erdos'`
+* **Mathematical Statement:** Let $\mathcal{P}$ be a finite set of $n \ge 3$ points and $\mathcal{L}$ a collection of subsets of $\mathcal{P}$ called lines such that every line contains at least 2 points, every pair of distinct points lies on a unique line, and not all points are collinear. Then the number of lines is at least the number of points:
+  $$|\mathcal{L}| \ge |\mathcal{P}|$$
+* **Formalization Technique:**
+  1. **Non-incident Point-Line Lower Bound (`card_line_le_pointDegree`):** Demonstrates that for any non-incident point-line pair $(p, L)$ with $p \notin L$, mapping $q \in L$ to the unique line through $p$ and $q$ is injective, establishing $|L| \le \deg(p)$.
+  2. **Non-incident Line Existence (`exists_line_not_mem`, `two_le_pointDegree`):** Shows that no point lies on every line, establishing $\deg(p) \ge 2 > 0$ for all $p \in \mathcal{P}$.
+  3. **Fubini Double Summation (`double_sum_swap`):** Swaps sums over non-incident pairs $E = \{(p, L) \mid p \notin L\}$ to establish:
+     $$|\mathcal{L}| = \sum_{L \in \mathcal{L}} \sum_{p \in \mathcal{P} \setminus L} \frac{1}{|\mathcal{P}| - |L|} \le \sum_{L \in \mathcal{L}} \sum_{p \in \mathcal{P} \setminus L} \frac{1}{|\mathcal{P}| - \deg(p)} = \sum_{p \in \mathcal{P}} \frac{|\mathcal{L}| - \deg(p)}{|\mathcal{P}| - \deg(p)}$$
+  4. **Strict Pointwise Fraction Inequality (`frac_sub_lt_frac`, `sum_frac_lt_card_lines`):** For $m < n$ and $d \ge 1$, proves $\frac{m - d}{n - d} < \frac{m}{n}$, which yields $\sum_{p \in \mathcal{P}} \frac{m - \deg(p)}{n - \deg(p)} < m$, contradicting $m \le S < m$.
 
 ---
 
@@ -124,7 +141,8 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── OreHamiltonian.lean               # Ore's & Dirac's Theorems on Hamiltonian Graphs
 │   ├── DescartesSigns.lean               # Descartes's Rule of Signs (Freek Wiedijk #73)
 │   ├── EulerPolyhedron.lean              # Euler's Polyhedron Formula (Freek Wiedijk #13)
-│   └── SpernersLemma.lean                # Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
+│   ├── SpernersLemma.lean                # Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
+│   └── DeBruijnErdos.lean                # De Bruijn–Erdős Theorem on Incidence Geometry
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
@@ -157,6 +175,7 @@ lake build Formalization.DesarguesVector
 lake build Formalization.DescartesSigns
 lake build Formalization.EulerPolyhedron
 lake build Formalization.SpernersLemma
+lake build Formalization.DeBruijnErdos
 ```
 
 ---
@@ -166,11 +185,12 @@ lake build Formalization.SpernersLemma
 1. **Bollobás, B.** (1965). *On generalized graphs*. Acta Mathematica Academiae Scientiarum Hungarica, 16(3-4), 447–452.
 2. **Bondy, J. A.** (1972). *Induced subsets and colour-critical graphs*. Congressus Numerantium, 5, 71–77.
 3. **Cauchy, A. L.** (1813). *Recherches sur les polyèdres*. Journal de l'École Polytechnique, 9, 68–86.
-4. **Descartes, R.** (1637). *La Géométrie*. Discours de la méthode, Leyden.
-5. **Dirac, G. A.** (1952). *Some theorems on abstract graphs*. Proceedings of the London Mathematical Society, 3(1), 69–81.
-6. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
-7. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
-8. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
-9. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
-10. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
-11. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
+4. **de Bruijn, N. G., & Erdős, P.** (1948). *On a combinatorial problem*. Indagationes Mathematicae, 10, 421–423.
+5. **Descartes, R.** (1637). *La Géométrie*. Discours de la méthode, Leyden.
+6. **Dirac, G. A.** (1952). *Some theorems on abstract graphs*. Proceedings of the London Mathematical Society, 3(1), 69–81.
+7. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
+8. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
+9. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
+10. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
+11. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
+12. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
