@@ -3,3 +3,5 @@ import Formalization.BollobasTwoFamilies
 import Formalization.OreHamiltonian
 import Formalization.BondyInducedSubsets
 import Formalization.DesarguesVector
+import Formalization.DescartesSigns
+import Formalization.EulerPolyhedron
