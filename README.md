@@ -21,9 +21,10 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
 | 11 | **Erdős–Ko–Rado Theorem on Intersecting Families** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Katona (1972) |
-| 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948)| 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
+| 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
+| 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
-| 15 | **Radon's Lemma & Helly's Theorem** *(In Progress)* | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
+| 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
 
 ---
 
@@ -190,6 +191,22 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 
 ---
 
+### 15. Radon's Lemma and Helly's Theorem (Freek Wiedijk #99)
+* **Module:** [`Formalization/RadonHelly.lean`](Formalization/RadonHelly.lean)
+* **Theorems:** `radons_theorem`, `hellys_theorem`
+* **Mathematical Statement:**
+  - **Radon's Lemma (1921):** Any set $S \subset \mathbb{R}^d$ of $d + 2$ points can be partitioned into two disjoint subsets $A, B \subseteq S$ whose convex hulls intersect:
+    $$A \cap B = \emptyset, \quad A \cup B = S, \quad \operatorname{conv}(A) \cap \operatorname{conv}(B) \ne \emptyset$$
+  - **Helly's Theorem (1923):** Let $C_1, \dots, C_n$ be a finite collection of convex subsets in $\mathbb{R}^d$. If every subcollection of at most $d + 1$ sets has a non-empty intersection, then the entire collection has a non-empty intersection:
+    $$\bigcap_{i=1}^n C_i \ne \emptyset$$
+* **Formalization Highlights & First-Principles Proof Technique:**
+  1. **Linear Dependence via Nullity (`radonMap`, `exists_nonzero_radon_coeff`):** Maps $c \in (\text{Fin } (d + 2) \to \mathbb{R})$ to $(\sum_i c_i, \sum_i c_i v_i) \in \mathbb{R} \times (\text{Fin } d \to \mathbb{R})$. Since $\dim(\text{domain}) = d + 2 > d + 1 = \dim(\text{codomain})$, dimension comparison proves non-injectivity and extracts a non-zero kernel vector $c \ne 0$ satisfying $\sum_i c_i = 0$ and $\sum_i c_i v_i = 0$.
+  2. **Sign Splitting & Barycentric Combination:** Partitions indices into $I_+ = \{i \mid c_i > 0\}$ and $I_- = \{i \mid c_i \le 0\}$, proving both are non-empty and disjoint. Constructs the barycentric intersection point $p = \sum_{i \in I_+} \frac{c_i}{C} v_i = \sum_{j \in I_-} \frac{-c_j}{C} v_j$ with $C = \sum_{I_+} c_i > 0$, and machine-checks that $p \in \operatorname{conv}(A) \cap \operatorname{conv}(B)$ using `Finset.centerMass`.
+  3. **Helly Strong Induction on Finite Subfamilies (`hellys_theorem_card`):** Formulates induction on the cardinality $n = |S|$ of subfamilies $S \subseteq \iota$. Handles the base case $n \le d + 1$ directly. For the base step $n = d + 2$, constructs points $p_j \in \bigcap_{i \in S \setminus \{j\}} C_i$; either finds duplicate points or applies `radons_theorem` on the distinct points to deduce $p \in \bigcap_{i \in S} C_i$. For $n > d + 2$, contracts the family by merging $C_a$ and $C_b$ into $C_a \cap C_b$ on $S \setminus \{b\}$.
+  4. **Full Global Intersection:** Concludes $\bigcap_{i \in \iota} C_i \ne \emptyset$ by instantiating the family induction on $S = \text{Finset.univ}$.
+
+---
+
 ## Repository Structure
 
 ```text
@@ -210,7 +227,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── SylvesterGallai.lean              # Sylvester–Gallai Theorem (Freek Wiedijk #98)
 │   ├── HallMarriage.lean                 # Hall's Marriage Theorem (Freek Wiedijk #87)
 │   ├── FriendshipTheorem.lean            # The Friendship Theorem (Erdős–Rényi–Sós 1966)
-│   └── RadonHelly.lean                   # Radon's Lemma & Helly's Theorem (Freek Wiedijk #99) [Stub]
+│   └── RadonHelly.lean                   # Radon's Lemma & Helly's Theorem (Freek Wiedijk #99)
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
