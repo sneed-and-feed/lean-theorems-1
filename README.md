@@ -20,6 +20,11 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
+| 11 | **Erdős–Ko–Rado Theorem on Intersecting Families** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Katona (1972) |
+| 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
+| 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
+| 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
+| 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
 
 ---
 
@@ -129,6 +134,79 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 
 ---
 
+### 11. Erdős–Ko–Rado Theorem on Intersecting Families
+* **Module:** [`Formalization/ErdosKoRado.lean`](Formalization/ErdosKoRado.lean)
+* **Theorems:** `erdos_ko_rado`, `erdos_ko_rado_disjoint_pair`, `erdos_ko_rado_powersetCard`, `katona_arc_lemma`
+* **Mathematical Statement:**
+  Let $n \ge 2k$ with $k \ge 1$, and let $\mathcal{F}$ be an intersecting family of $k$-element subsets of an $n$-element universe $\alpha$ (i.e. $\forall A, B \in \mathcal{F}, \neg \text{Disjoint } A \, B$). Then:
+  $$|\mathcal{F}| \le \binom{n-1}{k-1}$$
+  Equivalently, if $|\mathcal{F}| > \binom{n-1}{k-1}$, then $\mathcal{F}$ contains at least two disjoint sets.
+* **Formalization Technique:**
+  1. **Katona's Circle Method (`cyclicArc`, `katona_arc_lemma`):** Embeds elements on the cyclic group $\mathbb{Z}/n\mathbb{Z}$. A cyclic arc of length $k$ starting at $i$ is $A_i = \{i, i+1, \dots, i+k-1\}$. For $2k \le n$, pairs of arcs $(A_r, A_{r-k})$ are disjoint, partitioning non-zero intersecting shifts into disjoint pairs. Hence any pairwise intersecting collection of cyclic arcs has size at most $k$.
+  2. **Shift Invariance & Fiber Cardinality (`arcOf`, `card_fiber_arcOf`):** Connects bijections $e : \alpha \simeq \mathbb{Z}/n\mathbb{Z}$ with Mathlib's `Numbering α` (`KatonaCircle`). For every fixed $k$-set $A \in \mathcal{F}$ and every shift index $i \in \mathbb{Z}/n\mathbb{Z}$, the fiber of bijections mapping $A$ to the arc at $i$ has exact cardinality $k! (n-k)!$.
+  3. **Double Counting Summation (`erdos_ko_rado`):** Double-counts the incidence sum $\sum_{e \in \alpha \simeq \mathbb{Z}/n\mathbb{Z}} \sum_{i \in \mathbb{Z}/n\mathbb{Z}} \mathbf{1}_{\{e^{-1}(\text{arc}(i)) \in \mathcal{F}\}}$, upper-bounding by $k \cdot n!$ via Katona's arc lemma and evaluating to $n |\mathcal{F}| k! (n-k)!$.
+  4. **Exact Factorial Cancellation (`choose_bound_of_double_counting`):** Cancels $n k$ to obtain $|\mathcal{F}| (k-1)! (n-k)! \le (n-1)!$, and applies `Nat.choose_mul_factorial_mul_factorial` to deduce $|\mathcal{F}| \le \binom{n-1}{k-1}$.
+
+---
+
+### 12. Sylvester–Gallai Theorem on Ordinary Lines (Freek Wiedijk #98)
+* **Module:** [`Formalization/SylvesterGallai.lean`](Formalization/SylvesterGallai.lean)
+* **Theorem:** `sylvester_gallai`
+* **Mathematical Statement:** Let $S \subset \mathbb{R}^2$ be a finite set of points in the Euclidean plane. If not all points of $S$ lie on a single straight line ($\neg \text{SetCollinear } S$), then there exists an **ordinary line**—a straight line passing through *exactly two* points of $S$:
+  $$\exists p \in S, \, \exists q \in S, \, p \ne q \wedge \text{IsOrdinaryLine } S \, p \, q$$
+* **Formalization Highlights & Proof Technique:**
+  1. **Self-Contained 2D Cartesian Geometry (`cross`, `dot`, `sqNorm`, `signedArea`):** Formalizes planar coordinates without metric space overhead. Proves signed area antisymmetry, cyclic invariance, and equivalence with collinearity.
+  2. **Candidate Point-Line Triples & Global Minimization (`candidateTriples`, `distSq`):** Filters $S \times S \times S$ to candidate triples $(p, a, b)$ with $a \ne b$ and $p \notin \text{line}(a, b)$. Uses `Finset.exists_min_image` on the squared distance metric $\text{distSq}(p, a, b) = \frac{(\text{signedArea}(a, b, p))^2}{\|b - a\|^2}$ to extract a minimal triple $(p_0, a_0, b_0)$.
+  3. **1D Parametrization & Projection (`collinear_iff_param`, `pythagorean_decomp`):** Parametrizes any point on $\text{line}(a_0, b_0)$ as $r(t) = a_0 + t(b_0 - a_0)$ via dot products. Establishes the Pythagorean distance decomposition from $a = r(t_a)$ to $p_0$ via the orthogonal projection $q_0 = r(t_q)$.
+  4. **Kelly's Closer-Pair Ordering Contradiction (`exists_closer_pair_1d`):** Proves that among three distinct points $a_0, b_0, c$ on $L_0$ and the projection parameter $t_q$, there exists a pair of parameters $t_i, t_j$ satisfying $(t_j - t_i)^2 \le (t_i - t_q)^2$. Shows that the new pair $(b = r(t_j), \text{line}(p_0, a = r(t_i)))$ has strictly smaller squared distance than $(p_0, a_0, b_0)$, establishing by contradiction that $L_0$ contains exactly 2 points of $S$.
+
+---
+
+### 13. Hall's Marriage Theorem (Freek Wiedijk #87)
+* **Module:** [`Formalization/HallMarriage.lean`](Formalization/HallMarriage.lean)
+* **Theorem:** `hall_marriage_theorem`, `hall_marriage_necessary`
+* **Mathematical Statement:** Let $A_1, \dots, A_n$ be a finite collection of finite sets indexed by a finite type $\iota$. A **System of Distinct Representatives (SDR)** (or transversal) is an injective choice function $f : \iota \to \alpha$ with $\forall i \in \iota, f(i) \in A_i$.
+  An SDR exists if and only if **Hall's Marriage Condition** holds: for every subset of indices $J \subseteq \iota$,
+  $$\left| \bigcup_{i \in J} A_i \right| \ge |J|$$
+* **Formalization Highlights & Proof Technique:**
+  1. **Halmos & Vaughan Strong Induction (`hall_marriage_finset`):** Formulates and machine-proves the existence of partial SDRs for arbitrary subfamilies $S \subseteq \iota$ over any indexed family $A : \iota \to \text{Finset } \alpha$ by strong induction on $n = |S|$.
+  2. **Tight Subfamily Reduction (Case 1):** If there exists a non-empty proper tight subset $J_0 \subset S$ ($0 < |J_0| < |S|$) with $|\bigcup_{i \in J_0} A_i| = |J_0|$, extracts an SDR $f_1$ on $J_0$ with image $T = \bigcup_{i \in J_0} A_i$. On $K = S \setminus J_0$, defines the reduced family $A'_i = A_i \setminus T$, proves that $A'$ preserves Hall's condition on $K$ via `union_biUnion` and `union_sdiff_self_right`, obtains $f_2$ on $K$ disjoint from $T$, and stitches $f_1$ and $f_2$.
+  3. **Non-Tight Case Reduction (Case 2):** If no proper non-empty tight subset exists, every non-empty $J \subset S$ strictly satisfies $|\bigcup_{i \in J} A_i| \ge |J| + 1$. Isolates an index $i_0 \in S$ and an element $x \in A_{i_0}$, reduces to $K = S \setminus \{i_0\}$ with trimmed sets $A'_i = A_i \setminus \{x\}$, proves Hall's condition on $K$ via `card_sdiff_singleton_ge`, obtains $f_0$ on $K$, and sets $f(i_0) = x$.
+  4. **Global Equivalence on `Finset.univ`:** Instantiates the finset induction on $S = \text{Finset.univ}$ to deduce the full bidirectional equivalence `(∃ f : ι → α, IsSDR A f) ↔ HallCondition A`, handling both empty and inhabited index types $\iota$.
+
+---
+
+### 14. The Friendship Theorem (Erdős–Rényi–Sós 1966)
+* **Module:** [`Formalization/FriendshipTheorem.lean`](Formalization/FriendshipTheorem.lean)
+* **Theorem:** `friendship_theorem`
+* **Mathematical Statement:** In any finite party (simple graph $G = (V, E)$ on $|V| \ge 3$) where every pair of distinct individuals shares *exactly one* common friend, there exists a politician (a universal vertex $w \in V$) who is friends with everyone:
+  $$\forall u \ne v, |N(u) \cap N(v)| = 1 \implies \exists w \in V, \forall v \ne w, G.\text{Adj } w \, v$$
+* **Formalization Highlights & Proof Technique:**
+  1. **Equidegree for Non-Adjacent Vertices (`degree_eq_of_not_adj`):** Formalizes the canonical bijection between $N(u) \setminus \{w\}$ and $N(v) \setminus \{w\}$ given by unique common neighbors, proving $\deg(u) = \deg(v)$ whenever $u \not\sim v$.
+  2. **Non-Regular Universal Vertex Classification (`exists_universal_of_exists_degree_ne`):** If degrees are not all equal, proves that adjacent vertices of differing degrees contain a universal vertex with degree $|V| - 1$.
+  3. **Regular Graph Invariant & Cardinality (`card_V_eq_k_mul_k_sub_one_add_one`):** If $G$ is $k$-regular, double-counts common neighbor pairs to prove $|V| = k(k - 1) + 1$. Pairs vertices via involution without fixed points (`even_card_of_involution`) to establish that $k$ must be even.
+  4. **Closed Walk Cyclic Group Action (`no_regular_friendship_graph_ge_three`):** Takes a prime $p \mid (k - 1)$ (where $p \ge 3$ because $k$ is even and $k \ge 4$). Defines the group action of $\text{Multiplicative}(\mathbb{Z}/p\mathbb{Z})$ on closed walks of length $p$. Proves that the action has 0 fixed points since $G$ has no self-loops (`closedWalk_fixedPoints_empty`), hence $|ClosedWalk| \equiv 0 \pmod p$ via `IsPGroup.card_modEq_card_fixedPoints`.
+  5. **Trace Equivalence Contradiction:** Expresses closed walks via vertex walk vectors (`WalkVec`, `cwAtEquivWalkVec`). By walk induction modulo $p$, $(A^p)_{v,v} \equiv 1 \pmod p$, so $|ClosedWalk| = \sum_{v \in V} (A^p)_{v,v} \equiv |V| = k(k-1)+1 \equiv 1 \pmod p$. The resulting congruence $0 \equiv 1 \pmod p$ implies $p \mid 1$, eliminating all $k \ge 3$.
+  6. **Base Case $k = 2$:** Reduces 2-regular friendship graphs directly to the triangle $K_3$ (`two_regular_has_universal`), in which every vertex is universal.
+
+---
+
+### 15. Radon's Lemma and Helly's Theorem (Freek Wiedijk #99)
+* **Module:** [`Formalization/RadonHelly.lean`](Formalization/RadonHelly.lean)
+* **Theorems:** `radons_theorem`, `hellys_theorem`
+* **Mathematical Statement:**
+  - **Radon's Lemma (1921):** Any set $S \subset \mathbb{R}^d$ of $d + 2$ points can be partitioned into two disjoint subsets $A, B \subseteq S$ whose convex hulls intersect:
+    $$A \cap B = \emptyset, \quad A \cup B = S, \quad \operatorname{conv}(A) \cap \operatorname{conv}(B) \ne \emptyset$$
+  - **Helly's Theorem (1923):** Let $C_1, \dots, C_n$ be a finite collection of convex subsets in $\mathbb{R}^d$. If every subcollection of at most $d + 1$ sets has a non-empty intersection, then the entire collection has a non-empty intersection:
+    $$\bigcap_{i=1}^n C_i \ne \emptyset$$
+* **Formalization Highlights & First-Principles Proof Technique:**
+  1. **Linear Dependence via Nullity (`radonMap`, `exists_nonzero_radon_coeff`):** Maps $c \in (\text{Fin } (d + 2) \to \mathbb{R})$ to $(\sum_i c_i, \sum_i c_i v_i) \in \mathbb{R} \times (\text{Fin } d \to \mathbb{R})$. Since $\dim(\text{domain}) = d + 2 > d + 1 = \dim(\text{codomain})$, dimension comparison proves non-injectivity and extracts a non-zero kernel vector $c \ne 0$ satisfying $\sum_i c_i = 0$ and $\sum_i c_i v_i = 0$.
+  2. **Sign Splitting & Barycentric Combination:** Partitions indices into $I_+ = \{i \mid c_i > 0\}$ and $I_- = \{i \mid c_i \le 0\}$, proving both are non-empty and disjoint. Constructs the barycentric intersection point $p = \sum_{i \in I_+} \frac{c_i}{C} v_i = \sum_{j \in I_-} \frac{-c_j}{C} v_j$ with $C = \sum_{I_+} c_i > 0$, and machine-checks that $p \in \operatorname{conv}(A) \cap \operatorname{conv}(B)$ using `Finset.centerMass`.
+  3. **Helly Strong Induction on Finite Subfamilies (`hellys_theorem_card`):** Formulates induction on the cardinality $n = |S|$ of subfamilies $S \subseteq \iota$. Handles the base case $n \le d + 1$ directly. For the base step $n = d + 2$, constructs points $p_j \in \bigcap_{i \in S \setminus \{j\}} C_i$; either finds duplicate points or applies `radons_theorem` on the distinct points to deduce $p \in \bigcap_{i \in S} C_i$. For $n > d + 2$, contracts the family by merging $C_a$ and $C_b$ into $C_a \cap C_b$ on $S \setminus \{b\}$.
+  4. **Full Global Intersection:** Concludes $\bigcap_{i \in \iota} C_i \ne \emptyset$ by instantiating the family induction on $S = \text{Finset.univ}$.
+
+---
+
 ## Repository Structure
 
 ```text
@@ -144,7 +222,12 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── EulerPolyhedron.lean              # Euler's Polyhedron Formula (Freek Wiedijk #13)
 │   ├── SpernersLemma.lean                # Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
 │   ├── DeBruijnErdos.lean                # De Bruijn–Erdős Theorem on Incidence Geometry
-│   └── SchursTheorem.lean                # Schur's Theorem on Sum-Free Partitions & Ramsey Triangles
+│   ├── SchursTheorem.lean                # Schur's Theorem on Sum-Free Partitions & Ramsey Triangles
+│   ├── ErdosKoRado.lean                  # Erdős–Ko–Rado Theorem & Katona's Circle Method
+│   ├── SylvesterGallai.lean              # Sylvester–Gallai Theorem (Freek Wiedijk #98)
+│   ├── HallMarriage.lean                 # Hall's Marriage Theorem (Freek Wiedijk #87)
+│   ├── FriendshipTheorem.lean            # The Friendship Theorem (Erdős–Rényi–Sós 1966)
+│   └── RadonHelly.lean                   # Radon's Lemma & Helly's Theorem (Freek Wiedijk #99)
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
@@ -179,6 +262,11 @@ lake build Formalization.EulerPolyhedron
 lake build Formalization.SpernersLemma
 lake build Formalization.DeBruijnErdos
 lake build Formalization.SchursTheorem
+lake build Formalization.ErdosKoRado
+lake build Formalization.SylvesterGallai
+lake build Formalization.HallMarriage
+lake build Formalization.FriendshipTheorem
+lake build Formalization.RadonHelly
 ```
 
 ---
@@ -191,10 +279,19 @@ lake build Formalization.SchursTheorem
 4. **de Bruijn, N. G., & Erdős, P.** (1948). *On a combinatorial problem*. Indagationes Mathematicae, 10, 421–423.
 5. **Descartes, R.** (1637). *La Géométrie*. Discours de la méthode, Leyden.
 6. **Dirac, G. A.** (1952). *Some theorems on abstract graphs*. Proceedings of the London Mathematical Society, 3(1), 69–81.
-7. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
-8. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
-9. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
-10. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
-11. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
-12. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
-13. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
+7. **Erdős, P., Ko, C., & Rado, R.** (1961). *Intersection theorems for systems of finite sets*. The Quarterly Journal of Mathematics, 12(1), 313–320.
+8. **Erdős, P., Rényi, A., & Sós, V. T.** (1966). *On a problem of graph theory*. Studia Scientiarum Mathematicarum Hungarica, 1, 215–235.
+9. **Euler, L.** (1758). *Elementa doctrinae solidorum*. Novi Commentarii Academiae Scientiarum Petropolitanae, 4, 109–140.
+10. **Gallai, T.** (1944). *Solution to Problem 4065*. The American Mathematical Monthly, 51(3), 169–171.
+11. **Graham, R. L., & Pollak, H. O.** (1971). *On the addressing problem for loop switching*. Bell System Technical Journal, 50(8), 2495–2519.
+12. **Hall, P.** (1935). *On representatives of subsets*. Journal of the London Mathematical Society, 10(1), 26–30.
+13. **Halmos, P. R., & Vaughan, H. E.** (1950). *The marriage problem*. American Journal of Mathematics, 72(1), 214–215.
+14. **Katona, G. O. H.** (1972). *A simple proof of the Erdös-Chao Ko-Rado theorem*. Journal of Combinatorial Theory, Series B, 13(2), 183–184.
+15. **Kelly, L. M.** (1948). *A simple proof of the Sylvester-Gallai theorem*. In H. S. M. Coxeter, *Projective Geometry*, University of Toronto Press.
+16. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
+17. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
+18. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
+19. **Sylvester, J. J.** (1893). *Mathematical Question 11851*. Educational Times, 59, 98.
+20. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
+21. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
+22. **Wilf, H. S.** (1971). *The friendship theorem*. In *Combinatorial Mathematics and Its Applications*, Academic Press, 307–309.
