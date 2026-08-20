@@ -21,6 +21,10 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
 | 11 | **Erdős–Ko–Rado Theorem on Intersecting Families** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Katona (1972) |
+| 12 | **Sylvester–Gallai Theorem** *(In Progress)* | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
+| 13 | **Hall's Marriage Theorem** *(In Progress)* | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
+| 14 | **The Friendship Theorem** *(In Progress)* | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
+| 15 | **Radon's Lemma & Helly's Theorem** *(In Progress)* | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
 
 ---
 
@@ -197,6 +201,10 @@ lake build Formalization.SpernersLemma
 lake build Formalization.DeBruijnErdos
 lake build Formalization.SchursTheorem
 lake build Formalization.ErdosKoRado
+lake build Formalization.SylvesterGallai
+lake build Formalization.HallMarriage
+lake build Formalization.FriendshipTheorem
+lake build Formalization.RadonHelly
 ```
 
 ---
