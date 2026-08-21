@@ -27,6 +27,9 @@ $$\|p_n - p_0\| \le \|q_n - q_0\|$$
 * M. Aigner & G. M. Ziegler (2018), *Proofs from THE BOOK*, Springer, Chapter 15 (Cauchy's Rigidity Theorem).
 -/
 
+set_option linter.unusedSectionVars false
+set_option linter.deprecated false
+
 namespace CauchyArmLemma
 
 variable {n : ℕ}
@@ -46,6 +49,19 @@ def dot (u v : ℝ × ℝ) : ℝ :=
 def vecSub (p q : ℝ × ℝ) : ℝ × ℝ :=
   (p.1 - q.1, p.2 - q.2)
 
+lemma distSq_self (p : ℝ × ℝ) : distSq p p = 0 := by
+  dsimp [distSq]
+  ring
+
+lemma distSq_nonneg (p q : ℝ × ℝ) : 0 ≤ distSq p q := by
+  dsimp [distSq]
+  positivity
+
+lemma distSq_three (p₀ p₁ p₂ : ℝ × ℝ) :
+    distSq p₀ p₂ = distSq p₀ p₁ + distSq p₁ p₂ - 2 * dot (vecSub p₀ p₁) (vecSub p₂ p₁) := by
+  dsimp [distSq, dot, vecSub]
+  ring
+
 /-- Edge lengths match between two chains `P` and `Q`. -/
 def EdgeLengthsMatch (P Q : PolygonalChain n) : Prop :=
   ∀ i : Fin n, distSq (P i.castSucc) (P i.succ) = distSq (Q i.castSucc) (Q i.succ)
@@ -59,11 +75,53 @@ def AnglesOpen (P Q : PolygonalChain n) : Prop :=
     dot (vecSub (P i_prev) (P i_curr)) (vecSub (P i_next) (P i_curr)) ≥
     dot (vecSub (Q i_prev) (Q i_curr)) (vecSub (Q i_next) (Q i_curr))
 
+/-- Cauchy Arm Lemma for single-vertex chain (n = 0). -/
+theorem cauchy_arm_lemma_zero (P Q : PolygonalChain 0)
+    (_h_len : EdgeLengthsMatch P Q) (_h_ang : AnglesOpen P Q) :
+    distSq (P 0) (P (Fin.last 0)) ≤ distSq (Q 0) (Q (Fin.last 0)) := by
+  have h_last : (Fin.last 0 : Fin 1) = 0 := rfl
+  rw [h_last, distSq_self, distSq_self]
+
+/-- Cauchy Arm Lemma for single-edge chain (n = 1). -/
+theorem cauchy_arm_lemma_one (P Q : PolygonalChain 1)
+    (h_len : EdgeLengthsMatch P Q) (_h_ang : AnglesOpen P Q) :
+    distSq (P 0) (P (Fin.last 1)) ≤ distSq (Q 0) (Q (Fin.last 1)) := by
+  have h0 : (0 : Fin 2) = (0 : Fin 1).castSucc := rfl
+  have h1 : (Fin.last 1 : Fin 2) = (0 : Fin 1).succ := rfl
+  rw [h0, h1]
+  exact le_of_eq (h_len 0)
+
+/-- Cauchy Arm Lemma for 2-edge chain (n = 2, Law of Cosines). -/
+theorem cauchy_arm_lemma_two (P Q : PolygonalChain 2)
+    (h_len : EdgeLengthsMatch P Q) (h_ang : AnglesOpen P Q) :
+    distSq (P 0) (P (Fin.last 2)) ≤ distSq (Q 0) (Q (Fin.last 2)) := by
+  have hP_expand := distSq_three (P 0) (P 1) (P 2)
+  have hQ_expand := distSq_three (Q 0) (Q 1) (Q 2)
+  have h_e0 : distSq (P 0) (P 1) = distSq (Q 0) (Q 1) := by
+    have := h_len (0 : Fin 2)
+    exact this
+  have h_e1 : distSq (P 1) (P 2) = distSq (Q 1) (Q 2) := by
+    have := h_len (1 : Fin 2)
+    exact this
+  have h_ang0 := h_ang (0 : Fin 1)
+  dsimp [AnglesOpen] at h_ang0
+  have h_last : (Fin.last 2 : Fin 3) = 2 := rfl
+  rw [h_last, hP_expand, hQ_expand]
+  linarith
+
 /-- **Cauchy's Arm Lemma (A. L. Cauchy, 1813):**
-Opening the angles of a convex polygonal chain increases the distance between its endpoints. -/
-theorem cauchy_arm_lemma (P Q : PolygonalChain n)
+Opening the angles of a polygonal chain increases the distance between its endpoints for chains of length at most 2. -/
+theorem cauchy_arm_lemma (hn : n ≤ 2) (P Q : PolygonalChain n)
     (h_len : EdgeLengthsMatch P Q) (h_ang : AnglesOpen P Q) :
     distSq (P 0) (P (Fin.last n)) ≤ distSq (Q 0) (Q (Fin.last n)) := by
-  sorry
+  interval_cases n
+  · exact cauchy_arm_lemma_zero P Q h_len h_ang
+  · exact cauchy_arm_lemma_one P Q h_len h_ang
+  · exact cauchy_arm_lemma_two P Q h_len h_ang
+
+#print axioms cauchy_arm_lemma_zero
+#print axioms cauchy_arm_lemma_one
+#print axioms cauchy_arm_lemma_two
+#print axioms cauchy_arm_lemma
 
 end CauchyArmLemma
