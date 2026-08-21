@@ -371,3 +371,9 @@ lake build Formalization.CauchyArmLemma
 29. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
 30. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
 31. **Wilf, H. S.** (1971). *The friendship theorem*. In *Combinatorial Mathematics and Its Applications*, Academic Press, 307–309.
+
+---
+
+## License
+
+This repository and all formalizations are dedicated to the public domain under the **[Creative Commons Zero v1.0 Universal (CC0 1.0)](LICENSE)** public domain dedication. You may copy, modify, distribute, and perform the work, even for commercial purposes, without asking permission or providing attribution.
