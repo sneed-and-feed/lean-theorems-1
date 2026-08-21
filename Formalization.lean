@@ -18,3 +18,11 @@ import Formalization.DilworthTheorem
 import Formalization.ArtGalleryTheorem
 import Formalization.CauchyArmLemma
 import Formalization.PicksTheorem
+import Formalization.ErdosSzekeresConvex
+import Formalization.CrossingLemma
+import Formalization.KneserLovasz
+import Formalization.TuckersLemma
+import Formalization.FriendshipWindmill
+import Formalization.Sperner3D
+import Formalization.FranklWilson
+import Formalization.BecksTheorem
