@@ -6,7 +6,18 @@ import Mathlib.Data.Fintype.Basic
 import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.LinearAlgebra.Dimension.Finrank
 import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
-import Mathlib.Tactic
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.Common
+import Mathlib.Tactic.Cases
+import Mathlib.Tactic.Choose
+import Mathlib.Tactic.Contrapose
+import Mathlib.Tactic.SplitIfs
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Radon's Lemma and Helly's Theorem (Freek Wiedijk #99)

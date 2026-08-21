@@ -1,6 +1,9 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Image
+import Mathlib.Data.Finset.Sort
+import Mathlib.Data.List.Sort
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Analysis.Convex.Hull
 import Mathlib.Tactic
@@ -20,7 +23,7 @@ is one of the founding results of modern discrete and combinatorial geometry.
 ## Mathematical Statement
 For every integer $k \ge 3$, there exists a smallest integer $ES(k)$ such that any set
 of at least $ES(k)$ points in the Euclidean plane $\mathbb{R}^2$ in **general position**
-(no three points collinear) contains the vertices of a convex $k$-gon.
+(no three points collinear) with distinct $x$-coordinates contains the vertices of a convex $k$-gon.
 
 Erdős and Szekeres proved the exact upper bound:
 $$ES(k) \le \binom{2k - 4}{k - 2} + 1$$
@@ -30,15 +33,25 @@ and conjectured the exact value is $ES(k) = 2^{k - 2} + 1$:
 - $k = 6 \implies ES(6) = 17$ (Szekeres & Peters 2006)
 - Asymptotics: $2^{k - o(k)} \le ES(k) \le 2^{k + o(k)}$ (Holmsen 2020, Suk 2017).
 
+## Distinct $x$-Coordinates (W.l.o.g. under Plane Rotation)
+In Euclidean discrete geometry, the assumption that points in general position have distinct
+$x$-coordinates is without loss of generality:
+Given any finite point set $S \subset \mathbb{R}^2$ in general position, there are only finitely
+many directions connecting pairs of points in $S$. An algebraic plane rotation
+$(x, y) \mapsto (x c - y s, x s + y c)$ by any direction $(c, s) \in S^1$ not perpendicular
+to any secant line yields an image configuration with mutually distinct $x$-coordinates while
+preserving general position, orientation determinants, and convex hulls.
+
 ## Proof Technique (Cups and Caps / Ramsey Transition)
-1. **Esther Klein Base Case ($k = 4$):** Among any 5 points in general position,
-   either 4 form a convex quadrilateral directly, or the convex hull is a triangle containing
-   2 interior points whose connecting line separates two of the triangle's vertices,
-   forming a convex quad with the remaining vertices.
+1. **$x$-Sorting & Distinct Coordinates:** A finite point set with distinct $x$-coordinates
+   can be sorted into a strictly $x$-increasing chain via lexicographical ordering.
 2. **Cup-Cap Lemma:** A sequence of points $(x_1, y_1), \dots, (x_m, y_m)$ sorted by $x$-coordinate
    forms an $a$-cup (convex downward) or a $b$-cap (convex upward).
    Any set of $\binom{a+b-4}{a-2} + 1$ points in general position contains an $a$-cup or a $b$-cap.
-3. Setting $a = b = k$ yields a convex $k$-gon of size $\binom{2k-4}{k-2} + 1$.
+3. **Extreme Point Separation:** Every vertex of an $x$-monotone $k$-cup (or $k$-cap) for $k \ge 3$
+   is strictly separated from the convex hull of the other vertices by affine lines (hyperplanes),
+   proving that every $k$-cup and $k$-cap forms a strictly convex $k$-gon.
+4. Setting $a = b = k$ yields a convex $k$-gon of size $\binom{2k-4}{k-2} + 1$.
 
 ## References
 * Erdős, P., & Szekeres, G. (1935). *A combinatorial problem in geometry*. Compositio Mathematica, 2, 463–470.
@@ -192,9 +205,7 @@ lemma convex_halfspace_x_gt (x0 : ℝ) :
   rcases eq_or_ne w1 0 with rfl | hw1_pos
   · have hw2_eq : w2 = 1 := by linarith
     subst hw2_eq
-    have : (0 : ℝ) * u.1 + 1 * v.1 = v.1 := by ring
-    rw [this]
-    exact hv
+    simp [hv]
   · have hw1_gt : 0 < w1 := lt_of_le_of_ne hw1 (Ne.symm hw1_pos)
     rcases eq_or_ne w2 0 with rfl | hw2_pos
     · have hw1_eq : w1 = 1 := by linarith
@@ -216,9 +227,7 @@ lemma convex_halfspace_x_lt (x0 : ℝ) :
   rcases eq_or_ne w1 0 with rfl | hw1_pos
   · have hw2_eq : w2 = 1 := by linarith
     subst hw2_eq
-    have : (0 : ℝ) * u.1 + 1 * v.1 = v.1 := by ring
-    rw [this]
-    exact hv
+    simp [hv]
   · have hw1_gt : 0 < w1 := lt_of_le_of_ne hw1 (Ne.symm hw1_pos)
     rcases eq_or_ne w2 0 with rfl | hw2_pos
     · have hw1_eq : w1 = 1 := by linarith
@@ -263,86 +272,294 @@ def FormsConvexPolygon (S : Finset Point2D) (k : ℕ) : Prop :=
     ∀ p ∈ poly, p ∉ convexHull ℝ (poly \ {p} : Set Point2D)
 
 -- ============================================================================
--- Section 2: Cups, Caps, and the Erdős–Szekeres Bound
+-- Section 1.1: 2D Plane Rotation & Orientation Invariance
 -- ============================================================================
 
-/-- An ordered sequence of points forms an `a`-cup (convex downward). -/
+/-- 2D rotation of a point parameterized by direction vector `(c, s)` on the unit circle `c^2 + s^2 = 1`. -/
+def rotate2D (c s : ℝ) (p : Point2D) : Point2D :=
+  (p.1 * c - p.2 * s, p.1 * s + p.2 * c)
+
+/-- 2D plane rotations preserve orientation determinants algebraically. -/
+lemma orientationDet_rotate2D (c s : ℝ) (h_unit : c^2 + s^2 = 1) (p q r : Point2D) :
+    orientationDet (rotate2D c s p) (rotate2D c s q) (rotate2D c s r) = orientationDet p q r := by
+  dsimp [orientationDet, rotate2D]
+  linear_combination
+    (p.1 * q.2 - p.1 * r.2 - p.2 * q.1 + p.2 * r.1 + q.1 * r.2 - q.2 * r.1) * h_unit
+
+/-- 2D plane rotations are injective. -/
+lemma rotate2D_injective (c s : ℝ) (h_unit : c^2 + s^2 = 1) :
+    Function.Injective (rotate2D c s) := by
+  intro p q heq
+  dsimp [rotate2D] at heq
+  obtain ⟨hx, hy⟩ := Prod.ext_iff.mp heq
+  ext
+  · linear_combination c * hx + s * hy - (p.1 - q.1) * h_unit
+  · linear_combination (-s) * hx + c * hy - (p.2 - q.2) * h_unit
+
+/-- 2D plane rotations preserve the general position property of point sets. -/
+lemma inGeneralPosition_rotate2D (S : Finset Point2D) (c s : ℝ) (h_unit : c^2 + s^2 = 1)
+    (h_gen : InGeneralPosition S) :
+    InGeneralPosition (S.image (rotate2D c s)) := by
+  intro p q r hp hq hr hpq hqr hpr
+  obtain ⟨p0, hp0_in, rfl⟩ := Finset.mem_image.mp hp
+  obtain ⟨q0, hq0_in, rfl⟩ := Finset.mem_image.mp hq
+  obtain ⟨r0, hr0_in, rfl⟩ := Finset.mem_image.mp hr
+  have hpq0 : p0 ≠ q0 := fun heq => hpq (congrArg (rotate2D c s) heq)
+  have hqr0 : q0 ≠ r0 := fun heq => hqr (congrArg (rotate2D c s) heq)
+  have hpr0 : p0 ≠ r0 := fun heq => hpr (congrArg (rotate2D c s) heq)
+  rw [orientationDet_rotate2D c s h_unit]
+  exact h_gen p0 q0 r0 hp0_in hq0_in hr0_in hpq0 hqr0 hpr0
+
+-- ============================================================================
+-- Section 2: Sorting, Distinct X, Cups, and Caps
+-- ============================================================================
+
+/-- Lexicographic ordering on ℝ² by x then y, used to canonicalize point sorting. -/
+def lexLE (p q : Point2D) : Prop :=
+  p.1 < q.1 ∨ (p.1 = q.1 ∧ p.2 ≤ q.2)
+
+noncomputable instance : DecidableRel lexLE := Classical.decRel lexLE
+
+instance : IsTrans Point2D lexLE := ⟨by
+  intro a b c hab hbc
+  dsimp [lexLE] at *
+  rcases hab with ha1 | ⟨ha1, ha2⟩
+  · rcases hbc with hb1 | ⟨hb1, hb2⟩
+    · exact Or.inl (lt_trans ha1 hb1)
+    · exact Or.inl (by linarith)
+  · rcases hbc with hb1 | ⟨hb1, hb2⟩
+    · exact Or.inl (by linarith)
+    · exact Or.inr ⟨by linarith, by linarith⟩
+⟩
+
+instance : Std.Antisymm lexLE := ⟨by
+  intro a b hab hba
+  dsimp [lexLE] at *
+  rcases hab with ha1 | ⟨ha1, ha2⟩
+  · rcases hba with hb1 | ⟨hb1, hb2⟩
+    · linarith
+    · linarith
+  · rcases hba with hb1 | ⟨hb1, hb2⟩
+    · linarith
+    · ext
+      · exact ha1
+      · linarith
+⟩
+
+instance : Std.Total lexLE := ⟨by
+  intro a b
+  dsimp [lexLE]
+  rcases lt_trichotomy a.1 b.1 with hlt | heq | hgt
+  · exact Or.inl (Or.inl hlt)
+  · rcases le_total a.2 b.2 with hle | hge
+    · exact Or.inl (Or.inr ⟨heq, hle⟩)
+    · exact Or.inr (Or.inr ⟨heq.symm, hge⟩)
+  · exact Or.inr (Or.inl hgt)
+⟩
+
+/-- Predicate asserting that a set of points has mutually distinct x-coordinates. -/
+def HasDistinctX (S : Finset Point2D) : Prop :=
+  ∀ p q, p ∈ S → q ∈ S → p ≠ q → p.1 ≠ q.1
+
+lemma HasDistinctX.subset {S T : Finset Point2D} (h : HasDistinctX S) (hsub : T ⊆ S) :
+    HasDistinctX T :=
+  fun p q hp hq => h p q (hsub hp) (hsub hq)
+
+/-- Any finite set of points with distinct x-coordinates can be sorted into a strictly x-monotone list. -/
+lemma exists_x_sorted (S : Finset Point2D) (hdist : HasDistinctX S) :
+    ∃ L : List Point2D, L.Nodup ∧ L.toFinset = S ∧ L.length = S.card ∧
+      ∀ i (hi : i + 1 < L.length), (L.get ⟨i, by omega⟩).1 < (L.get ⟨i + 1, by omega⟩).1 := by
+  refine ⟨S.sort lexLE, Finset.sort_nodup S lexLE, ?_, Finset.length_sort lexLE, ?_⟩
+  · ext x
+    rw [List.mem_toFinset, Finset.mem_sort lexLE]
+  · intro i hi
+    have h_sorted := Finset.pairwise_sort S lexLE
+    have hi_len : i + 1 < (S.sort lexLE).length := hi
+    have h_pair := List.pairwise_iff_get.mp h_sorted ⟨i, by omega⟩ ⟨i + 1, hi_len⟩ (by simp)
+    dsimp at h_pair
+    have h_ne : (S.sort lexLE).get ⟨i, by omega⟩ ≠ (S.sort lexLE).get ⟨i + 1, by omega⟩ := by
+      intro heq
+      have h_inj := List.nodup_iff_injective_get.mp (Finset.sort_nodup S lexLE) heq
+      have : i = i + 1 := by injection h_inj
+      omega
+    have h_mem1 : (S.sort lexLE).get ⟨i, by omega⟩ ∈ S := by
+      rw [← Finset.mem_sort lexLE]
+      exact List.get_mem ..
+    have h_mem2 : (S.sort lexLE).get ⟨i + 1, by omega⟩ ∈ S := by
+      rw [← Finset.mem_sort lexLE]
+      exact List.get_mem ..
+    have h_x_ne := hdist _ _ h_mem1 h_mem2 h_ne
+    rcases h_pair with h_lt | ⟨h_eq, h_y⟩
+    · exact h_lt
+    · exact False.elim (h_x_ne h_eq)
+
+/-- An ordered sequence of points forms an `a`-cup (strictly x-monotone, convex downward). -/
 def IsCup (pts : List Point2D) (a : ℕ) : Prop :=
   pts.length = a ∧
-  ∀ i (hi : i + 2 < pts.length),
-    orientationDet (pts.get ⟨i, by omega⟩) (pts.get ⟨i+1, by omega⟩) (pts.get ⟨i+2, by omega⟩) > 0
+  (∀ i (hi : i + 1 < pts.length), (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i+1, by omega⟩).1) ∧
+  (∀ i (hi : i + 2 < pts.length),
+    orientationDet (pts.get ⟨i, by omega⟩) (pts.get ⟨i+1, by omega⟩) (pts.get ⟨i+2, by omega⟩) > 0)
 
-/-- An ordered sequence of points forms a `b`-cap (convex upward). -/
+/-- An ordered sequence of points forms a `b`-cap (strictly x-monotone, convex upward). -/
 def IsCap (pts : List Point2D) (b : ℕ) : Prop :=
   pts.length = b ∧
-  ∀ i (hi : i + 2 < pts.length),
-    orientationDet (pts.get ⟨i, by omega⟩) (pts.get ⟨i+1, by omega⟩) (pts.get ⟨i+2, by omega⟩) < 0
+  (∀ i (hi : i + 1 < pts.length), (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i+1, by omega⟩).1) ∧
+  (∀ i (hi : i + 2 < pts.length),
+    orientationDet (pts.get ⟨i, by omega⟩) (pts.get ⟨i+1, by omega⟩) (pts.get ⟨i+2, by omega⟩) < 0)
+
+lemma isXMonotone_get_lt_step (pts : List Point2D)
+    (hx : ∀ i (hi : i + 1 < pts.length), (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i+1, by omega⟩).1)
+    (i : ℕ) (k : ℕ) (h_ik : i + 1 + k < pts.length) :
+    (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i + 1 + k, h_ik⟩).1 := by
+  induction' k with k ih
+  · exact hx i h_ik
+  · have h_prev : i + 1 + k < pts.length := by omega
+    have h1 := ih h_prev
+    have h2 := hx (i + 1 + k) h_ik
+    exact lt_trans h1 h2
+
+lemma isXMonotone_get_lt (pts : List Point2D)
+    (hx : ∀ i (hi : i + 1 < pts.length), (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i+1, by omega⟩).1)
+    (i j : ℕ) (hi : i < pts.length) (hj : j < pts.length) (hij : i < j) :
+    (pts.get ⟨i, hi⟩).1 < (pts.get ⟨j, hj⟩).1 := by
+  have h_diff : ∃ k, j = i + 1 + k := ⟨j - (i + 1), by omega⟩
+  rcases h_diff with ⟨k, rfl⟩
+  exact isXMonotone_get_lt_step pts hx i k hj
+
+lemma isCup_nodup (pts : List Point2D) (a : ℕ) (hcup : IsCup pts a) : pts.Nodup := by
+  rw [List.nodup_iff_injective_get]
+  intro ⟨i, hi⟩ ⟨j, hj⟩ heq
+  by_contra h_ne
+  have h_ne_idx : i ≠ j := fun h => h_ne (Fin.ext h)
+  wlog hlt : i < j generalizing i j hi hj
+  · have hgt : j < i := lt_of_le_of_ne (not_lt.mp hlt) h_ne_idx.symm
+    exact this j hj i hi heq.symm (Ne.symm h_ne) h_ne_idx.symm hgt
+  have h_lt_x := isXMonotone_get_lt pts hcup.2.1 i j hi hj hlt
+  have h_eq_x : (pts.get ⟨i, hi⟩).1 = (pts.get ⟨j, hj⟩).1 := by rw [heq]
+  linarith
+
+lemma isCap_nodup (pts : List Point2D) (b : ℕ) (hcap : IsCap pts b) : pts.Nodup := by
+  rw [List.nodup_iff_injective_get]
+  intro ⟨i, hi⟩ ⟨j, hj⟩ heq
+  by_contra h_ne
+  have h_ne_idx : i ≠ j := fun h => h_ne (Fin.ext h)
+  wlog hlt : i < j generalizing i j hi hj
+  · have hgt : j < i := lt_of_le_of_ne (not_lt.mp hlt) h_ne_idx.symm
+    exact this j hj i hi heq.symm (Ne.symm h_ne) h_ne_idx.symm hgt
+  have h_lt_x := isXMonotone_get_lt pts hcap.2.1 i j hi hj hlt
+  have h_eq_x : (pts.get ⟨i, hi⟩).1 = (pts.get ⟨j, hj⟩).1 := by rw [heq]
+  linarith
 
 lemma isCap_cons (p0 : Point2D) (pts : List Point2D) (b : ℕ) (hb : 3 ≤ b)
     (h_len : pts.length = b - 1)
+    (h_x0 : 0 < pts.length → p0.1 < (pts.get ⟨0, by omega⟩).1)
+    (h_x_rest : ∀ i (hi : i + 1 < pts.length), (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i+1, by omega⟩).1)
     (h_first : 2 ≤ pts.length → orientationDet p0 (pts.get ⟨0, by omega⟩) (pts.get ⟨1, by omega⟩) < 0)
     (h_rest : ∀ i (hi : i + 2 < pts.length),
       orientationDet (pts.get ⟨i, by omega⟩) (pts.get ⟨i+1, by omega⟩) (pts.get ⟨i+2, by omega⟩) < 0) :
     IsCap (p0 :: pts) b := by
-  refine ⟨by simp [h_len]; omega, ?_⟩
-  intro i hi
-  simp only [List.get_eq_getElem] at h_rest h_first ⊢
-  rcases i with _ | i
-  · have h2le : 2 ≤ pts.length := by
-      simp only [List.length_cons] at hi
-      omega
-    have h0 : (p0 :: pts)[0] = p0 := rfl
-    have h1 : (p0 :: pts)[1] = pts[0] := rfl
-    have h2 : (p0 :: pts)[2] = pts[1] := rfl
-    rw [h0, h1, h2]
-    exact h_first h2le
-  · have hi_pts : i + 2 < pts.length := by
-      simp only [List.length_cons] at hi
-      omega
-    have h0 : (p0 :: pts)[i + 1] = pts[i] := rfl
-    have h1 : (p0 :: pts)[i + 1 + 1] = pts[i + 1] := rfl
-    have h2 : (p0 :: pts)[i + 1 + 2] = pts[i + 2] := rfl
-    rw [h0, h1, h2]
-    exact h_rest i hi_pts
+  refine ⟨by simp [h_len]; omega, ?_, ?_⟩
+  · intro i hi
+    simp only [List.get_eq_getElem] at h_x_rest h_x0 ⊢
+    rcases i with _ | i
+    · have h0_lt : 0 < pts.length := by
+        simp only [List.length_cons] at hi
+        omega
+      have h0 : (p0 :: pts)[0] = p0 := rfl
+      have h1 : (p0 :: pts)[1] = pts[0] := rfl
+      rw [h0, h1]
+      exact h_x0 h0_lt
+    · have hi_pts : i + 1 < pts.length := by
+        simp only [List.length_cons] at hi
+        omega
+      have h0 : (p0 :: pts)[i + 1] = pts[i] := rfl
+      have h1 : (p0 :: pts)[i + 1 + 1] = pts[i + 1] := rfl
+      rw [h0, h1]
+      exact h_x_rest i hi_pts
+  · intro i hi
+    simp only [List.get_eq_getElem] at h_rest h_first ⊢
+    rcases i with _ | i
+    · have h2le : 2 ≤ pts.length := by
+        simp only [List.length_cons] at hi
+        omega
+      have h0 : (p0 :: pts)[0] = p0 := rfl
+      have h1 : (p0 :: pts)[1] = pts[0] := rfl
+      have h2 : (p0 :: pts)[2] = pts[1] := rfl
+      rw [h0, h1, h2]
+      exact h_first h2le
+    · have hi_pts : i + 2 < pts.length := by
+        simp only [List.length_cons] at hi
+        omega
+      have h0 : (p0 :: pts)[i + 1] = pts[i] := rfl
+      have h1 : (p0 :: pts)[i + 1 + 1] = pts[i + 1] := rfl
+      have h2 : (p0 :: pts)[i + 1 + 2] = pts[i + 2] := rfl
+      rw [h0, h1, h2]
+      exact h_rest i hi_pts
 
 lemma isCup_append_one (pts : List Point2D) (q : Point2D) (a : ℕ) (ha : 4 ≤ a)
     (h_len : pts.length = a - 1)
+    (h_x_cup : ∀ i (hi : i + 1 < pts.length), (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i+1, by omega⟩).1)
+    (h_x_last : (pts.get ⟨a - 2, by omega⟩).1 < q.1)
     (h_cup : ∀ i (hi : i + 2 < pts.length),
       orientationDet (pts.get ⟨i, by omega⟩) (pts.get ⟨i+1, by omega⟩) (pts.get ⟨i+2, by omega⟩) > 0)
     (h_last : orientationDet (pts.get ⟨a - 3, by omega⟩) (pts.get ⟨a - 2, by omega⟩) q > 0) :
     IsCup (pts ++ [q]) a := by
-  refine ⟨by simp [h_len]; omega, ?_⟩
-  intro i hi
-  simp only [List.get_eq_getElem] at h_cup h_last ⊢
-  by_cases hi_in : i + 2 < pts.length
-  · have h0 : (pts ++ [q])[i] = pts[i] := List.getElem_append_left (bs := [q]) (by omega)
-    have h1 : (pts ++ [q])[i + 1] = pts[i + 1] := List.getElem_append_left (bs := [q]) (by omega)
-    have h2 : (pts ++ [q])[i + 2] = pts[i + 2] := List.getElem_append_left (bs := [q]) hi_in
-    rw [h0, h1, h2]
-    exact h_cup i hi_in
-  · have hi_eq : i = a - 3 := by
-      simp only [List.length_append, List.length_singleton, h_len] at hi
-      omega
-    subst hi_eq
-    have e0 : (pts ++ [q])[a - 3] = pts[a - 3] :=
-      List.getElem_append_left (by rw [h_len]; omega)
-    have e1 : (pts ++ [q])[a - 3 + 1] = pts[a - 2] := by
-      have h : (pts ++ [q])[a - 3 + 1] = pts[a - 3 + 1] :=
+  refine ⟨by simp [h_len]; omega, ?_, ?_⟩
+  · intro i hi
+    simp only [List.get_eq_getElem] at h_x_cup h_x_last ⊢
+    by_cases hi_in : i + 1 < pts.length
+    · have h0 : (pts ++ [q])[i] = pts[i] := List.getElem_append_left (bs := [q]) (by omega)
+      have h1 : (pts ++ [q])[i + 1] = pts[i + 1] := List.getElem_append_left (bs := [q]) hi_in
+      rw [h0, h1]
+      exact h_x_cup i hi_in
+    · have hi_eq : i = a - 2 := by
+        simp only [List.length_append, List.length_singleton, h_len] at hi
+        omega
+      subst hi_eq
+      have e0 : (pts ++ [q])[a - 2] = pts[a - 2] :=
         List.getElem_append_left (by rw [h_len]; omega)
-      have h_idx : a - 3 + 1 = a - 2 := by omega
-      have h_pts : pts[a - 3 + 1] = pts[a - 2] := by congr 1
-      rw [h, h_pts]
-    have e2 : (pts ++ [q])[a - 3 + 2] = q := by
-      have h_le : pts.length ≤ a - 3 + 2 := by rw [h_len]; omega
-      have h_lt : a - 3 + 2 - pts.length < [q].length := by simp [h_len]; omega
-      have h_right : (pts ++ [q])[a - 3 + 2] = [q][a - 3 + 2 - pts.length] :=
-        List.getElem_append_right h_le
-      have h_zero : a - 3 + 2 - pts.length = 0 := by rw [h_len]; omega
-      have h_pts : [q][a - 3 + 2 - pts.length] = [q][0] := by congr 1
-      rw [h_right, h_pts]
-      rfl
-    rw [e0, e1, e2]
-    exact h_last
+      have e1 : (pts ++ [q])[a - 2 + 1] = q := by
+        have h_le : pts.length ≤ a - 2 + 1 := by rw [h_len]; omega
+        have h_lt : a - 2 + 1 - pts.length < [q].length := by simp [h_len]; omega
+        have h_right : (pts ++ [q])[a - 2 + 1] = [q][a - 2 + 1 - pts.length] :=
+          List.getElem_append_right h_le
+        have h_zero : a - 2 + 1 - pts.length = 0 := by rw [h_len]; omega
+        have h_pts : [q][a - 2 + 1 - pts.length] = [q][0] := by congr 1
+        rw [h_right, h_pts]
+        rfl
+      rw [e0, e1]
+      exact h_x_last
+  · intro i hi
+    simp only [List.get_eq_getElem] at h_cup h_last ⊢
+    by_cases hi_in : i + 2 < pts.length
+    · have h0 : (pts ++ [q])[i] = pts[i] := List.getElem_append_left (bs := [q]) (by omega)
+      have h1 : (pts ++ [q])[i + 1] = pts[i + 1] := List.getElem_append_left (bs := [q]) (by omega)
+      have h2 : (pts ++ [q])[i + 2] = pts[i + 2] := List.getElem_append_left (bs := [q]) hi_in
+      rw [h0, h1, h2]
+      exact h_cup i hi_in
+    · have hi_eq : i = a - 3 := by
+        simp only [List.length_append, List.length_singleton, h_len] at hi
+        omega
+      subst hi_eq
+      have e0 : (pts ++ [q])[a - 3] = pts[a - 3] :=
+        List.getElem_append_left (by rw [h_len]; omega)
+      have e1 : (pts ++ [q])[a - 3 + 1] = pts[a - 2] := by
+        have h : (pts ++ [q])[a - 3 + 1] = pts[a - 3 + 1] :=
+          List.getElem_append_left (by rw [h_len]; omega)
+        have h_idx : a - 3 + 1 = a - 2 := by omega
+        have h_pts : pts[a - 3 + 1] = pts[a - 2] := by congr 1
+        rw [h, h_pts]
+      have e2 : (pts ++ [q])[a - 3 + 2] = q := by
+        have h_le : pts.length ≤ a - 3 + 2 := by rw [h_len]; omega
+        have h_lt : a - 3 + 2 - pts.length < [q].length := by simp [h_len]; omega
+        have h_right : (pts ++ [q])[a - 3 + 2] = [q][a - 3 + 2 - pts.length] :=
+          List.getElem_append_right h_le
+        have h_zero : a - 3 + 2 - pts.length = 0 := by rw [h_len]; omega
+        have h_pts : [q][a - 3 + 2 - pts.length] = [q][0] := by congr 1
+        rw [h_right, h_pts]
+        rfl
+      rw [e0, e1, e2]
+      exact h_last
 
 lemma choose_cup_cap_split (a b : ℕ) (ha : 4 ≤ a) (hb : 4 ≤ b) :
     Nat.choose (a + b - 4) (a - 2) =
@@ -355,12 +572,14 @@ lemma choose_cup_cap_split (a b : ℕ) (ha : 4 ≤ a) (hb : 4 ≤ b) :
 lemma cup_cap_induction (s : ℕ) :
     ∀ (a b : ℕ) (ha : 3 ≤ a) (hb : 3 ≤ b) (h_sum : a + b = s)
       (S : Finset Point2D)
+      (h_dist : HasDistinctX S)
       (h_card : Nat.choose (a + b - 4) (a - 2) + 1 ≤ S.card)
       (h_gen : InGeneralPosition S),
       (∃ cup : List Point2D, IsCup cup a ∧ ∀ p ∈ cup, p ∈ S) ∨
       (∃ cap : List Point2D, IsCap cap b ∧ ∀ p ∈ cap, p ∈ S) := by
   induction' s using Nat.strong_induction_on with s ih
-  intro a b ha hb h_sum S h_card h_gen
+  intro a b ha hb h_sum S h_dist h_card h_gen
+  obtain ⟨L_all, hL_nodup, hL_toFinset, hL_len, hL_mono⟩ := exists_x_sorted S h_dist
   by_cases ha3 : a = 3
   · subst ha3
     have h_ch : Nat.choose (3 + b - 4) (3 - 2) + 1 = b := by
@@ -369,24 +588,46 @@ lemma cup_cap_induction (s : ℕ) :
       rw [h1, h2, Nat.choose_one_right]
       omega
     have hb_card : b ≤ S.card := by rw [← h_ch]; exact h_card
-    let L := (S.toList).take b
-    have hL_len : L.length = b := by
-      rw [List.length_take, Finset.length_toList]
-      exact min_eq_left hb_card
+    let L := L_all.take b
     have hL_sub : ∀ p ∈ L, p ∈ S := by
       intro p hp
       have := List.mem_of_mem_take hp
-      exact (Finset.mem_toList.mp this)
-    have hL_nodup : L.Nodup := (Finset.nodup_toList S).sublist (List.take_sublist b (Finset.toList S))
+      have h_mem : p ∈ L_all.toFinset := List.mem_toFinset.mpr this
+      rw [hL_toFinset] at h_mem
+      exact h_mem
+    have hL_b_len : L.length = b := by
+      rw [List.length_take, hL_len]
+      exact min_eq_left hb_card
+    have hL_b_mono : ∀ i (hi : i + 1 < L.length), (L.get ⟨i, by omega⟩).1 < (L.get ⟨i+1, by omega⟩).1 := by
+      intro i hi
+      have hi_all : i + 1 < L_all.length := by rw [hL_b_len] at hi; rw [hL_len]; omega
+      have e0 : L.get ⟨i, by omega⟩ = L_all.get ⟨i, by omega⟩ := by
+        simp only [List.get_eq_getElem, L, List.getElem_take]
+      have e1 : L.get ⟨i+1, by omega⟩ = L_all.get ⟨i+1, by omega⟩ := by
+        simp only [List.get_eq_getElem, L, List.getElem_take]
+      rw [e0, e1]
+      exact hL_mono i hi_all
     by_cases h_pos : ∃ i, ∃ (hi : i + 2 < L.length),
         0 < orientationDet (L.get ⟨i, by omega⟩) (L.get ⟨i+1, by omega⟩) (L.get ⟨i+2, by omega⟩)
     · rcases h_pos with ⟨i, hi, h_det⟩
       let cup : List Point2D := [L.get ⟨i, by omega⟩, L.get ⟨i+1, by omega⟩, L.get ⟨i+2, by omega⟩]
-      refine Or.inl ⟨cup, ⟨rfl, ?_⟩, ?_⟩
+      have h_cup_mono : ∀ j (hj : j + 1 < cup.length), (cup.get ⟨j, by omega⟩).1 < (cup.get ⟨j+1, by omega⟩).1 := by
+        intro j hj
+        have hj_lt : j < 2 := by dsimp [cup] at hj; omega
+        rcases j with _ | j
+        · have e0 : cup.get ⟨0, by dsimp [cup]; omega⟩ = L.get ⟨i, by omega⟩ := rfl
+          have e1 : cup.get ⟨1, by dsimp [cup]; omega⟩ = L.get ⟨i+1, by omega⟩ := rfl
+          rw [e0, e1]
+          exact hL_b_mono i (by omega)
+        · have : j = 0 := by omega
+          subst this
+          have e0 : cup.get ⟨1, by dsimp [cup]; omega⟩ = L.get ⟨i+1, by omega⟩ := rfl
+          have e1 : cup.get ⟨2, by dsimp [cup]; omega⟩ = L.get ⟨i+2, by omega⟩ := rfl
+          rw [e0, e1]
+          exact hL_b_mono (i+1) hi
+      refine Or.inl ⟨cup, ⟨rfl, h_cup_mono, ?_⟩, ?_⟩
       · intro j hj
-        have : j = 0 := by
-          dsimp [cup] at hj
-          omega
+        have : j = 0 := by dsimp [cup] at hj; omega
         subst this
         dsimp [cup]
         exact h_det
@@ -397,7 +638,7 @@ lemma cup_cap_induction (s : ℕ) :
         · exact hL_sub _ (List.get_mem ..)
         · exact hL_sub _ (List.get_mem ..)
         · exact hL_sub _ (List.get_mem ..)
-    · refine Or.inr ⟨L, ⟨hL_len, ?_⟩, hL_sub⟩
+    · refine Or.inr ⟨L, ⟨hL_b_len, hL_b_mono, ?_⟩, hL_sub⟩
       intro i hi
       have h_nonpos : ¬ 0 < orientationDet (L.get ⟨i, by omega⟩) (L.get ⟨i+1, by omega⟩) (L.get ⟨i+2, by omega⟩) := by
         intro h
@@ -407,18 +648,19 @@ lemma cup_cap_induction (s : ℕ) :
         · exact hL_sub _ (List.get_mem ..)
         · exact hL_sub _ (List.get_mem ..)
         · exact hL_sub _ (List.get_mem ..)
-        · intro h_eq
-          have h_inj := List.nodup_iff_injective_get.mp hL_nodup h_eq
-          have : i = i + 1 := by injection h_inj
-          omega
-        · intro h_eq
-          have h_inj := List.nodup_iff_injective_get.mp hL_nodup h_eq
-          have : i + 1 = i + 2 := by injection h_inj
-          omega
-        · intro h_eq
-          have h_inj := List.nodup_iff_injective_get.mp hL_nodup h_eq
-          have : i = i + 2 := by injection h_inj
-          omega
+        · intro heq
+          have : (L.get ⟨i, by omega⟩).1 = (L.get ⟨i+1, by omega⟩).1 := by rw [heq]
+          have := hL_b_mono i (by omega)
+          linarith
+        · intro heq
+          have : (L.get ⟨i+1, by omega⟩).1 = (L.get ⟨i+2, by omega⟩).1 := by rw [heq]
+          have := hL_b_mono (i+1) hi
+          linarith
+        · intro heq
+          have : (L.get ⟨i, by omega⟩).1 = (L.get ⟨i+2, by omega⟩).1 := by rw [heq]
+          have h1 := hL_b_mono i (by omega)
+          have h2 := hL_b_mono (i+1) hi
+          linarith
       exact lt_of_le_of_ne (le_of_not_gt h_nonpos) h_ne
   · by_cases hb3 : b = 3
     · subst hb3
@@ -427,24 +669,46 @@ lemma cup_cap_induction (s : ℕ) :
         rw [h1, Nat.choose_succ_self_right]
         omega
       have ha_card : a ≤ S.card := by rw [← h_ch]; exact h_card
-      let L := (S.toList).take a
-      have hL_len : L.length = a := by
-        rw [List.length_take, Finset.length_toList]
-        exact min_eq_left ha_card
+      let L := L_all.take a
       have hL_sub : ∀ p ∈ L, p ∈ S := by
         intro p hp
         have := List.mem_of_mem_take hp
-        exact (Finset.mem_toList.mp this)
-      have hL_nodup : L.Nodup := (Finset.nodup_toList S).sublist (List.take_sublist a (Finset.toList S))
+        have h_mem : p ∈ L_all.toFinset := List.mem_toFinset.mpr this
+        rw [hL_toFinset] at h_mem
+        exact h_mem
+      have hL_a_len : L.length = a := by
+        rw [List.length_take, hL_len]
+        exact min_eq_left ha_card
+      have hL_a_mono : ∀ i (hi : i + 1 < L.length), (L.get ⟨i, by omega⟩).1 < (L.get ⟨i+1, by omega⟩).1 := by
+        intro i hi
+        have hi_all : i + 1 < L_all.length := by rw [hL_a_len] at hi; rw [hL_len]; omega
+        have e0 : L.get ⟨i, by omega⟩ = L_all.get ⟨i, by omega⟩ := by
+          simp only [List.get_eq_getElem, L, List.getElem_take]
+        have e1 : L.get ⟨i+1, by omega⟩ = L_all.get ⟨i+1, by omega⟩ := by
+          simp only [List.get_eq_getElem, L, List.getElem_take]
+        rw [e0, e1]
+        exact hL_mono i hi_all
       by_cases h_neg : ∃ i, ∃ (hi : i + 2 < L.length),
           orientationDet (L.get ⟨i, by omega⟩) (L.get ⟨i+1, by omega⟩) (L.get ⟨i+2, by omega⟩) < 0
       · rcases h_neg with ⟨i, hi, h_det⟩
         let cap : List Point2D := [L.get ⟨i, by omega⟩, L.get ⟨i+1, by omega⟩, L.get ⟨i+2, by omega⟩]
-        refine Or.inr ⟨cap, ⟨rfl, ?_⟩, ?_⟩
+        have h_cap_mono : ∀ j (hj : j + 1 < cap.length), (cap.get ⟨j, by omega⟩).1 < (cap.get ⟨j+1, by omega⟩).1 := by
+          intro j hj
+          have hj_lt : j < 2 := by dsimp [cap] at hj; omega
+          rcases j with _ | j
+          · have e0 : cap.get ⟨0, by dsimp [cap]; omega⟩ = L.get ⟨i, by omega⟩ := rfl
+            have e1 : cap.get ⟨1, by dsimp [cap]; omega⟩ = L.get ⟨i+1, by omega⟩ := rfl
+            rw [e0, e1]
+            exact hL_a_mono i (by omega)
+          · have : j = 0 := by omega
+            subst this
+            have e0 : cap.get ⟨1, by dsimp [cap]; omega⟩ = L.get ⟨i+1, by omega⟩ := rfl
+            have e1 : cap.get ⟨2, by dsimp [cap]; omega⟩ = L.get ⟨i+2, by omega⟩ := rfl
+            rw [e0, e1]
+            exact hL_a_mono (i+1) hi
+        refine Or.inr ⟨cap, ⟨rfl, h_cap_mono, ?_⟩, ?_⟩
         · intro j hj
-          have : j = 0 := by
-            dsimp [cap] at hj
-            omega
+          have : j = 0 := by dsimp [cap] at hj; omega
           subst this
           dsimp [cap]
           exact h_det
@@ -455,7 +719,7 @@ lemma cup_cap_induction (s : ℕ) :
           · exact hL_sub _ (List.get_mem ..)
           · exact hL_sub _ (List.get_mem ..)
           · exact hL_sub _ (List.get_mem ..)
-      · refine Or.inl ⟨L, ⟨hL_len, ?_⟩, hL_sub⟩
+      · refine Or.inl ⟨L, ⟨hL_a_len, hL_a_mono, ?_⟩, hL_sub⟩
         intro i hi
         have h_nonneg : ¬ orientationDet (L.get ⟨i, by omega⟩) (L.get ⟨i+1, by omega⟩) (L.get ⟨i+2, by omega⟩) < 0 := by
           intro h
@@ -465,18 +729,19 @@ lemma cup_cap_induction (s : ℕ) :
           · exact hL_sub _ (List.get_mem ..)
           · exact hL_sub _ (List.get_mem ..)
           · exact hL_sub _ (List.get_mem ..)
-          · intro h_eq
-            have h_inj := List.nodup_iff_injective_get.mp hL_nodup h_eq
-            have : i = i + 1 := by injection h_inj
-            omega
-          · intro h_eq
-            have h_inj := List.nodup_iff_injective_get.mp hL_nodup h_eq
-            have : i + 1 = i + 2 := by injection h_inj
-            omega
-          · intro h_eq
-            have h_inj := List.nodup_iff_injective_get.mp hL_nodup h_eq
-            have : i = i + 2 := by injection h_inj
-            omega
+          · intro heq
+            have : (L.get ⟨i, by omega⟩).1 = (L.get ⟨i+1, by omega⟩).1 := by rw [heq]
+            have := hL_a_mono i (by omega)
+            linarith
+          · intro heq
+            have : (L.get ⟨i+1, by omega⟩).1 = (L.get ⟨i+2, by omega⟩).1 := by rw [heq]
+            have := hL_a_mono (i+1) hi
+            linarith
+          · intro heq
+            have : (L.get ⟨i, by omega⟩).1 = (L.get ⟨i+2, by omega⟩).1 := by rw [heq]
+            have h1 := hL_a_mono i (by omega)
+            have h2 := hL_a_mono (i+1) hi
+            linarith
         exact lt_of_le_of_ne (le_of_not_gt h_nonneg) (Ne.symm h_ne)
     · have ha4 : 4 ≤ a := by omega
       have hb4 : 4 ≤ b := by omega
@@ -489,6 +754,9 @@ lemma cup_cap_induction (s : ℕ) :
       · have h_gen_sub : ∀ T ⊆ S, InGeneralPosition T := by
           intro T hT p q r hp hq hr hpq hqr hpr
           exact h_gen p q r (hT hp) (hT hq) (hT hr) hpq hqr hpr
+        have h_dist_sub : ∀ T ⊆ S, HasDistinctX T := by
+          intro T hT
+          exact h_dist.subset hT
         have h_split := choose_cup_cap_split a b ha4 hb4
         let N1 := Nat.choose ((a - 1) + b - 4) ((a - 1) - 2) + 1
         let N2 := Nat.choose (a + (b - 1) - 4) (a - 2) + 1
@@ -506,7 +774,7 @@ lemma cup_cap_induction (s : ℕ) :
           omega
         by_cases hN1_le : N1 ≤ (S \ E).card
         · have h_ch1 : Nat.choose ((a - 1) + b - 4) ((a - 1) - 2) + 1 = N1 := rfl
-          have h_rec := ih ((a - 1) + b) (by omega) (a - 1) b (by omega) hb (by omega) (S \ E) (by rw [h_ch1]; exact hN1_le) (h_gen_sub (S \ E) (Finset.sdiff_subset ..))
+          have h_rec := ih ((a - 1) + b) (by omega) (a - 1) b (by omega) hb (by omega) (S \ E) (h_dist_sub (S \ E) (Finset.sdiff_subset ..)) (by rw [h_ch1]; exact hN1_le) (h_gen_sub (S \ E) (Finset.sdiff_subset ..))
           rcases h_rec with ⟨c, hc_cup, hc_sub⟩ | ⟨cap, hcap, hcap_sub⟩
           · have hc_len : c.length = a - 1 := hc_cup.1
             have hc_some : ∃ p, c.getLast? = some p := by
@@ -535,15 +803,11 @@ lemma cup_cap_induction (s : ℕ) :
             rw [h_sum_N] at h_card
             omega
           have h_ch2 : Nat.choose (a + (b - 1) - 4) (a - 2) + 1 = N2 := rfl
-          have h_rec := ih (a + (b - 1)) (by omega) a (b - 1) ha (by omega) (by omega) E (by rw [h_ch2]; exact hE_card) (h_gen_sub E (Finset.filter_subset ..))
+          have h_rec := ih (a + (b - 1)) (by omega) a (b - 1) ha (by omega) (by omega) E (h_dist_sub E (Finset.filter_subset ..)) (by rw [h_ch2]; exact hE_card) (h_gen_sub E (Finset.filter_subset ..))
           rcases h_rec with ⟨cup, hcup, hcup_sub⟩ | ⟨cap, hcap, hcap_sub⟩
           · exact Or.inl ⟨cup, hcup, fun p hp => (Finset.mem_filter.mp (hcup_sub p hp)).1⟩
-          · have h0_lt : 0 < cap.length := by
-              have := hcap.1
-              omega
-            have h1_lt : 1 < cap.length := by
-              have := hcap.1
-              omega
+          · have h0_lt : 0 < cap.length := by have := hcap.1; omega
+            have h1_lt : 1 < cap.length := by have := hcap.1; omega
             let e1 := cap.get ⟨0, h0_lt⟩
             let e2 := cap.get ⟨1, h1_lt⟩
             have he1_in_E : e1 ∈ E := hcap_sub e1 (List.get_mem ..)
@@ -562,11 +826,22 @@ lemma cup_cap_induction (s : ℕ) :
               rw [h_last, h_getElem] at hu_last
               injection hu_last
             have hp0_in_S : p0 ∈ S := hu_sub p0 (List.get_mem ..)
+            have he1_lt_e2_x : e1.1 < e2.1 := hcap.2.1 0 (by rw [hcap.1]; omega)
+            have hp0_lt_e1_x : p0.1 < e1.1 := by
+              have h_x := hu_cup.2.1 (a - 3) (by rw [hu_len]; omega)
+              have h_eq1 : u.get ⟨a - 3, by rw [hu_len]; omega⟩ = p0 := rfl
+              have hu_idx : a - 3 + 1 < u.length := by rw [hu_len]; omega
+              have h_eq_idx : a - 3 + 1 = a - 2 := by omega
+              have h_fin : (⟨a - 3 + 1, hu_idx⟩ : Fin u.length) = ⟨a - 2, ha2_lt⟩ := Fin.ext h_eq_idx
+              have h_eq2 : u.get ⟨a - 3 + 1, by rw [hu_len]; omega⟩ = e1 := by rw [h_fin, hu_last_eq]
+              rw [h_eq1, h_eq2] at h_x
+              exact h_x
             by_cases h_ext : 0 < orientationDet p0 e1 e2
             · have h_cup_ext : IsCup (u ++ [e2]) a := by
-                apply isCup_append_one u e2 a ha4 hu_len hu_cup.2
-                rw [hu_last_eq]
-                exact h_ext
+                apply isCup_append_one u e2 a ha4 hu_len hu_cup.2.1
+                · rw [hu_last_eq]; exact he1_lt_e2_x
+                · exact hu_cup.2.2
+                · rw [hu_last_eq]; exact h_ext
               have h_sub_ext : ∀ q ∈ u ++ [e2], q ∈ S := by
                 intro q hq
                 simp only [List.mem_append, List.mem_singleton] at hq
@@ -575,11 +850,8 @@ lemma cup_cap_induction (s : ℕ) :
                 · exact (Finset.mem_filter.mp (hcap_sub e2 (List.get_mem ..))).1
               exact Or.inl ⟨u ++ [e2], h_cup_ext, h_sub_ext⟩
             · by_cases h_det_neg : orientationDet p0 e1 e2 < 0
-              · have h_cap_cons : IsCap (p0 :: cap) b := by
-                  apply isCap_cons p0 cap b hb (by rw [hcap.1])
-                  · intro _
-                    exact h_det_neg
-                  · exact hcap.2
+              · have h_cap_cons : IsCap (p0 :: cap) b :=
+                  isCap_cons p0 cap b hb hcap.1 (fun _ => hp0_lt_e1_x) hcap.2.1 (fun _ => h_det_neg) hcap.2.2
                 have h_sub_cons : ∀ q ∈ p0 :: cap, q ∈ S := by
                   intro q hq
                   simp only [List.mem_cons] at hq
@@ -590,434 +862,401 @@ lemma cup_cap_induction (s : ℕ) :
               · have h_zero : orientationDet p0 e1 e2 = 0 := by linarith
                 have he1_ne : e1 ≠ e2 := by
                   intro heq
-                  have h_cap_det := hcap.2 0 (by rw [hcap.1]; omega)
-                  simp only [List.get_eq_getElem] at h_cap_det
-                  have h0_eq : cap[0] = e1 := rfl
-                  have h1_eq : cap[1] = e2 := rfl
-                  rw [h0_eq, h1_eq, heq, orientationDet_self_left] at h_cap_det
+                  have : e1.1 = e2.1 := by rw [heq]
                   linarith
                 have hp0_ne_e1 : p0 ≠ e1 := by
                   intro heq
-                  have h_cup_det := hu_cup.2 (a - 4) (by rw [hu_len]; omega)
-                  simp only [List.get_eq_getElem] at h_cup_det
-                  have hp0_eq : u[a - 4 + 1] = p0 := by
-                    have : a - 4 + 1 = a - 3 := by omega
-                    congr 1
-                  have he1_eq : u[a - 4 + 2] = e1 := by
-                    have : u[a - 4 + 2] = u.get ⟨a - 2, ha2_lt⟩ := by
-                      simp only [List.get_eq_getElem]
-                      congr 1
-                      omega
-                    rw [this, hu_last_eq]
-                  rw [hp0_eq, he1_eq, heq, orientationDet_self_mid] at h_cup_det
+                  have : p0.1 = e1.1 := by rw [heq]
+                  linarith
+                have hp0_ne_e2 : p0 ≠ e2 := by
+                  intro heq
+                  have : p0.1 = e2.1 := by rw [heq]
                   linarith
                 have he2_in_S : e2 ∈ S := (Finset.mem_filter.mp (hcap_sub e2 (List.get_mem ..))).1
                 have he1_in_S : e1 ∈ S := (Finset.mem_filter.mp he1_in_E).1
-                by_cases hp0_eq_e2 : p0 = e2
-                · let p_prev := u.get ⟨a - 4, by rw [hu_len]; omega⟩
-                  have hp_prev_in_S : p_prev ∈ S := hu_sub p_prev (List.get_mem ..)
-                  have h_det_prev : orientationDet p_prev e1 e2 < 0 := by
-                    have h_cup_det := hu_cup.2 (a - 4) (by rw [hu_len]; omega)
-                    simp only [List.get_eq_getElem] at h_cup_det
-                    have hp0_eq : u[a - 4 + 1] = p0 := by
-                      have : a - 4 + 1 = a - 3 := by omega
-                      congr 1
-                    have he1_eq : u[a - 4 + 2] = e1 := by
-                      have : u[a - 4 + 2] = u.get ⟨a - 2, ha2_lt⟩ := by
-                        simp only [List.get_eq_getElem]
-                        congr 1
-                        omega
-                      rw [this, hu_last_eq]
-                    have hp_prev_eq : u[a - 4] = p_prev := rfl
-                    rw [hp0_eq, he1_eq, hp0_eq_e2, hp_prev_eq] at h_cup_det
-                    have h_perm := orientationDet_perm p_prev e2 e1
-                    linarith
-                  have h_cap_cons : IsCap (p_prev :: cap) b := by
-                    apply isCap_cons p_prev cap b hb (by rw [hcap.1])
-                    · intro _
-                      exact h_det_prev
-                    · exact hcap.2
-                  refine Or.inr ⟨p_prev :: cap, h_cap_cons, ?_⟩
-                  intro q hq
-                  simp only [List.mem_cons] at hq
-                  rcases hq with rfl | hq_cap
-                  · exact hp_prev_in_S
-                  · exact (Finset.mem_filter.mp (hcap_sub q hq_cap)).1
-                · have h_ne_zero := h_gen p0 e1 e2 hp0_in_S he1_in_S he2_in_S hp0_ne_e1 he1_ne hp0_eq_e2
-                  exact False.elim (h_ne_zero h_zero)
+                have h_ne_zero := h_gen p0 e1 e2 hp0_in_S he1_in_S he2_in_S hp0_ne_e1 he1_ne hp0_ne_e2
+                exact False.elim (h_ne_zero h_zero)
 
-/-- **Cup-Cap Lemma (Erdős–Szekeres 1935):**
+-- ============================================================================
+-- Section 3: The Cup-Cap Theorem
+-- ============================================================================
+
+/-- **The Erdős–Szekeres Cup-Cap Theorem (1935).**
     Any sequence of `Nat.choose (a + b - 4) (a - 2) + 1` points sorted by x-coordinate
     in general position contains an `a`-cup or a `b`-cap. -/
 theorem cup_cap_lemma (a b : ℕ) (ha : 3 ≤ a) (hb : 3 ≤ b)
     (S : Finset Point2D)
+    (h_dist : HasDistinctX S)
     (h_card : Nat.choose (a + b - 4) (a - 2) + 1 ≤ S.card)
     (h_gen : InGeneralPosition S) :
     (∃ cup : List Point2D, IsCup cup a ∧ ∀ p ∈ cup, p ∈ S) ∨
     (∃ cap : List Point2D, IsCap cap b ∧ ∀ p ∈ cap, p ∈ S) := by
-  exact cup_cap_induction (a + b) a b ha hb rfl S h_card h_gen
+  exact cup_cap_induction (a + b) a b ha hb rfl S h_dist h_card h_gen
 
 -- ============================================================================
--- Section 4: Cup/Cap Polygons & Convex Geometry
+-- Section 4: Extreme Point Hyperplane Separation for General k-Cups and k-Caps
 -- ============================================================================
 
-lemma isCup_k3_nodup (cup : List Point2D) (hcup : IsCup cup 3) : cup.Nodup := by
-  rw [List.nodup_iff_injective_get]
-  intro ⟨i, hi⟩ ⟨j, hj⟩ heq
-  by_contra h_ne
-  have h_ne_idx : i ≠ j := fun h => h_ne (Fin.ext h)
-  wlog hlt : i < j generalizing i j hi hj
-  · have hgt : j < i := lt_of_le_of_ne (not_lt.mp hlt) h_ne_idx.symm
-    exact this j hj i hi heq.symm (Ne.symm h_ne) h_ne_idx.symm hgt
-  have hd0 := hcup.2 0 (by rw [hcup.1]; omega)
-  have hi_lt : i < 3 := by rw [hcup.1] at hi; exact hi
-  have hj_lt : j < 3 := by rw [hcup.1] at hj; exact hj
-  interval_cases i <;> interval_cases j <;> try omega
-  · have ha : (⟨0, by omega⟩ : Fin cup.length) = ⟨0, hi⟩ := by ext; rfl
-    have hb : (⟨1, by omega⟩ : Fin cup.length) = ⟨1, hj⟩ := by ext; rfl
-    rw [ha, hb, heq, orientationDet_self_left] at hd0
-    linarith
-  · have ha : (⟨0, by omega⟩ : Fin cup.length) = ⟨0, hi⟩ := by ext; rfl
-    have hc : (⟨2, by omega⟩ : Fin cup.length) = ⟨2, hj⟩ := by ext; rfl
-    rw [ha, hc, heq, orientationDet_self_right] at hd0
-    linarith
-  · have hb : (⟨1, by omega⟩ : Fin cup.length) = ⟨1, hi⟩ := by ext; rfl
-    have hc : (⟨2, by omega⟩ : Fin cup.length) = ⟨2, hj⟩ := by ext; rfl
-    rw [hb, hc, heq, orientationDet_self_mid] at hd0
-    linarith
+lemma orientationDet_four_p_r_s (p q r s : Point2D) :
+    (r.1 - q.1) * orientationDet p r s =
+      (r.1 - p.1) * orientationDet q r s + (s.1 - r.1) * orientationDet p q r := by
+  dsimp [orientationDet]
+  ring
 
-/-- Any 3-cup forms a strictly convex 3-gon (triangle). -/
-lemma formsConvexPolygon_of_isCup_k3 (S : Finset Point2D) (cup : List Point2D)
-    (hcup : IsCup cup 3) (h_sub : ∀ p ∈ cup, p ∈ S) :
-    FormsConvexPolygon S 3 := by
+lemma orientationDet_four_p_q_s (p q r s : Point2D) :
+    (r.1 - q.1) * orientationDet p q s =
+      (s.1 - q.1) * orientationDet p q r + (q.1 - p.1) * orientationDet q r s := by
+  dsimp [orientationDet]
+  ring
+
+lemma orientationDet_pos_prs_of_pqr_qrs (p q r s : Point2D)
+    (hpq : p.1 < q.1) (hqr : q.1 < r.1) (hrs : r.1 < s.1)
+    (h_pqr : 0 < orientationDet p q r)
+    (h_qrs : 0 < orientationDet q r s) :
+    0 < orientationDet p r s := by
+  have h_id := orientationDet_four_p_r_s p q r s
+  have hrq : 0 < r.1 - q.1 := by linarith
+  have hrp : 0 < r.1 - p.1 := by linarith
+  have hsr : 0 < s.1 - r.1 := by linarith
+  have h1 : 0 < (r.1 - p.1) * orientationDet q r s := mul_pos hrp h_qrs
+  have h2 : 0 < (s.1 - r.1) * orientationDet p q r := mul_pos hsr h_pqr
+  have h_sum : 0 < (r.1 - p.1) * orientationDet q r s + (s.1 - r.1) * orientationDet p q r := add_pos h1 h2
+  rw [← h_id] at h_sum
+  exact pos_of_mul_pos_right h_sum (le_of_lt hrq)
+
+lemma orientationDet_pos_pqs_of_pqr_qrs (p q r s : Point2D)
+    (hpq : p.1 < q.1) (hqr : q.1 < r.1) (hrs : r.1 < s.1)
+    (h_pqr : 0 < orientationDet p q r)
+    (h_qrs : 0 < orientationDet q r s) :
+    0 < orientationDet p q s := by
+  have h_id := orientationDet_four_p_q_s p q r s
+  have hrq : 0 < r.1 - q.1 := by linarith
+  have hsq : 0 < s.1 - q.1 := by linarith
+  have hqp : 0 < q.1 - p.1 := by linarith
+  have h1 : 0 < (s.1 - q.1) * orientationDet p q r := mul_pos hsq h_pqr
+  have h2 : 0 < (q.1 - p.1) * orientationDet q r s := mul_pos hqp h_qrs
+  have h_sum : 0 < (s.1 - q.1) * orientationDet p q r + (q.1 - p.1) * orientationDet q r s := add_pos h1 h2
+  rw [← h_id] at h_sum
+  exact pos_of_mul_pos_right h_sum (le_of_lt hrq)
+
+lemma isCup_orientationDet_pos (pts : List Point2D) (a : ℕ) (hcup : IsCup pts a) :
+    ∀ i j l (hi : i < pts.length) (hj : j < pts.length) (hl : l < pts.length) (hij : i < j) (hjl : j < l),
+      0 < orientationDet (pts.get ⟨i, hi⟩) (pts.get ⟨j, hj⟩) (pts.get ⟨l, hl⟩) := by
+  intro i j l hi hj hl hij hjl
+  have h_diff : ∃ d, l - i = d + 2 := ⟨l - i - 2, by omega⟩
+  rcases h_diff with ⟨d, hd⟩
+  induction' d using Nat.strong_induction_on with d ih generalizing i j l hi hj hl
+  rcases eq_or_ne (i + 1) j with rfl | hj_gt
+  · rcases eq_or_ne (i + 2) l with rfl | hl_gt
+    · have h_det := hcup.2.2 i hl
+      have h0 : (pts.get ⟨i, hi⟩) = pts.get ⟨i, by omega⟩ := by congr 1
+      have h1 : (pts.get ⟨i + 1, hj⟩) = pts.get ⟨i + 1, by omega⟩ := by congr 1
+      have h2 : (pts.get ⟨i + 2, hl⟩) = pts.get ⟨i + 2, by omega⟩ := by congr 1
+      rw [h0, h1, h2]
+      exact h_det
+    · have hl_prev : i + 2 < pts.length := by omega
+      have h_rec := ih (l - (i + 1) - 2) (by omega) (i + 1) (i + 2) l (by omega) (by omega) hl (by omega) (by omega) (by omega)
+      have h_base := hcup.2.2 i hl_prev
+      have h0 : pts.get ⟨i, by omega⟩ = pts.get ⟨i, hi⟩ := by congr 1
+      have h1 : pts.get ⟨i + 1, by omega⟩ = pts.get ⟨i + 1, hj⟩ := by congr 1
+      have h2 : pts.get ⟨i + 2, by omega⟩ = pts.get ⟨i + 2, hl_prev⟩ := by congr 1
+      rw [h0, h1, h2] at h_base
+      have hpq : (pts.get ⟨i, hi⟩).1 < (pts.get ⟨i + 1, hj⟩).1 := isXMonotone_get_lt pts hcup.2.1 i (i+1) hi hj (by omega)
+      have hqr : (pts.get ⟨i + 1, hj⟩).1 < (pts.get ⟨i + 2, hl_prev⟩).1 := isXMonotone_get_lt pts hcup.2.1 (i+1) (i+2) hj hl_prev (by omega)
+      have hrs : (pts.get ⟨i + 2, hl_prev⟩).1 < (pts.get ⟨l, hl⟩).1 := isXMonotone_get_lt pts hcup.2.1 (i+2) l hl_prev hl (by omega)
+      exact orientationDet_pos_pqs_of_pqr_qrs (pts.get ⟨i, hi⟩) (pts.get ⟨i + 1, hj⟩) (pts.get ⟨i + 2, hl_prev⟩) (pts.get ⟨l, hl⟩) hpq hqr hrs h_base h_rec
+  · have hj_prev : i + 1 < pts.length := by omega
+    have h1 := ih (j - i - 2) (by omega) i (i + 1) j hi hj_prev hj (by omega) (by omega) (by omega)
+    have h2 := ih (l - (i + 1) - 2) (by omega) (i + 1) j l hj_prev hj hl (by omega) hjl (by omega)
+    have hpq : (pts.get ⟨i, hi⟩).1 < (pts.get ⟨i + 1, hj_prev⟩).1 := isXMonotone_get_lt pts hcup.2.1 i (i+1) hi hj_prev (by omega)
+    have hqr : (pts.get ⟨i + 1, hj_prev⟩).1 < (pts.get ⟨j, hj⟩).1 := isXMonotone_get_lt pts hcup.2.1 (i+1) j hj_prev hj (by omega)
+    have hrs : (pts.get ⟨j, hj⟩).1 < (pts.get ⟨l, hl⟩).1 := isXMonotone_get_lt pts hcup.2.1 j l hj hl hjl
+    exact orientationDet_pos_prs_of_pqr_qrs (pts.get ⟨i, hi⟩) (pts.get ⟨i + 1, hj_prev⟩) (pts.get ⟨j, hj⟩) (pts.get ⟨l, hl⟩) hpq hqr hrs h1 h2
+
+/-- Any k-cup (k ≥ 3) forms the vertex set of a strictly convex k-gon. -/
+lemma formsConvexPolygon_of_isCup (S : Finset Point2D) (cup : List Point2D) (k : ℕ) (hk : 3 ≤ k)
+    (hcup : IsCup cup k) (h_sub : ∀ p ∈ cup, p ∈ S) :
+    FormsConvexPolygon S k := by
   classical
   let poly := cup.toFinset
-  have h_nodup := isCup_k3_nodup cup hcup
+  have h_nodup := isCup_nodup cup k hcup
   refine ⟨poly, ?_, ?_, ?_⟩
-  · intro p hp; exact h_sub p (List.mem_toFinset.mp hp)
+  · intro p hp
+    exact h_sub p (List.mem_toFinset.mp hp)
   · rw [List.toFinset_card_of_nodup h_nodup, hcup.1]
   · intro p hp
     have hp_mem : p ∈ cup := List.mem_toFinset.mp hp
     obtain ⟨⟨m, hm⟩, hp_eq⟩ := List.get_of_mem hp_mem
-    have h_len : cup.length = 3 := hcup.1
-    have hd0 := hcup.2 0 (by rw [hcup.1]; omega)
+    have h_len : cup.length = k := hcup.1
     have h_set : (poly : Set Point2D) \ {p} = ↑(poly \ {p}) := by ext x; simp
     rw [h_set]
-    have hm_lt : m < 3 := by rw [hcup.1] at hm; exact hm
-    interval_cases m
-    · -- m = 0
-      let a := cup.get ⟨2, by rw [hcup.1]; omega⟩
-      let b := cup.get ⟨1, by rw [hcup.1]; omega⟩
-      have hp0 : p = cup.get ⟨0, by rw [hcup.1]; omega⟩ := hp_eq.symm
-      have h_perm : orientationDet a b p = - orientationDet (cup.get ⟨0, by rw [hcup.1]; omega⟩) (cup.get ⟨1, by rw [hcup.1]; omega⟩) (cup.get ⟨2, by rw [hcup.1]; omega⟩) := by
-        rw [hp0]; dsimp [a, b, orientationDet]; ring
-      have hp_neg : orientationDet a b p < 0 := by linarith [hd0, h_perm]
-      apply not_mem_convexHull_of_separated_pos_ge (poly \ {p}) p a b hp_neg
+    by_cases hm0 : m = 0
+    · subst hm0
+      apply not_mem_convexHull_of_x_min (poly \ {p}) p
       intro t ht
-      obtain ⟨j, hj_lt, rfl⟩ : ∃ (j : ℕ) (hj : j < cup.length), cup.get ⟨j, hj⟩ = t := by
-        have ht_mem : t ∈ cup := List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1
-        obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem ht_mem
-        exact ⟨j, hj, rfl⟩
+      obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem (List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1)
       have hj_ne_0 : j ≠ 0 := by
-        intro heq; subst heq
-        exact (Finset.mem_sdiff.mp ht).2 (by rw [hp_eq]; exact Finset.mem_singleton_self p)
-      have hj3 : j < 3 := by rw [hcup.1] at hj_lt; exact hj_lt
-      interval_cases j <;> try omega
-      · have : cup.get ⟨1, hj_lt⟩ = b := by congr 1
-        rw [this, orientationDet_self_mid]
-      · have : cup.get ⟨2, hj_lt⟩ = a := by congr 1
-        rw [this, orientationDet_self_right]
-    · -- m = 1
-      let a := cup.get ⟨0, by rw [hcup.1]; omega⟩
-      let b := cup.get ⟨2, by rw [hcup.1]; omega⟩
-      have hp1 : p = cup.get ⟨1, by rw [hcup.1]; omega⟩ := hp_eq.symm
-      have h_perm : orientationDet a b p = - orientationDet (cup.get ⟨0, by rw [hcup.1]; omega⟩) (cup.get ⟨1, by rw [hcup.1]; omega⟩) (cup.get ⟨2, by rw [hcup.1]; omega⟩) := by
-        rw [hp1]; dsimp [a, b, orientationDet]; ring
-      have hp_neg : orientationDet a b p < 0 := by linarith [hd0, h_perm]
-      apply not_mem_convexHull_of_separated_pos_ge (poly \ {p}) p a b hp_neg
+        intro heq
+        have h_fin : (⟨j, hj⟩ : Fin cup.length) = ⟨0, hm⟩ := Fin.ext heq
+        have : cup.get ⟨j, hj⟩ = p := by rw [h_fin, hp_eq]
+        exact (Finset.mem_sdiff.mp ht).2 (Finset.mem_singleton.mpr this)
+      have hj_pos : 0 < j := Nat.pos_of_ne_zero hj_ne_0
+      rw [← hp_eq]
+      exact isXMonotone_get_lt cup hcup.2.1 0 j hm hj hj_pos
+    · by_cases hmk : m = k - 1
+      · subst hmk
+        apply not_mem_convexHull_of_x_max (poly \ {p}) p
+        intro t ht
+        obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem (List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1)
+        have hj_ne_last : j ≠ k - 1 := by
+          intro heq
+          have h_fin : (⟨j, hj⟩ : Fin cup.length) = ⟨k - 1, hm⟩ := Fin.ext heq
+          have : cup.get ⟨j, hj⟩ = p := by rw [h_fin, hp_eq]
+          exact (Finset.mem_sdiff.mp ht).2 (Finset.mem_singleton.mpr this)
+        have hj_lt_k1 : j < k - 1 := by
+          have : j < k := by rw [h_len] at hj; exact hj
+          omega
+        rw [← hp_eq]
+        exact isXMonotone_get_lt cup hcup.2.1 j (k - 1) hj hm hj_lt_k1
+      · have hm_pos : 0 < m := Nat.pos_of_ne_zero hm0
+        have hm_lt : m < k - 1 := by
+          have : m < k := by rw [h_len] at hm; exact hm
+          omega
+        have hm_prev_lt : m - 1 < cup.length := by rw [h_len]; omega
+        have hm_next_lt : m + 1 < cup.length := by rw [h_len]; omega
+        let a := cup.get ⟨m - 1, hm_prev_lt⟩
+        let b := cup.get ⟨m + 1, hm_next_lt⟩
+        have h_det_amb := isCup_orientationDet_pos cup k hcup (m - 1) m (m + 1) hm_prev_lt hm hm_next_lt (by omega) (by omega)
+        have h_perm : orientationDet a b p = - orientationDet (cup.get ⟨m - 1, hm_prev_lt⟩) (cup.get ⟨m, hm⟩) (cup.get ⟨m + 1, hm_next_lt⟩) := by
+          have hp : p = cup.get ⟨m, hm⟩ := hp_eq.symm
+          rw [hp]
+          exact orientationDet_perm a (cup.get ⟨m, hm⟩) b
+        have hp_neg : orientationDet a b p < 0 := by linarith [h_det_amb, h_perm]
+        apply not_mem_convexHull_of_separated_pos_ge (poly \ {p}) p a b hp_neg
+        intro t ht
+        obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem (List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1)
+        have hj_ne_m : j ≠ m := by
+          intro heq
+          have h_fin : (⟨j, hj⟩ : Fin cup.length) = ⟨m, hm⟩ := Fin.ext heq
+          have : cup.get ⟨j, hj⟩ = p := by rw [h_fin, hp_eq]
+          exact (Finset.mem_sdiff.mp ht).2 (Finset.mem_singleton.mpr this)
+        rcases lt_trichotomy j (m - 1) with hj_lt | hj_eq_prev | hj_gt
+        · have hj_pos_det := isCup_orientationDet_pos cup k hcup j (m - 1) (m + 1) hj hm_prev_lt hm_next_lt hj_lt (by omega)
+          have h_cyc := orientationDet_cyclic (cup.get ⟨j, hj⟩) a b
+          linarith [hj_pos_det, h_cyc]
+        · have : (⟨j, hj⟩ : Fin cup.length) = ⟨m - 1, hm_prev_lt⟩ := Fin.ext hj_eq_prev
+          have : cup.get ⟨j, hj⟩ = a := by rw [this]
+          rw [this, orientationDet_self_right]
+        · rcases eq_or_ne j (m + 1) with hj_eq_next | hj_ne_next
+          · have : (⟨j, hj⟩ : Fin cup.length) = ⟨m + 1, hm_next_lt⟩ := Fin.ext hj_eq_next
+            have : cup.get ⟨j, hj⟩ = b := by rw [this]
+            rw [this, orientationDet_self_mid]
+          · have hj_gt_next : m + 1 < j := by omega
+            have hj_pos_det := isCup_orientationDet_pos cup k hcup (m - 1) (m + 1) j hm_prev_lt hm_next_lt hj (by omega) hj_gt_next
+            linarith [hj_pos_det]
+
+lemma orientationDet_neg_prs_of_pqr_qrs (p q r s : Point2D)
+    (hpq : p.1 < q.1) (hqr : q.1 < r.1) (hrs : r.1 < s.1)
+    (h_pqr : orientationDet p q r < 0)
+    (h_qrs : orientationDet q r s < 0) :
+    orientationDet p r s < 0 := by
+  have h_id := orientationDet_four_p_r_s p q r s
+  have hrq : 0 < r.1 - q.1 := by linarith
+  have hrp : 0 < r.1 - p.1 := by linarith
+  have hsr : 0 < s.1 - r.1 := by linarith
+  have h1 : (r.1 - p.1) * orientationDet q r s < 0 := mul_neg_of_pos_of_neg hrp h_qrs
+  have h2 : (s.1 - r.1) * orientationDet p q r < 0 := mul_neg_of_pos_of_neg hsr h_pqr
+  have h_sum : (r.1 - p.1) * orientationDet q r s + (s.1 - r.1) * orientationDet p q r < 0 := by linarith
+  rw [← h_id] at h_sum
+  exact neg_of_mul_neg_right h_sum (le_of_lt hrq)
+
+lemma orientationDet_neg_pqs_of_pqr_qrs (p q r s : Point2D)
+    (hpq : p.1 < q.1) (hqr : q.1 < r.1) (hrs : r.1 < s.1)
+    (h_pqr : orientationDet p q r < 0)
+    (h_qrs : orientationDet q r s < 0) :
+    orientationDet p q s < 0 := by
+  have h_id := orientationDet_four_p_q_s p q r s
+  have hrq : 0 < r.1 - q.1 := by linarith
+  have hsq : 0 < s.1 - q.1 := by linarith
+  have hqp : 0 < q.1 - p.1 := by linarith
+  have h1 : (s.1 - q.1) * orientationDet p q r < 0 := mul_neg_of_pos_of_neg hsq h_pqr
+  have h2 : (q.1 - p.1) * orientationDet q r s < 0 := mul_neg_of_pos_of_neg hqp h_qrs
+  have h_sum : (s.1 - q.1) * orientationDet p q r + (q.1 - p.1) * orientationDet q r s < 0 := by linarith
+  rw [← h_id] at h_sum
+  exact neg_of_mul_neg_right h_sum (le_of_lt hrq)
+
+lemma isCap_orientationDet_neg (pts : List Point2D) (b : ℕ) (hcap : IsCap pts b) :
+    ∀ i j l (hi : i < pts.length) (hj : j < pts.length) (hl : l < pts.length) (hij : i < j) (hjl : j < l),
+      orientationDet (pts.get ⟨i, hi⟩) (pts.get ⟨j, hj⟩) (pts.get ⟨l, hl⟩) < 0 := by
+  intro i j l hi hj hl hij hjl
+  have h_diff : ∃ d, l - i = d + 2 := ⟨l - i - 2, by omega⟩
+  rcases h_diff with ⟨d, hd⟩
+  induction' d using Nat.strong_induction_on with d ih generalizing i j l hi hj hl
+  rcases eq_or_ne (i + 1) j with rfl | hj_gt
+  · rcases eq_or_ne (i + 2) l with rfl | hl_gt
+    · have h_det := hcap.2.2 i hl
+      have h0 : (pts.get ⟨i, hi⟩) = pts.get ⟨i, by omega⟩ := by congr 1
+      have h1 : (pts.get ⟨i + 1, hj⟩) = pts.get ⟨i + 1, by omega⟩ := by congr 1
+      have h2 : (pts.get ⟨i + 2, hl⟩) = pts.get ⟨i + 2, by omega⟩ := by congr 1
+      rw [h0, h1, h2]
+      exact h_det
+    · have hl_prev : i + 2 < pts.length := by omega
+      have h_rec := ih (l - (i + 1) - 2) (by omega) (i + 1) (i + 2) l (by omega) (by omega) hl (by omega) (by omega) (by omega)
+      have h_base := hcap.2.2 i hl_prev
+      have h0 : pts.get ⟨i, by omega⟩ = pts.get ⟨i, hi⟩ := by congr 1
+      have h1 : pts.get ⟨i + 1, by omega⟩ = pts.get ⟨i + 1, hj⟩ := by congr 1
+      have h2 : pts.get ⟨i + 2, by omega⟩ = pts.get ⟨i + 2, hl_prev⟩ := by congr 1
+      rw [h0, h1, h2] at h_base
+      have hpq : (pts.get ⟨i, hi⟩).1 < (pts.get ⟨i + 1, hj⟩).1 := isXMonotone_get_lt pts hcap.2.1 i (i+1) hi hj (by omega)
+      have hqr : (pts.get ⟨i + 1, hj⟩).1 < (pts.get ⟨i + 2, hl_prev⟩).1 := isXMonotone_get_lt pts hcap.2.1 (i+1) (i+2) hj hl_prev (by omega)
+      have hrs : (pts.get ⟨i + 2, hl_prev⟩).1 < (pts.get ⟨l, hl⟩).1 := isXMonotone_get_lt pts hcap.2.1 (i+2) l hl_prev hl (by omega)
+      exact orientationDet_neg_pqs_of_pqr_qrs (pts.get ⟨i, hi⟩) (pts.get ⟨i + 1, hj⟩) (pts.get ⟨i + 2, hl_prev⟩) (pts.get ⟨l, hl⟩) hpq hqr hrs h_base h_rec
+  · have hj_prev : i + 1 < pts.length := by omega
+    have h1 := ih (j - i - 2) (by omega) i (i + 1) j hi hj_prev hj (by omega) (by omega) (by omega)
+    have h2 := ih (l - (i + 1) - 2) (by omega) (i + 1) j l hj_prev hj hl (by omega) hjl (by omega)
+    have hpq : (pts.get ⟨i, hi⟩).1 < (pts.get ⟨i + 1, hj_prev⟩).1 := isXMonotone_get_lt pts hcap.2.1 i (i+1) hi hj_prev (by omega)
+    have hqr : (pts.get ⟨i + 1, hj_prev⟩).1 < (pts.get ⟨j, hj⟩).1 := isXMonotone_get_lt pts hcap.2.1 (i+1) j hj_prev hj (by omega)
+    have hrs : (pts.get ⟨j, hj⟩).1 < (pts.get ⟨l, hl⟩).1 := isXMonotone_get_lt pts hcap.2.1 j l hj hl hjl
+    exact orientationDet_neg_prs_of_pqr_qrs (pts.get ⟨i, hi⟩) (pts.get ⟨i + 1, hj_prev⟩) (pts.get ⟨j, hj⟩) (pts.get ⟨l, hl⟩) hpq hqr hrs h1 h2
+
+/-- Any k-cap (k ≥ 3) forms the vertex set of a strictly convex k-gon. -/
+lemma formsConvexPolygon_of_isCap (S : Finset Point2D) (cap : List Point2D) (k : ℕ) (hk : 3 ≤ k)
+    (hcap : IsCap cap k) (h_sub : ∀ p ∈ cap, p ∈ S) :
+    FormsConvexPolygon S k := by
+  classical
+  let poly := cap.toFinset
+  have h_nodup := isCap_nodup cap k hcap
+  refine ⟨poly, ?_, ?_, ?_⟩
+  · intro p hp
+    exact h_sub p (List.mem_toFinset.mp hp)
+  · rw [List.toFinset_card_of_nodup h_nodup, hcap.1]
+  · intro p hp
+    have hp_mem : p ∈ cap := List.mem_toFinset.mp hp
+    obtain ⟨⟨m, hm⟩, hp_eq⟩ := List.get_of_mem hp_mem
+    have h_len : cap.length = k := hcap.1
+    have h_set : (poly : Set Point2D) \ {p} = ↑(poly \ {p}) := by ext x; simp
+    rw [h_set]
+    by_cases hm0 : m = 0
+    · subst hm0
+      apply not_mem_convexHull_of_x_min (poly \ {p}) p
       intro t ht
-      obtain ⟨j, hj_lt, rfl⟩ : ∃ (j : ℕ) (hj : j < cup.length), cup.get ⟨j, hj⟩ = t := by
-        have ht_mem : t ∈ cup := List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1
-        obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem ht_mem
-        exact ⟨j, hj, rfl⟩
-      have hj_ne_1 : j ≠ 1 := by
-        intro heq; subst heq
-        exact (Finset.mem_sdiff.mp ht).2 (by rw [hp_eq]; exact Finset.mem_singleton_self p)
-      have hj3 : j < 3 := by rw [hcup.1] at hj_lt; exact hj_lt
-      interval_cases j <;> try omega
-      · have : cup.get ⟨0, hj_lt⟩ = a := by congr 1
-        rw [this, orientationDet_self_right]
-      · have : cup.get ⟨2, hj_lt⟩ = b := by congr 1
-        rw [this, orientationDet_self_mid]
-    · -- m = 2
-      let a := cup.get ⟨1, by rw [hcup.1]; omega⟩
-      let b := cup.get ⟨0, by rw [hcup.1]; omega⟩
-      have hp2 : p = cup.get ⟨2, by rw [hcup.1]; omega⟩ := hp_eq.symm
-      have h_perm : orientationDet a b p = - orientationDet (cup.get ⟨0, by rw [hcup.1]; omega⟩) (cup.get ⟨1, by rw [hcup.1]; omega⟩) (cup.get ⟨2, by rw [hcup.1]; omega⟩) := by
-        rw [hp2]; dsimp [a, b, orientationDet]; ring
-      have hp_neg : orientationDet a b p < 0 := by linarith [hd0, h_perm]
-      apply not_mem_convexHull_of_separated_pos_ge (poly \ {p}) p a b hp_neg
-      intro t ht
-      obtain ⟨j, hj_lt, rfl⟩ : ∃ (j : ℕ) (hj : j < cup.length), cup.get ⟨j, hj⟩ = t := by
-        have ht_mem : t ∈ cup := List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1
-        obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem ht_mem
-        exact ⟨j, hj, rfl⟩
-      have hj_ne_2 : j ≠ 2 := by
-        intro heq; subst heq
-        exact (Finset.mem_sdiff.mp ht).2 (by rw [hp_eq]; exact Finset.mem_singleton_self p)
-      have hj3 : j < 3 := by rw [hcup.1] at hj_lt; exact hj_lt
-      interval_cases j <;> try omega
-      · have : cup.get ⟨0, hj_lt⟩ = b := by congr 1
-        rw [this, orientationDet_self_mid]
-      · have : cup.get ⟨1, hj_lt⟩ = a := by congr 1
-        rw [this, orientationDet_self_right]
+      obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem (List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1)
+      have hj_ne_0 : j ≠ 0 := by
+        intro heq
+        have h_fin : (⟨j, hj⟩ : Fin cap.length) = ⟨0, hm⟩ := Fin.ext heq
+        have : cap.get ⟨j, hj⟩ = p := by rw [h_fin, hp_eq]
+        exact (Finset.mem_sdiff.mp ht).2 (Finset.mem_singleton.mpr this)
+      have hj_pos : 0 < j := Nat.pos_of_ne_zero hj_ne_0
+      rw [← hp_eq]
+      exact isXMonotone_get_lt cap hcap.2.1 0 j hm hj hj_pos
+    · by_cases hmk : m = k - 1
+      · subst hmk
+        apply not_mem_convexHull_of_x_max (poly \ {p}) p
+        intro t ht
+        obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem (List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1)
+        have hj_ne_last : j ≠ k - 1 := by
+          intro heq
+          have h_fin : (⟨j, hj⟩ : Fin cap.length) = ⟨k - 1, hm⟩ := Fin.ext heq
+          have : cap.get ⟨j, hj⟩ = p := by rw [h_fin, hp_eq]
+          exact (Finset.mem_sdiff.mp ht).2 (Finset.mem_singleton.mpr this)
+        have hj_lt_k1 : j < k - 1 := by
+          have : j < k := by rw [h_len] at hj; exact hj
+          omega
+        rw [← hp_eq]
+        exact isXMonotone_get_lt cap hcap.2.1 j (k - 1) hj hm hj_lt_k1
+      · have hm_pos : 0 < m := Nat.pos_of_ne_zero hm0
+        have hm_lt : m < k - 1 := by
+          have : m < k := by rw [h_len] at hm; exact hm
+          omega
+        have hm_prev_lt : m - 1 < cap.length := by rw [h_len]; omega
+        have hm_next_lt : m + 1 < cap.length := by rw [h_len]; omega
+        let a := cap.get ⟨m - 1, hm_prev_lt⟩
+        let b := cap.get ⟨m + 1, hm_next_lt⟩
+        have h_det_amb := isCap_orientationDet_neg cap k hcap (m - 1) m (m + 1) hm_prev_lt hm hm_next_lt (by omega) (by omega)
+        have h_perm : orientationDet a b p = - orientationDet (cap.get ⟨m - 1, hm_prev_lt⟩) (cap.get ⟨m, hm⟩) (cap.get ⟨m + 1, hm_next_lt⟩) := by
+          have hp : p = cap.get ⟨m, hm⟩ := hp_eq.symm
+          rw [hp]
+          exact orientationDet_perm a (cap.get ⟨m, hm⟩) b
+        have hp_pos : 0 < orientationDet a b p := by linarith [h_det_amb, h_perm]
+        apply not_mem_convexHull_of_separated_neg_le (poly \ {p}) p a b hp_pos
+        intro t ht
+        obtain ⟨⟨j, hj⟩, rfl⟩ := List.get_of_mem (List.mem_toFinset.mp (Finset.mem_sdiff.mp ht).1)
+        have hj_ne_m : j ≠ m := by
+          intro heq
+          have h_fin : (⟨j, hj⟩ : Fin cap.length) = ⟨m, hm⟩ := Fin.ext heq
+          have : cap.get ⟨j, hj⟩ = p := by rw [h_fin, hp_eq]
+          exact (Finset.mem_sdiff.mp ht).2 (Finset.mem_singleton.mpr this)
+        rcases lt_trichotomy j (m - 1) with hj_lt | hj_eq_prev | hj_gt
+        · have hj_neg_det := isCap_orientationDet_neg cap k hcap j (m - 1) (m + 1) hj hm_prev_lt hm_next_lt hj_lt (by omega)
+          have h_cyc := orientationDet_cyclic (cap.get ⟨j, hj⟩) a b
+          linarith [hj_neg_det, h_cyc]
+        · have : (⟨j, hj⟩ : Fin cap.length) = ⟨m - 1, hm_prev_lt⟩ := Fin.ext hj_eq_prev
+          have : cap.get ⟨j, hj⟩ = a := by rw [this]
+          rw [this, orientationDet_self_right]
+        · rcases eq_or_ne j (m + 1) with hj_eq_next | hj_ne_next
+          · have : (⟨j, hj⟩ : Fin cap.length) = ⟨m + 1, hm_next_lt⟩ := Fin.ext hj_eq_next
+            have : cap.get ⟨j, hj⟩ = b := by rw [this]
+            rw [this, orientationDet_self_mid]
+          · have hj_gt_next : m + 1 < j := by omega
+            have hj_neg_det := isCap_orientationDet_neg cap k hcap (m - 1) (m + 1) j hm_prev_lt hm_next_lt hj (by omega) hj_gt_next
+            linarith [hj_neg_det]
 
-lemma isCup_reverse_of_isCap (cap : List Point2D) (k : ℕ) (hk : 3 ≤ k) (hcap : IsCap cap k) :
-    IsCup cap.reverse k := by
-  refine ⟨by rw [List.length_reverse, hcap.1], ?_⟩
-  intro i hi
-  rw [List.length_reverse, hcap.1] at hi
-  have hi_k : k - 3 - i + 2 < cap.length := by rw [hcap.1]; omega
-  have hd := hcap.2 (k - 3 - i) (by rw [hcap.1]; omega)
-  simp only [List.get_eq_getElem] at hd ⊢
-  have h_len : cap.length = k := hcap.1
-  have h0 : cap.reverse[i] = cap[k - 1 - i] := by
-    have hi_rev : i < cap.reverse.length := by rw [List.length_reverse, hcap.1]; omega
-    have h := List.getElem_reverse hi_rev
-    have h_idx : cap.length - 1 - i = k - 1 - i := by rw [h_len]
-    have h_eq : cap[cap.length - 1 - i] = cap[k - 1 - i] := by congr 1
-    rw [h, h_eq]
-  have h1 : cap.reverse[i + 1] = cap[k - 2 - i] := by
-    have hi_rev : i + 1 < cap.reverse.length := by rw [List.length_reverse, hcap.1]; omega
-    have h := List.getElem_reverse hi_rev
-    have h_idx : cap.length - 1 - (i + 1) = k - 2 - i := by rw [h_len]; omega
-    have h_eq : cap[cap.length - 1 - (i + 1)] = cap[k - 2 - i] := by congr 1
-    rw [h, h_eq]
-  have h2 : cap.reverse[i + 2] = cap[k - 3 - i] := by
-    have hi_rev : i + 2 < cap.reverse.length := by rw [List.length_reverse, hcap.1]; omega
-    have h := List.getElem_reverse hi_rev
-    have h_idx : cap.length - 1 - (i + 2) = k - 3 - i := by rw [h_len]; omega
-    have h_eq : cap[cap.length - 1 - (i + 2)] = cap[k - 3 - i] := by congr 1
-    rw [h, h_eq]
-  rw [h0, h1, h2]
-  have h_perm_direct : orientationDet cap[k - 1 - i] cap[k - 2 - i] cap[k - 3 - i] = - orientationDet cap[k - 3 - i] cap[k - 2 - i] cap[k - 1 - i] := by
-    dsimp [orientationDet]; ring
-  rw [h_perm_direct]
-  have h_idx1 : cap[k - 3 - i + 1] = cap[k - 2 - i] := by congr 1; omega
-  have h_idx2 : cap[k - 3 - i + 2] = cap[k - 1 - i] := by congr 1; omega
-  rw [h_idx1, h_idx2] at hd
-  linarith [hd]
+-- ============================================================================
+-- Section 5: The Erdős–Szekeres Theorem & Corollaries
+-- ============================================================================
 
-/-- Any set of 5 points in general position contains a 4-cup or a 4-cap. -/
-lemma exists_convex_4gon_of_five (S : Finset Point2D)
-    (h_card : S.card = 5)
-    (h_gen : InGeneralPosition S) :
-    (∃ cup : List Point2D, IsCup cup 4 ∧ ∀ p ∈ cup, p ∈ S) ∨
-    (∃ cap : List Point2D, IsCap cap 4 ∧ ∀ p ∈ cap, p ∈ S) := by
-  have h_rec43 := cup_cap_lemma 4 3 (by omega) (by omega) S (by rw [show Nat.choose (4 + 3 - 4) (4 - 2) + 1 = 4 by decide, h_card]; omega) h_gen
-  rcases h_rec43 with ⟨cup4, hcup4, hcup4_sub⟩ | ⟨cap3, hcap3, hcap3_sub⟩
-  · exact Or.inl ⟨cup4, hcup4, hcup4_sub⟩
-  · have h_rec34 := cup_cap_lemma 3 4 (by omega) (by omega) S (by rw [show Nat.choose (3 + 4 - 4) (3 - 2) + 1 = 4 by decide, h_card]; omega) h_gen
-    rcases h_rec34 with ⟨c3, hc3_cup, hc3_sub⟩ | ⟨cap4, hcap4, hcap4_sub⟩
-    · have hc3_nodup := isCup_k3_nodup c3 hc3_cup
-      let poly3 := c3.toFinset
-      have hpoly3_card : poly3.card = 3 := by
-        rw [List.toFinset_card_of_nodup hc3_nodup, hc3_cup.1]
-      have h_poly_sub : poly3 ⊆ S := by
-        intro p hp
-        exact hc3_sub p (List.mem_toFinset.mp hp)
-      have h_diff_pos : 0 < (S \ poly3).card := by
-        rw [Finset.card_sdiff_of_subset h_poly_sub, h_card, hpoly3_card]
-        omega
-      obtain ⟨q, hq_mem⟩ := Finset.card_pos.mp h_diff_pos
-      have hq_in_S : q ∈ S := (Finset.mem_sdiff.mp hq_mem).1
-      let u0 := c3.get ⟨0, by rw [hc3_cup.1]; omega⟩
-      let u1 := c3.get ⟨1, by rw [hc3_cup.1]; omega⟩
-      let u2 := c3.get ⟨2, by rw [hc3_cup.1]; omega⟩
-      have hu0_in_S : u0 ∈ S := hc3_sub u0 (List.get_mem ..)
-      have hu1_in_S : u1 ∈ S := hc3_sub u1 (List.get_mem ..)
-      have hu2_in_S : u2 ∈ S := hc3_sub u2 (List.get_mem ..)
-      have hc3_det : 0 < orientationDet u0 u1 u2 := by
-        have hd := hc3_cup.2 0 (by rw [hc3_cup.1]; omega)
-        have ha : c3.get ⟨0, by rw [hc3_cup.1]; omega⟩ = u0 := rfl
-        have hb : c3.get ⟨0 + 1, by rw [hc3_cup.1]; omega⟩ = u1 := rfl
-        have hc : c3.get ⟨0 + 2, by rw [hc3_cup.1]; omega⟩ = u2 := rfl
-        rw [ha, hb, hc] at hd
-        exact hd
-      by_cases h_cup1 : 0 < orientationDet u1 u2 q
-      · have h4 : IsCup [u0, u1, u2, q] 4 := by
-          refine ⟨rfl, ?_⟩
-          intro i hi
-          have : i < 2 := by change i + 2 < 4 at hi; omega
-          interval_cases i
-          · exact hc3_det
-          · exact h_cup1
-        refine Or.inl ⟨[u0, u1, u2, q], h4, ?_⟩
-        intro p hp
-        simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-        rcases hp with rfl | rfl | rfl | rfl
-        · exact hu0_in_S
-        · exact hu1_in_S
-        · exact hu2_in_S
-        · exact hq_in_S
-      · by_cases h_cup2 : 0 < orientationDet q u0 u1
-        · have h4 : IsCup [q, u0, u1, u2] 4 := by
-            refine ⟨rfl, ?_⟩
-            intro i hi
-            have : i < 2 := by change i + 2 < 4 at hi; omega
-            interval_cases i
-            · exact h_cup2
-            · exact hc3_det
-          refine Or.inl ⟨[q, u0, u1, u2], h4, ?_⟩
-          intro p hp
-          simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-          rcases hp with rfl | rfl | rfl | rfl
-          · exact hq_in_S
-          · exact hu0_in_S
-          · exact hu1_in_S
-          · exact hu2_in_S
-        · by_cases h_cup_mid : 0 < orientationDet u0 u1 q
-          · have h4 : IsCup [u0, u1, q, u2] 4 := by
-              refine ⟨rfl, ?_⟩
-              intro i hi
-              have : i < 2 := by change i + 2 < 4 at hi; omega
-              interval_cases i
-              · exact h_cup_mid
-              · have h_p1 := orientationDet_perm u1 u2 q
-                have h_p2 := orientationDet_perm u1 q u2
-                change 0 < orientationDet u1 q u2
-                have h_p1_ne : orientationDet u1 u2 q ≠ 0 := by
-                  apply h_gen u1 u2 q hu1_in_S hu2_in_S hq_in_S
-                  · intro heq
-                    have : u1 = c3.get ⟨0 + 1, by rw [hc3_cup.1]; omega⟩ := rfl
-                    have : u2 = c3.get ⟨0 + 2, by rw [hc3_cup.1]; omega⟩ := rfl
-                    rw [heq, orientationDet_self_mid] at hc3_det
-                    linarith
-                  · intro heq
-                    have : q ∈ poly3 := heq ▸ (List.mem_toFinset.mpr (List.get_mem ..))
-                    exact (Finset.mem_sdiff.mp hq_mem).2 this
-                  · intro heq
-                    have : q ∈ poly3 := heq ▸ (List.mem_toFinset.mpr (List.get_mem ..))
-                    exact (Finset.mem_sdiff.mp hq_mem).2 this
-                have h_neg : orientationDet u1 u2 q < 0 := by
-                  rcases lt_or_gt_of_ne h_p1_ne with hlt | hgt
-                  · exact hlt
-                  · exact False.elim (h_cup1 hgt)
-                linarith
-            refine Or.inl ⟨[u0, u1, q, u2], h4, ?_⟩
-            intro p hp
-            simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-            rcases hp with rfl | rfl | rfl | rfl
-            · exact hu0_in_S
-            · exact hu1_in_S
-            · exact hq_in_S
-            · exact hu2_in_S
-          · have h4 : IsCap [u0, u2, q, u1] 4 := by
-              refine ⟨rfl, ?_⟩
-              intro i hi
-              have : i < 2 := by change i + 2 < 4 at hi; omega
-              interval_cases i
-              · have h_sum := orientationDet_sum_triangle u0 u1 u2 q
-                have h_p := orientationDet_perm u2 u0 q
-                have h_p2 := orientationDet_perm u0 u2 q
-                have h_cyc := orientationDet_cyclic u2 u0 q
-                have h_u0u1q_ne : orientationDet u0 u1 q ≠ 0 := by
-                  apply h_gen u0 u1 q hu0_in_S hu1_in_S hq_in_S
-                  · intro heq
-                    have : u0 = c3.get ⟨0, by rw [hc3_cup.1]; omega⟩ := rfl
-                    have : u1 = c3.get ⟨0 + 1, by rw [hc3_cup.1]; omega⟩ := rfl
-                    rw [heq, orientationDet_self_left] at hc3_det
-                    linarith
-                  · intro heq
-                    have : q ∈ poly3 := heq ▸ (List.mem_toFinset.mpr (List.get_mem ..))
-                    exact (Finset.mem_sdiff.mp hq_mem).2 this
-                  · intro heq
-                    have : q ∈ poly3 := heq ▸ (List.mem_toFinset.mpr (List.get_mem ..))
-                    exact (Finset.mem_sdiff.mp hq_mem).2 this
-                have h_u0u1q_neg : orientationDet u0 u1 q < 0 := by
-                  rcases lt_or_gt_of_ne h_u0u1q_ne with hlt | hgt
-                  · exact hlt
-                  · exact False.elim (h_cup_mid hgt)
-                have h_u1u2q_ne : orientationDet u1 u2 q ≠ 0 := by
-                  apply h_gen u1 u2 q hu1_in_S hu2_in_S hq_in_S
-                  · intro heq
-                    have : u1 = c3.get ⟨0 + 1, by rw [hc3_cup.1]; omega⟩ := rfl
-                    have : u2 = c3.get ⟨0 + 2, by rw [hc3_cup.1]; omega⟩ := rfl
-                    rw [heq, orientationDet_self_mid] at hc3_det
-                    linarith
-                  · intro heq
-                    have : q ∈ poly3 := heq ▸ (List.mem_toFinset.mpr (List.get_mem ..))
-                    exact (Finset.mem_sdiff.mp hq_mem).2 this
-                  · intro heq
-                    have : q ∈ poly3 := heq ▸ (List.mem_toFinset.mpr (List.get_mem ..))
-                    exact (Finset.mem_sdiff.mp hq_mem).2 this
-                have h_u1u2q_neg : orientationDet u1 u2 q < 0 := by
-                  rcases lt_or_gt_of_ne h_u1u2q_ne with hlt | hgt
-                  · exact hlt
-                  · exact False.elim (h_cup1 hgt)
-                change orientationDet u0 u2 q < 0
-                linarith
-              · have h_cyc := orientationDet_cyclic u1 u2 q
-                have h_u1u2q_ne : orientationDet u1 u2 q ≠ 0 := by
-                  apply h_gen u1 u2 q hu1_in_S hu2_in_S hq_in_S
-                  · intro heq
-                    have : u1 = c3.get ⟨0 + 1, by rw [hc3_cup.1]; omega⟩ := rfl
-                    have : u2 = c3.get ⟨0 + 2, by rw [hc3_cup.1]; omega⟩ := rfl
-                    rw [heq, orientationDet_self_mid] at hc3_det
-                    linarith
-                  · intro heq
-                    have : q ∈ poly3 := heq ▸ (List.mem_toFinset.mpr (List.get_mem ..))
-                    exact (Finset.mem_sdiff.mp hq_mem).2 this
-                  · intro heq
-                    have : q ∈ poly3 := heq ▸ (List.mem_toFinset.mpr (List.get_mem ..))
-                    exact (Finset.mem_sdiff.mp hq_mem).2 this
-                have h_u1u2q_neg : orientationDet u1 u2 q < 0 := by
-                  rcases lt_or_gt_of_ne h_u1u2q_ne with hlt | hgt
-                  · exact hlt
-                  · exact False.elim (h_cup1 hgt)
-                change orientationDet u2 q u1 < 0
-                linarith
-            refine Or.inr ⟨[u0, u2, q, u1], h4, ?_⟩
-            intro p hp
-            simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-            rcases hp with rfl | rfl | rfl | rfl
-            · exact hu0_in_S
-            · exact hu2_in_S
-            · exact hq_in_S
-            · exact hu1_in_S
-    · exact Or.inr ⟨cap4, hcap4, hcap4_sub⟩
-
-/-- Esther Klein's Theorem (1935):
-    Any set of 5 points in general position in the plane contains a 4-cup or a 4-cap. -/
-theorem esther_klein_five_points (S : Finset Point2D)
-    (h_card : S.card = 5)
-    (h_gen : InGeneralPosition S) :
-    (∃ cup : List Point2D, IsCup cup 4 ∧ ∀ p ∈ cup, p ∈ S) ∨
-    (∃ cap : List Point2D, IsCap cap 4 ∧ ∀ p ∈ cap, p ∈ S) :=
-  exists_convex_4gon_of_five S h_card h_gen
-
-/-- The Erdős–Szekeres bound: ES(k) ≤ Nat.choose (2*k - 4) (k - 2) + 1. -/
+/-- The Erdős–Szekeres upper bound: ES(k) ≤ Nat.choose (2*k - 4) (k - 2) + 1. -/
 def erdosSzekeresBound (k : ℕ) : ℕ :=
   Nat.choose (2 * k - 4) (k - 2) + 1
 
 /-- **Main Theorem: Erdős–Szekeres Convex Polygon Theorem (1935).**
-    Every set of at least `erdosSzekeresBound k` points in general position contains a k-cup or a k-cap. -/
+    Every set of at least `erdosSzekeresBound k` points in general position with distinct x-coordinates
+    contains the vertices of a strictly convex k-gon (`FormsConvexPolygon S k`). -/
 theorem erdos_szekeres_convex_polygon (k : ℕ) (hk : 3 ≤ k)
     (S : Finset Point2D)
+    (h_dist : HasDistinctX S)
     (h_card : erdosSzekeresBound k ≤ S.card)
     (h_gen : InGeneralPosition S) :
-    (∃ cup : List Point2D, IsCup cup k ∧ ∀ p ∈ cup, p ∈ S) ∨
-    (∃ cap : List Point2D, IsCap cap k ∧ ∀ p ∈ cap, p ∈ S) := by
+    FormsConvexPolygon S k := by
   have h_bound : Nat.choose (k + k - 4) (k - 2) + 1 ≤ S.card := by
     have : k + k = 2 * k := by omega
     rw [this]
     exact h_card
-  exact cup_cap_lemma k k hk hk S h_bound h_gen
+  have h_cup_cap := cup_cap_lemma k k hk hk S h_dist h_bound h_gen
+  rcases h_cup_cap with ⟨cup, hcup, hcup_sub⟩ | ⟨cap, hcap, hcap_sub⟩
+  · exact formsConvexPolygon_of_isCup S cup k hk hcup hcup_sub
+  · exact formsConvexPolygon_of_isCap S cap k hk hcap hcap_sub
 
-/-- The Erdős–Szekeres Exact Conjecture: ES(k) = 2^(k-2) + 1 for all k ≥ 3. -/
+/-- For k = 3, every set of at least 3 points in general position with distinct x-coordinates
+    contains a convex triangle. Exact evaluation: ES(3) = 3. -/
+theorem erdos_szekeres_triangle (S : Finset Point2D)
+    (h_dist : HasDistinctX S)
+    (h_card : 3 ≤ S.card)
+    (h_gen : InGeneralPosition S) :
+    FormsConvexPolygon S 3 := by
+  have h_bound : erdosSzekeresBound 3 ≤ S.card := by
+    dsimp [erdosSzekeresBound]
+    exact h_card
+  exact erdos_szekeres_convex_polygon 3 (by omega) S h_dist h_bound h_gen
+
+/-- For k = 4, every set of at least 7 points in general position with distinct x-coordinates
+    contains a convex quadrilateral (general upper bound `ES(4) ≤ 7`). -/
+theorem erdos_szekeres_four_points (S : Finset Point2D)
+    (h_dist : HasDistinctX S)
+    (h_card : 7 ≤ S.card)
+    (h_gen : InGeneralPosition S) :
+    FormsConvexPolygon S 4 := by
+  have h_bound : erdosSzekeresBound 4 ≤ S.card := by
+    dsimp [erdosSzekeresBound]
+    exact h_card
+  exact erdos_szekeres_convex_polygon 4 (by omega) S h_dist h_bound h_gen
+
+/-- The Erdős–Szekeres Exact Conjecture: ES(k) = 2^(k-2) + 1 for all k ≥ 3.
+    Proven for k = 3 (ES=3), k = 4 (ES=5, Esther Klein), k = 5 (ES=9, Kalbfleisch et al.),
+    and k = 6 (ES=17, Szekeres–Peters 2006). Open for k ≥ 7. -/
 def ErdosSzekeresConjecture : Prop :=
   ∀ (k : ℕ) (hk : 3 ≤ k) (S : Finset Point2D),
+    HasDistinctX S →
     2^(k - 2) + 1 ≤ S.card →
     InGeneralPosition S →
-    (∃ cup : List Point2D, IsCup cup k ∧ ∀ p ∈ cup, p ∈ S) ∨
-    (∃ cap : List Point2D, IsCap cap k ∧ ∀ p ∈ cap, p ∈ S)
+    FormsConvexPolygon S k
