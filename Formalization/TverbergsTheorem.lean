@@ -16,7 +16,7 @@ import Mathlib.Tactic.Common
 /-!
 # Tverberg's Theorem on Intersecting Convex Hulls (1966)
 
-This module provides the formalization stub for **Tverberg's Theorem** (H. Tverberg, 1966),
+This module formalizes **Tverberg's Theorem** (H. Tverberg, 1966),
 a foundational theorem in discrete and combinatorial geometry generalizing Radon's Lemma ($r = 2$).
 
 ## Mathematical Statement

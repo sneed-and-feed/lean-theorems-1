@@ -7,7 +7,7 @@ import Mathlib.Tactic
 /-!
 # Cauchy's Arm Lemma and Convex Rigidity (1813)
 
-This module provides the formalization stub for **Cauchy's Arm Lemma** (A. L. Cauchy, 1813),
+This module formalizes **Cauchy's Arm Lemma** (A. L. Cauchy, 1813),
 the geometric engine behind Cauchy's Rigidity Theorem for 3D convex polyhedra.
 
 ## Mathematical Statement

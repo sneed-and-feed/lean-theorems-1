@@ -9,7 +9,7 @@ import Mathlib.Tactic
 /-!
 # The Friendship Theorem (Erdős–Rényi–Sós, 1966)
 
-This module provides the formalization stub for the **Friendship Theorem**
+This module formalizes the **Friendship Theorem**
 (P. Erdős, A. Rényi, V. T. Sós, 1966).
 
 ## Mathematical Statement

@@ -8,7 +8,7 @@ import Mathlib.Tactic
 /-!
 # Chvátal's Art Gallery Theorem (1975) & Fisk's Triangulation 3-Coloring (1978)
 
-This module provides the formalization stub for **Chvátal's Art Gallery Theorem** (V. Chvátal, 1975)
+This module formalizes **Chvátal's Art Gallery Theorem** (V. Chvátal, 1975)
 and **Fisk's 3-Coloring Proof** (S. Fisk, 1978).
 
 ## Mathematical Statement
