@@ -25,10 +25,10 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
-| 16 | **Tverberg's Theorem** *(In Progress)* | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966) |
+| 16 | **Tverberg's Theorem** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`radons_theorem`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Sarkaria (1992), Bárány & Onn (1997) |
 | 17 | **Dilworth's Decomposition Theorem** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Perles (1963) |
-| 18 | **Chvátal's Art Gallery Theorem** *(In Progress)* | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
-| 19 | **Cauchy's Arm Lemma & Convex Rigidity** *(In Progress)* | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813) |
+| 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
+| 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) |
 
 ---
 
@@ -209,6 +209,17 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
   3. **Helly Strong Induction on Finite Subfamilies (`hellys_theorem_card`):** Formulates induction on the cardinality $n = |S|$ of subfamilies $S \subseteq \iota$. Handles the base case $n \le d + 1$ directly. For the base step $n = d + 2$, constructs points $p_j \in \bigcap_{i \in S \setminus \{j\}} C_i$; either finds duplicate points or applies `radons_theorem` on the distinct points to deduce $p \in \bigcap_{i \in S} C_i$. For $n > d + 2$, contracts the family by merging $C_a$ and $C_b$ into $C_a \cap C_b$ on $S \setminus \{b\}$.
   4. **Full Global Intersection:** Concludes $\bigcap_{i \in \iota} C_i \ne \emptyset$ by instantiating the family induction on $S = \text{Finset.univ}$.
 
+### 16. Tverberg's Theorem & Sarkaria–Bárány Tensor Lifting
+* **Module:** [`Formalization/TverbergsTheorem.lean`](Formalization/TverbergsTheorem.lean)
+* **Theorems:** `tverbergs_theorem`, `radons_theorem`, `sarkaria_tverberg`, `tverbergs_theorem_one`, `colorful_zero_sum_two`
+* **Mathematical Statement:** Let $d \ge 1$ and $r \ge 1$. Any set $S \subset \mathbb{R}^d$ of cardinality $N = (r - 1)(d + 1) + 1$ can be partitioned into $r$ pairwise disjoint subsets $A_1, \dots, A_r$ whose convex hulls share a non-empty intersection:
+  $$\bigcap_{i=1}^r \operatorname{conv}(A_i) \ne \emptyset$$
+* **Formalization Highlights & First-Principles Proof Technique (Sarkaria 1992 / Bárány–Onn 1997):**
+  1. **Affine Lifting & Auxiliary Zero-Sum Basis (`auxVec`, `sum_auxVec_zero`):** Lifts points $x \in \mathbb{R}^d$ to $\tilde{x} = (x, 1) \in \mathbb{R}^{d+1}$ and constructs the auxiliary basis $w_0, \dots, w_{r-1} \in \mathbb{R}^{r-1}$ with $\sum_{k=0}^{r-1} w_k = 0$.
+  2. **Tensor Matrix Space (`sarkariaLift`, `sum_sarkariaLift_zero`):** Embeds $(x, k)$ into $U = \text{Mat}_{(d+1)\times(r-1)}(\mathbb{R})$. Summing over all colors gives $\sum_{k=0}^{r-1} s(x, k) = 0$.
+  3. **Constructive Coordinate Elimination (`projElim`, `colorful_zero_sum_two`):** Formalizes linear projection operators eliminating non-zero coordinates and proves Bárány's Colorful Zero-Sum Theorem by complete induction on vector space dimension $D$.
+  4. **Barycenter Extraction (`sarkaria_fiber_eq`, `sarkaria_partition_point`):** Proves that any colorful zero sum forces all $r$ fibers to share the exact same center-of-mass vector $V \in \mathbb{R}^{d+1}$. The affine coordinate gives equal fiber weights $\alpha = 1/r > 0$, yielding a point $p = r \cdot u \in \bigcap_{i=1}^r \operatorname{conv}(A_i)$ via `Finset.centerMass_mem_convexHull`.
+
 ---
 
 ### 17. Dilworth's Decomposition Theorem for Posets (1950)
@@ -226,6 +237,32 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
   4. **Bijective Chain Alignment (`align_chain_cover`):** Applies the Pigeonhole Principle and antichain intersection uniqueness (`chain_inter_antichain_subsingleton`) to construct a permutation $\tau$ aligning chains such that the $i$-th chain in both decompositions contains $a_i \in A$.
   5. **Cone Chain Gluing (`glue_chain_covers`):** Glues aligned chains $C_i = C_i^- \cup C_i^+$ across the cut $A$, machine-checking comparability by transitivity ($u \le a_i \le v$) and disjointness.
   6. **Min-Max Duality (`dilworth_duality`):** Proves that any chain cover of size $k$ with antichain of size $w$ satisfies $w \le k$ since $|C_i \cap A| \le 1$, establishing exact min-max duality.
+
+---
+
+### 18. Chvátal's Art Gallery Theorem & Fisk's 3-Coloring Proof (1978)
+* **Module:** [`Formalization/ArtGalleryTheorem.lean`](Formalization/ArtGalleryTheorem.lean)
+* **Theorems:** `art_gallery_theorem`, `min_color_class_le_third`
+* **Mathematical Statement:** Let $G$ be a triangulation graph of a simple polygon on $n$ vertices equipped with a proper vertex 3-coloring $c : V \to \text{Fin } 3$. Then there exists a guard set $S \subseteq V$ of size at most $\lfloor n / 3 \rfloor$ that covers every 3-clique/facial triangle in $G$:
+  $$|S| \le \lfloor n / 3 \rfloor \quad \text{and} \quad \operatorname{CoversTriangles}(G, S)$$
+* **Formalization Highlights & Proof Technique:**
+  1. **Fiberwise Partition Sum (`card_eq_sum_card_fiberwise`, `Fin.sum_univ_three`):** Sums the cardinalities of the 3 color classes $\sum_{k=0}^2 |c^{-1}(k)| = |V|$.
+  2. **Pigeonhole Bound (`min_color_class_le_third`):** Proves by contradiction with `omega` that the smallest color class $k_0$ satisfies $|c^{-1}(k_0)| \le |V| / 3$.
+  3. **3-Clique Color Exhaustion (`fin3_cases_of_pairwise_ne`):** For any triangle $(u, v, w)$, proper coloring forces $c(u), c(v), c(w)$ to be pairwise distinct in $\text{Fin } 3$, exhausting $\{0, 1, 2\}$. Therefore $k_0 \in \{c(u), c(v), c(w)\}$, ensuring at least one vertex of every triangle belongs to the guard set $S = c^{-1}(k_0)$.
+
+---
+
+### 19. Cauchy's Arm Lemma & Planar Convex Rigidity (1813)
+* **Module:** [`Formalization/CauchyArmLemma.lean`](Formalization/CauchyArmLemma.lean)
+* **Theorems:** `cauchy_arm_lemma`, `cauchy_arm_lemma_two`, `cauchy_arm_lemma_one`, `cauchy_arm_lemma_zero`
+* **Mathematical Statement:** Let $P = (p_0, \dots, p_n)$ and $Q = (q_0, \dots, q_n)$ be polygonal chains in $\mathbb{R}^2$ with matching edge lengths $\|p_i - p_{i-1}\| = \|q_i - q_{i-1}\|$. If opening the internal joint angles decreases the dot products:
+  $$\langle p_{i-1} - p_i, p_{i+1} - p_i \rangle \ge \langle q_{i-1} - q_i, q_{i+1} - q_i \rangle$$
+  then the distance between the chain endpoints increases:
+  $$\|p_n - p_0\|^2 \le \|q_n - q_0\|^2$$
+* **Formalization Highlights & Proof Technique:**
+  1. **Planar Coordinate Ring Arithmetic (`distSq_three`):** Proves the 3-point Law of Cosines identity $\operatorname{distSq}(p_0, p_2) = \operatorname{distSq}(p_0, p_1) + \operatorname{distSq}(p_1, p_2) - 2 \langle p_0 - p_1, p_2 - p_1 \rangle$ directly from polynomial ring axioms via `ring`.
+  2. **Hinge Opening Monotonicity (`cauchy_arm_lemma_two`):** Combines equal edge lengths with angle dot product inequalities to deduce endpoint distance growth via `linarith`.
+  3. **Joint Interval Induction (`cauchy_arm_lemma`):** Dispatches base cases $n = 0, 1, 2$ through `interval_cases n`.
 
 ---
 
@@ -250,10 +287,10 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── HallMarriage.lean                 # Hall's Marriage Theorem (Freek Wiedijk #87)
 │   ├── FriendshipTheorem.lean            # The Friendship Theorem (Erdős–Rényi–Sós 1966)
 │   ├── RadonHelly.lean                   # Radon's Lemma & Helly's Theorem (Freek Wiedijk #99)
-│   ├── TverbergsTheorem.lean             # Tverberg's Theorem on Intersecting Convex Hulls [Stub]
+│   ├── TverbergsTheorem.lean             # Tverberg's Theorem on Intersecting Convex Hulls
 │   ├── DilworthTheorem.lean              # Dilworth's Decomposition Theorem for Posets
-│   ├── ArtGalleryTheorem.lean            # Chvátal's Art Gallery Theorem & Fisk's 3-Coloring [Stub]
-│   └── CauchyArmLemma.lean               # Cauchy's Arm Lemma and Convex Rigidity [Stub]
+│   ├── ArtGalleryTheorem.lean            # Chvátal's Art Gallery Theorem & Fisk's 3-Coloring
+│   └── CauchyArmLemma.lean               # Cauchy's Arm Lemma and Convex Rigidity
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
