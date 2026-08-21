@@ -55,17 +55,39 @@ def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
 
 /-- In a graph with the friendship property, the politician vertex `w` is adjacent to all other vertices. -/
 theorem politician_degree (G : SimpleGraph V) [DecidableRel G.Adj]
-    (h_friend : HasFriendshipProperty G) (w : V)
+    (_h_friend : HasFriendshipProperty G) (w : V)
     (h_univ : IsUniversalVertex G w) :
     G.degree w = Fintype.card V - 1 := by
-  sorry
+  have h_nbr : G.neighborFinset w = Finset.univ.erase w := by
+    ext v
+    simp only [mem_neighborFinset, mem_erase, mem_univ, and_true]
+    constructor
+    · intro hadj
+      exact hadj.ne.symm
+    · intro hne
+      exact h_univ v hne
+  rw [degree, h_nbr, card_erase_of_mem (mem_univ w), card_univ]
 
 /-- The induced subgraph on the non-politician vertices `V \ {w}` is 1-regular (every vertex has degree 1). -/
 theorem induced_non_politician_degree_one (G : SimpleGraph V) [DecidableRel G.Adj]
     (h_friend : HasFriendshipProperty G) (w : V)
     (h_univ : IsUniversalVertex G w) (v : V) (hv : v ≠ w) :
     ((G.neighborFinset v).erase w).card = 1 := by
-  sorry
+  have h_nbr_w : G.neighborFinset w = Finset.univ.erase w := by
+    ext u
+    simp only [mem_neighborFinset, mem_erase, mem_univ, and_true]
+    constructor
+    · intro hadj
+      exact hadj.ne.symm
+    · intro hne
+      exact h_univ u hne
+  have h_inter : G.neighborFinset v ∩ G.neighborFinset w = (G.neighborFinset v).erase w := by
+    rw [h_nbr_w]
+    ext u
+    simp only [mem_inter, mem_erase, mem_univ, and_true]
+    tauto
+  rw [← h_inter]
+  exact h_friend v w hv
 
 -- ============================================================================
 -- Section 2: Odd Cardinality and Windmill Classification
