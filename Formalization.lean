@@ -17,3 +17,4 @@ import Formalization.TverbergsTheorem
 import Formalization.DilworthTheorem
 import Formalization.ArtGalleryTheorem
 import Formalization.CauchyArmLemma
+import Formalization.PicksTheorem

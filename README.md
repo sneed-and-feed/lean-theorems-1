@@ -29,6 +29,7 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 | 17 | **Dilworth's Decomposition Theorem** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Perles (1963) |
 | 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
 | 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) |
+| 20 | **Pick's Theorem on Lattice Polygons** | [`picks_theorem`](Formalization/PicksTheorem.lean), [`picks_theorem_two_area`](Formalization/PicksTheorem.lean), [`picks_theorem_additivity`](Formalization/PicksTheorem.lean) | Discrete & Lattice Geometry | Pick (1899), Wiedijk #92 |
 
 ---
 
@@ -266,6 +267,19 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 
 ---
 
+### 20. Pick's Theorem on Lattice Polygons (Freek Wiedijk #92)
+* **Module:** [`Formalization/PicksTheorem.lean`](Formalization/PicksTheorem.lean)
+* **Theorems:** `picks_theorem`, `picks_theorem_real`, `picks_theorem_two_area`, `picks_theorem_additivity`, `elementaryTriangle_satisfiesPick`, `gridRectangle_satisfiesPick`, `gridRightTriangle_satisfiesPick`
+* **Mathematical Statement:** Let $P$ be a simple polygon in the integer plane $\mathbb{Z}^2$ whose vertices are lattice points. If $P$ contains $i$ strictly interior lattice points and $b$ boundary lattice points, then the area of $P$ satisfies:
+  $$\operatorname{Area}(P) = i + \frac{b}{2} - 1 \quad \iff \quad 2 \operatorname{Area}(P) = 2i + b - 2$$
+* **Formalization Highlights & Multi-Pillar Proof Technique:**
+  1. **Topological Planar Triangulation & Euler Characteristic (`LatticeTriangulation`, `face_count_z`, `picks_theorem_real`):** Models an elementary triangulation $T = (V, E, F)$ as a topological disk ($V - E + F = 1$). Combines vertex splitting ($V = i + b$), edge splitting ($E = E_{\text{int}} + E_{\text{bd}}$ with $E_{\text{bd}} = b$), and double-counting of face-edge incidences ($3F = 2E_{\text{int}} + E_{\text{bd}}$) to deduce the exact face count $F = 2i + b - 2$. Since each elementary triangle has area $1/2$, $\operatorname{Area}(P) = F/2 = i + b/2 - 1$.
+  2. **Valuation Theory & Boundary Gluing Additivity (`LatticePolygonData`, `pickInvariant_glue`, `satisfiesPick_glue`):** Defines the discrete Pick functional $\operatorname{PickInv}(P) = 2i + b - 2$. Proves that gluing two lattice polygons along a shared boundary chain of $k \ge 2$ lattice points strictly preserves the Pick invariant: $\operatorname{PickInv}(P_1 \cup P_2) = \operatorname{PickInv}(P_1) + \operatorname{PickInv}(P_2)$.
+  3. **Concrete Shape Verifications & Lattice Determinants (`elementaryTriangle_satisfiesPick`, `gridRectangle_satisfiesPick`, `gridRightTriangle_satisfiesPick`):** Proves the formula explicitly for elementary triangles ($i = 0, b = 3$), axis-aligned $w \times h$ grid rectangles ($i = (w-1)(h-1), b = 2(w+h)$), and right-angled grid triangles parameterized by diagonal lattice count $g = \gcd(w, h)$.
+  4. **2D Cartesian Cross Products & Determinants (`signedDoubleArea`, `IsElementaryLatticeTriangle`, `unit_triangle_is_elementary`):** Verifies coordinate-level cyclic invariance, antisymmetry, and elementary triangle characterization $|\det| = 1$.
+
+---
+
 ## Repository Structure
 
 ```text
@@ -290,7 +304,8 @@ All theorems and sub-lemmas are formalized strictly without unproven axioms (`ax
 │   ├── TverbergsTheorem.lean             # Tverberg's Theorem on Intersecting Convex Hulls
 │   ├── DilworthTheorem.lean              # Dilworth's Decomposition Theorem for Posets
 │   ├── ArtGalleryTheorem.lean            # Chvátal's Art Gallery Theorem & Fisk's 3-Coloring
-│   └── CauchyArmLemma.lean               # Cauchy's Arm Lemma and Convex Rigidity
+│   ├── CauchyArmLemma.lean               # Cauchy's Arm Lemma and Convex Rigidity
+│   └── PicksTheorem.lean                 # Pick's Theorem on Lattice Polygons (Freek Wiedijk #92)
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
@@ -334,6 +349,7 @@ lake build Formalization.TverbergsTheorem
 lake build Formalization.DilworthTheorem
 lake build Formalization.ArtGalleryTheorem
 lake build Formalization.CauchyArmLemma
+lake build Formalization.PicksTheorem
 ```
 
 ---
@@ -363,14 +379,15 @@ lake build Formalization.CauchyArmLemma
 21. **Matoušek, J.** (2002). *Lectures on Discrete Geometry*. Graduate Texts in Mathematics 212, Springer.
 22. **Ore, O.** (1960). *Note on Hamilton circuits*. The American Mathematical Monthly, 67(1), 55.
 23. **Perles, M. A.** (1963). *A proof of Dilworth's decomposition theorem for partially ordered sets*. Israel Journal of Mathematics, 1(3), 139–145.
-24. **Radon, J.** (1921). *Mengen konvexer Körper, die einen gemeinsamen Punkt enthalten*. Mathematische Annalen, 83(1-2), 113–115.
-25. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
-26. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
-27. **Sylvester, J. J.** (1893). *Mathematical Question 11851*. Educational Times, 59, 98.
-28. **Tverberg, H.** (1966). *A generalization of Radon's theorem*. Journal of the London Mathematical Society, 41, 123–128.
-29. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
-30. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
-31. **Wilf, H. S.** (1971). *The friendship theorem*. In *Combinatorial Mathematics and Its Applications*, Academic Press, 307–309.
+24. **Pick, G. A.** (1899). *Geometrisches zur Zahlenlehre*. Sitzungsberichte des deutschen naturwissenschaftlich-medicinischen Vereines für Böhmen "Lotos" in Prag, 19, 311–319.
+25. **Radon, J.** (1921). *Mengen konvexer Körper, die einen gemeinsamen Punkt enthalten*. Mathematische Annalen, 83(1-2), 113–115.
+26. **Schur, I.** (1916). *Über die Kongruenz $x^m + y^m \equiv z^m \pmod p$*. Jahresbericht der Deutschen Mathematiker-Vereinigung, 25, 114–117.
+27. **Sperner, E.** (1928). *Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes*. Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 6(1), 265–272.
+28. **Sylvester, J. J.** (1893). *Mathematical Question 11851*. Educational Times, 59, 98.
+29. **Tverberg, H.** (1966). *A generalization of Radon's theorem*. Journal of the London Mathematical Society, 41, 123–128.
+30. **Tverberg, H.** (1982). *On the decomposition of $K_n$ into complete bipartite graphs*. Journal of Graph Theory, 6(4), 493–494.
+31. **Wiedijk, F.** (2008). *Formalizing 100 Theorems*. http://www.cs.ru.nl/~freek/100/
+32. **Wilf, H. S.** (1971). *The friendship theorem*. In *Combinatorial Mathematics and Its Applications*, Academic Press, 307–309.
 
 ---
 
