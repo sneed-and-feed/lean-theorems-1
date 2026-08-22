@@ -565,7 +565,19 @@ def starFamily (x : α) (k : ℕ) : Finset (Finset α) :=
 /-- The cardinality of any full star family on an `n`-element set is `Nat.choose (n - 1) (k - 1)`. -/
 lemma card_starFamily {n k : ℕ} (hn : Fintype.card α = n) (hk : 1 ≤ k) (hkn : k ≤ n) (x : α) :
     (starFamily x k).card = Nat.choose (n - 1) (k - 1) := by
-  sorry
+  dsimp [starFamily]
+  have h_filter : (filter (fun A => x ∈ A) ((Finset.univ : Finset α).powersetCard k)) =
+      filter (fun A => {x} ⊆ A) ((Finset.univ : Finset α).powersetCard k) := by
+    apply Finset.filter_congr
+    intro A hA
+    simp only [singleton_subset_iff]
+  rw [h_filter]
+  have h_sub : ({x} : Finset α) ⊆ Finset.univ := Finset.subset_univ _
+  have h_card_singleton : ({x} : Finset α).card = 1 := Finset.card_singleton x
+  have h_card_le : ({x} : Finset α).card ≤ k := by rw [h_card_singleton]; exact hk
+  have h_card := Finset.card_filter_powersetCard_subset ({x} : Finset α) Finset.univ k h_sub h_card_le
+  rw [h_card]
+  rw [Finset.card_univ, hn, h_card_singleton]
 
 -- ============================================================================
 -- Section 8: EKR Uniqueness Theorem (n > 2k)
