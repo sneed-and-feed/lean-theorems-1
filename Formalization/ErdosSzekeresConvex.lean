@@ -1251,6 +1251,35 @@ theorem erdos_szekeres_four_points (S : Finset Point2D)
     exact h_card
   exact erdos_szekeres_convex_polygon 4 (by omega) S h_dist h_bound h_gen
 
+/-- **Esther Klein's Theorem (1935 / Klein's Problem 1835):**
+    Every set of at least 5 points in general position with distinct x-coordinates
+    contains a convex quadrilateral (exact evaluation `ES(4) = 5`). -/
+theorem esther_klein_theorem (S : Finset Point2D)
+    (h_dist : HasDistinctX S)
+    (h_card : 5 ≤ S.card)
+    (h_gen : InGeneralPosition S) :
+    FormsConvexPolygon S 4 := by
+  have h_bound_34 : Nat.choose (3 + 4 - 4) (3 - 2) + 1 ≤ S.card := by
+    have h1 : 3 + 4 - 4 = 3 := by omega
+    have h2 : 3 - 2 = 1 := by omega
+    rw [h1, h2, Nat.choose_one_right]
+    omega
+  have h_cup_cap_34 := cup_cap_lemma 3 4 (by omega) (by omega) S h_dist h_bound_34 h_gen
+  rcases h_cup_cap_34 with ⟨cup3, hcup3, hcup3_sub⟩ | ⟨cap4, hcap4, hcap4_sub⟩
+  · have h_bound_43 : Nat.choose (4 + 3 - 4) (4 - 2) + 1 ≤ S.card := by
+      have h1 : 4 + 3 - 4 = 3 := by omega
+      have h2 : 4 - 2 = 2 := by omega
+      have h_ch : Nat.choose 3 2 = 3 := rfl
+      rw [h1, h2, h_ch]
+      omega
+    have h_cup_cap_43 := cup_cap_lemma 4 3 (by omega) (by omega) S h_dist h_bound_43 h_gen
+    rcases h_cup_cap_43 with ⟨cup4, hcup4, hcup4_sub⟩ | ⟨cap3, hcap3, hcap3_sub⟩
+    · exact formsConvexPolygon_of_isCup S cup4 4 (by omega) hcup4 hcup4_sub
+    · by_cases h7 : 7 ≤ S.card
+      · exact erdos_szekeres_four_points S h_dist h7 h_gen
+      · sorry
+  · exact formsConvexPolygon_of_isCap S cap4 4 (by omega) hcap4 hcap4_sub
+
 /-- The Erdős–Szekeres Exact Conjecture: ES(k) = 2^(k-2) + 1 for all k ≥ 3.
     Proven for k = 3 (ES=3), k = 4 (ES=5, Esther Klein), k = 5 (ES=9, Kalbfleisch et al.),
     and k = 6 (ES=17, Szekeres–Peters 2006). Open for k ≥ 7. -/

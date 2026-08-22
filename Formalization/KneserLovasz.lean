@@ -1,4 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Basic
@@ -191,3 +192,44 @@ theorem kneser_lovasz_chromatic_bound (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤
       (n - 2 * k + 2 = n - 2 * k + 2) := by
   obtain ⟨c, hc⟩ := kneser_upper_bound n k hk hn
   exact ⟨c, hc, rfl⟩
+
+-- ============================================================================
+-- Section 7: First-Class SimpleGraph.Coloring Integration
+-- ============================================================================
+
+/-- Canonical conversion from a k-subset of `Fin n` to a k-subset of `ℕ` with elements strictly bounded by `n`. -/
+def finsetToNatSubtype {n k : ℕ} (A : {s : Finset (Fin n) // s.card = k}) :
+    {s : Finset ℕ // s.card = k ∧ ∀ x ∈ s, x < n} :=
+  ⟨A.val.map Fin.valEmbedding, by
+    rw [Finset.card_map, A.property]
+    refine ⟨rfl, ?_⟩
+    intro x hx
+    rw [Finset.mem_map] at hx
+    obtain ⟨y, _, rfl⟩ := hx
+    exact y.isLt⟩
+
+lemma finsetToNatSubtype_disjoint {n k : ℕ} (A B : {s : Finset (Fin n) // s.card = k})
+    (h_disj : Disjoint A.val B.val) :
+    Disjoint (finsetToNatSubtype A).val (finsetToNatSubtype B).val := by
+  dsimp [finsetToNatSubtype]
+  rw [Finset.disjoint_map]
+  exact h_disj
+
+/-- First-class proper vertex coloring of the Kneser graph `kneserGraph (Fin n) k`
+    in `n - 2k + 2` colors (`SimpleGraph.Coloring`). -/
+def kneserColoring (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
+    (kneserGraph (Fin n) k).Coloring (Fin (n - 2 * k + 2)) :=
+  SimpleGraph.Coloring.mk
+    (fun A => kneserColor n k hk hn (finsetToNatSubtype A))
+    (by
+      intro A B hadj
+      have h_rel : kneserRel (Fin n) k A B := hadj
+      have h_disj := finsetToNatSubtype_disjoint A B h_rel.1
+      intro h_eq
+      have h_not_disj := kneserColor_proper n k hk hn (finsetToNatSubtype A) (finsetToNatSubtype B) h_eq
+      exact h_not_disj h_disj)
+
+/-- Modern Mathlib formulation: The Kneser graph `kneserGraph (Fin n) k` is `(n - 2k + 2)`-colorable. -/
+theorem kneser_colorable (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
+    (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) :=
+  ⟨kneserColoring n k hk hn⟩

@@ -275,3 +275,45 @@ end SimpleGraphBridge
 theorem euler_polyhedron_formula (P : PlanarMap) :
     P.eulerChar = 2 :=
   P.euler_char_eq_two
+
+-- ============================================================================
+-- Section 6: Planar Edge Bounds and Non-Planarity Theorems
+-- ============================================================================
+
+/-- **Planar Edge Bound (Standard):**
+    For any connected planar map with $V \ge 3$ vertices where every face has degree $\ge 3$
+    (so $2E \ge 3F$), the number of edges satisfies $E \le 3V - 6$. -/
+theorem planar_edge_bound (V E F : ℕ) (h_euler : (V : ℤ) - E + F = 2)
+    (h_face_deg : 3 * F ≤ 2 * E) (hV : 3 ≤ V) :
+    E ≤ 3 * V - 6 := by
+  have : 3 * (2 : ℤ) = 3 * ((V : ℤ) - E + F) := by rw [h_euler]
+  omega
+
+/-- **Triangle-Free Planar Edge Bound:**
+    For any connected triangle-free planar map with $V \ge 3$ vertices where every face has degree $\ge 4$
+    (so $2E \ge 4F$), the number of edges satisfies $E \le 2V - 4$. -/
+theorem planar_edge_bound_triangle_free (V E F : ℕ) (h_euler : (V : ℤ) - E + F = 2)
+    (h_face_deg : 4 * F ≤ 2 * E) (hV : 3 ≤ V) :
+    E ≤ 2 * V - 4 := by
+  have : 2 * (2 : ℤ) = 2 * ((V : ℤ) - E + F) := by rw [h_euler]
+  omega
+
+/-- **Non-Planarity of K₅:**
+    The complete graph $K_5$ ($V = 5, E = 10$) cannot be embedded as a planar map with face degree $\ge 3$. -/
+theorem non_planarity_k5 (F : ℕ) (h_euler : (5 : ℤ) - 10 + F = 2) (h_face_deg : 3 * F ≤ 2 * 10) :
+    False := by
+  have := planar_edge_bound 5 10 F h_euler h_face_deg (by omega)
+  omega
+
+/-- **Non-Planarity of K₃,₃:**
+    The complete bipartite graph $K_{3,3}$ ($V = 6, E = 9$) cannot be embedded as a planar map with face degree $\ge 4$. -/
+theorem non_planarity_k33 (F : ℕ) (h_euler : (6 : ℤ) - 9 + F = 2) (h_face_deg : 4 * F ≤ 2 * 9) :
+    False := by
+  have := planar_edge_bound_triangle_free 6 9 F h_euler h_face_deg (by omega)
+  omega
+
+#print axioms euler_polyhedron_formula
+#print axioms planar_edge_bound
+#print axioms planar_edge_bound_triangle_free
+#print axioms non_planarity_k5
+#print axioms non_planarity_k33

@@ -145,3 +145,30 @@ theorem bondy_induced_subsets {α : Type*} [DecidableEq α]
       ∀ s₁ ∈ F, ∀ s₂ ∈ F, s₁ ∩ S = s₂ ∩ S → s₁ = s₂ :=
   bondy_aux F.card X F hFX rfl hFn
 
+/-- Unconditioned Bondy's Theorem on Induced Subsets:
+    Any family F of subsets of X can be distinguished by a subset S ⊆ X of size ≤ F.card - 1. -/
+theorem bondy_induced_subsets' {α : Type*} [DecidableEq α]
+    (X : Finset α) (F : Finset (Finset α))
+    (hFX : ∀ s ∈ F, s ⊆ X) :
+    ∃ S ⊆ X, S.card ≤ F.card - 1 ∧
+      ∀ s₁ ∈ F, ∀ s₂ ∈ F, s₁ ∩ S = s₂ ∩ S → s₁ = s₂ := by
+  by_cases hFn : 1 ≤ F.card
+  · exact bondy_induced_subsets X F hFX hFn
+  · have hF0 : F.card = 0 := by omega
+    have hF_empty : F = ∅ := Finset.card_eq_zero.mp hF0
+    refine ⟨∅, Finset.empty_subset X, by simp [hF0], ?_⟩
+    intro s₁ hs₁
+    simp [hF_empty] at hs₁
+
+/-- Bondy's theorem formulated as an injection on induced traces:
+    There exists S ⊆ X of size ≤ |F| - 1 such that the restriction map s ↦ s ∩ S is injective on F. -/
+theorem bondy_induced_injective {α : Type*} [DecidableEq α]
+    (X : Finset α) (F : Finset (Finset α))
+    (hFX : ∀ s ∈ F, s ⊆ X) :
+    ∃ S ⊆ X, S.card ≤ F.card - 1 ∧ Set.InjOn (fun s => s ∩ S) (F : Set (Finset α)) := by
+  obtain ⟨S, hSX, hScard, hS_inj⟩ := bondy_induced_subsets' X F hFX
+  refine ⟨S, hSX, hScard, ?_⟩
+  intro s₁ hs₁ s₂ hs₂ heq
+  exact hS_inj s₁ hs₁ s₂ hs₂ heq
+
+

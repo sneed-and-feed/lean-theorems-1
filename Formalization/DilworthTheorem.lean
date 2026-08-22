@@ -32,6 +32,12 @@ def IsChainCover (S : Finset α) {k : ℕ} (C : Fin k → Finset α) : Prop :=
   (Finset.biUnion Finset.univ C = S) ∧
   (∀ i j, i ≠ j → Disjoint (C i) (C j))
 
+/-- An antichain partition / cover of a finset `S` into `k` antichains. -/
+def IsAntichainCover (S : Finset α) {k : ℕ} (A : Fin k → Finset α) : Prop :=
+  (∀ i, IsAntichain (A i : Set α)) ∧
+  (Finset.biUnion Finset.univ A = S) ∧
+  (∀ i j, i ≠ j → Disjoint (A i) (A j))
+
 lemma isChain_empty : IsChain (∅ : Set α) := by
   intro x y hx; exact False.elim hx
 
@@ -739,5 +745,172 @@ theorem dilworth_duality [Fintype α] (w : ℕ)
 
 #print axioms dilworth_theorem
 #print axioms dilworth_duality
+
+/-- The collection of subchains of `S` that have `x` as their maximum element. -/
+noncomputable def chainsEndingAt (S : Finset α) (x : α) : Finset (Finset α) :=
+  S.powerset.filter (fun C => x ∈ C ∧ (∀ y ∈ C, y ≤ x) ∧ IsChain (C : Set α))
+
+lemma singleton_mem_chainsEndingAt {S : Finset α} {x : α} (hx : x ∈ S) :
+    {x} ∈ chainsEndingAt S x := by
+  rw [chainsEndingAt, mem_filter, mem_powerset, singleton_subset_iff]
+  refine ⟨hx, mem_singleton_self x, ?_, isChain_finset_singleton x⟩
+  intro y hy
+  rw [mem_singleton.mp hy]
+
+lemma chainsEndingAt_nonempty {S : Finset α} {x : α} (hx : x ∈ S) :
+    (chainsEndingAt S x).Nonempty :=
+  ⟨{x}, singleton_mem_chainsEndingAt hx⟩
+
+/-- The height of an element `x ∈ S` is the maximum length of a chain in `S` ending at `x`. -/
+noncomputable def posetHeight (S : Finset α) (x : α) : ℕ :=
+  (chainsEndingAt S x).sup Finset.card
+
+lemma posetHeight_ge_one {S : Finset α} {x : α} (hx : x ∈ S) :
+    1 ≤ posetHeight S x := by
+  have h_in := singleton_mem_chainsEndingAt hx
+  have h_le := Finset.le_sup (f := Finset.card) h_in
+  rw [card_singleton] at h_le
+  exact h_le
+
+lemma posetHeight_le {S : Finset α} {x : α} {m : ℕ}
+    (h_chain : ∀ C ⊆ S, IsChain (C : Set α) → C.card ≤ m) :
+    posetHeight S x ≤ m := by
+  apply Finset.sup_le
+  intro C hC
+  rw [chainsEndingAt, mem_filter, mem_powerset] at hC
+  exact h_chain C hC.1 hC.2.2.2
+
+lemma posetHeight_lt_of_lt {S : Finset α} {x y : α} (hx : x ∈ S) (hy : y ∈ S) (hxy : x < y) :
+    posetHeight S x < posetHeight S y := by
+  have h_ne := chainsEndingAt_nonempty hx
+  rcases Finset.exists_max_image (chainsEndingAt S x) Finset.card h_ne with ⟨C, hC_in, hC_max⟩
+  have hC_height : C.card = posetHeight S x := by
+    apply le_antisymm
+    · exact Finset.le_sup hC_in
+    · apply Finset.sup_le
+      intro D hD
+      exact hC_max D hD
+  rw [chainsEndingAt, mem_filter, mem_powerset] at hC_in
+  rcases hC_in with ⟨hCS, hx_in_C, hC_le_x, hC_chain⟩
+  have hy_not_in_C : y ∉ C := fun hy_in => (not_lt_of_ge (hC_le_x y hy_in)) hxy
+  let C' := insert y C
+  have hC'_sub : C' ⊆ S := insert_subset hy hCS
+  have hC'_in_y : y ∈ C' := mem_insert_self y C
+  have hC'_le_y : ∀ z ∈ C', z ≤ y := by
+    intro z hz
+    rw [mem_insert] at hz
+    rcases hz with rfl | hz
+    · exact le_rfl
+    · exact (hC_le_x z hz).trans hxy.le
+  have hC'_chain : IsChain (C' : Set α) := by
+    intro u v hu hv
+    rw [mem_coe, mem_insert] at hu hv
+    rcases hu with rfl | hu <;> rcases hv with rfl | hv
+    · exact Or.inl le_rfl
+    · exact Or.inr ((hC_le_x v hv).trans hxy.le)
+    · exact Or.inl ((hC_le_x u hu).trans hxy.le)
+    · exact hC_chain u v hu hv
+  have hC'_in_chains : C' ∈ chainsEndingAt S y := by
+    rw [chainsEndingAt, mem_filter, mem_powerset]
+    exact ⟨hC'_sub, hC'_in_y, hC'_le_y, hC'_chain⟩
+  have h_le_sup : C'.card ≤ posetHeight S y := Finset.le_sup (f := Finset.card) hC'_in_chains
+  rw [Finset.card_insert_of_notMem hy_not_in_C, hC_height] at h_le_sup
+  omega
+
+/-- **Mirsky's Theorem (Dual Dilworth Theorem, L. Mirsky, 1971):**
+If every chain in a finite poset `S` has size at most `m`, then `S` can be partitioned
+into `m` antichains. -/
+theorem mirsky_theorem (S : Finset α) (m : ℕ)
+    (h_chain : ∀ C ⊆ S, IsChain (C : Set α) → C.card ≤ m) :
+    ∃ A : Fin m → Finset α, IsAntichainCover S A := by
+  by_cases hm : m = 0
+  · subst hm
+    have hS_empty : S = ∅ := by
+      by_contra h_ne
+      rcases Finset.nonempty_iff_ne_empty.mpr h_ne with ⟨x, hx⟩
+      have h_ge := posetHeight_ge_one hx
+      have h_le := posetHeight_le h_chain (x := x)
+      omega
+    subst hS_empty
+    refine ⟨fun _ => ∅, ?_, ?_, ?_⟩
+    · intro i
+      have : ((fun _ : Fin 0 => (∅ : Finset α)) i : Set α) = ∅ := by simp
+      rw [this]
+      exact isAntichain_empty
+    · ext x; simp
+    · intro i j hij; exact disjoint_empty_left _
+  · let A : Fin m → Finset α := fun i => S.filter (fun x => posetHeight S x = i.val + 1)
+    refine ⟨A, ?_, ?_, ?_⟩
+    · intro i u v hu hv hne
+      rw [mem_coe] at hu hv
+      dsimp [A] at hu hv
+      rw [mem_filter] at hu hv
+      rcases hu with ⟨huS, hu_h⟩
+      rcases hv with ⟨hvS, hv_h⟩
+      constructor
+      · intro hle
+        have hlt : u < v := lt_of_le_of_ne hle hne
+        have := posetHeight_lt_of_lt huS hvS hlt
+        omega
+      · intro hle
+        have hlt : v < u := lt_of_le_of_ne hle hne.symm
+        have := posetHeight_lt_of_lt hvS huS hlt
+        omega
+    · ext x
+      dsimp [A]
+      simp only [mem_biUnion, mem_univ, true_and, mem_filter]
+      constructor
+      · rintro ⟨i, hxS, _⟩
+        exact hxS
+      · intro hxS
+        have h_ge := posetHeight_ge_one hxS
+        have h_le := posetHeight_le h_chain (x := x)
+        let idx : ℕ := posetHeight S x - 1
+        have h_idx_lt : idx < m := by omega
+        exact ⟨⟨idx, h_idx_lt⟩, hxS, by dsimp [idx]; omega⟩
+    · intro i j hij
+      rw [disjoint_iff_ne]
+      rintro u hu v hv rfl
+      dsimp [A] at hu hv
+      rw [mem_filter] at hu hv
+      have h1 := hu.2
+      have h2 := hv.2
+      have : i.val = j.val := by omega
+      exact hij (Fin.ext this)
+
+/-- **Mirsky's Min-Max Equivalence (Dual Dilworth Duality):**
+The maximum size of a chain equals the minimum number of antichains covering the poset. -/
+theorem mirsky_duality [Fintype α] (c : ℕ)
+    (h_max : ∃ C : Finset α, IsChain (C : Set α) ∧ C.card = c)
+    (h_bound : ∀ C : Finset α, IsChain (C : Set α) → C.card ≤ c) :
+    (∃ A : Fin c → Finset α, IsAntichainCover Finset.univ A) ∧
+    (∀ k < c, ¬ ∃ A : Fin k → Finset α, IsAntichainCover Finset.univ A) := by
+  constructor
+  · apply mirsky_theorem Finset.univ c
+    intro C _ hC
+    exact h_bound C hC
+  · intro k hk ⟨A, hA⟩
+    rcases h_max with ⟨C, hC_chain, hC_card⟩
+    have h_cov : C ⊆ Finset.biUnion Finset.univ (fun i => C ∩ A i) := by
+      intro x hx
+      have hx_univ : x ∈ (Finset.univ : Finset α) := mem_univ x
+      rw [← hA.2.1, mem_biUnion] at hx_univ
+      rcases hx_univ with ⟨i, -, hi⟩
+      rw [mem_biUnion]
+      exact ⟨i, mem_univ i, mem_inter.mpr ⟨hx, hi⟩⟩
+    have h_card_le := card_le_card h_cov
+    have h_sum := h_card_le.trans (card_biUnion_le)
+    have h_term_le : ∀ i ∈ (Finset.univ : Finset (Fin k)), (C ∩ A i).card ≤ 1 := by
+      intro i _
+      exact chain_inter_antichain_card_le_one C (A i) hC_chain (hA.1 i)
+    have h_sum_le : (Finset.univ : Finset (Fin k)).sum (fun i => (C ∩ A i).card) ≤ (Finset.univ : Finset (Fin k)).sum (fun _ => 1) :=
+      sum_le_sum h_term_le
+    rw [sum_const, nsmul_eq_mul, mul_one, card_univ, Fintype.card_fin] at h_sum_le
+    rw [hC_card] at h_sum
+    have : c ≤ k := h_sum.trans h_sum_le
+    omega
+
+#print axioms mirsky_theorem
+#print axioms mirsky_duality
 
 end DilworthTheorem

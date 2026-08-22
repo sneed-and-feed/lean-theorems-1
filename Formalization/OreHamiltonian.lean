@@ -537,3 +537,50 @@ theorem dirac_hamiltonian {V : Type*} [Fintype V] [DecidableEq V]
   have hv := hdirac v
   omega
 
+/-- Every Hamiltonian cycle yields a Hamiltonian path by dropping the last edge. -/
+lemma isHamiltonian_dropLast_of_isHamiltonianCycle {G : SimpleGraph V} {v : V} {C : G.Walk v v}
+    (hC : C.IsHamiltonianCycle) :
+    C.dropLast.IsHamiltonian := by
+  have hC_not_nil : ¬ C.Nil := hC.isCycle.not_nil
+  have hC_supp : C.support.dropLast = C.dropLast.support := (Walk.support_dropLast hC_not_nil).symm
+  have hC_perm : C.support.tail ~ C.support.dropLast := (Walk.tail_support_perm_dropLast_support C).symm
+  have h_tail_nodup : C.support.tail.Nodup := hC.isCycle.support_nodup
+  have h_drop_nodup : C.dropLast.support.Nodup := by
+    rwa [← hC_supp, ← hC_perm.nodup_iff]
+  have h_path : C.dropLast.IsPath := by
+    rw [Walk.isPath_def]
+    exact h_drop_nodup
+  rw [h_path.isHamiltonian_iff]
+  intro w
+  have hw_C : w ∈ C.support := hC.mem_support w
+  rw [Walk.mem_support_iff] at hw_C
+  rcases hw_C with rfl | hw_tail
+  · rw [← hC_supp]
+    cases C with
+    | nil => contradiction
+    | cons hadj q =>
+      simp only [Walk.support_cons, List.dropLast_cons]
+      exact List.mem_cons_self ..
+  · rw [← hC_supp]
+    exact hC_perm.mem_iff.mp hw_tail
+
+/-- Corollary: Hamiltonian Path Theorem under Ore's condition.
+    Any graph on n ≥ 3 vertices satisfying deg(u) + deg(v) ≥ n has a Hamiltonian path. -/
+theorem ore_hamiltonian_path {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hn : 3 ≤ Fintype.card V)
+    (hore : ∀ u v : V, u ≠ v → ¬ G.Adj u v →
+      Fintype.card V ≤ G.degree u + G.degree v) :
+    ∃ (u v : V) (p : G.Walk u v), p.IsHamiltonian := by
+  obtain ⟨v, C, hC⟩ := ore_hamiltonian G hn hore
+  refine ⟨v, _, C.dropLast, isHamiltonian_dropLast_of_isHamiltonianCycle hC⟩
+
+/-- Corollary: Dirac Hamiltonian Path Theorem. -/
+theorem dirac_hamiltonian_path {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hn : 3 ≤ Fintype.card V)
+    (hdirac : ∀ v : V, (Fintype.card V + 1) / 2 ≤ G.degree v) :
+    ∃ (u v : V) (p : G.Walk u v), p.IsHamiltonian := by
+  obtain ⟨v, C, hC⟩ := dirac_hamiltonian G hn hdirac
+  refine ⟨v, _, C.dropLast, isHamiltonian_dropLast_of_isHamiltonianCycle hC⟩
+

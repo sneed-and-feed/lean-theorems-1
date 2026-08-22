@@ -333,7 +333,153 @@ theorem de_bruijn_erdos' {P : Finset α} {L : Finset (Finset α)}
     P.card ≤ L.card :=
   de_bruijn_erdos ⟨h_line_sub, h_line_ge_two, h_uniq, h_non_collinear, h_card⟩
 
+-- ============================================================================
+-- Near-Pencil Equality Witness Construction
+-- ============================================================================
+
+/-- The lines of a near-pencil configuration on point set `P` with apex `p₀ ∈ P`:
+one long line `P \ {p₀}` containing all other points, and `|P| - 1` lines of size 2
+connecting `p₀` to each other point. -/
+def nearPencilLines (P : Finset α) (p₀ : α) : Finset (Finset α) :=
+  insert (P.erase p₀) ((P.erase p₀).image (fun q => {p₀, q}))
+
+lemma mem_nearPencilLines_iff {P : Finset α} {p₀ : α} {l : Finset α} :
+    l ∈ nearPencilLines P p₀ ↔ l = P.erase p₀ ∨ ∃ q ∈ P.erase p₀, l = {p₀, q} := by
+  simp only [nearPencilLines, mem_insert, mem_image, eq_comm]
+
+lemma nearPencil_card (P : Finset α) (p₀ : α) (hp₀ : p₀ ∈ P) (hcard : 3 ≤ P.card) :
+    (nearPencilLines P p₀).card = P.card := by
+  have h_not_mem : P.erase p₀ ∉ (P.erase p₀).image (fun q => ({p₀, q} : Finset α)) := by
+    intro h_mem
+    rcases mem_image.mp h_mem with ⟨q, hq, heq⟩
+    have hp₀_in : p₀ ∈ ({p₀, q} : Finset α) := mem_insert_self p₀ {q}
+    have hp₀_notin : p₀ ∉ P.erase p₀ := by simp
+    rw [heq] at hp₀_in
+    exact hp₀_notin hp₀_in
+  have h_inj : ∀ q1 ∈ P.erase p₀, ∀ q2 ∈ P.erase p₀, ({p₀, q1} : Finset α) = {p₀, q2} → q1 = q2 := by
+    intro q1 hq1 q2 hq2 heq
+    have hq1_ne : q1 ≠ p₀ := (mem_erase.mp hq1).1
+    have hq1_in : q1 ∈ ({p₀, q2} : Finset α) := by
+      rw [← heq]
+      exact mem_insert_of_mem (mem_singleton_self q1)
+    simp only [mem_insert, mem_singleton] at hq1_in
+    cases hq1_in with
+    | inl h => exact False.elim (hq1_ne h)
+    | inr h => exact h
+  rw [nearPencilLines, card_insert_of_notMem h_not_mem,
+      card_image_of_injOn h_inj, card_erase_of_mem hp₀]
+  omega
+
+lemma nearPencil_linearSpace (P : Finset α) (p₀ : α) (hp₀ : p₀ ∈ P) (hcard : 3 ≤ P.card) :
+    LinearSpace P (nearPencilLines P p₀) where
+  line_subset := by
+    intro l hl
+    rw [mem_nearPencilLines_iff] at hl
+    rcases hl with rfl | ⟨q, hq, rfl⟩
+    · exact erase_subset p₀ P
+    · intro x hx
+      simp only [mem_insert, mem_singleton] at hx
+      rcases hx with rfl | rfl
+      · exact hp₀
+      · exact (mem_erase.mp hq).2
+  line_card_ge_two := by
+    intro l hl
+    rw [mem_nearPencilLines_iff] at hl
+    rcases hl with rfl | ⟨q, hq, rfl⟩
+    · rw [card_erase_of_mem hp₀]
+      omega
+    · have hq_ne : p₀ ≠ q := (mem_erase.mp hq).1.symm
+      rw [card_pair hq_ne]
+  unique_line := by
+    intro u hu v hv hne
+    by_cases hu_p : u = p₀
+    · have hu_p_eq : u = p₀ := hu_p
+      have hv_ne_p : v ≠ p₀ := by
+        rintro rfl
+        exact hne hu_p_eq
+      have hv_erase : v ∈ P.erase p₀ := mem_erase.mpr ⟨hv_ne_p, hv⟩
+      refine ⟨{p₀, v}, ?_, ?_⟩
+      · refine ⟨?_, ?_, ?_⟩
+        · rw [mem_nearPencilLines_iff]
+          exact Or.inr ⟨v, hv_erase, rfl⟩
+        · rw [hu_p_eq]
+          exact mem_insert_self p₀ {v}
+        · exact mem_insert_of_mem (mem_singleton_self v)
+      · intro l' ⟨hl'_in, h_u_l', h_v_l'⟩
+        rw [hu_p_eq] at h_u_l'
+        rw [mem_nearPencilLines_iff] at hl'_in
+        rcases hl'_in with rfl | ⟨q, hq, rfl⟩
+        · have hp₀_notin : p₀ ∉ P.erase p₀ := by simp
+          exact False.elim (hp₀_notin h_u_l')
+        · have : v = p₀ ∨ v = q := by
+            simpa only [mem_insert, mem_singleton] using h_v_l'
+          rcases this with rfl | rfl
+          · exact False.elim (hv_ne_p rfl)
+          · rfl
+    · by_cases hv_p : v = p₀
+      · have hv_p_eq : v = p₀ := hv_p
+        have hu_erase : u ∈ P.erase p₀ := mem_erase.mpr ⟨hu_p, hu⟩
+        refine ⟨{p₀, u}, ?_, ?_⟩
+        · refine ⟨?_, ?_, ?_⟩
+          · rw [mem_nearPencilLines_iff]
+            exact Or.inr ⟨u, hu_erase, rfl⟩
+          · exact mem_insert_of_mem (mem_singleton_self u)
+          · rw [hv_p_eq]
+            exact mem_insert_self p₀ {u}
+        · intro l' ⟨hl'_in, h_u_l', h_p₀_l'⟩
+          rw [hv_p_eq] at h_p₀_l'
+          rw [mem_nearPencilLines_iff] at hl'_in
+          rcases hl'_in with rfl | ⟨q, hq, rfl⟩
+          · have hp₀_notin : p₀ ∉ P.erase p₀ := by simp
+            exact False.elim (hp₀_notin h_p₀_l')
+          · have : u = p₀ ∨ u = q := by
+              simpa only [mem_insert, mem_singleton] using h_u_l'
+            rcases this with rfl | rfl
+            · exact False.elim (hu_p rfl)
+            · rfl
+      · have hu_erase : u ∈ P.erase p₀ := mem_erase.mpr ⟨hu_p, hu⟩
+        have hv_erase : v ∈ P.erase p₀ := mem_erase.mpr ⟨hv_p, hv⟩
+        refine ⟨P.erase p₀, ?_, ?_⟩
+        · refine ⟨?_, hu_erase, hv_erase⟩
+          rw [mem_nearPencilLines_iff]
+          exact Or.inl rfl
+        · intro l' ⟨hl'_in, h_u_l', h_v_l'⟩
+          rw [mem_nearPencilLines_iff] at hl'_in
+          rcases hl'_in with rfl | ⟨q, hq, rfl⟩
+          · rfl
+          · have hu_cases : u = p₀ ∨ u = q := by
+              simpa only [mem_insert, mem_singleton] using h_u_l'
+            have hv_cases : v = p₀ ∨ v = q := by
+              simpa only [mem_insert, mem_singleton] using h_v_l'
+            rcases hu_cases with rfl | rfl
+            · exact False.elim (hu_p rfl)
+            · rcases hv_cases with rfl | rfl
+              · exact False.elim (hv_p rfl)
+              · exact False.elim (hne rfl)
+  non_collinear := by
+    intro l hl
+    rw [mem_nearPencilLines_iff] at hl
+    rcases hl with rfl | ⟨q, hq, rfl⟩
+    · intro h_sub
+      have hp₀_notin : p₀ ∉ P.erase p₀ := by simp
+      exact hp₀_notin (h_sub hp₀)
+    · intro h_sub
+      have h_card_le := card_le_card h_sub
+      have hq_ne : p₀ ≠ q := (mem_erase.mp hq).1.symm
+      rw [card_pair hq_ne] at h_card_le
+      omega
+  three_le_card := hcard
+
+/-- **Tightness of the De Bruijn–Erdős Theorem**:
+For any finite set of points `P` with `|P| ≥ 3` and any point `p₀ ∈ P`,
+the near-pencil linear space on `P` with apex `p₀` achieves equality: `|P| = |L|`. -/
+theorem de_bruijn_erdos_tight (P : Finset α) (p₀ : α) (hp₀ : p₀ ∈ P) (hcard : 3 ≤ P.card) :
+    ∃ L : Finset (Finset α), LinearSpace P L ∧ L.card = P.card :=
+  ⟨nearPencilLines P p₀, nearPencil_linearSpace P p₀ hp₀ hcard, nearPencil_card P p₀ hp₀ hcard⟩
+
 #print axioms de_bruijn_erdos
 #print axioms de_bruijn_erdos'
+#print axioms de_bruijn_erdos_tight
 
 end DeBruijnErdos
+

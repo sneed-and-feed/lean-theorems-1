@@ -201,7 +201,6 @@ lemma gpLinearMap_injective (n m : ℕ) (L R : Fin m → Finset (Fin n))
   have h_xi : x i = 0 := sq_eq_zero_iff.mp h_xi_sq
   exact h_xi
 
-
 /-- Main Theorem: Graham-Pollak Theorem (1971 / Tverberg 1982). -/
 theorem graham_pollak (n m : ℕ) (L R : Fin m → Finset (Fin n))
     (h : IsCompleteBipartitePartition n m L R) :
@@ -210,3 +209,68 @@ theorem graham_pollak (n m : ℕ) (L R : Fin m → Finset (Fin n))
   have h_rank := LinearMap.finrank_le_finrank_of_injective hinj
   simp only [Module.finrank_fin_fun, Module.finrank_prod, Module.finrank_self] at h_rank
   omega
+
+/-- The left vertex of the `k`-th star in the canonical star decomposition of $K_n$. -/
+def starPartition_L (n : ℕ) (k : Fin (n - 1)) : Finset (Fin n) :=
+  {⟨k.val, by have := k.isLt; omega⟩}
+
+/-- The right vertices of the `k`-th star in the canonical star decomposition of $K_n$. -/
+def starPartition_R (n : ℕ) (k : Fin (n - 1)) : Finset (Fin n) :=
+  Finset.univ.filter (fun j : Fin n => k.val < j.val)
+
+/-- Tightness of the Graham-Pollak Theorem:
+$K_n$ can be partitioned into $n - 1$ complete bipartite graphs (specifically, stars). -/
+theorem graham_pollak_tight (n : ℕ) :
+    IsCompleteBipartitePartition n (n - 1) (starPartition_L n) (starPartition_R n) := by
+  refine ⟨?_, ?_⟩
+  · intro k
+    rw [disjoint_iff_ne]
+    intro x hx y hy rfl
+    simp only [starPartition_L, mem_singleton] at hx
+    simp only [starPartition_R, mem_filter, mem_univ, true_and] at hy
+    subst hx
+    exact (lt_irrefl k.val hy).elim
+  · intro u v huv
+    have h_ne_val : u.val ≠ v.val := fun h => huv (Fin.ext h)
+    rcases lt_or_gt_of_ne h_ne_val with hlt | hgt
+    · have hk_lt : u.val < n - 1 := by
+        have := v.isLt
+        omega
+      let k0 : Fin (n - 1) := ⟨u.val, hk_lt⟩
+      refine ⟨k0, ?_, ?_⟩
+      · left
+        constructor
+        · simp only [starPartition_L, mem_singleton]
+          exact Fin.ext rfl
+        · simp only [starPartition_R, mem_filter, mem_univ, true_and]
+          exact hlt
+      · rintro k (⟨hkL, hkR⟩ | ⟨hkR, hkL⟩)
+        · simp only [starPartition_L, mem_singleton] at hkL
+          have : k.val = u.val := congr_arg Fin.val hkL.symm
+          exact Fin.ext this
+        · simp only [starPartition_L, mem_singleton] at hkL
+          simp only [starPartition_R, mem_filter, mem_univ, true_and] at hkR
+          have hk_eq : k.val = v.val := congr_arg Fin.val hkL.symm
+          omega
+    · have hk_lt : v.val < n - 1 := by
+        have := u.isLt
+        omega
+      let k0 : Fin (n - 1) := ⟨v.val, hk_lt⟩
+      refine ⟨k0, ?_, ?_⟩
+      · right
+        constructor
+        · simp only [starPartition_R, mem_filter, mem_univ, true_and]
+          exact hgt
+        · simp only [starPartition_L, mem_singleton]
+          exact Fin.ext rfl
+      · rintro k (⟨hkL, hkR⟩ | ⟨hkR, hkL⟩)
+        · simp only [starPartition_L, mem_singleton] at hkL
+          simp only [starPartition_R, mem_filter, mem_univ, true_and] at hkR
+          have hk_eq : k.val = u.val := congr_arg Fin.val hkL.symm
+          omega
+        · simp only [starPartition_L, mem_singleton] at hkL
+          have : k.val = v.val := congr_arg Fin.val hkL.symm
+          exact Fin.ext this
+
+#print axioms graham_pollak
+#print axioms graham_pollak_tight

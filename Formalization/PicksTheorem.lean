@@ -141,6 +141,75 @@ theorem picks_theorem_two_area (T : LatticeTriangulation) :
 end LatticeTriangulation
 
 -- ============================================================================
+-- Section 1.1: Generalization to Polygons with Holes (Euler Characteristic χ = 1 - h)
+-- ============================================================================
+
+/-- Combinatorial elementary triangulation of a lattice polygon with `h` holes
+    (topological planar surface with `h + 1` boundary components, Euler characteristic `χ = 1 - h`). -/
+structure LatticeTriangulationWithHoles where
+  /-- Total number of vertices -/
+  V : ℕ
+  /-- Total number of edges -/
+  E : ℕ
+  /-- Total number of triangular faces -/
+  F : ℕ
+  /-- Number of strictly interior lattice vertices -/
+  i : ℕ
+  /-- Number of boundary lattice vertices across all boundary components (outer + holes) -/
+  b : ℕ
+  /-- Number of holes (h ≥ 0) -/
+  h : ℕ
+  /-- Number of interior edges -/
+  E_int : ℕ
+  /-- Number of boundary edges across all boundary components -/
+  E_bd : ℕ
+  /-- Vertex partition -/
+  h_V_split : V = i + b
+  /-- Edge partition -/
+  h_E_split : E = E_int + E_bd
+  /-- Boundary condition: boundary forms simple closed cycles, so E_bd = b -/
+  h_E_bd : E_bd = b
+  /-- Euler's formula for a planar surface with h holes: V - E + F = 1 - h in ℤ -/
+  h_euler : (V : ℤ) - (E : ℤ) + (F : ℤ) = 1 - (h : ℤ)
+  /-- Edge-face incidence double counting: 3F = 2 * E_int + E_bd -/
+  h_incidence : 3 * F = 2 * E_int + E_bd
+
+namespace LatticeTriangulationWithHoles
+
+/-- Face count identity for lattice triangulations with h holes in ℤ:
+    F = 2i + b + 2h - 2. -/
+theorem face_count_z (T : LatticeTriangulationWithHoles) :
+    (T.F : ℤ) = 2 * (T.i : ℤ) + (T.b : ℤ) + 2 * (T.h : ℤ) - 2 := by
+  have hV := T.h_V_split
+  have hE := T.h_E_split
+  have hBd := T.h_E_bd
+  have hEuler := T.h_euler
+  have hInc := T.h_incidence
+  omega
+
+/-- Real area of the polygon with h holes: Area = F / 2. -/
+def areaReal (T : LatticeTriangulationWithHoles) : ℝ :=
+  (T.F : ℝ) / 2
+
+/-- Pick's Theorem for Polygons with h Holes in ℝ:
+    Area(P) = i + b / 2 + h - 1. -/
+theorem picks_theorem_with_holes_real (T : LatticeTriangulationWithHoles) :
+    T.areaReal = (T.i : ℝ) + (T.b : ℝ) / 2 + (T.h : ℝ) - 1 := by
+  have hF : (T.F : ℝ) = 2 * (T.i : ℝ) + (T.b : ℝ) + 2 * (T.h : ℝ) - 2 := by
+    have hz := T.face_count_z
+    exact_mod_cast hz
+  dsimp [areaReal]
+  linarith
+
+/-- Integer double area formula for polygons with h holes:
+    2 * Area = 2 * i + b + 2 * h - 2. -/
+theorem picks_theorem_with_holes_two_area (T : LatticeTriangulationWithHoles) :
+    (T.F : ℤ) = 2 * (T.i : ℤ) + (T.b : ℤ) + 2 * (T.h : ℤ) - 2 :=
+  T.face_count_z
+
+end LatticeTriangulationWithHoles
+
+-- ============================================================================
 -- Section 2: Valuation Theory & Boundary Gluing Additivity
 -- ============================================================================
 
@@ -345,3 +414,15 @@ theorem picks_theorem_additivity (P₁ P₂ : LatticePolygonData) (k : ℕ) (hk 
     (P₁.glue P₂ k hk hk_le₁ hk_le₂ h_b_sum).pickInvariant =
       P₁.pickInvariant + P₂.pickInvariant :=
   P₁.pickInvariant_glue P₂ k hk hk_le₁ hk_le₂ h_b_sum
+
+/-- Generalized Pick's Theorem for Polygons with h Holes (1899):
+    Area(P) = i + b / 2 + h - 1. -/
+theorem picks_theorem_with_holes (T : LatticeTriangulationWithHoles) :
+    T.areaReal = (T.i : ℝ) + (T.b : ℝ) / 2 + (T.h : ℝ) - 1 :=
+  T.picks_theorem_with_holes_real
+
+/-- Integer form of Pick's Theorem for Polygons with h Holes:
+    2 * Area(P) = 2 * i + b + 2 * h - 2. -/
+theorem picks_theorem_with_holes_two_area (T : LatticeTriangulationWithHoles) :
+    (T.F : ℤ) = 2 * (T.i : ℤ) + (T.b : ℤ) + 2 * (T.h : ℤ) - 2 :=
+  T.picks_theorem_with_holes_two_area

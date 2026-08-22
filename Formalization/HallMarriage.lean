@@ -287,4 +287,129 @@ theorem hall_marriage_theorem (A : ι → Finset α) :
 
 #print axioms hall_marriage_theorem
 
+/-- An edge in the bipartite incidence graph between `ι` and `α` given by family `A`. -/
+def IsIncidenceEdge (A : ι → Finset α) (e : ι × α) : Prop :=
+  e.2 ∈ A e.1
+
+/-- A matching in the bipartite incidence graph is a set of edges `M ⊆ ι × α` such that
+no two distinct edges share a vertex in `ι` or in `α`. -/
+def IsMatching (A : ι → Finset α) (M : Finset (ι × α)) : Prop :=
+  (∀ e ∈ M, IsIncidenceEdge A e) ∧
+  (∀ e1 ∈ M, ∀ e2 ∈ M, e1.1 = e2.1 → e1 = e2) ∧
+  (∀ e1 ∈ M, ∀ e2 ∈ M, e1.2 = e2.2 → e1 = e2)
+
+/-- A vertex cover in the bipartite incidence graph is a pair of subsets $(C_ι, C_α)$
+such that every edge $a \in A i$ has $i \in C_ι$ or $a \in C_α$. -/
+def IsVertexCover (A : ι → Finset α) (C : Finset ι × Finset α) : Prop :=
+  ∀ i : ι, ∀ a ∈ A i, i ∈ C.1 ∨ a ∈ C.2
+
+/-- **Weak Kőnig Duality:**
+The cardinality of any matching in the bipartite incidence graph is at most
+the cardinality of any vertex cover. -/
+theorem matching_card_le_vertexCover_card (A : ι → Finset α)
+    (M : Finset (ι × α)) (hM : IsMatching A M)
+    (C : Finset ι × Finset α) (hC : IsVertexCover A C) :
+    M.card ≤ C.1.card + C.2.card := by
+  let M1 := M.filter (fun e => e.1 ∈ C.1)
+  let M2 := M.filter (fun e => e.2 ∈ C.2)
+  have hM_sub : M ⊆ M1 ∪ M2 := by
+    intro e he
+    rw [mem_union, mem_filter, mem_filter]
+    have he_inc := hM.1 e he
+    rcases hC e.1 e.2 he_inc with h1 | h2
+    · exact Or.inl ⟨he, h1⟩
+    · exact Or.inr ⟨he, h2⟩
+  have h_le := (card_le_card hM_sub).trans (card_union_le M1 M2)
+  have hM1_le : M1.card ≤ C.1.card := by
+    have h_im : M1.image Prod.fst ⊆ C.1 := by
+      intro x hx
+      rw [mem_image] at hx
+      rcases hx with ⟨e, he, rfl⟩
+      exact (mem_filter.mp he).2
+    have h_card := card_le_card h_im
+    rw [card_image_of_injOn (fun e1 he1 e2 he2 heq => hM.2.1 e1 (mem_filter.mp he1).1 e2 (mem_filter.mp he2).1 heq)] at h_card
+    exact h_card
+  have hM2_le : M2.card ≤ C.2.card := by
+    have h_im : M2.image Prod.snd ⊆ C.2 := by
+      intro x hx
+      rw [mem_image] at hx
+      rcases hx with ⟨e, he, rfl⟩
+      exact (mem_filter.mp he).2
+    have h_card := card_le_card h_im
+    rw [card_image_of_injOn (fun e1 he1 e2 he2 heq => hM.2.2 e1 (mem_filter.mp he1).1 e2 (mem_filter.mp he2).1 heq)] at h_card
+    exact h_card
+  omega
+
+/-- An SDR directly gives a perfect matching covering all vertices of `ι` in the incidence graph. -/
+theorem sdr_to_perfect_matching (A : ι → Finset α) (f : ι → α) (hf : IsSDR A f) :
+    ∃ M : Finset (ι × α), IsMatching A M ∧ M.card = Fintype.card ι := by
+  let M : Finset (ι × α) := (Finset.univ : Finset ι).image (fun i => (i, f i))
+  have hM_card : M.card = Fintype.card ι := by
+    rw [card_image_of_injective _ (fun _ _ h => (Prod.ext_iff.mp h).1), card_univ]
+  refine ⟨M, ⟨?_, ?_, ?_⟩, hM_card⟩
+  · rintro ⟨i, a⟩ he
+    rw [mem_image] at he
+    rcases he with ⟨i', -, heq⟩
+    injection heq with hi ha
+    subst hi ha
+    exact hf.2 i'
+  · intro e1 he1 e2 he2 heq
+    rw [mem_image] at he1 he2
+    rcases he1 with ⟨i1, -, rfl⟩
+    rcases he2 with ⟨i2, -, rfl⟩
+    dsimp at heq
+    subst heq
+    rfl
+  · intro e1 he1 e2 he2 heq
+    rw [mem_image] at he1 he2
+    rcases he1 with ⟨i1, -, rfl⟩
+    rcases he2 with ⟨i2, -, rfl⟩
+    dsimp at heq
+    have hi := hf.1 heq
+    subst hi
+    rfl
+
+/-- **Hall's Matching Equivalence:**
+A bipartite incidence graph has a matching covering `ι` if and only if Hall's condition holds. -/
+theorem hall_matching_theorem (A : ι → Finset α) :
+    (∃ M : Finset (ι × α), IsMatching A M ∧ M.card = Fintype.card ι) ↔ HallCondition A := by
+  constructor
+  · rintro ⟨M, hM, hM_card⟩
+    have h_fst_inj : Set.InjOn Prod.fst (M : Set (ι × α)) :=
+      fun e1 he1 e2 he2 heq => hM.2.1 e1 he1 e2 he2 heq
+    have h_im_univ : M.image Prod.fst = Finset.univ := by
+      apply eq_univ_of_card
+      simp [card_image_of_injOn h_fst_inj, hM_card]
+    have h_unique : ∀ i : ι, ∃! a : α, (i, a) ∈ M := by
+      intro i
+      have h_in_univ : i ∈ (Finset.univ : Finset ι) := mem_univ i
+      rw [← h_im_univ, mem_image] at h_in_univ
+      rcases h_in_univ with ⟨⟨i', a⟩, he, rfl⟩
+      refine ⟨a, he, ?_⟩
+      intro a' ha'
+      have heq := hM.2.1 (i', a') ha' (i', a) he rfl
+      cases heq
+      rfl
+    let f : ι → α := fun i => (h_unique i).choose
+    have hf_mem_M : ∀ i : ι, (i, f i) ∈ M := fun i => (h_unique i).choose_spec.1
+    have hf_mem_A : ∀ i : ι, f i ∈ A i := fun i => hM.1 (i, f i) (hf_mem_M i)
+    have hf_inj : Function.Injective f := by
+      intro i j heq
+      have he1 : (i, f i) ∈ M := hf_mem_M i
+      have he2 : (j, f j) ∈ M := hf_mem_M j
+      rw [heq] at he1
+      have heq' := hM.2.2 (i, f j) he1 (j, f j) he2 rfl
+      cases heq'
+      rfl
+    have h_sdr : IsSDR A f := ⟨hf_inj, hf_mem_A⟩
+    exact hall_marriage_necessary A f h_sdr
+  · intro hH
+    rcases (hall_marriage_theorem A).mpr hH with ⟨f, hf⟩
+    exact sdr_to_perfect_matching A f hf
+
+#print axioms hall_matching_theorem
+#print axioms matching_card_le_vertexCover_card
+
 end HallMarriage
+
+

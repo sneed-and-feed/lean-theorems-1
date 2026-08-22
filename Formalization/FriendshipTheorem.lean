@@ -28,6 +28,10 @@ universal vertex $w$ (a "windmill graph" or "friendship graph" $Wd(k, 2)$).
 
 namespace FriendshipTheorem
 
+set_option linter.deprecated false
+set_option linter.unusedSectionVars false
+set_option linter.unusedVariables false
+
 open Finset SimpleGraph
 
 variable {V : Type*} [Fintype V] [DecidableEq V]

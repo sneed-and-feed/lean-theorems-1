@@ -280,3 +280,36 @@ theorem bollobas_two_families {α : Type*} [DecidableEq α] {m : ℕ}
     (h_inter : ∀ i j, i ≠ j → ¬ Disjoint (A i) (B j)) :
     ∑ i : Fin m, (1 : ℝ) / ((A i).card + (B i).card).choose (A i).card ≤ 1 :=
   bollobas_inductive (∑ i : Fin m, ((A i).card + (B i).card)) A B rfl h_disj h_inter
+
+/-- **Uniform Bollobás Two Families Theorem (1965):**
+    If $|A_i| = a$ and $|B_i| = b$ for all $i \in \{1, \dots, m\}$, then the number of pairs satisfies
+    $m \le \binom{a+b}{a}$. -/
+theorem bollobas_uniform {α : Type*} [DecidableEq α] {m a b : ℕ}
+    (A B : Fin m → Finset α)
+    (h_disj : ∀ i, Disjoint (A i) (B i))
+    (h_inter : ∀ i j, i ≠ j → ¬ Disjoint (A i) (B j))
+    (hA : ∀ i, (A i).card = a)
+    (hB : ∀ i, (B i).card = b) :
+    (m : ℝ) ≤ (Nat.choose (a + b) a : ℝ) := by
+  have h_main := bollobas_two_families A B h_disj h_inter
+  have h_const : ∀ i : Fin m, (1 : ℝ) / ((A i).card + (B i).card).choose (A i).card =
+      1 / ((a + b).choose a : ℝ) := by
+    intro i
+    rw [hA i, hB i]
+  rw [Finset.sum_congr rfl (fun i _ => h_const i), Finset.sum_const, nsmul_eq_mul] at h_main
+  rw [Finset.card_univ, Fintype.card_fin] at h_main
+  have h_pos : (0 : ℝ) < ((a + b).choose a : ℝ) := by
+    exact_mod_cast Nat.choose_pos (by omega)
+  rw [mul_one_div] at h_main
+  exact (div_le_one₀ h_pos).mp h_main
+
+/-- Integer form of Uniform Bollobás Theorem: $m \le \binom{a+b}{a}$. -/
+theorem bollobas_uniform_nat {α : Type*} [DecidableEq α] {m a b : ℕ}
+    (A B : Fin m → Finset α)
+    (h_disj : ∀ i, Disjoint (A i) (B i))
+    (h_inter : ∀ i j, i ≠ j → ¬ Disjoint (A i) (B j))
+    (hA : ∀ i, (A i).card = a)
+    (hB : ∀ i, (B i).card = b) :
+    m ≤ Nat.choose (a + b) a := by
+  exact_mod_cast bollobas_uniform A B h_disj h_inter hA hB
+

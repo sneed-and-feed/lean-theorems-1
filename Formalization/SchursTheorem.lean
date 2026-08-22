@@ -238,37 +238,20 @@ theorem schurs_theorem (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
   have h_sort : ∃ a b c, a < b ∧ b < c ∧
       a ∈ S ∧ b ∈ S ∧ c ∈ S ∧
       edgeColor a b = col ∧ edgeColor b c = col ∧ edgeColor a c = col := by
-    rcases lt_trichotomy u v with huv_lt | rfl | huv_gt
-    · rcases lt_trichotomy v w with hvw_lt | rfl | hvw_gt
-      · -- u < v < w
-        exact ⟨u, v, w, huv_lt, hvw_lt, Finset.mem_range.mpr hu, Finset.mem_range.mpr hv, Finset.mem_range.mpr hw, hc_uv, hc_vw, hc_uw⟩
-      · contradiction
-      · rcases lt_trichotomy u w with huw_lt | rfl | huw_gt
-        · -- u < w < v
-          have hc_wv : edgeColor w v = col := by rw [h_edgeColor_symm]; exact hc_vw
-          exact ⟨u, w, v, huw_lt, hvw_gt, Finset.mem_range.mpr hu, Finset.mem_range.mpr hw, Finset.mem_range.mpr hv, hc_uw, hc_wv, hc_uv⟩
-        · contradiction
-        · -- w < u < v
-          have hc_wu : edgeColor w u = col := by rw [h_edgeColor_symm]; exact hc_uw
-          have hc_wv : edgeColor w v = col := by rw [h_edgeColor_symm]; exact hc_vw
-          exact ⟨w, u, v, huw_gt, huv_lt, Finset.mem_range.mpr hw, Finset.mem_range.mpr hu, Finset.mem_range.mpr hv, hc_wu, hc_uv, hc_wv⟩
-    · contradiction
-    · rcases lt_trichotomy u w with huw_lt | rfl | huw_gt
-      · -- v < u < w
-        have hc_vu : edgeColor v u = col := by rw [h_edgeColor_symm]; exact hc_uv
-        exact ⟨v, u, w, huv_gt, huw_lt, Finset.mem_range.mpr hv, Finset.mem_range.mpr hu, Finset.mem_range.mpr hw, hc_vu, hc_uw, hc_vw⟩
-      · contradiction
-      · rcases lt_trichotomy v w with hvw_lt | rfl | hvw_gt
-        · -- v < w < u
-          have hc_vu : edgeColor v u = col := by rw [h_edgeColor_symm]; exact hc_uv
-          have hc_wu : edgeColor w u = col := by rw [h_edgeColor_symm]; exact hc_uw
-          exact ⟨v, w, u, hvw_lt, huw_gt, Finset.mem_range.mpr hv, Finset.mem_range.mpr hw, Finset.mem_range.mpr hu, hc_vw, hc_wu, hc_vu⟩
-        · contradiction
-        · -- w < v < u
-          have hc_wv : edgeColor w v = col := by rw [h_edgeColor_symm]; exact hc_vw
-          have hc_vu : edgeColor v u = col := by rw [h_edgeColor_symm]; exact hc_uv
-          have hc_wu : edgeColor w u = col := by rw [h_edgeColor_symm]; exact hc_uw
-          exact ⟨w, v, u, hvw_gt, huv_gt, Finset.mem_range.mpr hw, Finset.mem_range.mpr hv, Finset.mem_range.mpr hu, hc_wv, hc_vu, hc_wu⟩
+    have huS : u ∈ S := Finset.mem_range.mpr hu
+    have hvS : v ∈ S := Finset.mem_range.mpr hv
+    have hwS : w ∈ S := Finset.mem_range.mpr hw
+    rcases lt_or_gt_of_ne huv with h1 | h1 <;>
+    rcases lt_or_gt_of_ne huw with h2 | h2 <;>
+    rcases lt_or_gt_of_ne hvw with h3 | h3
+    · exact ⟨u, v, w, h1, h3, huS, hvS, hwS, hc_uv, hc_vw, hc_uw⟩
+    · exact ⟨u, w, v, h2, h3, huS, hwS, hvS, hc_uw, by rw [h_edgeColor_symm]; exact hc_vw, hc_uv⟩
+    · omega
+    · exact ⟨w, u, v, h2, h1, hwS, huS, hvS, by rw [h_edgeColor_symm]; exact hc_uw, hc_uv, by rw [h_edgeColor_symm]; exact hc_vw⟩
+    · exact ⟨v, u, w, h1, h2, hvS, huS, hwS, by rw [h_edgeColor_symm]; exact hc_uv, hc_uw, hc_vw⟩
+    · omega
+    · exact ⟨v, w, u, h3, h2, hvS, hwS, huS, hc_vw, by rw [h_edgeColor_symm]; exact hc_uw, by rw [h_edgeColor_symm]; exact hc_uv⟩
+    · exact ⟨w, v, u, h3, h1, hwS, hvS, huS, by rw [h_edgeColor_symm]; exact hc_vw, by rw [h_edgeColor_symm]; exact hc_uv, by rw [h_edgeColor_symm]; exact hc_uw⟩
   rcases h_sort with ⟨a, b, c, hab, hbc, ha_S, -, hc_S, hc_ab, hc_bc, hc_ac⟩
   rw [Finset.mem_range] at ha_S hc_S
   have hac : a < c := lt_trans hab hbc
@@ -296,6 +279,90 @@ theorem schurs_theorem (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
   rw [hc_ac_val] at hc_ac
   exact ⟨col, x, y, z, hx_pos, hy_pos, hz_pos, hx_le, hy_le, hz_le, h_sum_eq, hc_ab, hc_bc, hc_ac⟩
 
+/-- The finite set of integers $\{1, \dots, N\}$. -/
+def schurInterval (N : ℕ) : Finset ℕ :=
+  (Finset.range (N + 1)).filter (fun x => 1 ≤ x)
+
+lemma mem_schurInterval {N x : ℕ} : x ∈ schurInterval N ↔ 1 ≤ x ∧ x ≤ N := by
+  simp only [schurInterval, mem_filter, mem_range]
+  omega
+
+/-- **Schur's Theorem (Color Class Formulation):**
+For any $r \ge 1$ and $N = \text{ramseyTriangleBound } r$, in any $r$-coloring of $\{1, \dots, N\}$,
+at least one color class is not sum-free. -/
+theorem schurs_theorem_color_classes (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
+    let N := ramseyTriangleBound r
+    let colorClass (c : Fin r) : Finset ℕ :=
+      (schurInterval N).filter (fun x => χ x = c)
+    ∃ c : Fin r, ¬ isSumFree (colorClass c) := by
+  intro N colorClass
+  rcases schurs_theorem r hr χ with ⟨c, x, y, z, hx1, hy1, hz1, hxN, hyN, hzN, hxyz, hcx, hcy, hcz⟩
+  refine ⟨c, ?_⟩
+  intro h_sf
+  have hx_in : x ∈ colorClass c := by
+    dsimp [colorClass]
+    rw [mem_filter, mem_schurInterval]
+    exact ⟨⟨hx1, hxN⟩, hcx⟩
+  have hy_in : y ∈ colorClass c := by
+    dsimp [colorClass]
+    rw [mem_filter, mem_schurInterval]
+    exact ⟨⟨hy1, hyN⟩, hcy⟩
+  have hz_in : z ∈ colorClass c := by
+    dsimp [colorClass]
+    rw [mem_filter, mem_schurInterval]
+    exact ⟨⟨hz1, hzN⟩, hcz⟩
+  have hz_not_in : x + y ∉ colorClass c := h_sf x hx_in y hy_in
+  rw [hxyz] at hz_not_in
+  exact hz_not_in hz_in
+
+/-- **Schur's Theorem (Set Partition Formulation):**
+If $\{1, \dots, \text{ramseyTriangleBound } r\}$ is partitioned (or covered) by $r$ sets
+$A_0, \dots, A_{r-1}$, then at least one set $A_i$ contains a solution to $x + y = z$
+(i.e., is not sum-free). -/
+theorem schurs_theorem_partition (r : ℕ) (hr : 1 ≤ r) (A : Fin r → Finset ℕ)
+    (h_cover : schurInterval (ramseyTriangleBound r) ⊆ Finset.biUnion Finset.univ A) :
+    ∃ i : Fin r, ∃ x y z, x ∈ A i ∧ y ∈ A i ∧ z ∈ A i ∧ x + y = z := by
+  let N := ramseyTriangleBound r
+  have h_choice : ∀ x : ℕ, ∃ i : Fin r, x ∈ schurInterval N → x ∈ A i := by
+    intro x
+    by_cases hx : x ∈ schurInterval N
+    · have hx_cov := h_cover hx
+      rw [mem_biUnion] at hx_cov
+      rcases hx_cov with ⟨i, -, hi⟩
+      exact ⟨i, fun _ => hi⟩
+    · exact ⟨⟨0, hr⟩, fun h => False.elim (hx h)⟩
+  let χ : ℕ → Fin r := fun x => (h_choice x).choose
+  have hχ_mem : ∀ x ∈ schurInterval N, x ∈ A (χ x) := fun x hx => (h_choice x).choose_spec hx
+  rcases schurs_theorem r hr χ with ⟨c, x, y, z, hx1, hy1, hz1, hxN, hyN, hzN, hxyz, hcx, hcy, hcz⟩
+  have hx_int : x ∈ schurInterval N := mem_schurInterval.mpr ⟨hx1, hxN⟩
+  have hy_int : y ∈ schurInterval N := mem_schurInterval.mpr ⟨hy1, hyN⟩
+  have hz_int : z ∈ schurInterval N := mem_schurInterval.mpr ⟨hz1, hzN⟩
+  have hxA : x ∈ A c := by
+    have := hχ_mem x hx_int
+    rwa [hcx] at this
+  have hyA : y ∈ A c := by
+    have := hχ_mem y hy_int
+    rwa [hcy] at this
+  have hzA : z ∈ A c := by
+    have := hχ_mem z hz_int
+    rwa [hcz] at this
+  exact ⟨c, x, y, z, hxA, hyA, hzA, hxyz⟩
+
+/-- **Schur's Theorem (Partition Sum-Free Formulation):**
+If $\{1, \dots, \text{ramseyTriangleBound } r\}$ is covered by $r$ sets, not all of them can be sum-free. -/
+theorem schurs_theorem_partition_not_sum_free (r : ℕ) (hr : 1 ≤ r) (A : Fin r → Finset ℕ)
+    (h_cover : schurInterval (ramseyTriangleBound r) ⊆ Finset.biUnion Finset.univ A) :
+    ∃ i : Fin r, ¬ isSumFree (A i) := by
+  rcases schurs_theorem_partition r hr A h_cover with ⟨i, x, y, z, hx, hy, hz, hxyz⟩
+  refine ⟨i, ?_⟩
+  intro h_sf
+  have := h_sf x hx y hy
+  rw [hxyz] at this
+  exact this hz
+
 #print axioms schurs_theorem
+#print axioms schurs_theorem_color_classes
+#print axioms schurs_theorem_partition
+#print axioms schurs_theorem_partition_not_sum_free
 
 end SchursTheorem

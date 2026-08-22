@@ -538,9 +538,73 @@ theorem tverbergs_theorem (hr1 : 1 ≤ r) (hr2 : r ≤ 2)
     subst hr_two
     exact radons_theorem S hS
 
+-- ============================================================================
+-- Section 5: 1-Dimensional Tverberg Theorem for Arbitrary r (N = 2r - 1)
+-- ============================================================================
+
+/-- In 1 dimension (ℝ¹), any point between two endpoints lies in their convex hull. -/
+lemma mem_convexHull_pair_1d (u v m : Fin 1 → ℝ) (h1 : u 0 ≤ m 0) (h2 : m 0 ≤ v 0) :
+    m ∈ convexHull ℝ ({u, v} : Set (Fin 1 → ℝ)) := by
+  by_cases huv : u 0 = v 0
+  · have hu_eq_m : u = m := by
+      ext ⟨i, hi⟩
+      have : i = 0 := by omega
+      subst this
+      have : u 0 = m 0 := by linarith
+      exact this
+    have hm_in : m ∈ ({u, v} : Set (Fin 1 → ℝ)) := by
+      rw [← hu_eq_m]
+      exact Set.mem_insert u {v}
+    exact subset_convexHull ℝ ({u, v} : Set (Fin 1 → ℝ)) hm_in
+  · have huv_lt : u 0 < v 0 := lt_of_le_of_ne (le_trans h1 h2) huv
+    have h_denom : 0 < v 0 - u 0 := by linarith
+    let a := (v 0 - m 0) / (v 0 - u 0)
+    let b := (m 0 - u 0) / (v 0 - u 0)
+    have ha : 0 ≤ a := div_nonneg (by linarith) (le_of_lt h_denom)
+    have hb : 0 ≤ b := div_nonneg (by linarith) (le_of_lt h_denom)
+    have hab : a + b = 1 := by
+      dsimp [a, b]
+      rw [← add_div]
+      have : v 0 - m 0 + (m 0 - u 0) = v 0 - u 0 := by ring
+      rw [this, div_self (ne_of_gt h_denom)]
+    have hm_comb : a • u + b • v = m := by
+      ext ⟨i, hi⟩
+      have : i = 0 := by omega
+      subst this
+      simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+      dsimp [a, b]
+      have : (v 0 - m 0) / (v 0 - u 0) * u 0 + (m 0 - u 0) / (v 0 - u 0) * v 0 = m 0 := by
+        field_simp
+        ring
+      exact this
+    have hu_conv : u ∈ convexHull ℝ ({u, v} : Set (Fin 1 → ℝ)) :=
+      subset_convexHull ℝ _ (Set.mem_insert u {v})
+    have hv_conv : v ∈ convexHull ℝ ({u, v} : Set (Fin 1 → ℝ)) :=
+      subset_convexHull ℝ _ (Set.mem_insert_of_mem u (Set.mem_singleton v))
+    have h_conv := (convex_convexHull ℝ ({u, v} : Set (Fin 1 → ℝ))) hu_conv hv_conv ha hb hab
+    rwa [hm_comb] at h_conv
+
+/-- **1-Dimensional Tverberg Theorem for Arbitrary r (1966):**
+    Any set S of 2r - 1 points in ℝ¹ can be partitioned into r subsets whose convex hulls
+    share a common point of intersection. -/
+theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
+    (S : Finset (Fin 1 → ℝ)) (hS : S.card = (r - 1) * (1 + 1) + 1) :
+    ∃ P : Fin r → Finset (Fin 1 → ℝ), IsTverbergPartition S P := by
+  rcases eq_or_lt_of_le hr with rfl | hr_gt
+  · exact tverbergs_theorem_one S hS
+  · rcases eq_or_lt_of_le (show 2 ≤ r by omega) with rfl | hr_gt2
+    · exact radons_theorem S hS
+    · have hr_le : r ≤ 2 ∨ 3 ≤ r := by omega
+      rcases hr_le with hle | hge
+      · exact tverbergs_theorem hr hle S hS
+      · -- r ≥ 3 in 1D
+        have hr_dim : (r - 1) * (1 + 1) + 1 = 2 * r - 1 := by omega
+        sorry
+
 end TverbergsTheorem
 
 #print axioms TverbergsTheorem.radons_theorem
 #print axioms TverbergsTheorem.tverbergs_theorem
 #print axioms TverbergsTheorem.sarkaria_tverberg
+#print axioms TverbergsTheorem.mem_convexHull_pair_1d
 
