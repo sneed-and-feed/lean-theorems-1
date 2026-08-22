@@ -550,6 +550,60 @@ theorem erdos_ko_rado_powersetCard {n k : ℕ}
     exact this.2
   · exact h_inter
 
+-- ============================================================================
+-- Section 7: Star Families & Intersection Centers
+-- ============================================================================
+
+/-- A family `F` of sets is a star (canonically centered) if all sets share a common element `x`. -/
+def IsStarFamily (F : Finset (Finset α)) : Prop :=
+  ∃ x : α, ∀ A ∈ F, x ∈ A
+
+/-- The full star family centered at `x` among all `k`-subsets of `α`. -/
+def starFamily (x : α) (k : ℕ) : Finset (Finset α) :=
+  ((Finset.univ : Finset α).powersetCard k).filter (fun A => x ∈ A)
+
+/-- The cardinality of any full star family on an `n`-element set is `Nat.choose (n - 1) (k - 1)`. -/
+lemma card_starFamily {n k : ℕ} (hn : Fintype.card α = n) (hk : 1 ≤ k) (hkn : k ≤ n) (x : α) :
+    (starFamily x k).card = Nat.choose (n - 1) (k - 1) := by
+  sorry
+
+-- ============================================================================
+-- Section 8: EKR Uniqueness Theorem (n > 2k)
+-- ============================================================================
+
+/-- **EKR Uniqueness Theorem (Erdős–Ko–Rado 1961):**
+    For $n > 2k$, every intersecting family of $k$-sets achieving the maximal cardinality
+    $\binom{n-1}{k-1}$ is necessarily a star family. -/
+theorem erdos_ko_rado_uniqueness {n k : ℕ}
+    (hn : Fintype.card α = n) (hk : 1 ≤ k) (h2k : 2 * k < n)
+    (F : Finset (Finset α))
+    (hF_k : ∀ A ∈ F, A.card = k)
+    (h_inter : ∀ A ∈ F, ∀ B ∈ F, ¬ Disjoint A B)
+    (h_max : F.card = Nat.choose (n - 1) (k - 1)) :
+    IsStarFamily F := by
+  sorry
+
+-- ============================================================================
+-- Section 9: Hilton–Milner Bound (EKR Stability)
+-- ============================================================================
+
+/-- The Hilton–Milner extremal bound: $\binom{n-1}{k-1} - \binom{n-k-1}{k-1} + 1$. -/
+def hiltonMilnerBound (n k : ℕ) : ℕ :=
+  Nat.choose (n - 1) (k - 1) - Nat.choose (n - k - 1) (k - 1) + 1
+
+/-- **Hilton–Milner Theorem (1967):**
+    Let $n > 2k$ and $k \ge 2$. If $\mathcal{F}$ is an intersecting family of $k$-element subsets
+    of an $n$-element universe that is NOT a star family, then
+    $|\mathcal{F}| \le \binom{n-1}{k-1} - \binom{n-k-1}{k-1} + 1$. -/
+theorem hilton_milner_stability {n k : ℕ}
+    (hn : Fintype.card α = n) (hk : 2 ≤ k) (h2k : 2 * k < n)
+    (F : Finset (Finset α))
+    (hF_k : ∀ A ∈ F, A.card = k)
+    (h_inter : ∀ A ∈ F, ∀ B ∈ F, ¬ Disjoint A B)
+    (h_not_star : ¬ IsStarFamily F) :
+    F.card ≤ hiltonMilnerBound n k := by
+  sorry
+
 end ErdosKoRado
 
 #print axioms erdos_ko_rado
