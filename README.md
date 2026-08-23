@@ -194,7 +194,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 ### 20. Pick's Theorem on Lattice Polygons (Freek Wiedijk #92)
 * **Module:** [`Formalization/PicksTheorem.lean`](Formalization/PicksTheorem.lean)
 * **Theorems:** `picks_theorem`, `picks_theorem_two_area`, `picks_theorem_additivity`
-* **Mathematical Statement:** For any simple lattice polygon with $i$ interior and $b$ boundary lattice points, $\operatorname{Area}(P) = i + b/2 - 1$.
+* **Mathematical Statement:** For any simple lattice polygon with $i$ interior and $b$ boundary lattice points, $\mathrm{Area}(P) = i + b/2 - 1$.
 
 ---
 
@@ -208,7 +208,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 ### 22. The Crossing Lemma (Ajtai et al. 1982 / Leighton 1983)
 * **Module:** [`Formalization/CrossingLemma.lean`](Formalization/CrossingLemma.lean)
 * **Theorem:** `crossing_lemma`
-* **Mathematical Statement:** For any simple graph $G = (V, E)$ drawn in the plane with $|E| \ge 4|V|$, the number of edge crossings satisfies $\operatorname{cr}(G) \ge \frac{1}{64} \frac{|E|^3}{|V|^2}$.
+* **Mathematical Statement:** For any simple graph $G = (V, E)$ drawn in the plane with $|E| \ge 4|V|$, the number of edge crossings satisfies $\mathrm{cr}(G) \ge \frac{1}{64} \frac{|E|^3}{|V|^2}$.
 
 ---
 
