@@ -149,8 +149,13 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 ### 14. The Friendship Theorem (Erdős–Rényi–Sós 1966)
 * **Module:** [`Formalization/FriendshipTheorem.lean`](Formalization/FriendshipTheorem.lean)
-* **Theorem:** `friendship_theorem`
-* **Mathematical Statement:** If every pair of distinct vertices in a finite graph shares exactly one common neighbor, there exists a universal vertex adjacent to all others.
+* **Modular Package:** [`Formalization/FriendshipTheorem/`](Formalization/FriendshipTheorem)
+  - `Basic.lean`: `HasFriendshipProperty`, `IsUniversalVertex`, `commonNeighbor` algebraic uniqueness & symmetry.
+  - `Politician.lean`: Non-adjacent vertex degree equality, reduction to universal vertex, degree parity via neighborhood involutions, and order formula $|V| = k(k-1) + 1$.
+  - `Walks.lean`: Walk counting, adjacency matrix powers $A^2 = (k-1)I + J \pmod p$, closed walk $\mathbb{Z}/p\mathbb{Z}$ cyclic shift group actions, and elimination of regular friendship graphs for $k \ge 3$.
+  - `Windmill.lean`: 2-regular base case ($K_3$ triangle) and windmill graph properties.
+* **Theorems:** `friendship_theorem`, `two_regular_has_universal`, `no_regular_friendship_graph_ge_three`, `degree_eq_of_not_adj`
+* **Mathematical Statement:** If every pair of distinct vertices in a finite graph shares exactly one common neighbor, there exists a universal vertex ("politician") adjacent to all others.
 
 ---
 
@@ -200,8 +205,13 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 ### 21. Erdős–Szekeres Convex Polygon Theorem (Happy Ending, 1935)
 * **Module:** [`Formalization/ErdosSzekeresConvex.lean`](Formalization/ErdosSzekeresConvex.lean)
-* **Theorems:** `erdos_szekeres_convex_polygon`, `erdos_szekeres_triangle`, `erdos_szekeres_four_points`
-* **Mathematical Statement:** Every set of $\ge \binom{2k-4}{k-2} + 1$ points in $\mathbb{R}^2$ in general position contains a convex $k$-gon.
+* **Modular Package:** [`Formalization/ErdosSzekeresConvex/`](Formalization/ErdosSzekeresConvex)
+  - `Orientation.lean`: 2D planar points, orientation determinants, general position, and halfspace separation lemmas for convex hulls.
+  - `Sorting.lean`: 2D planar rotations, lexicographical order on $\mathbb{R}^2$, `HasDistinctX`, and $x$-sorting.
+  - `CupCap.lean`: Definitions of $a$-cups and $b$-caps, extension lemmas, Pascal split recurrence, and the full Erdős–Szekeres cup-cap induction theorem.
+  - `ConvexPolygon.lean`: 4-point determinant identities, transitivity of orientations, and strict extreme point separation proving every $k$-cup/cap forms a strictly convex $k$-gon.
+* **Theorems:** `erdos_szekeres_convex_polygon`, `erdos_szekeres_triangle`, `erdos_szekeres_four_points`, `esther_klein_theorem`, `cup_cap_lemma`
+* **Mathematical Statement:** Every set of at least $\binom{2k-4}{k-2} + 1$ points in $\mathbb{R}^2$ in general position with distinct $x$-coordinates contains the vertices of a strictly convex $k$-gon.
 
 ---
 
@@ -287,14 +297,24 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 │   ├── ErdosKoRado.lean                  # 11. Erdős–Ko–Rado Theorem
 │   ├── SylvesterGallai.lean              # 12. Sylvester–Gallai Theorem (Freek Wiedijk #98)
 │   ├── HallMarriage.lean                 # 13. Hall's Marriage Theorem (Freek Wiedijk #87)
-│   ├── FriendshipTheorem.lean            # 14. The Friendship Theorem (Erdős–Rényi–Sós 1966)
+│   ├── FriendshipTheorem.lean            # 14. The Friendship Theorem (Master Interface)
+│   ├── FriendshipTheorem/                # 14. Modular Friendship Package
+│   │   ├── Basic.lean                    #     - Algebraic uniqueness & symmetry
+│   │   ├── Politician.lean               #     - Degree equality, parity, & order formula
+│   │   ├── Walks.lean                    #     - Walk counting mod p & group actions
+│   │   └── Windmill.lean                 #     - 2-regular base case
 │   ├── RadonHelly.lean                   # 15. Radon's Lemma & Helly's Theorem (Freek Wiedijk #99)
 │   ├── TverbergsTheorem.lean             # 16. Tverberg's Theorem
 │   ├── DilworthTheorem.lean              # 17. Dilworth's Decomposition Theorem for Posets
 │   ├── ArtGalleryTheorem.lean            # 18. Chvátal's Art Gallery Theorem
 │   ├── CauchyArmLemma.lean               # 19. Cauchy's Arm Lemma & Convex Rigidity
 │   ├── PicksTheorem.lean                 # 20. Pick's Theorem on Lattice Polygons (Freek Wiedijk #92)
-│   ├── ErdosSzekeresConvex.lean          # 21. Erdős–Szekeres Convex Polygon Theorem (Happy Ending)
+│   ├── ErdosSzekeresConvex.lean          # 21. Erdős–Szekeres Convex Polygon Theorem (Master Interface)
+│   ├── ErdosSzekeresConvex/              # 21. Modular Erdős–Szekeres Package
+│   │   ├── Orientation.lean              #     - Planar points, determinants, & halfspaces
+│   │   ├── Sorting.lean                  #     - Planar rotations & x-coordinate sorting
+│   │   ├── CupCap.lean                   #     - Cups, caps, & induction theorem
+│   │   └── ConvexPolygon.lean            #     - Extreme point separation & convex k-gons
 │   ├── CrossingLemma.lean                # 22. The Crossing Lemma
 │   ├── KneserLovasz.lean                 # 23. Kneser's Conjecture / Lovász's Theorem
 │   ├── TuckersLemma.lean                 # 24. Tucker's Combinatorial Lemma
