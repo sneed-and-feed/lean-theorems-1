@@ -1,11 +1,8 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.DegreeSum
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Fintype.Basic
-import Mathlib.Data.Fintype.Card
-import Mathlib.Tactic
+import Mathlib.Tactic.Ring
 import Formalization.FriendshipTheorem
 
 set_option linter.unusedSectionVars false
