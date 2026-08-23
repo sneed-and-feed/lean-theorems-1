@@ -26,7 +26,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
 | 16 | **Tverberg's Theorem** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`radons_theorem`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Sarkaria (1992), Bárány & Onn (1997) |
-| 17 | **Dilworth's Decomposition Theorem** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Perles (1963) |
+| 17 | **Dilworth's & Mirsky's Decomposition Theorems** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean), [`mirsky_theorem`](Formalization/DilworthTheorem.lean), [`mirsky_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Mirsky (1971), Perles (1963) |
 | 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
 | 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) |
 | 20 | **Pick's Theorem on Lattice Polygons** | [`picks_theorem`](Formalization/PicksTheorem.lean), [`picks_theorem_two_area`](Formalization/PicksTheorem.lean), [`picks_theorem_additivity`](Formalization/PicksTheorem.lean) | Discrete & Lattice Geometry | Pick (1899), Wiedijk #92 |
@@ -175,10 +175,12 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 ---
 
-### 17. Dilworth's Decomposition Theorem for Posets (1950)
+### 17. Dilworth's Decomposition Theorem & Mirsky's Dual Theorem for Posets (1950, 1971)
 * **Module:** [`Formalization/DilworthTheorem.lean`](Formalization/DilworthTheorem.lean)
-* **Theorems:** `dilworth_theorem`, `dilworth_duality`
-* **Mathematical Statement:** In any finite poset $(P, \le)$, the maximum size of an antichain equals the minimum number of chains required to cover $P$.
+* **Theorems:** `dilworth_theorem`, `dilworth_duality`, `mirsky_theorem`, `mirsky_duality`
+* **Mathematical Statement:**
+  - **Dilworth's Theorem:** In any finite poset $(P, \le)$, the maximum size of an antichain equals the minimum number of chains required to cover $P$ ($\text{width}(P) = \min |\text{chains}|$).
+  - **Mirsky's Theorem:** The maximum size of a chain equals the minimum number of antichains required to cover $P$ ($\text{height}(P) = \min |\text{antichains}|$).
 
 ---
 
