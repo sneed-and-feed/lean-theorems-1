@@ -51,19 +51,25 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 
 ### 1. Desargues's Theorem: Vector and Axiomatic Projective Forms
 * **Module:** [`Formalization/DesarguesVector.lean`](Formalization/DesarguesVector.lean)
-* **Theorems:** `desargues_vector`, `desargues_projective_plane`,
-  `desargues_converse_projective_plane`, `axialPerspective_not_implies_central`
+* **Theorems:** `desargues_vector`, `desargues_projective_plane_proper`,
+  `desargues_converse_projective_plane`,
+  `exists_centralPerspective_iff_exists_properAxialPerspective`,
+  `axialPerspective_not_implies_central`
 * **Mathematical Statement:** Let $V$ be a module over a commutative ring $K$. If two triangles $(A_1, B_1, C_1)$ and $(A_2, B_2, C_2)$ are in central perspective from a center $O$ with scaling coefficients $(a, b, c)$ and $(\lambda, \mu, \nu)$, then their corresponding side-intersection points:
   $$P = \mu A_2 - \lambda B_2, \quad Q = \nu B_2 - \mu C_2, \quad R = \lambda C_2 - \nu A_2$$
   satisfy the linear dependence relation:
   $$\nu P + \lambda Q + \mu R = 0$$
   demonstrating axial perspective (collinearity).
 * **Projective result and boundary:** `desargues_projective_plane` records the forward Desargues
-  axiom. `desargues_converse_projective_plane` derives the converse synthetically by applying the
-  forward theorem to two auxiliary triangles. It assumes distinct corresponding vertices and
-  `ProperAxialPerspective`, which excludes the axis from being any of the six side lines. The old
-  weaker converse was false; `axialPerspective_not_implies_central` gives a four-point
-  counterexample for that exact boundary.
+  axiom. `desargues_projective_plane_proper` proves that its axis is automatically distinct from
+  all six side lines. `desargues_converse_projective_plane` derives the converse synthetically by
+  applying the forward theorem to two auxiliary triangles, and
+  `exists_centralPerspective_iff_exists_properAxialPerspective` combines both directions into an
+  exact equivalence. The axial side displays the three corresponding-vertex inequalities and uses
+  `ProperAxialPerspective` for the six axis-versus-side exclusions. The old converse using only
+  `AxialPerspective` was false; `axialPerspective_not_implies_central` gives a four-point
+  counterexample to that weaker statement. The equivalence is exact for these dual predicates; it
+  does not claim a separate minimality proof for every exclusion.
 * **Historical scope:** The triangle theorem is cited from Bosse's 1647/1648 presentation of
   Desargues's work. The module's commutative-ring identity is a modern algebraic formulation
   inspired by that theorem, not a claim about the wording of the historical source.
