@@ -12,9 +12,9 @@ import Mathlib.Data.Real.Basic
 import Formalization.RadonHelly
 
 /-!
-# Bárány's Colorful Helly Theorem (1982)
+# Lovász's Colorful Helly Theorem (1974; first published proof 1982)
 
-**Theorem Statement (Bárány 1982):**
+**Theorem statement (Lovász; first published in Bárány 1982, Theorem 3.1):**
 Let $\mathcal{F}_0, \mathcal{F}_1, \dots, \mathcal{F}_d$ be $d+1$ finite families of convex sets
 in $\mathbb{R}^d$. If every colorful transversal (i.e. every selection of one set
 $S_i \in \mathcal{F}_i$ for each $i \in \{0, \dots, d\}$) has a non-empty intersection
@@ -29,6 +29,18 @@ colorful intersection.  Among all colorful choices, we maximize the minimum squa
 length on the intersection.  Helly's theorem, applied after adjoining the strict lower sublevel
 set, shows that at most $d$ chosen sets determine this minimum.  Replacing the omitted color and
 using strict convexity then forces the extremal point to lie in every set of that color.
+
+### Source and formalization scope
+
+Lovász discovered the colorful Helly theorem in 1974; Bárány supplied its first published proof
+and credited Lovász's private communication.  Bárány states the result for compact convex sets.
+Here the families are finite but their members need not be compact: the proof first replaces them
+by compact convex hulls of finitely many colorful-transversal witnesses.  The resulting proof is
+therefore not a line-by-line transcription of Bárány's convex-function argument.
+
+* I. Bárány, *A generalization of Carathéodory's theorem*, Discrete Mathematics 40 (1982),
+  141–152, Theorem 3.1, p. 144; proof pp. 150–151.
+  https://doi.org/10.1016/0012-365X(82)90115-7
 -/
 
 open BigOperators

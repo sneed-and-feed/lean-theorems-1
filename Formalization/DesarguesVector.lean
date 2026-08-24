@@ -10,10 +10,11 @@ set_option linter.style.haveILetI false
 open Module
 
 /-!
-# Desargues's Theorem in Vector and Axiomatic Projective Geometry (1639)
+# Desargues's Theorem in Vector and Axiomatic Projective Geometry
 
-This module formalizes **Desargues's Theorem** (Girard Desargues, 1639; David Hilbert, 1899)
-across both its **coordinate/vector** formulation and its **axiomatic projective plane** formulation (Wiedijk #53).
+This module develops an algebraic identity inspired by **Desargues's theorem** and an
+**axiomatic projective-plane** formulation (Wiedijk #53).  The commutative-ring module identity is
+a repository-specific algebraic formulation, not a verbatim rendering of the historical theorem.
 
 ## Geometric Background
 In the classical nondegenerate Desargues theorem and its converse, two triangles are in
@@ -29,9 +30,15 @@ sides are collinear on a line $L$).  The definitions below make the degeneracy c
    counterexample below makes that boundary explicit.
 
 ## References
-* G. Desargues (1639), *Brouillon project d'une atteinte aux événemens des rencontres du Cône avec un Plan*.
+
+* A. Bosse, presenting work of G. Desargues (1647/1648), *Manière universelle de Mr. Girard
+  Desargues, pour pratiquer la perspective par petit-pied, comme le geometral*, cited from the
+  1648 ETH Zürich edition, Rar 499, geometric propositions at the end and plate 154.
+  https://doi.org/10.3931/e-rara-11184
 * D. Hilbert (1899), *Grundlagen der Geometrie*, Teubner.
 * H. S. M. Coxeter (1987), *Projective Geometry*, Springer-Verlag.
+* J. Müller, *Projective Geometry*, §5, pp. 19–21 (nondegenerate forward and converse forms).
+  https://www.math.rwth-aachen.de/~Juergen.Mueller/preprints/jm114.pdf
 * Freek Wiedijk, *Formalizing 100 Theorems*, #53.
 -/
 

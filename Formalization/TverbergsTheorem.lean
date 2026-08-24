@@ -15,10 +15,13 @@ import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Common
 
 /-!
-# Tverberg's Theorem on Intersecting Convex Hulls (1966)
+# Tverberg's Theorem: Reductions and the Full One-Dimensional Case
 
-This module formalizes **Tverberg's Theorem** (H. Tverberg, 1966),
-a foundational theorem in discrete and combinatorial geometry generalizing Radon's Lemma ($r = 2$).
+Tverberg's theorem (H. Tverberg, 1966) is a foundational result in discrete and combinatorial
+geometry generalizing Radon's lemma ($r = 2$).  The completed unconditional declarations in this
+module cover $r \le 2$ in arbitrary dimension and every $r$ in dimension one.  The general
+higher-dimensional statement is represented by a conditional Sarkaria reduction, not claimed as
+a completed proof here.
 
 ## Mathematical Statement
 
@@ -29,9 +32,15 @@ share a common point of intersection:
 $$\bigcap_{i=1}^r \operatorname{conv}(A_i) \ne \emptyset$$
 
 ## References
-* H. Tverberg (1966), *A generalization of Radon's theorem*, J. London Math. Soc., 41:123–128.
+
+* H. Tverberg (1966), *A generalization of Radon's theorem*, J. London Math. Soc. 41:123–128,
+  Theorem 1. https://doi.org/10.1112/jlms/s1-41.1.123
+* W. Mulzer and D. Werner (2013), *Approximating Tverberg points in linear time for any fixed
+  dimension*, Discrete Comput. Geom. 50:520–535, §2.2, Lemma 2.3 and Theorem 2.4.
+  https://doi.org/10.1007/s00454-013-9528-7
+  The proof of `tverberg_1d` uses symmetric-rank pairing as a canonical specialization of their
+  median-and-opposite-sides construction.
 * J. Matoušek (2002), *Lectures on Discrete Geometry*, GTM 212, Springer, Chapter 8.
-* I. Bárány (1982), *A generalization of Carathéodory's theorem*, Discrete Math., 40(2-3):141–152.
 -/
 
 set_option linter.deprecated false

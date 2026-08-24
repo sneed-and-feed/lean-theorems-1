@@ -12,7 +12,7 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 
 | # | Theorem | Primary Declaration | Mathematical Domain | Reference |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | **Desargues's Theorem (Vector Formulation)** | [`desargues_vector`](Formalization/DesarguesVector.lean) | Projective & Affine Geometry | Desargues (1639), Wiedijk #53 |
+| 1 | **Desargues's Theorem (Vector Formulation)** | [`desargues_vector`](Formalization/DesarguesVector.lean) | Projective & Affine Geometry | Bosse/Desargues (1647/1648), Wiedijk #53 |
 | 2 | **Graham–Pollak Theorem** | [`graham_pollak`](Formalization/GrahamPollak.lean) | Algebraic Combinatorics | Graham & Pollak (1971), Tverberg (1982) |
 | 3 | **Bondy's Theorem on Induced Subsets** | [`bondy_induced_subsets`](Formalization/BondyInducedSubsets.lean) | Extremal Set Theory & VC Theory | Bondy (1972) |
 | 4 | **Bollobás's Two Families Theorem** | [`bollobas_two_families`](Formalization/BollobasTwoFamilies.lean) | Extremal Combinatorics | Bollobás (1965) |
@@ -27,7 +27,7 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 | 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
-| 16 | **Tverberg's Theorem (r ≤ 2) & Full 1D Tverberg** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`tverberg_1d`](Formalization/TverbergsTheorem.lean), [`radons_theorem`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Sarkaria (1992), Bárány & Onn (1997) |
+| 16 | **Tverberg's Theorem (r ≤ 2) & Full 1D Tverberg** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`tverberg_1d`](Formalization/TverbergsTheorem.lean), [`radons_theorem`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Mulzer & Werner (2013), Sarkaria (1992) |
 | 17 | **Dilworth's & Mirsky's Decomposition Theorems** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean), [`mirsky_theorem`](Formalization/DilworthTheorem.lean), [`mirsky_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Mirsky (1971), Perles (1963) |
 | 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
 | 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) |
@@ -43,7 +43,7 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 | 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) |
 | 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) |
 | 31 | **Tutte's 1-Factor Theorem & Petersen's Theorems** | [`tutte_1factor_theorem`](Formalization/TutteOneFactor.lean), [`tutte_berge_min_eq_card_sub_defect`](Formalization/TutteOneFactor.lean), [`petersen_bridgeless_cubic_1factor`](Formalization/TutteOneFactor.lean), [`petersen_2factor_theorem`](Formalization/TutteOneFactor.lean) | Structural Graph Theory & Factorizations | Tutte (1947), Petersen (1891), Berge (1958) |
-| 32 | **Bárány's Colorful Helly Theorem** | [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Bárány (1982) |
+| 32 | **Lovász's Colorful Helly Theorem** | [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Lovász (1974), first published proof: Bárány (1982) |
 
 ---
 
@@ -60,6 +60,9 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 * **Projective boundary:** `desargues_projective_plane` records the forward Desargues axiom.
   The previous converse omitted corresponding-vertex nondegeneracy and was false under the formal
   definitions; `axialPerspective_not_implies_central` gives a four-point counterexample.
+* **Historical scope:** The triangle theorem is cited from Bosse's 1647/1648 presentation of
+  Desargues's work. The module's commutative-ring identity is a modern algebraic formulation
+  inspired by that theorem, not a claim about the wording of the historical source.
 
 ---
 
@@ -183,6 +186,8 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 * **Formalized scope:** `tverbergs_theorem` handles $r \le 2$ in arbitrary dimension;
   `tverberg_1d` proves arbitrary $r$ in $\mathbb{R}^1$ by pairing sorted endpoints around a median;
   `sarkaria_tverberg` supplies the general reduction from a suitable lifted zero-sum witness.
+* **Source locator for the 1D construction:** Mulzer–Werner (2013), §2.2, Lemma 2.3 and
+  Theorem 2.4. The formal proof chooses the canonical symmetric-rank pairing.
 
 ---
 
@@ -284,12 +289,15 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 
 ---
 
-### 32. Bárány's Colorful Helly Theorem (1982)
+### 32. Lovász's Colorful Helly Theorem (1974; first published proof 1982)
 * **Module:** [`Formalization/ColorfulHelly.lean`](Formalization/ColorfulHelly.lean)
 * **Theorems:** `colorful_helly`, `colorful_helly_inductive`
 * **Mathematical Statement:** Given $d+1$ finite families $\mathcal{F}_0, \dots,
   \mathcal{F}_d$ of convex sets in $\mathbb{R}^d$, if every colorful transversal intersects,
   then some family $\mathcal{F}_j$ has $\bigcap_{S \in \mathcal{F}_j} S \ne \emptyset$.
+* **Source and scope:** Bárány (1982), Theorem 3.1, p. 144 (proof pp. 150–151), credits
+  Lovász's 1974 private communication. Bárány assumes compact convex sets; this finite-family
+  formalization derives the arbitrary-convex-set version by compactifying a finite witness pool.
 * **Proof:** Compactify the sets using the finite pool of transversal witnesses; maximize the
   minimum squared Euclidean length of a colorful intersection; use ordinary Helly with a strict
   lower sublevel set to omit one color; and use strict midpoint convexity to show that the same
@@ -341,7 +349,7 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 │   ├── Sperner3D.lean                    # 26. Sperner's Lemma in 3D
 │   ├── FranklWilson.lean                 # 27. Frankl–Wilson Theorem
 │   ├── BecksTheorem.lean                 # 28. Beck's Theorem on Incidence Geometry
-│   └── ColorfulHelly.lean                # 32. Bárány's Colorful Helly Theorem
+│   └── ColorfulHelly.lean                # 32. Lovász's Colorful Helly Theorem
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
