@@ -40,6 +40,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 | 28 | **Beck's Theorem on Incidence Geometry** | [`becks_theorem`](Formalization/BecksTheorem.lean), [`sum_card_pairs_eq`](Formalization/BecksTheorem.lean), [`pair_counting_bound`](Formalization/BecksTheorem.lean) | Combinatorial & Incidence Geometry | Beck (1983) |
 | 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) |
 | 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) |
+| 31 | **Tutte's 1-Factor Theorem & Petersen's Theorems** | [`tutte_1factor_theorem`](Formalization/TutteOneFactor.lean), [`tutte_berge_min_eq_card_sub_defect`](Formalization/TutteOneFactor.lean), [`petersen_bridgeless_cubic_1factor`](Formalization/TutteOneFactor.lean), [`petersen_2factor_theorem`](Formalization/TutteOneFactor.lean) | Structural Graph Theory & Factorizations | Tutte (1947), Petersen (1891), Berge (1958) |
 
 ---
 
