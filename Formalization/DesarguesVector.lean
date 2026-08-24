@@ -25,11 +25,12 @@ sides are collinear on a line $L$).  The definitions below make the degeneracy c
 1. **Vector Formulation (Theorem 1):** Over any module $V$ over a commutative ring $K$, the side-intersection
    vectors $P, Q, R$ satisfy the linear dependence relation $\nu P + \lambda Q + \mu R = 0$.
 2. **Axiomatic Projective Planes:** `IsDesarguesian` records the forward implication from
-   central perspective to axial perspective.  `desargues_converse_projective_plane` proves the
-   converse for `ProperAxialPerspective`, whose six axis-versus-side exclusions are dual to the
-   six center-versus-vertex exclusions in `CentralPerspective`.  The weaker original
-   `AxialPerspective` predicate does not suffice; a four-point counterexample makes that boundary
-   explicit.
+   central perspective to axial perspective; the resulting axis is proved automatically proper.
+   `desargues_converse_projective_plane` proves the converse for `ProperAxialPerspective`, whose
+   six axis-versus-side exclusions are dual to the six center-versus-vertex exclusions in
+   `CentralPerspective`, and the two directions are combined into an exact equivalence.  The
+   weaker original `AxialPerspective` predicate does not suffice; a four-point counterexample
+   makes that boundary explicit.
 
 ## References
 
@@ -213,6 +214,38 @@ private lemma triangle_side_lines_ne (PPlane : ProjectivePlane) (T : Triangle PP
     rw [hlines]
     exact inc_lineThrough_right PPlane hAB
 
+private lemma side_lines_eq_of_central_cross_inc (PPlane : ProjectivePlane)
+    {O X₁ Y₁ X₂ Y₂ : PPlane.Point}
+    (hXY₁ : X₁ ≠ Y₁) (hXY₂ : X₂ ≠ Y₂) (hYY : Y₁ ≠ Y₂)
+    (hO_X₂ : O ≠ X₂) (hcol_Y : Collinear PPlane O Y₁ Y₂)
+    (hcol_X : Collinear PPlane O X₁ X₂)
+    (hcross : PPlane.Inc Y₁ (lineThrough PPlane hXY₂)) :
+    lineThrough PPlane hXY₁ = lineThrough PPlane hXY₂ := by
+  rcases hcol_Y with ⟨mY, hO_mY, hY₁_mY, hY₂_mY⟩
+  have hmY : mY = lineThrough PPlane hXY₂ :=
+    line_eq_of_inc_two_points PPlane hYY hY₁_mY hY₂_mY hcross
+      (inc_lineThrough_right PPlane hXY₂)
+  have hO_XY₂ : PPlane.Inc O (lineThrough PPlane hXY₂) := hmY ▸ hO_mY
+  rcases hcol_X with ⟨mX, hO_mX, hX₁_mX, hX₂_mX⟩
+  have hmX : mX = lineThrough PPlane hXY₂ :=
+    line_eq_of_inc_two_points PPlane hO_X₂ hO_mX hX₂_mX hO_XY₂
+      (inc_lineThrough_left PPlane hXY₂)
+  exact lineThrough_eq_of_inc PPlane hXY₁ (lineThrough PPlane hXY₂)
+    (hmX ▸ hX₁_mX) hcross
+
+private lemma side_lines_eq_of_central_cross_inc_rev (PPlane : ProjectivePlane)
+    {O X₁ Y₁ X₂ Y₂ : PPlane.Point}
+    (hXY₁ : X₁ ≠ Y₁) (hXY₂ : X₂ ≠ Y₂) (hYY : Y₁ ≠ Y₂)
+    (hO_X₁ : O ≠ X₁) (hcol_Y : Collinear PPlane O Y₁ Y₂)
+    (hcol_X : Collinear PPlane O X₁ X₂)
+    (hcross : PPlane.Inc Y₂ (lineThrough PPlane hXY₁)) :
+    lineThrough PPlane hXY₁ = lineThrough PPlane hXY₂ := by
+  rcases hcol_Y with ⟨mY, hO_mY, hY₁_mY, hY₂_mY⟩
+  rcases hcol_X with ⟨mX, hO_mX, hX₁_mX, hX₂_mX⟩
+  symm
+  exact side_lines_eq_of_central_cross_inc PPlane hXY₂ hXY₁ hYY.symm hO_X₁
+    ⟨mY, hO_mY, hY₂_mY, hY₁_mY⟩ ⟨mX, hO_mX, hX₂_mX, hX₁_mX⟩ hcross
+
 /-- Two triangles are in central perspective from a center point `O` if the lines
     connecting corresponding vertices concur at `O`. -/
 def CentralPerspective (PPlane : ProjectivePlane) (T₁ T₂ : Triangle PPlane) (O : PPlane.Point) : Prop :=
@@ -257,6 +290,114 @@ def ProperAxialPerspective (PPlane : ProjectivePlane) (T₁ T₂ : Triangle PPla
     L ≠ lineThrough PPlane hBC₂ ∧
     L ≠ lineThrough PPlane hCA₂
 
+/-- Under a central perspectivity, any axis through the three corresponding-side
+    intersections is automatically distinct from all six triangle sides. -/
+theorem axialPerspective_proper_of_central (PPlane : ProjectivePlane)
+    (T₁ T₂ : Triangle PPlane) (O : PPlane.Point) (L : PPlane.Line)
+    (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
+    (hBC₁ : T₁.B ≠ T₁.C) (hBC₂ : T₂.B ≠ T₂.C)
+    (hCA₁ : T₁.C ≠ T₁.A) (hCA₂ : T₂.C ≠ T₂.A)
+    (h_diff_AB : lineThrough PPlane hAB₁ ≠ lineThrough PPlane hAB₂)
+    (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
+    (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂)
+    (h_central : CentralPerspective PPlane T₁ T₂ O)
+    (h_axial : AxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂
+      hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA) :
+    ProperAxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂
+      hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA := by
+  rcases h_central with
+    ⟨hO_A₁, hO_A₂, hO_B₁, hO_B₂, hO_C₁, hO_C₂, hAA, hBB, hCC,
+      hcol_A, hcol_B, hcol_C⟩
+  rcases triangle_side_lines_ne PPlane T₁ hAB₁ hBC₁ hCA₁ with
+    ⟨hAB_BC₁, hBC_CA₁, hCA_AB₁⟩
+  rcases triangle_side_lines_ne PPlane T₂ hAB₂ hBC₂ hCA₂ with
+    ⟨hAB_BC₂, hBC_CA₂, hCA_AB₂⟩
+  let P : PPlane.Point := meetLines PPlane h_diff_AB
+  let Q : PPlane.Point := meetLines PPlane h_diff_BC
+  let R : PPlane.Point := meetLines PPlane h_diff_CA
+  have hP_AB₁ : PPlane.Inc P (lineThrough PPlane hAB₁) := by
+    dsimp [P]
+    exact inc_meetLines_left PPlane h_diff_AB
+  have hP_AB₂ : PPlane.Inc P (lineThrough PPlane hAB₂) := by
+    dsimp [P]
+    exact inc_meetLines_right PPlane h_diff_AB
+  have hQ_BC₁ : PPlane.Inc Q (lineThrough PPlane hBC₁) := by
+    dsimp [Q]
+    exact inc_meetLines_left PPlane h_diff_BC
+  have hQ_BC₂ : PPlane.Inc Q (lineThrough PPlane hBC₂) := by
+    dsimp [Q]
+    exact inc_meetLines_right PPlane h_diff_BC
+  have hR_CA₁ : PPlane.Inc R (lineThrough PPlane hCA₁) := by
+    dsimp [R]
+    exact inc_meetLines_left PPlane h_diff_CA
+  have hR_CA₂ : PPlane.Inc R (lineThrough PPlane hCA₂) := by
+    dsimp [R]
+    exact inc_meetLines_right PPlane h_diff_CA
+  have h_axis : PPlane.Inc P L ∧ PPlane.Inc Q L ∧ PPlane.Inc R L := by
+    simpa only [AxialPerspective, P, Q, R] using h_axial
+  rcases h_axis with ⟨hP_L, hQ_L, hR_L⟩
+  refine ⟨h_axial, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro hL_AB₁
+    have hR_AB₁ : PPlane.Inc R (lineThrough PPlane hAB₁) := by
+      rw [← hL_AB₁]
+      exact hR_L
+    have hR_A₁ : R = T₁.A :=
+      point_eq_of_inc_two_lines PPlane hCA_AB₁ hR_CA₁ hR_AB₁
+        (inc_lineThrough_right PPlane hCA₁) (inc_lineThrough_left PPlane hAB₁)
+    have hA₁_CA₂ : PPlane.Inc T₁.A (lineThrough PPlane hCA₂) := hR_A₁ ▸ hR_CA₂
+    exact h_diff_CA (side_lines_eq_of_central_cross_inc PPlane hCA₁ hCA₂ hAA
+      hO_C₂ hcol_A hcol_C hA₁_CA₂)
+  · intro hL_BC₁
+    have hP_BC₁ : PPlane.Inc P (lineThrough PPlane hBC₁) := by
+      rw [← hL_BC₁]
+      exact hP_L
+    have hP_B₁ : P = T₁.B :=
+      point_eq_of_inc_two_lines PPlane hAB_BC₁ hP_AB₁ hP_BC₁
+        (inc_lineThrough_right PPlane hAB₁) (inc_lineThrough_left PPlane hBC₁)
+    have hB₁_AB₂ : PPlane.Inc T₁.B (lineThrough PPlane hAB₂) := hP_B₁ ▸ hP_AB₂
+    exact h_diff_AB (side_lines_eq_of_central_cross_inc PPlane hAB₁ hAB₂ hBB
+      hO_A₂ hcol_B hcol_A hB₁_AB₂)
+  · intro hL_CA₁
+    have hQ_CA₁ : PPlane.Inc Q (lineThrough PPlane hCA₁) := by
+      rw [← hL_CA₁]
+      exact hQ_L
+    have hQ_C₁ : Q = T₁.C :=
+      point_eq_of_inc_two_lines PPlane hBC_CA₁ hQ_BC₁ hQ_CA₁
+        (inc_lineThrough_right PPlane hBC₁) (inc_lineThrough_left PPlane hCA₁)
+    have hC₁_BC₂ : PPlane.Inc T₁.C (lineThrough PPlane hBC₂) := hQ_C₁ ▸ hQ_BC₂
+    exact h_diff_BC (side_lines_eq_of_central_cross_inc PPlane hBC₁ hBC₂ hCC
+      hO_B₂ hcol_C hcol_B hC₁_BC₂)
+  · intro hL_AB₂
+    have hR_AB₂ : PPlane.Inc R (lineThrough PPlane hAB₂) := by
+      rw [← hL_AB₂]
+      exact hR_L
+    have hR_A₂ : R = T₂.A :=
+      point_eq_of_inc_two_lines PPlane hCA_AB₂ hR_CA₂ hR_AB₂
+        (inc_lineThrough_right PPlane hCA₂) (inc_lineThrough_left PPlane hAB₂)
+    have hA₂_CA₁ : PPlane.Inc T₂.A (lineThrough PPlane hCA₁) := hR_A₂ ▸ hR_CA₁
+    exact h_diff_CA (side_lines_eq_of_central_cross_inc_rev PPlane hCA₁ hCA₂ hAA
+      hO_C₁ hcol_A hcol_C hA₂_CA₁)
+  · intro hL_BC₂
+    have hP_BC₂ : PPlane.Inc P (lineThrough PPlane hBC₂) := by
+      rw [← hL_BC₂]
+      exact hP_L
+    have hP_B₂ : P = T₂.B :=
+      point_eq_of_inc_two_lines PPlane hAB_BC₂ hP_AB₂ hP_BC₂
+        (inc_lineThrough_right PPlane hAB₂) (inc_lineThrough_left PPlane hBC₂)
+    have hB₂_AB₁ : PPlane.Inc T₂.B (lineThrough PPlane hAB₁) := hP_B₂ ▸ hP_AB₁
+    exact h_diff_AB (side_lines_eq_of_central_cross_inc_rev PPlane hAB₁ hAB₂ hBB
+      hO_A₁ hcol_B hcol_A hB₂_AB₁)
+  · intro hL_CA₂
+    have hQ_CA₂ : PPlane.Inc Q (lineThrough PPlane hCA₂) := by
+      rw [← hL_CA₂]
+      exact hQ_L
+    have hQ_C₂ : Q = T₂.C :=
+      point_eq_of_inc_two_lines PPlane hBC_CA₂ hQ_BC₂ hQ_CA₂
+        (inc_lineThrough_right PPlane hBC₂) (inc_lineThrough_left PPlane hCA₂)
+    have hC₂_BC₁ : PPlane.Inc T₂.C (lineThrough PPlane hBC₁) := hQ_C₂ ▸ hQ_BC₁
+    exact h_diff_BC (side_lines_eq_of_central_cross_inc_rev PPlane hBC₁ hBC₂ hCC
+      hO_B₁ hcol_C hcol_B hC₂_BC₁)
+
 -- ============================================================================
 -- Section 4: Desarguesian Planes & the Degenerate Converse Boundary
 -- ============================================================================
@@ -287,6 +428,25 @@ theorem desargues_projective_plane (PPlane : ProjectivePlane) (h_des : IsDesargu
     (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂) :
     ∃ L : PPlane.Line, AxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA :=
   h_des T₁ T₂ O h_central hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA
+
+/-- **Strengthened forward Desargues theorem:** the axis supplied for centrally
+    perspective triangles is automatically a proper axis. -/
+theorem desargues_projective_plane_proper (PPlane : ProjectivePlane)
+    (h_des : IsDesarguesian PPlane) (T₁ T₂ : Triangle PPlane) (O : PPlane.Point)
+    (h_central : CentralPerspective PPlane T₁ T₂ O)
+    (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
+    (hBC₁ : T₁.B ≠ T₁.C) (hBC₂ : T₂.B ≠ T₂.C)
+    (hCA₁ : T₁.C ≠ T₁.A) (hCA₂ : T₂.C ≠ T₂.A)
+    (h_diff_AB : lineThrough PPlane hAB₁ ≠ lineThrough PPlane hAB₂)
+    (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
+    (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂) :
+    ∃ L : PPlane.Line,
+      ProperAxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂
+        h_diff_AB h_diff_BC h_diff_CA := by
+  obtain ⟨L, h_axial⟩ := h_des T₁ T₂ O h_central hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂
+    h_diff_AB h_diff_BC h_diff_CA
+  exact ⟨L, axialPerspective_proper_of_central PPlane T₁ T₂ O L hAB₁ hAB₂
+    hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA h_central h_axial⟩
 
 /-- **Converse Desargues theorem, with the nondegeneracy dual to
     `CentralPerspective`:** in a Desarguesian plane, a proper axial perspectivity
@@ -723,6 +883,36 @@ theorem desargues_converse_projective_plane (PPlane : ProjectivePlane)
   exact ⟨O, hO_A₁, hO_A₂, hO_B₁, hO_B₂, hO_C₁, hO_C₂,
     hAA, hBB, hCC, hcol_AA, hcol_BB, hcol_CC⟩
 
+/-- In a Desarguesian plane, the nondegenerate forward and converse forms combine
+    into an exact equivalence.  The three vertex inequalities are displayed on
+    the axial side because `ProperAxialPerspective` records only the dual six
+    axis-versus-side exclusions. -/
+theorem exists_centralPerspective_iff_exists_properAxialPerspective
+    (PPlane : ProjectivePlane) (h_des : IsDesarguesian PPlane)
+    (T₁ T₂ : Triangle PPlane)
+    (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
+    (hBC₁ : T₁.B ≠ T₁.C) (hBC₂ : T₂.B ≠ T₂.C)
+    (hCA₁ : T₁.C ≠ T₁.A) (hCA₂ : T₂.C ≠ T₂.A)
+    (h_diff_AB : lineThrough PPlane hAB₁ ≠ lineThrough PPlane hAB₂)
+    (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
+    (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂) :
+    (∃ O : PPlane.Point, CentralPerspective PPlane T₁ T₂ O) ↔
+      T₁.A ≠ T₂.A ∧ T₁.B ≠ T₂.B ∧ T₁.C ≠ T₂.C ∧
+        ∃ L : PPlane.Line,
+          ProperAxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂
+            h_diff_AB h_diff_BC h_diff_CA := by
+  constructor
+  · rintro ⟨O, h_central⟩
+    have h_proper := desargues_projective_plane_proper PPlane h_des T₁ T₂ O h_central
+      hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA
+    rcases h_central with
+      ⟨_, _, _, _, _, _, hAA, hBB, hCC, _, _, _⟩
+    exact ⟨hAA, hBB, hCC, h_proper⟩
+  · rintro ⟨hAA, hBB, hCC, L, h_proper⟩
+    exact desargues_converse_projective_plane PPlane h_des T₁ T₂ L
+      hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA
+      hAA hBB hCC h_proper
+
 /-- `AxialPerspective` as defined above does **not** imply central perspective.
 
 Take four points with no three collinear.  The triangles `(p₁,p₂,p₃)` and
@@ -814,6 +1004,9 @@ theorem axialPerspective_not_implies_central (PPlane : ProjectivePlane) :
 end DesarguesProjective
 
 #print axioms desargues_vector
+#print axioms DesarguesProjective.axialPerspective_proper_of_central
 #print axioms DesarguesProjective.desargues_projective_plane
+#print axioms DesarguesProjective.desargues_projective_plane_proper
 #print axioms DesarguesProjective.desargues_converse_projective_plane
+#print axioms DesarguesProjective.exists_centralPerspective_iff_exists_properAxialPerspective
 #print axioms DesarguesProjective.axialPerspective_not_implies_central
