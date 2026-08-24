@@ -2,6 +2,7 @@ import Mathlib.Analysis.Convex.Hull
 import Mathlib.Analysis.Convex.Combination
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.LinearAlgebra.Dimension.Constructions
@@ -599,7 +600,196 @@ theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
       · exact tverbergs_theorem hr hle S hS
       · -- r ≥ 3 in 1D
         have hr_dim : (r - 1) * (1 + 1) + 1 = 2 * r - 1 := by omega
-        sorry
+        classical
+        let N := 2 * r - 1
+        have hS_N : S.card = N := by
+          dsimp [N]
+          omega
+        let coord : (Fin 1 → ℝ) → ℝ := fun x ↦ x 0
+        have hcoord_inj : Function.Injective coord := by
+          intro x y hxy
+          funext i
+          have hi : i = 0 := Subsingleton.elim i 0
+          subst i
+          exact hxy
+        let T : Finset ℝ := S.image coord
+        have hT_card : T.card = N := by
+          dsimp [T]
+          rw [Finset.card_image_of_injective S hcoord_inj, hS_N]
+        let q : Fin N ↪o ℝ := T.orderEmbOfFin hT_card
+        let x : Fin N → Fin 1 → ℝ := fun i _ ↦ q i
+        have hx_inj : Function.Injective x := by
+          intro i j hij
+          apply q.injective
+          exact congr_fun hij 0
+        have hx_mem : ∀ i : Fin N, x i ∈ S := by
+          intro i
+          have hqi : q i ∈ T := by
+            dsimp [q]
+            exact T.orderEmbOfFin_mem hT_card i
+          dsimp [T] at hqi
+          rcases Finset.mem_image.mp hqi with ⟨y, hyS, hyq⟩
+          have hxy : x i = y := by
+            funext j
+            have hj : j = 0 := Subsingleton.elim j 0
+            subst j
+            dsimp [x, coord] at hyq ⊢
+            exact hyq.symm
+          rw [hxy]
+          exact hyS
+        have hx_surj : ∀ y ∈ S, ∃ i : Fin N, x i = y := by
+          intro y hyS
+          have hyT : coord y ∈ T := by
+            dsimp [T]
+            exact Finset.mem_image.mpr ⟨y, hyS, rfl⟩
+          have hq_image : Finset.image q Finset.univ = T := by
+            dsimp [q]
+            exact T.image_orderEmbOfFin_univ hT_card
+          have hy_image : coord y ∈ Finset.image q Finset.univ := by
+            rw [hq_image]
+            exact hyT
+          rcases Finset.mem_image.mp hy_image with ⟨i, _, hi⟩
+          refine ⟨i, ?_⟩
+          funext j
+          have hj : j = 0 := Subsingleton.elim j 0
+          subst j
+          dsimp [x, coord] at hi ⊢
+          exact hi
+        have hmed : r - 1 < N := by
+          dsimp [N]
+          omega
+        let med : Fin N := ⟨r - 1, hmed⟩
+        let lower : Fin r → Fin N := fun c ↦
+          ⟨c.1, by dsimp [N]; omega⟩
+        let upper : Fin r → Fin N := fun c ↦
+          ⟨2 * r - 2 - c.1, by dsimp [N]; omega⟩
+        let I : Fin r → Finset (Fin N) := fun c ↦
+          if c.1 = r - 1 then {med} else {lower c, upper c}
+        let P : Fin r → Finset (Fin 1 → ℝ) := fun c ↦ (I c).image x
+        have hI_unique : ∀ (i j : Fin r) (a : Fin N),
+            a ∈ I i → a ∈ I j → i = j := by
+          intro i j a hai haj
+          by_cases hilast : i.1 = r - 1
+          · by_cases hjlast : j.1 = r - 1
+            · apply Fin.ext
+              exact hilast.trans hjlast.symm
+            · have hai' : a = med := by simpa [I, hilast] using hai
+              have haj' : a = lower j ∨ a = upper j := by
+                simpa [I, hjlast] using haj
+              rcases haj' with haj' | haj'
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [med, lower] at hv
+                omega
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [med, upper] at hv
+                omega
+          · by_cases hjlast : j.1 = r - 1
+            · have hai' : a = lower i ∨ a = upper i := by
+                simpa [I, hilast] using hai
+              have haj' : a = med := by simpa [I, hjlast] using haj
+              rcases hai' with hai' | hai'
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [med, lower] at hv
+                omega
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [med, upper] at hv
+                omega
+            · have hai' : a = lower i ∨ a = upper i := by
+                simpa [I, hilast] using hai
+              have haj' : a = lower j ∨ a = upper j := by
+                simpa [I, hjlast] using haj
+              rcases hai' with hai' | hai' <;> rcases haj' with haj' | haj'
+              · apply Fin.ext
+                have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                simpa [lower] using hv
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [lower, upper] at hv
+                omega
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [lower, upper] at hv
+                omega
+              · apply Fin.ext
+                have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [upper] at hv
+                omega
+        have hI_cover : ∀ a : Fin N, ∃ c : Fin r, a ∈ I c := by
+          intro a
+          by_cases halow : a.1 < r - 1
+          · let c : Fin r := ⟨a.1, by omega⟩
+            have hclast : c.1 ≠ r - 1 := by
+              dsimp [c]
+              omega
+            refine ⟨c, ?_⟩
+            rw [show I c = {lower c, upper c} by simp [I, hclast]]
+            apply Finset.mem_insert.mpr
+            left
+            apply Fin.ext
+            rfl
+          · by_cases hamid : a.1 = r - 1
+            · let c : Fin r := ⟨r - 1, by omega⟩
+              have hclast : c.1 = r - 1 := by rfl
+              refine ⟨c, ?_⟩
+              rw [show I c = {med} by simp [I, hclast]]
+              apply Finset.mem_singleton.mpr
+              apply Fin.ext
+              exact hamid
+            · have ha_lt : a.1 < 2 * r - 1 := a.2
+              let c : Fin r := ⟨2 * r - 2 - a.1, by omega⟩
+              have hclast : c.1 ≠ r - 1 := by
+                dsimp [c]
+                omega
+              refine ⟨c, ?_⟩
+              rw [show I c = {lower c, upper c} by simp [I, hclast]]
+              apply Finset.mem_insert.mpr
+              right
+              apply Finset.mem_singleton.mpr
+              apply Fin.ext
+              dsimp [upper, c, N] at a ⊢
+              omega
+        refine ⟨P, ?_⟩
+        dsimp [IsTverbergPartition]
+        refine ⟨?_, ?_, ?_, ?_⟩
+        · intro c y hy
+          rcases Finset.mem_image.mp hy with ⟨i, _, rfl⟩
+          exact hx_mem i
+        · intro i j hij
+          rw [Finset.disjoint_iff_ne]
+          rintro y₁ hy₁ y₂ hy₂ heq
+          rcases Finset.mem_image.mp hy₁ with ⟨a, ha, rfl⟩
+          rcases Finset.mem_image.mp hy₂ with ⟨b, hb, rfl⟩
+          have hab' : a = b := hx_inj heq
+          subst b
+          exact hij (hI_unique i j a ha hb)
+        · ext y
+          constructor
+          · intro hy
+            rcases Finset.mem_biUnion.mp hy with ⟨c, _, hyc⟩
+            rcases Finset.mem_image.mp hyc with ⟨i, _, rfl⟩
+            exact hx_mem i
+          · intro hy
+            rcases hx_surj y hy with ⟨i, rfl⟩
+            rcases hI_cover i with ⟨c, hic⟩
+            exact Finset.mem_biUnion.mpr
+              ⟨c, Finset.mem_univ c, Finset.mem_image.mpr ⟨i, hic, rfl⟩⟩
+        · refine ⟨x med, ?_⟩
+          rw [Set.mem_iInter]
+          intro c
+          by_cases hclast : c.1 = r - 1
+          · apply subset_convexHull ℝ (P c : Set (Fin 1 → ℝ))
+            exact Finset.mem_coe.mpr <| Finset.mem_image.mpr ⟨med, by simp [I, hclast], rfl⟩
+          · have hc_lt : c.1 < r - 1 := by omega
+            have hlo : x (lower c) 0 ≤ x med 0 := by
+              change q (lower c) ≤ q med
+              apply q.monotone
+              change c.1 ≤ r - 1
+              omega
+            have hhi : x med 0 ≤ x (upper c) 0 := by
+              change q med ≤ q (upper c)
+              apply q.monotone
+              change r - 1 ≤ 2 * r - 2 - c.1
+              omega
+            simpa [P, I, hclast] using
+              (mem_convexHull_pair_1d (x (lower c)) (x (upper c)) (x med) hlo hhi)
 
 end TverbergsTheorem
 
@@ -607,4 +797,5 @@ end TverbergsTheorem
 #print axioms TverbergsTheorem.tverbergs_theorem
 #print axioms TverbergsTheorem.sarkaria_tverberg
 #print axioms TverbergsTheorem.mem_convexHull_pair_1d
+#print axioms TverbergsTheorem.tverberg_1d
 

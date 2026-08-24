@@ -2,7 +2,9 @@
 
 This repository provides machine-checked formalizations of classical theorems in combinatorics, graph theory, algebra, extremal set theory, discrete geometry, and incidence geometry that were previously unformalized in the Lean 4 / [Mathlib](https://github.com/leanprover-community/mathlib4) ecosystem.
 
-All theorems and sub-lemmas in the core build are formalized strictly without unproven axioms (`axiom`) or incomplete goals (`sorry`), and are machine-checked against the Lean 4 proof assistant.
+The primary declarations listed below and their proof dependencies are machine-checked without
+project-specific axioms or incomplete goals (`sorry`). Two stronger extensions in
+`ErdosKoRado.lean`—the EKR equality case and the Hilton–Milner bound—remain explicit open targets.
 
 ---
 
@@ -25,7 +27,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 | 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
-| 16 | **Tverberg's Theorem** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`radons_theorem`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Sarkaria (1992), Bárány & Onn (1997) |
+| 16 | **Tverberg's Theorem (r ≤ 2) & Full 1D Tverberg** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`tverberg_1d`](Formalization/TverbergsTheorem.lean), [`radons_theorem`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Sarkaria (1992), Bárány & Onn (1997) |
 | 17 | **Dilworth's & Mirsky's Decomposition Theorems** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean), [`mirsky_theorem`](Formalization/DilworthTheorem.lean), [`mirsky_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Mirsky (1971), Perles (1963) |
 | 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
 | 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) |
@@ -41,6 +43,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 | 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) |
 | 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) |
 | 31 | **Tutte's 1-Factor Theorem & Petersen's Theorems** | [`tutte_1factor_theorem`](Formalization/TutteOneFactor.lean), [`tutte_berge_min_eq_card_sub_defect`](Formalization/TutteOneFactor.lean), [`petersen_bridgeless_cubic_1factor`](Formalization/TutteOneFactor.lean), [`petersen_2factor_theorem`](Formalization/TutteOneFactor.lean) | Structural Graph Theory & Factorizations | Tutte (1947), Petersen (1891), Berge (1958) |
+| 32 | **Bárány's Colorful Helly Theorem** | [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Bárány (1982) |
 
 ---
 
@@ -54,6 +57,9 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
   satisfy the linear dependence relation:
   $$\nu P + \lambda Q + \mu R = 0$$
   demonstrating axial perspective (collinearity).
+* **Projective boundary:** `desargues_projective_plane` records the forward Desargues axiom.
+  The previous converse omitted corresponding-vertex nondegeneracy and was false under the formal
+  definitions; `axialPerspective_not_implies_central` gives a four-point counterexample.
 
 ---
 
@@ -171,10 +177,12 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 ---
 
-### 16. Tverberg's Theorem & Sarkaria–Bárány Tensor Lifting
+### 16. Tverberg Reductions & the Full 1D Theorem
 * **Module:** [`Formalization/TverbergsTheorem.lean`](Formalization/TverbergsTheorem.lean)
-* **Theorems:** `tverbergs_theorem`, `radons_theorem`, `sarkaria_tverberg`
-* **Mathematical Statement:** Any set of $(r - 1)(d + 1) + 1$ points in $\mathbb{R}^d$ can be partitioned into $r$ pairwise disjoint subsets whose convex hulls share a point.
+* **Theorems:** `tverbergs_theorem`, `tverberg_1d`, `radons_theorem`, `sarkaria_tverberg`
+* **Formalized scope:** `tverbergs_theorem` handles $r \le 2$ in arbitrary dimension;
+  `tverberg_1d` proves arbitrary $r$ in $\mathbb{R}^1$ by pairing sorted endpoints around a median;
+  `sarkaria_tverberg` supplies the general reduction from a suitable lifted zero-sum witness.
 
 ---
 
@@ -276,10 +284,16 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 ---
 
-### Note on Bárány's Colorful Helly Theorem (1982)
-* **Module Scaffold:** [`Formalization/ColorfulHelly.lean`](Formalization/ColorfulHelly.lean)
-* **Mathematical Context:** Bárány's Colorful Helly theorem states that given $d+1$ finite families $\mathcal{F}_0, \dots, \mathcal{F}_d$ of convex sets in $\mathbb{R}^d$ such that every colorful transversal intersects, at least one family $\mathcal{F}_j$ has $\bigcap_{S \in \mathcal{F}_j} S \ne \emptyset$.
-* **Missing Mathlib Prerequisites:** Unlike classical Helly's theorem which admits an elementary induction on $|F|$, Bárány's colorful extension mathematically requires either the **Colorful Carathéodory Theorem** or topological intersection theory (degree theory / nerves). The definitions, substitution operators, and verified base cases are preserved in `Formalization/ColorfulHelly.lean` for future completion once Colorful Carathéodory is formalized in Mathlib.
+### 32. Bárány's Colorful Helly Theorem (1982)
+* **Module:** [`Formalization/ColorfulHelly.lean`](Formalization/ColorfulHelly.lean)
+* **Theorems:** `colorful_helly`, `colorful_helly_inductive`
+* **Mathematical Statement:** Given $d+1$ finite families $\mathcal{F}_0, \dots,
+  \mathcal{F}_d$ of convex sets in $\mathbb{R}^d$, if every colorful transversal intersects,
+  then some family $\mathcal{F}_j$ has $\bigcap_{S \in \mathcal{F}_j} S \ne \emptyset$.
+* **Proof:** Compactify the sets using the finite pool of transversal witnesses; maximize the
+  minimum squared Euclidean length of a colorful intersection; use ordinary Helly with a strict
+  lower sublevel set to omit one color; and use strict midpoint convexity to show that the same
+  extremal point lies in every set of that color.
 
 ---
 
@@ -327,7 +341,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 │   ├── Sperner3D.lean                    # 26. Sperner's Lemma in 3D
 │   ├── FranklWilson.lean                 # 27. Frankl–Wilson Theorem
 │   ├── BecksTheorem.lean                 # 28. Beck's Theorem on Incidence Geometry
-│   └── ColorfulHelly.lean                # Colorful Helly Structure & Scaffold
+│   └── ColorfulHelly.lean                # 32. Bárány's Colorful Helly Theorem
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
