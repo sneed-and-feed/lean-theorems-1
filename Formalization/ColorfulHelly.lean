@@ -41,6 +41,7 @@ therefore not a line-by-line transcription of Bárány's convex-function argumen
 * I. Bárány, *A generalization of Carathéodory's theorem*, Discrete Mathematics 40 (1982),
   141–152, Theorem 3.1, p. 144; proof pp. 150–151.
   https://doi.org/10.1016/0012-365X(82)90115-7
+* L. Lovász, *Problem 206*, Matematikai Lapok 25 (1974), p. 181.
 -/
 
 open BigOperators
@@ -453,10 +454,10 @@ lemma colorful_helly_inductive (d : ℕ) (hd : 1 ≤ d) (n : ℕ) (sys : Colorfu
   exact hK_subset k Sk hrep_K
 
 -- ============================================================================
--- Section 4: Main Theorem (Bárány 1982)
+-- Section 4: Main Theorem (Lovász 1974; first published proof, Bárány 1982)
 -- ============================================================================
 
-/-- Main Theorem: Bárány's Colorful Helly Theorem (1982).
+/-- Main Theorem: Lovász's Colorful Helly theorem (1974; first published proof, Bárány 1982).
     If all colorful selections of d+1 sets intersect,
     then at least one family has a non-empty global intersection. -/
 theorem colorful_helly (d : ℕ) (hd : 1 ≤ d) (sys : ColorfulConvexSystem d)
