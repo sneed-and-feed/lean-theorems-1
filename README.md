@@ -3,8 +3,9 @@
 This repository provides machine-checked formalizations of classical theorems in combinatorics, graph theory, algebra, extremal set theory, discrete geometry, and incidence geometry that were previously unformalized in the Lean 4 / [Mathlib](https://github.com/leanprover-community/mathlib4) ecosystem.
 
 The primary declarations listed below and their proof dependencies are machine-checked without
-project-specific axioms or incomplete goals (`sorry`). Two stronger extensions in
-`ErdosKoRado.lean`—the EKR equality case and the Hilton–Milner bound—remain explicit open targets.
+project-specific axioms or incomplete goals (`sorry`). Two stronger upper-bound extensions in
+`ErdosKoRado.lean`—the EKR equality case and the Hilton–Milner theorem—remain explicit open targets;
+the sharp Hilton–Milner extremal construction and its exact cardinality are fully proved.
 
 ---
 
@@ -22,7 +23,7 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 | 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
-| 11 | **Erdős–Ko–Rado Theorem on Intersecting Families** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Katona (1972) |
+| 11 | **Erdős–Ko–Rado Theorem and Hilton–Milner Sharpness Construction** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean), [`exists_hiltonMilner_extremizer`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Hilton & Milner (1967), Katona (1972) |
 | 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
 | 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
@@ -148,10 +149,18 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 
 ---
 
-### 11. Erdős–Ko–Rado Theorem on Intersecting Families
+### 11. Erdős–Ko–Rado Theorem and Hilton–Milner Sharpness Construction
 * **Module:** [`Formalization/ErdosKoRado.lean`](Formalization/ErdosKoRado.lean)
-* **Theorems:** `erdos_ko_rado`, `erdos_ko_rado_disjoint_pair`, `erdos_ko_rado_powersetCard`, `katona_arc_lemma`
-* **Mathematical Statement:** Let $n \ge 2k$ with $k \ge 1$, and let $\mathcal{F}$ be an intersecting family of $k$-element subsets of an $n$-element universe. Then $|\mathcal{F}| \le \binom{n-1}{k-1}$.
+* **Theorems:** `erdos_ko_rado`, `erdos_ko_rado_disjoint_pair`,
+  `erdos_ko_rado_powersetCard`, `katona_arc_lemma`, `exists_hiltonMilner_extremizer`
+* **Mathematical Statement:** Let $n \ge 2k$ with $k \ge 1$, and let $\mathcal{F}$ be an
+  intersecting family of $k$-element subsets of an $n$-element universe. Then
+  $|\mathcal{F}| \le \binom{n-1}{k-1}$. Moreover, for every $2 \le k$ and $2k<n$, the classical
+  Hilton–Milner exceptional-set family is uniform, pairwise intersecting, has no common element,
+  and has exactly
+  $\binom{n-1}{k-1}-\binom{n-k-1}{k-1}+1$ members. This proves sharpness of the stated
+  Hilton–Milner bound; its generic upper-bound direction and the EKR equality case remain explicit
+  open targets.
 
 ---
 
