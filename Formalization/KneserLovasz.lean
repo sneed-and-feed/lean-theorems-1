@@ -223,11 +223,14 @@ def kneserColoring (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
     (fun A => kneserColor n k hk hn (finsetToNatSubtype A))
     (by
       intro A B hadj
-      have h_rel : kneserRel (Fin n) k A B := hadj
-      have h_disj := finsetToNatSubtype_disjoint A B h_rel.1
+      have h_disj : Disjoint A.val B.val := by
+        rcases hadj with ⟨_, h | h⟩
+        · exact h.1
+        · exact h.1.symm
+      have h_disj' := finsetToNatSubtype_disjoint A B h_disj
       intro h_eq
       have h_not_disj := kneserColor_proper n k hk hn (finsetToNatSubtype A) (finsetToNatSubtype B) h_eq
-      exact h_not_disj h_disj)
+      exact h_not_disj h_disj')
 
 /-- Modern Mathlib formulation: The Kneser graph `kneserGraph (Fin n) k` is `(n - 2k + 2)`-colorable. -/
 theorem kneser_colorable (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :

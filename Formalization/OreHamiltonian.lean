@@ -543,7 +543,7 @@ lemma isHamiltonian_dropLast_of_isHamiltonianCycle {G : SimpleGraph V} {v : V} {
     C.dropLast.IsHamiltonian := by
   have hC_not_nil : ¬ C.Nil := hC.isCycle.not_nil
   have hC_supp : C.support.dropLast = C.dropLast.support := (Walk.support_dropLast hC_not_nil).symm
-  have hC_perm : C.support.tail ~ C.support.dropLast := (Walk.tail_support_perm_dropLast_support C).symm
+  have hC_perm : C.support.tail ~ C.support.dropLast := Walk.tail_support_perm_dropLast_support C
   have h_tail_nodup : C.support.tail.Nodup := hC.isCycle.support_nodup
   have h_drop_nodup : C.dropLast.support.Nodup := by
     rwa [← hC_supp, ← hC_perm.nodup_iff]
@@ -555,12 +555,7 @@ lemma isHamiltonian_dropLast_of_isHamiltonianCycle {G : SimpleGraph V} {v : V} {
   have hw_C : w ∈ C.support := hC.mem_support w
   rw [Walk.mem_support_iff] at hw_C
   rcases hw_C with rfl | hw_tail
-  · rw [← hC_supp]
-    cases C with
-    | nil => contradiction
-    | cons hadj q =>
-      simp only [Walk.support_cons, List.dropLast_cons]
-      exact List.mem_cons_self ..
+  · exact Walk.start_mem_support C.dropLast
   · rw [← hC_supp]
     exact hC_perm.mem_iff.mp hw_tail
 

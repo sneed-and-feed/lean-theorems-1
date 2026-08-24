@@ -38,6 +38,8 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 | 26 | **Sperner's Lemma in 3D (Tetrahedral Parity)** | [`sperner_3d_parity`](Formalization/Sperner3D.lean), [`sperner_3d_odd`](Formalization/Sperner3D.lean), [`sperner_3d_exists`](Formalization/Sperner3D.lean) | Topological Combinatorics & Simplicial Topology | Sperner (1928) |
 | 27 | **Frankl–Wilson Theorem on Restricted Intersections** | [`frankl_wilson_uniform`](Formalization/FranklWilson.lean), [`frankl_wilson_general`](Formalization/FranklWilson.lean) | Extremal Combinatorics & Polynomial Method | Frankl & Wilson (1981) |
 | 28 | **Beck's Theorem on Incidence Geometry** | [`becks_theorem`](Formalization/BecksTheorem.lean), [`sum_card_pairs_eq`](Formalization/BecksTheorem.lean), [`pair_counting_bound`](Formalization/BecksTheorem.lean) | Combinatorial & Incidence Geometry | Beck (1983) |
+| 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) |
+| 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) |
 
 ---
 

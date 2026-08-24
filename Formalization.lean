@@ -26,3 +26,5 @@ import Formalization.FriendshipWindmill
 import Formalization.Sperner3D
 import Formalization.FranklWilson
 import Formalization.BecksTheorem
+import Formalization.SzemerediTrotter
+import Formalization.ErdosUnitDistances
