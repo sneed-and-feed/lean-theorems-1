@@ -12,7 +12,7 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 
 | # | Theorem | Primary Declaration | Mathematical Domain | Reference |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | **Desargues's Theorem (Vector Formulation)** | [`desargues_vector`](Formalization/DesarguesVector.lean) | Projective & Affine Geometry | Bosse/Desargues (1647/1648), Wiedijk #53 |
+| 1 | **Desargues's Theorem: Vector Identity & Proper Projective Converse** | [`desargues_vector`](Formalization/DesarguesVector.lean), [`desargues_converse_projective_plane`](Formalization/DesarguesVector.lean) | Projective & Affine Geometry | Bosse/Desargues (1647/1648), Coghetto (2021), Wiedijk #53 |
 | 2 | **Graham–Pollak Theorem** | [`graham_pollak`](Formalization/GrahamPollak.lean) | Algebraic Combinatorics | Graham & Pollak (1971), Tverberg (1982) |
 | 3 | **Bondy's Theorem on Induced Subsets** | [`bondy_induced_subsets`](Formalization/BondyInducedSubsets.lean) | Extremal Set Theory & VC Theory | Bondy (1972) |
 | 4 | **Bollobás's Two Families Theorem** | [`bollobas_two_families`](Formalization/BollobasTwoFamilies.lean) | Extremal Combinatorics | Bollobás (1965) |
@@ -49,17 +49,21 @@ project-specific axioms or incomplete goals (`sorry`). Two stronger extensions i
 
 ## Detailed Theorem Descriptions & Formalization Highlights
 
-### 1. Desargues's Theorem in Vector Form
+### 1. Desargues's Theorem: Vector and Axiomatic Projective Forms
 * **Module:** [`Formalization/DesarguesVector.lean`](Formalization/DesarguesVector.lean)
-* **Theorem:** `desargues_vector`
+* **Theorems:** `desargues_vector`, `desargues_projective_plane`,
+  `desargues_converse_projective_plane`, `axialPerspective_not_implies_central`
 * **Mathematical Statement:** Let $V$ be a module over a commutative ring $K$. If two triangles $(A_1, B_1, C_1)$ and $(A_2, B_2, C_2)$ are in central perspective from a center $O$ with scaling coefficients $(a, b, c)$ and $(\lambda, \mu, \nu)$, then their corresponding side-intersection points:
   $$P = \mu A_2 - \lambda B_2, \quad Q = \nu B_2 - \mu C_2, \quad R = \lambda C_2 - \nu A_2$$
   satisfy the linear dependence relation:
   $$\nu P + \lambda Q + \mu R = 0$$
   demonstrating axial perspective (collinearity).
-* **Projective boundary:** `desargues_projective_plane` records the forward Desargues axiom.
-  The previous converse omitted corresponding-vertex nondegeneracy and was false under the formal
-  definitions; `axialPerspective_not_implies_central` gives a four-point counterexample.
+* **Projective result and boundary:** `desargues_projective_plane` records the forward Desargues
+  axiom. `desargues_converse_projective_plane` derives the converse synthetically by applying the
+  forward theorem to two auxiliary triangles. It assumes distinct corresponding vertices and
+  `ProperAxialPerspective`, which excludes the axis from being any of the six side lines. The old
+  weaker converse was false; `axialPerspective_not_implies_central` gives a four-point
+  counterexample for that exact boundary.
 * **Historical scope:** The triangle theorem is cited from Bosse's 1647/1648 presentation of
   Desargues's work. The module's commutative-ring identity is a modern algebraic formulation
   inspired by that theorem, not a claim about the wording of the historical source.

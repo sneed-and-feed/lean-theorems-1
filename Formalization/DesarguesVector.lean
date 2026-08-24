@@ -25,9 +25,11 @@ sides are collinear on a line $L$).  The definitions below make the degeneracy c
 1. **Vector Formulation (Theorem 1):** Over any module $V$ over a commutative ring $K$, the side-intersection
    vectors $P, Q, R$ satisfy the linear dependence relation $\nu P + \lambda Q + \mu R = 0$.
 2. **Axiomatic Projective Planes:** `IsDesarguesian` records the forward implication from
-   central perspective to axial perspective.  The converse needs additional nondegeneracy
-   hypotheses absent from the original `AxialPerspective` definition; a four-point
-   counterexample below makes that boundary explicit.
+   central perspective to axial perspective.  `desargues_converse_projective_plane` proves the
+   converse for `ProperAxialPerspective`, whose six axis-versus-side exclusions are dual to the
+   six center-versus-vertex exclusions in `CentralPerspective`.  The weaker original
+   `AxialPerspective` predicate does not suffice; a four-point counterexample makes that boundary
+   explicit.
 
 ## References
 
@@ -39,6 +41,9 @@ sides are collinear on a line $L$).  The definitions below make the degeneracy c
 * H. S. M. Coxeter (1987), *Projective Geometry*, Springer-Verlag.
 * J. Müller, *Projective Geometry*, §5, pp. 19–21 (nondegenerate forward and converse forms).
   https://www.math.rwth-aachen.de/~Juergen.Mueller/preprints/jm114.pdf
+* R. Coghetto (2021), *Duality Notions in Real Projective Plane*, Formalized Mathematics 29(4),
+  161–173, Proposition (67) (a Mizar-formalized converse with explicit nondegeneracy).
+  https://doi.org/10.2478/forma-2021-0016
 * Freek Wiedijk, *Formalizing 100 Theorems*, #53.
 -/
 
