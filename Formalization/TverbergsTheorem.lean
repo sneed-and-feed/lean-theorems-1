@@ -426,6 +426,83 @@ def IsTverbergPartition (S : Finset (Fin d → ℝ)) (P : Fin r → Finset (Fin 
   (Finset.biUnion Finset.univ P = S) ∧
   (⋂ i : Fin r, convexHull ℝ (P i : Set (Fin d → ℝ))).Nonempty
 
+/-- A Tverberg partition of a subset extends to the whole finite set: assign every
+new point to one distinguished block.  Enlarging that block preserves the common
+point of the convex hulls. -/
+lemma IsTverbergPartition.extend_superset (hr : 1 ≤ r)
+    {T S : Finset (Fin d → ℝ)} {P : Fin r → Finset (Fin d → ℝ)}
+    (hTS : T ⊆ S) (hP : IsTverbergPartition T P) :
+    ∃ Q : Fin r → Finset (Fin d → ℝ), IsTverbergPartition S Q := by
+  classical
+  rcases hP with ⟨hP_subset, hP_disjoint, hP_cover, hP_inter⟩
+  let i₀ : Fin r := ⟨0, hr⟩
+  let R := S \ T
+  let Q : Fin r → Finset (Fin d → ℝ) := fun i ↦
+    if i = i₀ then P i ∪ R else P i
+  have hP_subset_Q : ∀ i, P i ⊆ Q i := by
+    intro i x hx
+    by_cases hi : i = i₀
+    · simpa [Q, hi] using Finset.mem_union_left R hx
+    · simpa [Q, hi] using hx
+  have hQ_subset : ∀ i, Q i ⊆ S := by
+    intro i x hx
+    by_cases hi : i = i₀
+    · have hx' : x ∈ P i ∨ x ∈ R := by simpa [Q, hi] using hx
+      rcases hx' with hxP | hxR
+      · exact hTS (hP_subset i hxP)
+      · exact (Finset.mem_sdiff.mp hxR).1
+    · exact hTS (hP_subset i (by simpa [Q, hi] using hx))
+  have hQ_disjoint : ∀ i j, i ≠ j → Disjoint (Q i) (Q j) := by
+    intro i j hij
+    rw [Finset.disjoint_iff_ne]
+    rintro x hxi y hyj rfl
+    by_cases hi : i = i₀
+    · have hj : j ≠ i₀ := by
+        intro hj
+        exact hij (hi.trans hj.symm)
+      have hxi' : x ∈ P i ∨ x ∈ R := by simpa [Q, hi] using hxi
+      have hyj' : x ∈ P j := by simpa [Q, hj] using hyj
+      rcases hxi' with hxiP | hxiR
+      · exact Finset.disjoint_left.mp (hP_disjoint i j hij) hxiP hyj'
+      · exact (Finset.mem_sdiff.mp hxiR).2 (hP_subset j hyj')
+    · by_cases hj : j = i₀
+      · have hxi' : x ∈ P i := by simpa [Q, hi] using hxi
+        have hyj' : x ∈ P j ∨ x ∈ R := by simpa [Q, hj] using hyj
+        rcases hyj' with hyjP | hyjR
+        · exact Finset.disjoint_left.mp (hP_disjoint i j hij) hxi' hyjP
+        · exact (Finset.mem_sdiff.mp hyjR).2 (hP_subset i hxi')
+      · have hxi' : x ∈ P i := by simpa [Q, hi] using hxi
+        have hyj' : x ∈ P j := by simpa [Q, hj] using hyj
+        exact Finset.disjoint_left.mp (hP_disjoint i j hij) hxi' hyj'
+  have hQ_cover : Finset.biUnion Finset.univ Q = S := by
+    ext x
+    constructor
+    · intro hx
+      rcases Finset.mem_biUnion.mp hx with ⟨i, _, hxi⟩
+      exact hQ_subset i hxi
+    · intro hxS
+      by_cases hxT : x ∈ T
+      · have hx_union : x ∈ Finset.biUnion Finset.univ P := by
+          rw [hP_cover]
+          exact hxT
+        rcases Finset.mem_biUnion.mp hx_union with ⟨i, _, hxi⟩
+        exact Finset.mem_biUnion.mpr
+          ⟨i, Finset.mem_univ i, hP_subset_Q i hxi⟩
+      · apply Finset.mem_biUnion.mpr
+        refine ⟨i₀, Finset.mem_univ i₀, ?_⟩
+        have hxR : x ∈ R := Finset.mem_sdiff.mpr ⟨hxS, hxT⟩
+        simpa [Q] using Finset.mem_union_right (P i₀) hxR
+  have hQ_inter :
+      (⋂ i : Fin r, convexHull ℝ (Q i : Set (Fin d → ℝ))).Nonempty := by
+    rcases hP_inter with ⟨x, hx⟩
+    refine ⟨x, ?_⟩
+    rw [Set.mem_iInter] at hx ⊢
+    intro i
+    exact convexHull_mono (by
+      intro y hy
+      exact hP_subset_Q i hy) (hx i)
+  exact ⟨Q, hQ_subset, hQ_disjoint, hQ_cover, hQ_inter⟩
+
 /-- Sarkaria-Bárány reduction: given a zero sum of lifted vectors, an explicit Tverberg partition exists. -/
 theorem sarkaria_tverberg (m : ℕ)
     (S : Finset (Fin d → ℝ)) (N : ℕ) (_hN_card : S.card = N)
@@ -800,6 +877,16 @@ theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
             simpa [P, I, hclast] using
               (mem_convexHull_pair_1d (x (lower c)) (x (upper c)) (x med) hlo hhi)
 
+/-- **Monotone one-dimensional Tverberg theorem.**
+Any finite set of at least `2 * r - 1` points in ℝ¹ admits a Tverberg partition
+into `r` blocks covering the entire set. -/
+theorem tverberg_1d_of_card_ge (r : ℕ) (hr : 1 ≤ r)
+    (S : Finset (Fin 1 → ℝ)) (hS : (r - 1) * (1 + 1) + 1 ≤ S.card) :
+    ∃ P : Fin r → Finset (Fin 1 → ℝ), IsTverbergPartition S P := by
+  obtain ⟨T, hTS, hT_card⟩ := Finset.exists_subset_card_eq hS
+  obtain ⟨P, hP⟩ := tverberg_1d r hr T hT_card
+  exact hP.extend_superset hr hTS
+
 end TverbergsTheorem
 
 #print axioms TverbergsTheorem.radons_theorem
@@ -807,4 +894,6 @@ end TverbergsTheorem
 #print axioms TverbergsTheorem.sarkaria_tverberg
 #print axioms TverbergsTheorem.mem_convexHull_pair_1d
 #print axioms TverbergsTheorem.tverberg_1d
+#print axioms TverbergsTheorem.IsTverbergPartition.extend_superset
+#print axioms TverbergsTheorem.tverberg_1d_of_card_ge
 
