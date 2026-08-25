@@ -2,6 +2,7 @@ import Mathlib.Analysis.Convex.Hull
 import Mathlib.Analysis.Convex.Combination
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.LinearAlgebra.Dimension.Constructions
@@ -14,10 +15,13 @@ import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Common
 
 /-!
-# Tverberg's Theorem on Intersecting Convex Hulls (1966)
+# Tverberg's Theorem: Reductions and the Full One-Dimensional Case
 
-This module formalizes **Tverberg's Theorem** (H. Tverberg, 1966),
-a foundational theorem in discrete and combinatorial geometry generalizing Radon's Lemma ($r = 2$).
+Tverberg's theorem (H. Tverberg, 1966) is a foundational result in discrete and combinatorial
+geometry generalizing Radon's lemma ($r = 2$).  The completed unconditional declarations in this
+module cover $r \le 2$ in arbitrary dimension and every $r$ in dimension one.  The general
+higher-dimensional statement is represented by a conditional Sarkaria reduction, not claimed as
+a completed proof here.
 
 ## Mathematical Statement
 
@@ -28,9 +32,15 @@ share a common point of intersection:
 $$\bigcap_{i=1}^r \operatorname{conv}(A_i) \ne \emptyset$$
 
 ## References
-* H. Tverberg (1966), *A generalization of Radon's theorem*, J. London Math. Soc., 41:123–128.
+
+* H. Tverberg (1966), *A generalization of Radon's theorem*, J. London Math. Soc. 41:123–128,
+  Theorem 1. https://doi.org/10.1112/jlms/s1-41.1.123
+* W. Mulzer and D. Werner (2013), *Approximating Tverberg points in linear time for any fixed
+  dimension*, Discrete Comput. Geom. 50:520–535, §2.2, Lemma 2.3 and Theorem 2.4.
+  https://doi.org/10.1007/s00454-013-9528-7
+  The proof of `tverberg_1d` uses symmetric-rank pairing as a canonical specialization of their
+  median-and-opposite-sides construction.
 * J. Matoušek (2002), *Lectures on Discrete Geometry*, GTM 212, Springer, Chapter 8.
-* I. Bárány (1982), *A generalization of Carathéodory's theorem*, Discrete Math., 40(2-3):141–152.
 -/
 
 set_option linter.deprecated false
@@ -416,6 +426,83 @@ def IsTverbergPartition (S : Finset (Fin d → ℝ)) (P : Fin r → Finset (Fin 
   (Finset.biUnion Finset.univ P = S) ∧
   (⋂ i : Fin r, convexHull ℝ (P i : Set (Fin d → ℝ))).Nonempty
 
+/-- A Tverberg partition of a subset extends to the whole finite set: assign every
+new point to one distinguished block.  Enlarging that block preserves the common
+point of the convex hulls. -/
+lemma IsTverbergPartition.extend_superset (hr : 1 ≤ r)
+    {T S : Finset (Fin d → ℝ)} {P : Fin r → Finset (Fin d → ℝ)}
+    (hTS : T ⊆ S) (hP : IsTverbergPartition T P) :
+    ∃ Q : Fin r → Finset (Fin d → ℝ), IsTverbergPartition S Q := by
+  classical
+  rcases hP with ⟨hP_subset, hP_disjoint, hP_cover, hP_inter⟩
+  let i₀ : Fin r := ⟨0, hr⟩
+  let R := S \ T
+  let Q : Fin r → Finset (Fin d → ℝ) := fun i ↦
+    if i = i₀ then P i ∪ R else P i
+  have hP_subset_Q : ∀ i, P i ⊆ Q i := by
+    intro i x hx
+    by_cases hi : i = i₀
+    · simpa [Q, hi] using Finset.mem_union_left R hx
+    · simpa [Q, hi] using hx
+  have hQ_subset : ∀ i, Q i ⊆ S := by
+    intro i x hx
+    by_cases hi : i = i₀
+    · have hx' : x ∈ P i ∨ x ∈ R := by simpa [Q, hi] using hx
+      rcases hx' with hxP | hxR
+      · exact hTS (hP_subset i hxP)
+      · exact (Finset.mem_sdiff.mp hxR).1
+    · exact hTS (hP_subset i (by simpa [Q, hi] using hx))
+  have hQ_disjoint : ∀ i j, i ≠ j → Disjoint (Q i) (Q j) := by
+    intro i j hij
+    rw [Finset.disjoint_iff_ne]
+    rintro x hxi y hyj rfl
+    by_cases hi : i = i₀
+    · have hj : j ≠ i₀ := by
+        intro hj
+        exact hij (hi.trans hj.symm)
+      have hxi' : x ∈ P i ∨ x ∈ R := by simpa [Q, hi] using hxi
+      have hyj' : x ∈ P j := by simpa [Q, hj] using hyj
+      rcases hxi' with hxiP | hxiR
+      · exact Finset.disjoint_left.mp (hP_disjoint i j hij) hxiP hyj'
+      · exact (Finset.mem_sdiff.mp hxiR).2 (hP_subset j hyj')
+    · by_cases hj : j = i₀
+      · have hxi' : x ∈ P i := by simpa [Q, hi] using hxi
+        have hyj' : x ∈ P j ∨ x ∈ R := by simpa [Q, hj] using hyj
+        rcases hyj' with hyjP | hyjR
+        · exact Finset.disjoint_left.mp (hP_disjoint i j hij) hxi' hyjP
+        · exact (Finset.mem_sdiff.mp hyjR).2 (hP_subset i hxi')
+      · have hxi' : x ∈ P i := by simpa [Q, hi] using hxi
+        have hyj' : x ∈ P j := by simpa [Q, hj] using hyj
+        exact Finset.disjoint_left.mp (hP_disjoint i j hij) hxi' hyj'
+  have hQ_cover : Finset.biUnion Finset.univ Q = S := by
+    ext x
+    constructor
+    · intro hx
+      rcases Finset.mem_biUnion.mp hx with ⟨i, _, hxi⟩
+      exact hQ_subset i hxi
+    · intro hxS
+      by_cases hxT : x ∈ T
+      · have hx_union : x ∈ Finset.biUnion Finset.univ P := by
+          rw [hP_cover]
+          exact hxT
+        rcases Finset.mem_biUnion.mp hx_union with ⟨i, _, hxi⟩
+        exact Finset.mem_biUnion.mpr
+          ⟨i, Finset.mem_univ i, hP_subset_Q i hxi⟩
+      · apply Finset.mem_biUnion.mpr
+        refine ⟨i₀, Finset.mem_univ i₀, ?_⟩
+        have hxR : x ∈ R := Finset.mem_sdiff.mpr ⟨hxS, hxT⟩
+        simpa [Q] using Finset.mem_union_right (P i₀) hxR
+  have hQ_inter :
+      (⋂ i : Fin r, convexHull ℝ (Q i : Set (Fin d → ℝ))).Nonempty := by
+    rcases hP_inter with ⟨x, hx⟩
+    refine ⟨x, ?_⟩
+    rw [Set.mem_iInter] at hx ⊢
+    intro i
+    exact convexHull_mono (by
+      intro y hy
+      exact hP_subset_Q i hy) (hx i)
+  exact ⟨Q, hQ_subset, hQ_disjoint, hQ_cover, hQ_inter⟩
+
 /-- Sarkaria-Bárány reduction: given a zero sum of lifted vectors, an explicit Tverberg partition exists. -/
 theorem sarkaria_tverberg (m : ℕ)
     (S : Finset (Fin d → ℝ)) (N : ℕ) (_hN_card : S.card = N)
@@ -599,7 +686,206 @@ theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
       · exact tverbergs_theorem hr hle S hS
       · -- r ≥ 3 in 1D
         have hr_dim : (r - 1) * (1 + 1) + 1 = 2 * r - 1 := by omega
-        sorry
+        classical
+        let N := 2 * r - 1
+        have hS_N : S.card = N := by
+          dsimp [N]
+          omega
+        let coord : (Fin 1 → ℝ) → ℝ := fun x ↦ x 0
+        have hcoord_inj : Function.Injective coord := by
+          intro x y hxy
+          funext i
+          have hi : i = 0 := Subsingleton.elim i 0
+          subst i
+          exact hxy
+        let T : Finset ℝ := S.image coord
+        have hT_card : T.card = N := by
+          dsimp [T]
+          rw [Finset.card_image_of_injective S hcoord_inj, hS_N]
+        let q : Fin N ↪o ℝ := T.orderEmbOfFin hT_card
+        let x : Fin N → Fin 1 → ℝ := fun i _ ↦ q i
+        have hx_inj : Function.Injective x := by
+          intro i j hij
+          apply q.injective
+          exact congr_fun hij 0
+        have hx_mem : ∀ i : Fin N, x i ∈ S := by
+          intro i
+          have hqi : q i ∈ T := by
+            dsimp [q]
+            exact T.orderEmbOfFin_mem hT_card i
+          dsimp [T] at hqi
+          rcases Finset.mem_image.mp hqi with ⟨y, hyS, hyq⟩
+          have hxy : x i = y := by
+            funext j
+            have hj : j = 0 := Subsingleton.elim j 0
+            subst j
+            dsimp [x, coord] at hyq ⊢
+            exact hyq.symm
+          rw [hxy]
+          exact hyS
+        have hx_surj : ∀ y ∈ S, ∃ i : Fin N, x i = y := by
+          intro y hyS
+          have hyT : coord y ∈ T := by
+            dsimp [T]
+            exact Finset.mem_image.mpr ⟨y, hyS, rfl⟩
+          have hq_image : Finset.image q Finset.univ = T := by
+            dsimp [q]
+            exact T.image_orderEmbOfFin_univ hT_card
+          have hy_image : coord y ∈ Finset.image q Finset.univ := by
+            rw [hq_image]
+            exact hyT
+          rcases Finset.mem_image.mp hy_image with ⟨i, _, hi⟩
+          refine ⟨i, ?_⟩
+          funext j
+          have hj : j = 0 := Subsingleton.elim j 0
+          subst j
+          dsimp [x, coord] at hi ⊢
+          exact hi
+        have hmed : r - 1 < N := by
+          dsimp [N]
+          omega
+        let med : Fin N := ⟨r - 1, hmed⟩
+        let lower : Fin r → Fin N := fun c ↦
+          ⟨c.1, by dsimp [N]; omega⟩
+        let upper : Fin r → Fin N := fun c ↦
+          ⟨2 * r - 2 - c.1, by dsimp [N]; omega⟩
+        let I : Fin r → Finset (Fin N) := fun c ↦
+          if c.1 = r - 1 then {med} else {lower c, upper c}
+        let P : Fin r → Finset (Fin 1 → ℝ) := fun c ↦ (I c).image x
+        have hI_unique : ∀ (i j : Fin r) (a : Fin N),
+            a ∈ I i → a ∈ I j → i = j := by
+          intro i j a hai haj
+          by_cases hilast : i.1 = r - 1
+          · by_cases hjlast : j.1 = r - 1
+            · apply Fin.ext
+              exact hilast.trans hjlast.symm
+            · have hai' : a = med := by simpa [I, hilast] using hai
+              have haj' : a = lower j ∨ a = upper j := by
+                simpa [I, hjlast] using haj
+              rcases haj' with haj' | haj'
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [med, lower] at hv
+                omega
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [med, upper] at hv
+                omega
+          · by_cases hjlast : j.1 = r - 1
+            · have hai' : a = lower i ∨ a = upper i := by
+                simpa [I, hilast] using hai
+              have haj' : a = med := by simpa [I, hjlast] using haj
+              rcases hai' with hai' | hai'
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [med, lower] at hv
+                omega
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [med, upper] at hv
+                omega
+            · have hai' : a = lower i ∨ a = upper i := by
+                simpa [I, hilast] using hai
+              have haj' : a = lower j ∨ a = upper j := by
+                simpa [I, hjlast] using haj
+              rcases hai' with hai' | hai' <;> rcases haj' with haj' | haj'
+              · apply Fin.ext
+                have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                simpa [lower] using hv
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [lower, upper] at hv
+                omega
+              · have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [lower, upper] at hv
+                omega
+              · apply Fin.ext
+                have hv := congr_arg Fin.val (hai'.symm.trans haj')
+                dsimp [upper] at hv
+                omega
+        have hI_cover : ∀ a : Fin N, ∃ c : Fin r, a ∈ I c := by
+          intro a
+          by_cases halow : a.1 < r - 1
+          · let c : Fin r := ⟨a.1, by omega⟩
+            have hclast : c.1 ≠ r - 1 := by
+              dsimp [c]
+              omega
+            refine ⟨c, ?_⟩
+            rw [show I c = {lower c, upper c} by simp [I, hclast]]
+            apply Finset.mem_insert.mpr
+            left
+            apply Fin.ext
+            rfl
+          · by_cases hamid : a.1 = r - 1
+            · let c : Fin r := ⟨r - 1, by omega⟩
+              have hclast : c.1 = r - 1 := by rfl
+              refine ⟨c, ?_⟩
+              rw [show I c = {med} by simp [I, hclast]]
+              apply Finset.mem_singleton.mpr
+              apply Fin.ext
+              exact hamid
+            · have ha_lt : a.1 < 2 * r - 1 := a.2
+              let c : Fin r := ⟨2 * r - 2 - a.1, by omega⟩
+              have hclast : c.1 ≠ r - 1 := by
+                dsimp [c]
+                omega
+              refine ⟨c, ?_⟩
+              rw [show I c = {lower c, upper c} by simp [I, hclast]]
+              apply Finset.mem_insert.mpr
+              right
+              apply Finset.mem_singleton.mpr
+              apply Fin.ext
+              dsimp [upper, c, N] at a ⊢
+              omega
+        refine ⟨P, ?_⟩
+        dsimp [IsTverbergPartition]
+        refine ⟨?_, ?_, ?_, ?_⟩
+        · intro c y hy
+          rcases Finset.mem_image.mp hy with ⟨i, _, rfl⟩
+          exact hx_mem i
+        · intro i j hij
+          rw [Finset.disjoint_iff_ne]
+          rintro y₁ hy₁ y₂ hy₂ heq
+          rcases Finset.mem_image.mp hy₁ with ⟨a, ha, rfl⟩
+          rcases Finset.mem_image.mp hy₂ with ⟨b, hb, rfl⟩
+          have hab' : a = b := hx_inj heq
+          subst b
+          exact hij (hI_unique i j a ha hb)
+        · ext y
+          constructor
+          · intro hy
+            rcases Finset.mem_biUnion.mp hy with ⟨c, _, hyc⟩
+            rcases Finset.mem_image.mp hyc with ⟨i, _, rfl⟩
+            exact hx_mem i
+          · intro hy
+            rcases hx_surj y hy with ⟨i, rfl⟩
+            rcases hI_cover i with ⟨c, hic⟩
+            exact Finset.mem_biUnion.mpr
+              ⟨c, Finset.mem_univ c, Finset.mem_image.mpr ⟨i, hic, rfl⟩⟩
+        · refine ⟨x med, ?_⟩
+          rw [Set.mem_iInter]
+          intro c
+          by_cases hclast : c.1 = r - 1
+          · apply subset_convexHull ℝ (P c : Set (Fin 1 → ℝ))
+            exact Finset.mem_coe.mpr <| Finset.mem_image.mpr ⟨med, by simp [I, hclast], rfl⟩
+          · have hc_lt : c.1 < r - 1 := by omega
+            have hlo : x (lower c) 0 ≤ x med 0 := by
+              change q (lower c) ≤ q med
+              apply q.monotone
+              change c.1 ≤ r - 1
+              omega
+            have hhi : x med 0 ≤ x (upper c) 0 := by
+              change q med ≤ q (upper c)
+              apply q.monotone
+              change r - 1 ≤ 2 * r - 2 - c.1
+              omega
+            simpa [P, I, hclast] using
+              (mem_convexHull_pair_1d (x (lower c)) (x (upper c)) (x med) hlo hhi)
+
+/-- **Monotone one-dimensional Tverberg theorem.**
+Any finite set of at least `2 * r - 1` points in ℝ¹ admits a Tverberg partition
+into `r` blocks covering the entire set. -/
+theorem tverberg_1d_of_card_ge (r : ℕ) (hr : 1 ≤ r)
+    (S : Finset (Fin 1 → ℝ)) (hS : (r - 1) * (1 + 1) + 1 ≤ S.card) :
+    ∃ P : Fin r → Finset (Fin 1 → ℝ), IsTverbergPartition S P := by
+  obtain ⟨T, hTS, hT_card⟩ := Finset.exists_subset_card_eq hS
+  obtain ⟨P, hP⟩ := tverberg_1d r hr T hT_card
+  exact hP.extend_superset hr hTS
 
 end TverbergsTheorem
 
@@ -607,4 +893,7 @@ end TverbergsTheorem
 #print axioms TverbergsTheorem.tverbergs_theorem
 #print axioms TverbergsTheorem.sarkaria_tverberg
 #print axioms TverbergsTheorem.mem_convexHull_pair_1d
+#print axioms TverbergsTheorem.tverberg_1d
+#print axioms TverbergsTheorem.IsTverbergPartition.extend_superset
+#print axioms TverbergsTheorem.tverberg_1d_of_card_ge
 

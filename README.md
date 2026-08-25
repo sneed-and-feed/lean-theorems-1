@@ -2,7 +2,11 @@
 
 This repository provides machine-checked formalizations of classical theorems in combinatorics, graph theory, algebra, extremal set theory, discrete geometry, and incidence geometry that were previously unformalized in the Lean 4 / [Mathlib](https://github.com/leanprover-community/mathlib4) ecosystem.
 
-All theorems and sub-lemmas in the core build are formalized strictly without unproven axioms (`axiom`) or incomplete goals (`sorry`), and are machine-checked against the Lean 4 proof assistant.
+The primary declarations listed below and their proof dependencies are machine-checked without
+project-specific axioms or incomplete goals (`sorry`). Two generic upper-bound extensions in
+`ErdosKoRado.lean`—the EKR equality case and the Hilton–Milner theorem—remain explicit open targets.
+Their `k = 1` and `k = 2` base cases, respectively, and the sharp Hilton–Milner extremal
+construction with its exact cardinality are fully proved.
 
 ---
 
@@ -10,7 +14,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 | # | Theorem | Primary Declaration | Mathematical Domain | Reference |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | **Desargues's Theorem (Vector Formulation)** | [`desargues_vector`](Formalization/DesarguesVector.lean) | Projective & Affine Geometry | Desargues (1639), Wiedijk #53 |
+| 1 | **Desargues's Theorem: Vector Identity & Proper Projective Converse** | [`desargues_vector`](Formalization/DesarguesVector.lean), [`desargues_converse_projective_plane`](Formalization/DesarguesVector.lean) | Projective & Affine Geometry | Bosse/Desargues (1647/1648), Coghetto (2021), Wiedijk #53 |
 | 2 | **Graham–Pollak Theorem** | [`graham_pollak`](Formalization/GrahamPollak.lean) | Algebraic Combinatorics | Graham & Pollak (1971), Tverberg (1982) |
 | 3 | **Bondy's Theorem on Induced Subsets** | [`bondy_induced_subsets`](Formalization/BondyInducedSubsets.lean) | Extremal Set Theory & VC Theory | Bondy (1972) |
 | 4 | **Bollobás's Two Families Theorem** | [`bollobas_two_families`](Formalization/BollobasTwoFamilies.lean) | Extremal Combinatorics | Bollobás (1965) |
@@ -20,12 +24,12 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 | 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
-| 11 | **Erdős–Ko–Rado Theorem on Intersecting Families** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_disjoint_pair`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_powersetCard`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Katona (1972) |
+| 11 | **Erdős–Ko–Rado, Small-Parameter Stability, and Hilton–Milner Sharpness** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_uniqueness_one`](Formalization/ErdosKoRado.lean), [`hilton_milner_stability_two`](Formalization/ErdosKoRado.lean), [`exists_hiltonMilner_extremizer`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Hilton & Milner (1967), Katona (1972) |
 | 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
 | 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
-| 16 | **Tverberg's Theorem** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`radons_theorem`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Sarkaria (1992), Bárány & Onn (1997) |
+| 16 | **Tverberg's Theorem (r ≤ 2) & Full 1D Tverberg** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`tverberg_1d_of_card_ge`](Formalization/TverbergsTheorem.lean), [`tverberg_1d`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Mulzer & Werner (2013), Sarkaria (1992) |
 | 17 | **Dilworth's & Mirsky's Decomposition Theorems** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean), [`mirsky_theorem`](Formalization/DilworthTheorem.lean), [`mirsky_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Mirsky (1971), Perles (1963) |
 | 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
 | 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) |
@@ -41,19 +45,36 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 | 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) |
 | 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) |
 | 31 | **Tutte's 1-Factor Theorem & Petersen's Theorems** | [`tutte_1factor_theorem`](Formalization/TutteOneFactor.lean), [`tutte_berge_min_eq_card_sub_defect`](Formalization/TutteOneFactor.lean), [`petersen_bridgeless_cubic_1factor`](Formalization/TutteOneFactor.lean), [`petersen_2factor_theorem`](Formalization/TutteOneFactor.lean) | Structural Graph Theory & Factorizations | Tutte (1947), Petersen (1891), Berge (1958) |
+| 32 | **Lovász's Colorful Helly Theorem** | [`colorful_helly_all_dimensions`](Formalization/ColorfulHelly.lean), [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Lovász (1974), first published proof: Bárány (1982) |
 
 ---
 
 ## Detailed Theorem Descriptions & Formalization Highlights
 
-### 1. Desargues's Theorem in Vector Form
+### 1. Desargues's Theorem: Vector and Axiomatic Projective Forms
 * **Module:** [`Formalization/DesarguesVector.lean`](Formalization/DesarguesVector.lean)
-* **Theorem:** `desargues_vector`
+* **Theorems:** `desargues_vector`, `desargues_projective_plane_proper`,
+  `desargues_converse_projective_plane`,
+  `exists_centralPerspective_iff_exists_properAxialPerspective`,
+  `axialPerspective_not_implies_central`
 * **Mathematical Statement:** Let $V$ be a module over a commutative ring $K$. If two triangles $(A_1, B_1, C_1)$ and $(A_2, B_2, C_2)$ are in central perspective from a center $O$ with scaling coefficients $(a, b, c)$ and $(\lambda, \mu, \nu)$, then their corresponding side-intersection points:
   $$P = \mu A_2 - \lambda B_2, \quad Q = \nu B_2 - \mu C_2, \quad R = \lambda C_2 - \nu A_2$$
   satisfy the linear dependence relation:
   $$\nu P + \lambda Q + \mu R = 0$$
   demonstrating axial perspective (collinearity).
+* **Projective result and boundary:** `desargues_projective_plane` records the forward Desargues
+  axiom. `desargues_projective_plane_proper` proves that its axis is automatically distinct from
+  all six side lines. `desargues_converse_projective_plane` derives the converse synthetically by
+  applying the forward theorem to two auxiliary triangles, and
+  `exists_centralPerspective_iff_exists_properAxialPerspective` combines both directions into an
+  exact equivalence. The axial side displays the three corresponding-vertex inequalities and uses
+  `ProperAxialPerspective` for the six axis-versus-side exclusions. The old converse using only
+  `AxialPerspective` was false; `axialPerspective_not_implies_central` gives a four-point
+  counterexample to that weaker statement. The equivalence is exact for these dual predicates; it
+  does not claim a separate minimality proof for every exclusion.
+* **Historical scope:** The triangle theorem is cited from Bosse's 1647/1648 presentation of
+  Desargues's work. The module's commutative-ring identity is a modern algebraic formulation
+  inspired by that theorem, not a claim about the wording of the historical source.
 
 ---
 
@@ -129,10 +150,21 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 ---
 
-### 11. Erdős–Ko–Rado Theorem on Intersecting Families
+### 11. Erdős–Ko–Rado, Small-Parameter Stability, and Hilton–Milner Sharpness
 * **Module:** [`Formalization/ErdosKoRado.lean`](Formalization/ErdosKoRado.lean)
-* **Theorems:** `erdos_ko_rado`, `erdos_ko_rado_disjoint_pair`, `erdos_ko_rado_powersetCard`, `katona_arc_lemma`
-* **Mathematical Statement:** Let $n \ge 2k$ with $k \ge 1$, and let $\mathcal{F}$ be an intersecting family of $k$-element subsets of an $n$-element universe. Then $|\mathcal{F}| \le \binom{n-1}{k-1}$.
+* **Theorems:** `erdos_ko_rado`, `erdos_ko_rado_disjoint_pair`,
+  `erdos_ko_rado_powersetCard`, `katona_arc_lemma`, `erdos_ko_rado_uniqueness_one`,
+  `two_uniform_intersecting_not_star_eq_triangle`, `hilton_milner_stability_two`,
+  `exists_hiltonMilner_extremizer`
+* **Mathematical Statement:** Let $n \ge 2k$ with $k \ge 1$, and let $\mathcal{F}$ be an
+  intersecting family of $k$-element subsets of an $n$-element universe. Then
+  $|\mathcal{F}| \le \binom{n-1}{k-1}$. Moreover, for every $2 \le k$ and $2k<n$, the classical
+  Hilton–Milner exceptional-set family is uniform, pairwise intersecting, has no common element,
+  and has exactly
+  $\binom{n-1}{k-1}-\binom{n-k-1}{k-1}+1$ members. The EKR equality case is proved for `k = 1`;
+  for `k = 2`, every non-star pairwise-intersecting family is exactly a triangle and attains the
+  Hilton–Milner bound of three. The two corresponding generic statements remain explicit open
+  targets.
 
 ---
 
@@ -171,10 +203,17 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 ---
 
-### 16. Tverberg's Theorem & Sarkaria–Bárány Tensor Lifting
+### 16. Tverberg Reductions & the Full 1D Theorem
 * **Module:** [`Formalization/TverbergsTheorem.lean`](Formalization/TverbergsTheorem.lean)
-* **Theorems:** `tverbergs_theorem`, `radons_theorem`, `sarkaria_tverberg`
-* **Mathematical Statement:** Any set of $(r - 1)(d + 1) + 1$ points in $\mathbb{R}^d$ can be partitioned into $r$ pairwise disjoint subsets whose convex hulls share a point.
+* **Theorems:** `tverbergs_theorem`, `tverberg_1d_of_card_ge`, `tverberg_1d`,
+  `IsTverbergPartition.extend_superset`, `radons_theorem`, `sarkaria_tverberg`
+* **Formalized scope:** `tverbergs_theorem` handles $r \le 2$ in arbitrary dimension;
+  `tverberg_1d` proves the sharp $2r-1$ case in $\mathbb{R}^1$ by pairing sorted endpoints around a
+  median; `tverberg_1d_of_card_ge` extends this to every finite set with at least $2r-1$ points while
+  still partitioning the whole set; `sarkaria_tverberg` supplies the general reduction from a
+  suitable lifted zero-sum witness.
+* **Source locator for the 1D construction:** Mulzer–Werner (2013), §2.2, Lemma 2.3 and
+  Theorem 2.4. The formal proof chooses the canonical symmetric-rank pairing.
 
 ---
 
@@ -276,10 +315,21 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 
 ---
 
-### Note on Bárány's Colorful Helly Theorem (1982)
-* **Module Scaffold:** [`Formalization/ColorfulHelly.lean`](Formalization/ColorfulHelly.lean)
-* **Mathematical Context:** Bárány's Colorful Helly theorem states that given $d+1$ finite families $\mathcal{F}_0, \dots, \mathcal{F}_d$ of convex sets in $\mathbb{R}^d$ such that every colorful transversal intersects, at least one family $\mathcal{F}_j$ has $\bigcap_{S \in \mathcal{F}_j} S \ne \emptyset$.
-* **Missing Mathlib Prerequisites:** Unlike classical Helly's theorem which admits an elementary induction on $|F|$, Bárány's colorful extension mathematically requires either the **Colorful Carathéodory Theorem** or topological intersection theory (degree theory / nerves). The definitions, substitution operators, and verified base cases are preserved in `Formalization/ColorfulHelly.lean` for future completion once Colorful Carathéodory is formalized in Mathlib.
+### 32. Lovász's Colorful Helly Theorem (1974; first published proof 1982)
+* **Module:** [`Formalization/ColorfulHelly.lean`](Formalization/ColorfulHelly.lean)
+* **Theorems:** `colorful_helly_all_dimensions`, `colorful_helly`, `colorful_helly_inductive`
+* **Mathematical Statement:** Given $d+1$ finite families $\mathcal{F}_0, \dots,
+  \mathcal{F}_d$ of convex sets in $\mathbb{R}^d$, if every colorful transversal intersects,
+  then some family $\mathcal{F}_j$ has $\bigcap_{S \in \mathcal{F}_j} S \ne \emptyset$.
+  The unrestricted theorem includes the zero-dimensional case; `colorful_helly` preserves the
+  original positive-dimensional API.
+* **Source and scope:** Bárány (1982), Theorem 3.1, p. 144 (proof pp. 150–151), credits
+  Lovász's 1974 private communication. Bárány assumes compact convex sets; this finite-family
+  formalization derives the arbitrary-convex-set version by compactifying a finite witness pool.
+* **Proof:** Compactify the sets using the finite pool of transversal witnesses; maximize the
+  minimum squared Euclidean length of a colorful intersection; use ordinary Helly with a strict
+  lower sublevel set to omit one color; and use strict midpoint convexity to show that the same
+  extremal point lies in every set of that color.
 
 ---
 
@@ -327,7 +377,7 @@ All theorems and sub-lemmas in the core build are formalized strictly without un
 │   ├── Sperner3D.lean                    # 26. Sperner's Lemma in 3D
 │   ├── FranklWilson.lean                 # 27. Frankl–Wilson Theorem
 │   ├── BecksTheorem.lean                 # 28. Beck's Theorem on Incidence Geometry
-│   └── ColorfulHelly.lean                # Colorful Helly Structure & Scaffold
+│   └── ColorfulHelly.lean                # 32. Lovász's Colorful Helly Theorem
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
 └── README.md
