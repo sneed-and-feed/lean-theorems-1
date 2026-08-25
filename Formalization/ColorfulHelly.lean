@@ -457,9 +457,28 @@ lemma colorful_helly_inductive (d : ℕ) (hd : 1 ≤ d) (n : ℕ) (sys : Colorfu
 -- Section 4: Main Theorem (Lovász 1974; first published proof, Bárány 1982)
 -- ============================================================================
 
+/-- The zero-dimensional case of Colorful Helly.  There is one color, and every point of
+    `Fin 0 → ℝ` is the same point, so the transversal hypothesis forces that point to lie in
+    every set of the color family. -/
+lemma colorful_helly_zero (sys : ColorfulConvexSystem 0)
+    (h_transversal : ∀ (choice : (c : Fin 1) → Set (Fin 0 → ℝ)),
+      (∀ c, choice c ∈ sys.families c) →
+      (⋂ c : Fin 1, choice c).Nonempty) :
+    ∃ (j : Fin 1), (⋂ S ∈ sys.families j, S).Nonempty := by
+  let j : Fin 1 := 0
+  refine ⟨j, ⟨0, ?_⟩⟩
+  simp only [Set.mem_iInter]
+  intro S hS
+  have hchoice_mem : ∀ c : Fin 1, S ∈ sys.families c := by
+    intro c
+    simpa only [Subsingleton.elim c j] using hS
+  obtain ⟨x, hx⟩ := h_transversal (fun _ ↦ S) hchoice_mem
+  have hxS : x ∈ S := Set.mem_iInter.mp hx j
+  simpa only [Subsingleton.elim x 0] using hxS
+
 /-- Main Theorem: Lovász's Colorful Helly theorem (1974; first published proof, Bárány 1982).
-    If all colorful selections of d+1 sets intersect,
-    then at least one family has a non-empty global intersection. -/
+    If all colorful selections of `d + 1` sets intersect in positive dimension, then at least
+    one family has a non-empty global intersection. -/
 theorem colorful_helly (d : ℕ) (hd : 1 ≤ d) (sys : ColorfulConvexSystem d)
     (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
       (∀ c, choice c ∈ sys.families c) →
@@ -467,7 +486,21 @@ theorem colorful_helly (d : ℕ) (hd : 1 ≤ d) (sys : ColorfulConvexSystem d)
     ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty :=
   colorful_helly_inductive d hd (∑ c, (sys.families c).card) sys rfl h_transversal
 
+/-- Lovász's Colorful Helly theorem in every dimension `d`, including `d = 0`: if all colorful
+    selections of `d + 1` sets intersect, then at least one family has a non-empty global
+    intersection. -/
+theorem colorful_helly_all_dimensions (d : ℕ) (sys : ColorfulConvexSystem d)
+    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
+      (∀ c, choice c ∈ sys.families c) →
+      (⋂ c : Fin (d + 1), choice c).Nonempty) :
+    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := by
+  rcases d with _ | d
+  · exact colorful_helly_zero sys h_transversal
+  · exact colorful_helly (d + 1) (Nat.succ_le_succ (Nat.zero_le d)) sys h_transversal
+
 end ColorfulHelly
 
 #print axioms ColorfulHelly.colorful_helly_inductive
+#print axioms ColorfulHelly.colorful_helly_zero
 #print axioms ColorfulHelly.colorful_helly
+#print axioms ColorfulHelly.colorful_helly_all_dimensions

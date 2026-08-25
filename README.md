@@ -44,7 +44,7 @@ the sharp Hilton–Milner extremal construction and its exact cardinality are fu
 | 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) |
 | 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) |
 | 31 | **Tutte's 1-Factor Theorem & Petersen's Theorems** | [`tutte_1factor_theorem`](Formalization/TutteOneFactor.lean), [`tutte_berge_min_eq_card_sub_defect`](Formalization/TutteOneFactor.lean), [`petersen_bridgeless_cubic_1factor`](Formalization/TutteOneFactor.lean), [`petersen_2factor_theorem`](Formalization/TutteOneFactor.lean) | Structural Graph Theory & Factorizations | Tutte (1947), Petersen (1891), Berge (1958) |
-| 32 | **Lovász's Colorful Helly Theorem** | [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Lovász (1974), first published proof: Bárány (1982) |
+| 32 | **Lovász's Colorful Helly Theorem** | [`colorful_helly_all_dimensions`](Formalization/ColorfulHelly.lean), [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Lovász (1974), first published proof: Bárány (1982) |
 
 ---
 
@@ -310,10 +310,12 @@ the sharp Hilton–Milner extremal construction and its exact cardinality are fu
 
 ### 32. Lovász's Colorful Helly Theorem (1974; first published proof 1982)
 * **Module:** [`Formalization/ColorfulHelly.lean`](Formalization/ColorfulHelly.lean)
-* **Theorems:** `colorful_helly`, `colorful_helly_inductive`
+* **Theorems:** `colorful_helly_all_dimensions`, `colorful_helly`, `colorful_helly_inductive`
 * **Mathematical Statement:** Given $d+1$ finite families $\mathcal{F}_0, \dots,
   \mathcal{F}_d$ of convex sets in $\mathbb{R}^d$, if every colorful transversal intersects,
   then some family $\mathcal{F}_j$ has $\bigcap_{S \in \mathcal{F}_j} S \ne \emptyset$.
+  The unrestricted theorem includes the zero-dimensional case; `colorful_helly` preserves the
+  original positive-dimensional API.
 * **Source and scope:** Bárány (1982), Theorem 3.1, p. 144 (proof pp. 150–151), credits
   Lovász's 1974 private communication. Bárány assumes compact convex sets; this finite-family
   formalization derives the arbitrary-convex-set version by compactifying a finite witness pool.
