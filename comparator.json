@@ -2,8 +2,9 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SchursTheorem.schurs_theorem",
-    "SchursTheorem.ramsey_triangle"
+    "Sperner3D.sperner_3d_parity",
+    "Sperner3D.sperner_3d_odd",
+    "Sperner3D.sperner_3d_exists"
   ],
   "permitted_axioms": [
     "propext",
