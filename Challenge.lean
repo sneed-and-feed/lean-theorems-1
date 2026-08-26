@@ -1,23 +1,25 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Finite
+import Mathlib.Analysis.Convex.Hull
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Real.Basic
 
-namespace FriendshipTheorem
+namespace RadonHelly
 
-variable {V : Type*} [Fintype V] [DecidableEq V]
+variable {d : ℕ}
 
-/-- The friendship property: every pair of distinct vertices has exactly one common neighbor. -/
-def HasFriendshipProperty (G : SimpleGraph V) [DecidableRel G.Adj] : Prop :=
-  ∀ u v : V, u ≠ v → (G.neighborFinset u ∩ G.neighborFinset v).card = 1
+/-- **Radon's Lemma (Radon's Theorem, 1921, Freek Wiedijk #99):**
+Any set of $d + 2$ points in $\mathbb{R}^d$ can be partitioned into two disjoint subsets
+whose convex hulls intersect. -/
+theorem radons_theorem (S : Finset (Fin d → ℝ)) (hS : S.card = d + 2) :
+    ∃ A B : Finset (Fin d → ℝ), A ⊆ S ∧ B ⊆ S ∧ Disjoint A B ∧ A ∪ B = S ∧
+      (convexHull ℝ (A : Set (Fin d → ℝ)) ∩ convexHull ℝ (B : Set (Fin d → ℝ))).Nonempty := sorry
 
-/-- A universal vertex (or "politician") in `G` that is adjacent to all other vertices. -/
-def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
-  ∀ v : V, v ≠ w → G.Adj w v
+/-- **Helly's Theorem for Finite Families of Convex Sets (1923, Freek Wiedijk #99):**
+If `C` is a finite family of convex subsets in `Fin d → ℝ` such that every subfamily of size `d + 1`
+has non-empty intersection, then the entire family has non-empty intersection. -/
+theorem hellys_theorem {ι : Type*} [Fintype ι] [DecidableEq ι] (C : ι → Set (Fin d → ℝ))
+    (h_convex : ∀ i : ι, Convex ℝ (C i))
+    (h_inter : ∀ J : Finset ι, J.card ≤ d + 1 → (⋂ i ∈ J, C i).Nonempty) :
+    (⋂ i : ι, C i).Nonempty := sorry
 
-/-- **The Friendship Theorem (Erdős–Rényi–Sós 1966):**
-Any finite simple graph in which every pair of distinct vertices shares exactly one
-common neighbor has a universal vertex. -/
-theorem friendship_theorem (G : SimpleGraph V) [DecidableRel G.Adj]
-    (h_friend : HasFriendshipProperty G) (h_card : 3 ≤ Fintype.card V) :
-    ∃ w : V, IsUniversalVertex G w := sorry
-
-end FriendshipTheorem
+end RadonHelly

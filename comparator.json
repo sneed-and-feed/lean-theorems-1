@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "FriendshipTheorem.friendship_theorem"
+    "RadonHelly.radons_theorem",
+    "RadonHelly.hellys_theorem"
   ],
   "permitted_axioms": [
     "propext",
