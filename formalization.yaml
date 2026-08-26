@@ -1,29 +1,33 @@
 version: "v0.4"
 
 project:
-  name: "The De Bruijn–Erdős Theorem on Incidence Geometry"
+  name: "Ore's and Dirac's Theorems on Hamiltonian Cycles"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the De Bruijn–Erdős theorem (1948)
-    in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
-    on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
-    bipartite double-counting argument. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Ore's theorem (1960) and Dirac's theorem (1952)
+    on the existence of Hamiltonian cycles in simple graphs. Proves Ore's degree-sum condition via maximal
+    path cycle-closure and connectivity arguments, and derives Dirac's minimum-degree theorem as a corollary.
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["05B25", "51E10", "51A15"]
+  arxiv: [math.CO]
+  msc2020: ["05C38", "05C45"]
 
 sources:
-  - title: "On a combinatorial problem"
+  - title: "Note on Hamilton circuits"
     type: paper
     authors:
-      - "N. G. de Bruijn"
-      - "Paul Erdős"
+      - "Øystein Ore"
     relationship: formalizes
+  - title: "Some theorems on abstract graphs"
+    type: paper
+    authors:
+      - "G. A. Dirac"
+    relationship: adapts
 
 automation:
   methods:

@@ -1,1 +1,1 @@
-import Formalization.DeBruijnErdos
+import Formalization.OreHamiltonian
