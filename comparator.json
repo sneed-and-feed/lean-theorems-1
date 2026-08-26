@@ -2,10 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "ErdosUnitDistances.erdos_unit_distances_bound",
-    "ErdosUnitDistances.erdos_unit_distances_bound_tight",
-    "ErdosUnitDistances.erdos_unit_distances_uniform_bound",
-    "ErdosUnitDistances.erdos_unit_distances_asymptotic"
+    "ColorfulHelly.colorful_helly",
+    "ColorfulHelly.colorful_helly_all_dimensions"
   ],
   "permitted_axioms": [
     "propext",

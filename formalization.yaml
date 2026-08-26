@@ -1,41 +1,33 @@
 version: "v0.4"
 
 project:
-  name: "Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem"
+  name: "Lovász's Colorful Helly Theorem for Convex Sets"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Spencer–Szemerédi–Trotter (1984)
-    upper bound u(n) = O(n^(4/3)) on the Erdős unit distance problem in the Euclidean plane,
-    using László Székely's circle crossing lemma approach (1997). Proves explicit non-asymptotic
-    bounds u(n) <= 2 n^(4/3) + 4n, u(n) <= 4 n^(4/3) for n >= 8, and the asymptotic constant existence.
+    A complete machine-checked Lean 4 formalization of Lovász's Colorful Helly Theorem (1974 / Bárány 1982).
+    Proves that for any d + 1 finite families of convex sets in R^d such that every colorful transversal
+    has a non-empty intersection, at least one entire family has a non-empty intersection.
     Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "05C10", "05C62"]
+  arxiv: [math.MG, math.CO]
+  msc2020: ["52A35", "52A20", "05D15"]
 
 sources:
-  - title: "Unit distances in the Euclidean plane"
+  - title: "A generalization of Carathéodory's theorem"
     type: paper
     authors:
-      - "Joel Spencer"
-      - "Endre Szemerédi"
-      - "William T. Trotter"
+      - "Imre Bárány"
     relationship: formalizes
-  - title: "On Sets of Distances of n Points"
+  - title: "Problem 206"
     type: paper
     authors:
-      - "Paul Erdős"
+      - "László Lovász"
     relationship: background
-  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
-    type: paper
-    authors:
-      - "László A. Székely"
-    relationship: adapts
 
 automation:
   methods:
