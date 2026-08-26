@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SchursTheorem.schurs_theorem",
-    "SchursTheorem.ramsey_triangle"
+    "DilworthTheorem.dilworth_theorem",
+    "DilworthTheorem.mirsky_theorem"
   ],
   "permitted_axioms": [
     "propext",

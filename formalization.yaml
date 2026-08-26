@@ -1,33 +1,35 @@
 version: "v0.4"
 
 project:
-  name: "Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey"
+  name: "Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Schur's Theorem on sum-free partitions
-    of integers (Issai Schur, 1916) and the Multicolor Triangle Ramsey Theorem. Proves that any
-    r-coloring of the integers {1, ..., N} contains a monochromatic solution to x + y = z for
-    N = ramseyTriangleBound(r), derived via edge-coloring complete graphs. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Dilworth's Theorem (Robert P.
+    Dilworth, 1950) on chain decompositions of finite posets and Mirsky's Dual Theorem
+    (Leon Mirsky, 1971) on antichain covers. Proves that the maximum size of an antichain
+    equals the minimum number of chains covering the poset, and dually that the maximum
+    length of a chain equals the minimum number of antichains covering the poset. Verified
+Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.NT]
-  msc2020: ["05D10", "11B75", "05C55"]
+  arxiv: [math.CO]
+  msc2020: ["06A07", "05A18", "05D15"]
 
 sources:
-  - title: "Über die Kongruenz x^m + y^m ≡ z^m (mod p)"
+  - title: "A Decomposition Theorem for Partially Ordered Sets"
     type: paper
     authors:
-      - "Issai Schur"
+      - "R. P. Dilworth"
     relationship: formalizes
-  - title: "On a Problem in Formal Logic"
+  - title: "A dual of Dilworth's decomposition theorem"
     type: paper
     authors:
-      - "Frank P. Ramsey"
-    relationship: background
+      - "Leon Mirsky"
+    relationship: formalizes
 
 automation:
   methods:
