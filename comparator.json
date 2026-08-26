@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "desargues_vector",
-    "DesarguesProjective.desargues_converse_projective_plane"
+    "descartes_rule_of_signs"
   ],
   "permitted_axioms": [
     "propext",
