@@ -14,7 +14,7 @@ project:
     requires at least n - 1 bipartite graphs (m >= n - 1), adapting Helge Tverberg's 1982
     linear-algebraic quadratic form argument. Also formalizes the canonical star partition
     proving tightness. To the maintainers' knowledge, Graham–Pollak was not previously formalized
-    in Mathlib (checked against Mathlib v4.34.0-rc1).
+To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
   arxiv: [math.CO]
@@ -46,7 +46,5 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    The formalization and Challenge/Solution parity were verified through human audit by the
-    maintainers, with interactive proof assistance and refactoring. The underlying formalization
-    has been checked by the Lean 4 compiler and verified with 0 errors, 0 warnings, 0 sorries,
-    and 0 custom axioms.
+    Challenge contains deliberate statement holes. Solution verified through human audit by the
+    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

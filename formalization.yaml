@@ -1,46 +1,45 @@
 version: "v0.4"
 
 project:
-  name: "Desargues's Theorem and Synthetic Projective Equivalence"
+  name: "The Graham–Pollak Theorem on Bipartite Partitions of Complete Graphs"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Desargues's theorem and its converse
-    in synthetic axiomatic projective planes. Formalizes Hilbert-style incidence axioms for
-    projective planes, establishes that centrally perspective triangles induce a proper axial
-    perspective where the axis is distinct from all triangle sides, and formalizes the non-trivial
-    converse theorem showing that proper axial perspectivity with distinct corresponding vertices
-    implies central perspectivity. Unifies these results into an exact bidirectional equivalence
-    between central and proper axial perspectives in Desarguesian projective planes. Verified
+    A complete, machine-checked Lean 4 formalization of the Graham–Pollak theorem (1971)
+    and its tightness on complete bipartite partitions of complete graphs. Proves that any
+    partition of the edges of the complete graph K_n into m complete bipartite subgraphs
+    requires at least n - 1 bipartite graphs (m >= n - 1), adapting Helge Tverberg's 1982
+    linear-algebraic quadratic form argument. Also formalizes the canonical star partition
+    proving tightness. To the maintainers' knowledge, Graham–Pollak was not previously formalized
 To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
-  arxiv: [math.AG, math.MG]
-  msc2020: ["51A05", "51A30", "14N05"]
+  arxiv: [math.CO]
+  msc2020: ["05C50", "05C70", "15A03"]
 
 sources:
-  - title: "Grundlagen der Geometrie"
-    type: book
+  - title: "On embedding graphs in squashed cubes"
+    type: paper
     authors:
-      - "David Hilbert"
+      - "R. L. Graham"
+      - "H. O. Pollak"
+    relationship: formalizes
+  - title: "On the decomposition of K_n into complete bipartite graphs"
+    type: paper
+    authors:
+      - "Helge Tverberg"
     relationship: adapts
-  - title: "Manière universelle de Mr Desargues, pour pratiquer la perspective par petit-pied, comme le géométral"
-    type: book
-    authors:
-      - "Girard Desargues"
-      - "Abraham Bosse"
-    relationship: background
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
