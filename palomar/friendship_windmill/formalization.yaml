@@ -12,7 +12,7 @@ project:
     (Erdős, Rényi, and Sós, 1966). Proves that any finite graph in which every pair of distinct vertices
     shares exactly one common neighbor possesses a universal vertex w, has an odd number of vertices |V| = 2k + 1,
     induces a 1-regular perfect matching on V \ {w}, and is isomorphic to the Dutch windmill graph Wd(k, 2)
-    with exactly 3k edges, Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]

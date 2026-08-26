@@ -12,7 +12,7 @@ project:
     and the parity conservation invariant on abstract simplicial 3-complexes with boundary.
     Proves that for any 4-coloring of vertices, the number of fully colored (panchromatic)
     tetrahedra is congruent modulo 2 to the number of 0-1-2 triangular boundary facets.
-    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.AT]

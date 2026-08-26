@@ -12,7 +12,7 @@ project:
     (Set Pairs Inequality) in extremal set theory. Proves the skew LYM-type inequality for pairs of
     disjoint subsets (A_i, B_i) satisfying cross-intersection conditions A_i ∩ B_j ≠ ∅ for i ≠ j,
     and deduces the uniform bound m ≤ C(a+b, a) for uniform families of sizes a and b.
-    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]

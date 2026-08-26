@@ -11,7 +11,7 @@ project:
     A complete machine-checked Lean 4 formalization of the Erdős–Ko–Rado theorem (1961) on
     intersecting families of finite sets using Katona's circle method (1972), along with the
     construction of the classical Hilton–Milner (1967) extremal non-star intersecting family.
-    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]

@@ -12,7 +12,7 @@ project:
     in combinatorial incidence geometry. Proves the fundamental dichotomy that any finite set
     of n points in the Euclidean plane either contains a line with Omega(n) points or spans
     Omega(n^2) distinct lines, establishing the exact pairs double-counting identity and
-    parameterized bounds. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]

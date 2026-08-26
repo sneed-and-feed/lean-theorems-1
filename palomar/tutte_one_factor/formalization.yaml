@@ -12,7 +12,7 @@ project:
     establishing the fundamental characterization that a finite simple graph has a 1-factor
     (perfect matching) if and only if for every vertex subset U, the number of odd components
     q(G \ U) is at most |U|. Also connects to matching defect and the Tutte–Berge formula.
-    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]

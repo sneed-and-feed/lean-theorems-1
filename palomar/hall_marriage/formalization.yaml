@@ -11,9 +11,9 @@ project:
     A complete, machine-checked Lean 4 formalization of Hall's Marriage Theorem (Philip Hall
     1935, Halmos–Vaughan 1950; Freek Wiedijk #87). Proves that an indexed family of finite sets
     admits a system of distinct representatives (SDR) if and only if Hall's marriage condition
-    holds for all index subsets. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
   arxiv: [math.CO]
   msc2020: ["05A05", "05C70", "05D15"]

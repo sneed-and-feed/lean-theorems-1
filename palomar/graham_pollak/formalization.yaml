@@ -13,7 +13,7 @@ project:
     partition of the edges of the complete graph K_n into m complete bipartite subgraphs
     requires at least n - 1 bipartite graphs (m >= n - 1), adapting Helge Tverberg's 1982
     linear-algebraic quadratic form argument. Also formalizes the canonical star partition
-    proving tightness. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]

@@ -11,7 +11,7 @@ project:
     A complete machine-checked Lean 4 formalization of Sperner's Lemma (1928) in 1D and 2D.
     Proves the 1D color-switch parity theorem along paths and the 2D simplicial parity theorem
     on triangulations with boundary via double-counting of panchromatic triangles and boundary doors.
-    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.AT]

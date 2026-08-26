@@ -11,7 +11,7 @@ project:
     A complete machine-checked Lean 4 formalization of the De Bruijn–Erdős theorem (1948)
     in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
     on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
-    bipartite double-counting argument. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
