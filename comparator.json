@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "FriendshipTheorem.friendship_theorem"
+    "euler_polyhedron_formula",
+    "euler_connected_graph"
   ],
   "permitted_axioms": [
     "propext",
