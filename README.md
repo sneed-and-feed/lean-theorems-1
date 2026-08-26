@@ -1,6 +1,6 @@
 # Formalization of Open Combinatorial and Geometric Theorems in Lean 4
 
-This repository provides machine-checked formalizations of classical theorems in combinatorics, graph theory, algebra, extremal set theory, discrete geometry, and incidence geometry that were previously unformalized in the Lean 4 / [Mathlib](https://github.com/leanprover-community/mathlib4) ecosystem.
+This repository provides machine-checked formalizations of classical theorems in combinatorics, graph theory, algebra, extremal set theory, discrete geometry, and incidence geometry, verified absent from the core [Mathlib](https://github.com/leanprover-community/mathlib4) library (checked against Mathlib v4.34.0-rc1).
 
 The primary declarations listed below and their proof dependencies are machine-checked without
 project-specific axioms or incomplete goals (`sorry`). Two generic upper-bound extensions in
