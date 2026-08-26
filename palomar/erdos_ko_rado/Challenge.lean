@@ -2,6 +2,7 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Card
 
 open Finset
 
@@ -22,14 +23,13 @@ theorem erdos_ko_rado {n k : ℕ}
 def IsStarFamily (F : Finset (Finset α)) : Prop :=
   ∃ x : α, ∀ A ∈ F, x ∈ A
 
-/-- The Hilton–Milner extremal bound: $inom{n-1}{k-1} - inom{n-k-1}{k-1} + 1$. -/
+/-- The Hilton–Milner extremal bound: $\binom{n-1}{k-1} - \binom{n-k-1}{k-1} + 1$. -/
 def hiltonMilnerBound (n k : ℕ) : ℕ :=
   Nat.choose (n - 1) (k - 1) - Nat.choose (n - k - 1) (k - 1) + 1
 
-/-- **Sharpness of the Hilton--Milner bound.** For every `2 ≤ k` and `2k < n`,
-there is a uniform, pairwise-intersecting, non-star family whose cardinality is exactly
-`hiltonMilnerBound n k`. This is the classical exceptional-set construction described
-after Theorem 1 of Bulavka--Woodroofe (2026). -/
+/-- **Sharpness of the Hilton–Milner Bound (1967):**
+For every `2 ≤ k` and `2k < n`, there exists a uniform, pairwise-intersecting, non-star family
+whose cardinality is exactly `hiltonMilnerBound n k`. -/
 theorem exists_hiltonMilner_extremizer {n k : ℕ} (hn : Fintype.card α = n)
     (hk : 2 ≤ k) (h2k : 2 * k < n) :
     ∃ F : Finset (Finset α),

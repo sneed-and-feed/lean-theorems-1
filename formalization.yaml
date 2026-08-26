@@ -1,38 +1,50 @@
 version: "v0.4"
 
 project:
-  name: "Bollobás's Two Families Theorem (Set Pairs Inequality)"
+  name: "The Erdős–Ko–Rado Theorem and Hilton–Milner Extremizer"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Béla Bollobás's 1965 Two Families Theorem
-    (Set Pairs Inequality) in extremal set theory. Proves the skew LYM-type inequality for pairs of
-    disjoint subsets (A_i, B_i) satisfying cross-intersection conditions A_i ∩ B_j ≠ ∅ for i ≠ j,
-    and deduces the uniform bound m ≤ C(a+b, a) for uniform families of sizes a and b.
+    A complete machine-checked Lean 4 formalization of the Erdős–Ko–Rado theorem (1961) on
+    intersecting families of finite sets using Katona's circle method (1972), along with the
+    construction of the classical Hilton–Milner (1967) extremal non-star intersecting family.
     To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring,
     and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05D05", "05C35"]
+  msc2020: ["05D05", "05A05"]
 
 sources:
-  - title: "On generalized graphs"
+  - title: "Intersection theorems for systems of finite sets"
     type: paper
     authors:
-      - "Béla Bollobás"
+      - "P. Erdős"
+      - "C. Ko"
+      - "R. Rado"
     relationship: formalizes
+  - title: "A simple proof of the Erdös-Chao Ko-Rado theorem"
+    type: paper
+    authors:
+      - "G. O. H. Katona"
+    relationship: adapts
+  - title: "Some intersection theorems for systems of finite sets"
+    type: paper
+    authors:
+      - "A. J. W. Hilton"
+      - "E. C. Milner"
+    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

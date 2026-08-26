@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "bollobas_two_families",
-    "bollobas_uniform"
+    "erdos_ko_rado",
+    "exists_hiltonMilner_extremizer"
   ],
   "permitted_axioms": [
     "propext",
