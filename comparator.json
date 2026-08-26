@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "TutteOneFactor.tutte_1factor_theorem",
-    "TutteOneFactor.tutte_necessity"
+    "TverbergsTheorem.tverbergs_theorem",
+    "TverbergsTheorem.tverberg_1d"
   ],
   "permitted_axioms": [
     "propext",

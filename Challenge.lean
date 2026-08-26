@@ -1,35 +1,30 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Matching
-import Mathlib.Combinatorics.SimpleGraph.Tutte
-import Mathlib.Data.Fintype.Basic
+import Mathlib.Analysis.Convex.Hull
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Real.Basic
 
-open SimpleGraph
-open Classical
+namespace TverbergsTheorem
 
-namespace TutteOneFactor
+variable {d r : ℕ}
 
-variable {V : Type*} [Fintype V] [DecidableEq V]
+/-- **Tverberg's Partition Property:**
+A collection of `r` pairwise disjoint subsets of `S` that partition `S`
+and whose convex hulls have a non-empty intersection. -/
+def IsTverbergPartition (S : Finset (Fin d → ℝ)) (P : Fin r → Finset (Fin d → ℝ)) : Prop :=
+  (∀ i, P i ⊆ S) ∧
+  (∀ i j, i ≠ j → Disjoint (P i) (P j)) ∧
+  (Finset.biUnion Finset.univ P = S) ∧
+  (⋂ i : Fin r, convexHull ℝ (P i : Set (Fin d → ℝ))).Nonempty
 
-/-- A 1-factor of a simple graph `G` is a 1-regular spanning subgraph, i.e., a perfect matching. -/
-def IsOneFactor {G : SimpleGraph V} (M : G.Subgraph) : Prop :=
-  M.IsPerfectMatching
+/-- **Tverberg's Theorem** for r ≤ 2 (including Radon's Theorem for r = 2 and trivial partition for r = 1). -/
+theorem tverbergs_theorem (hr1 : 1 ≤ r) (hr2 : r ≤ 2)
+    (S : Finset (Fin d → ℝ)) (hS : S.card = (r - 1) * (d + 1) + 1) :
+    ∃ P : Fin r → Finset (Fin d → ℝ), IsTverbergPartition S P := sorry
 
-/-- A graph `G` has a 1-factor if there exists a spanning perfect matching. -/
-def HasOneFactor (G : SimpleGraph V) : Prop :=
-  ∃ M : G.Subgraph, M.IsPerfectMatching
+/-- **1-Dimensional Tverberg Theorem for Arbitrary r (1966):**
+Any set S of 2r - 1 points in ℝ¹ can be partitioned into r subsets whose convex hulls
+share a common point of intersection. -/
+theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
+    (S : Finset (Fin 1 → ℝ)) (hS : S.card = (r - 1) * (1 + 1) + 1) :
+    ∃ P : Fin r → Finset (Fin 1 → ℝ), IsTverbergPartition S P := sorry
 
-/-- The number of odd connected components of `G \ U`. -/
-noncomputable def q (G : SimpleGraph V) (U : Set V) : ℕ :=
-  (((⊤ : G.Subgraph).deleteVerts U).coe.oddComponents).ncard
-
-/-- **Tutte's 1-Factor Theorem (Necessity Direction):**
-If `G` has a 1-factor, then for every subset `U ⊆ V`, the number of odd components `q(G \ U) ≤ |U|`. -/
-theorem tutte_necessity (G : SimpleGraph V) (hM : HasOneFactor G) (U : Set V) :
-    q G U ≤ U.ncard := sorry
-
-/-- **Tutte's 1-Factor Theorem (Equivalence):**
-A graph `G` has a 1-factor if and only if for all subsets `U ⊆ V`, `q(G \ U) ≤ |U|`. -/
-theorem tutte_1factor_theorem (G : SimpleGraph V) :
-    HasOneFactor G ↔ ∀ U : Set V, q G U ≤ U.ncard := sorry
-
-end TutteOneFactor
+end TverbergsTheorem
