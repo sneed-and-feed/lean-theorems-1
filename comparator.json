@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "cauchy_arm_lemma"
+    "TverbergsTheorem.tverbergs_theorem",
+    "TverbergsTheorem.tverberg_1d"
   ],
   "permitted_axioms": [
     "propext",
