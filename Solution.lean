@@ -1,1 +1,1 @@
-import Formalization.ArtGalleryTheorem
+import Formalization.CauchyArmLemma

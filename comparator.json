@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "art_gallery_theorem"
+    "cauchy_arm_lemma"
   ],
   "permitted_axioms": [
     "propext",
