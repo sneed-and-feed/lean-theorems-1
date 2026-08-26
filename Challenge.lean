@@ -1,14 +1,19 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Algebra.BigOperators.Ring.Finset
 
 open Finset
 
-/-- **Bondy's Theorem on Induced Subsets (1972)**:
-Any family `F` of `n` distinct subsets of an arbitrary finite ground set `X` can be distinguished by a subset `S ⊆ X` of size `≤ n - 1`.
-That is, the intersections `s ∩ S` for `s ∈ F` are all distinct. -/
-theorem bondy_induced_subsets {α : Type*} [DecidableEq α]
-    (X : Finset α) (F : Finset (Finset α))
-    (hFX : ∀ s ∈ F, s ⊆ X)
-    (hFn : 1 ≤ F.card) :
-    ∃ S ⊆ X, S.card ≤ F.card - 1 ∧
-      ∀ s₁ ∈ F, ∀ s₂ ∈ F, s₁ ∩ S = s₂ ∩ S → s₁ = s₂ := sorry
+/-- **Bollobás's Two Families Theorem (1965)**:
+Let $(A_i)_{i=1}^m$ and $(B_i)_{i=1}^m$ be two families of finite sets such that $A_i \cap B_i = \emptyset$
+for all $i$, and $A_i \cap B_j 
+e \emptyset$ for all $i 
+e j$.
+Then $\sum_{i=1}^m \frac{1}{\binom{|A_i| + |B_i|}{|A_i|}} \le 1$. -/
+theorem bollobas_two_families {α : Type*} [DecidableEq α] {m : ℕ}
+    (A B : Fin m → Finset α)
+    (h_disj : ∀ i, Disjoint (A i) (B i))
+    (h_inter : ∀ i j, i ≠ j → ¬ Disjoint (A i) (B j)) :
+    ∑ i : Fin m, (1 : ℝ) / ((A i).card + (B i).card).choose (A i).card ≤ 1 := sorry
