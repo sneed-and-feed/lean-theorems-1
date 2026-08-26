@@ -1,0 +1,36 @@
+﻿schema_version: "0.4"
+project:
+  title: "The Graham–Pollak Theorem on Bipartite Partitions of Complete Graphs"
+  description: "A complete, machine-checked Lean 4 formalization of the Graham–Pollak theorem (1971) and its tightness on complete bipartite partitions of complete graphs. Proves that any partition of the edges of the complete graph K_n into complete bipartite subgraphs requires at least n - 1 bipartite graphs (m >= n - 1), using Tverberg's 1982 algebraic and linear-algebraic reduction on quadratic forms. Also formalizes the canonical star partition proving tightness."
+  license: "CC0-1.0"
+  authors:
+    - name: "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - name: "sneed-and-feed"
+      github: "sneed-and-feed"
+
+classification:
+  msc2020:
+    - "05C50"
+    - "05C70"
+    - "15A03"
+  arxiv:
+    - "math.CO"
+
+sources:
+  - title: "On embedding graphs in squashed cubes"
+    author: "R. L. Graham and H. O. Pollak"
+    year: 1971
+    venue: "Bell System Technical Journal 50 (8), 2495–2519"
+  - title: "A technique for proving that a graph does not have certain properties"
+    author: "H. Tverberg"
+    year: 1982
+    venue: "Pacific Journal of Mathematics 100 (1), 225–233"
+
+automation:
+  methods:
+    - "ai-assisted"
+  models:
+    - "Gemini 3.7 Flash"
+    - "Gemini Pro"
+  notes: "Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive Lean LSP checking. All declarations rely exclusively on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice)."
