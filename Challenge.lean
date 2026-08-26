@@ -3,62 +3,54 @@ import Mathlib.Data.Real.Basic
 
 open scoped Real
 
-/-- Combinatorial Point-Line Incidence Configuration:
-    - `n`: number of points (|P|)
-    - `m`: number of lines (|L|)
-    - `I`: number of incidences (|{(p, ℓ) : p ∈ ℓ}|)
-    - `e`: number of consecutive segment edges on lines (e ≥ I - m)
-    - `cr`: number of edge crossings in the geometric drawing (cr ≤ m(m-1)/2 ≤ m²/2) -/
-structure PointLineIncidenceSystem where
+namespace ErdosUnitDistances
+
+/-- Combinatorial Unit Distance System representing $n$ points and their unit distance pairs:
+    - `n`: number of points (|P| ≥ 1)
+    - `u`: number of unit distance pairs u(n)
+    - `e`: number of circular arc edges in the incidence graph (e ≥ 2u - n)
+    - `cr`: number of edge crossings in the plane drawing (cr ≤ n²)
+    - `h_crossing_lemma`: dense regime Crossing Lemma relation (4n ≤ e → e³ ≤ 64 n² cr) -/
+structure UnitDistanceSystem where
   /-- Number of points n = |P| -/
   n : ℝ
-  /-- Number of lines m = |L| -/
-  m : ℝ
-  /-- Number of incidences I = |{(p, ℓ) : p ∈ ℓ}| -/
-  I : ℝ
-  /-- Number of edges in the topological incidence graph -/
+  /-- Number of unit distance pairs u(n) = |{{p, q} : ||p - q|| = 1}| -/
+  u : ℝ
+  /-- Number of circular arc edges in the topological drawing -/
   e : ℝ
   /-- Crossing number of the topological drawing -/
   cr : ℝ
-  /-- Point positivity -/
+  /-- Point count positivity: n ≥ 1 -/
   hn : 1 ≤ n
-  /-- Line positivity -/
-  hm : 1 ≤ m
-  /-- Incidence edge lower bound: e ≥ I - m -/
-  h_edges : I - m ≤ e
-  /-- Line pair crossing bound: two lines intersect in at most 1 point, so cr ≤ m² / 2 -/
-  h_crossings : cr ≤ m^2 / 2
+  /-- Incidence edge lower bound: e ≥ 2u - n (since I = 2u and e ≥ I - n) -/
+  h_edges : 2 * u - n ≤ e
+  /-- Circle crossing bound: two distinct unit circles intersect in at most 2 points, so cr ≤ n² -/
+  h_crossings : cr ≤ n^2
   /-- Dense Crossing Lemma property: if e ≥ 4n, then e³ ≤ 64 n² cr -/
   h_crossing_lemma : 4 * n ≤ e → e^3 ≤ 64 * n^2 * cr
 
-namespace SzemerediTrotter
+/-- **Erdős Unit Distances Explicit Upper Bound (Spencer-Szemerédi-Trotter 1984 / Székely 1997)**:
+    For any configuration of $n$ points in $\mathbb{R}^2$, the number of unit distance pairs satisfies:
+    $$u(n) \le 2 n^{4/3} + 4n$$ -/
+theorem erdos_unit_distances_bound (sys : UnitDistanceSystem) :
+    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + 4 * sys.n := sorry
 
-/-- **Szemerédi–Trotter Theorem (Explicit Form)**:
-    For any Point-Line Incidence System with $n$ points and $m$ lines,
-    the incidence count $I$ satisfies:
-    $$I \le 4 (nm)^{2/3} + 4n + m$$ -/
-theorem szemeredi_trotter_bound (sys : PointLineIncidenceSystem) :
-    sys.I ≤ 4 * (sys.n * sys.m) ^ (2 / 3 : ℝ) + 4 * sys.n + sys.m := sorry
+/-- **Erdős Unit Distances Tight Linear-Term Bound**:
+    $$u(n) \le 2 n^{4/3} + \frac{5}{2} n$$ -/
+theorem erdos_unit_distances_bound_tight (sys : UnitDistanceSystem) :
+    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + (5 / 2 : ℝ) * sys.n := sorry
 
-/-- **Szemerédi–Trotter Theorem (Uniform Factor Form)**:
-    $$I \le 4 \left( (nm)^{2/3} + n + m \right)$$ -/
-theorem szemeredi_trotter_uniform_bound (sys : PointLineIncidenceSystem) :
-    sys.I ≤ 4 * ((sys.n * sys.m) ^ (2 / 3 : ℝ) + sys.n + sys.m) := sorry
+/-- **Erdős Unit Distances Uniform Factor Bound**:
+    For all configurations with $n \ge 8$ points, the unit distance pair count satisfies:
+    $$u(n) \le 4 n^{4/3}$$ -/
+theorem erdos_unit_distances_uniform_bound (sys : UnitDistanceSystem) (hn8 : 8 ≤ sys.n) :
+    sys.u ≤ 4 * sys.n ^ (4 / 3 : ℝ) := sorry
 
-/-- **Szemerédi–Trotter Constant Exists Form**:
-    There exists an absolute constant $C > 0$ such that for every point-line system:
-    $I \le C (n^{2/3} m^{2/3} + n + m)$. -/
-theorem szemeredi_trotter_constant_exists :
-    ∃ C : ℝ, 0 < C ∧ ∀ sys : PointLineIncidenceSystem,
-      sys.I ≤ C * ((sys.n * sys.m) ^ (2 / 3 : ℝ) + sys.n + sys.m) := sorry
+/-- **Erdős Unit Distances Asymptotic Existence Bound**:
+    There exists an absolute universal constant $C > 0$ such that for every point configuration,
+    the unit distance pair count satisfies $u(n) \le C n^{4/3}$. -/
+theorem erdos_unit_distances_asymptotic :
+    ∃ C : ℝ, 0 < C ∧ ∀ sys : UnitDistanceSystem,
+      sys.u ≤ C * sys.n ^ (4 / 3 : ℝ) := sorry
 
-/-- **$k$-Rich Lines Corollary (Szemerédi–Trotter 1983)**:
-    If a configuration of $n$ points and $m$ lines has the property that every line
-    contains at least $k \ge 2$ points (so $I \ge m k$), then the number of lines
-    $m$ satisfies the explicit upper bound:
-    $$m \le \frac{512 n^2}{(k - 1)^3} + \frac{8 n}{k - 1}$$ -/
-theorem k_rich_lines_bound (sys : PointLineIncidenceSystem) (k : ℝ) (hk : 2 ≤ k)
-    (h_rich : sys.m * k ≤ sys.I) :
-    sys.m ≤ 512 * sys.n^2 / (k - 1)^3 + 8 * sys.n / (k - 1) := sorry
-
-end SzemerediTrotter
+end ErdosUnitDistances
