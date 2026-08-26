@@ -1,5 +1,6 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
 
 namespace SylvesterGallai
 

@@ -1,32 +1,28 @@
-import Formalization.CombinatorialMap.Basic
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
 
-open CombinatorialMap
+namespace SylvesterGallai
 
-variable {D : Type*} [Fintype D] [DecidableEq D]
+/-- A point in the 2D real affine plane. -/
+abbrev Point := ℝ × ℝ
 
-/-- **Euler's Polyhedron Formula (1758, Wiedijk #13)**:
-    For any planar combinatorial map, the Euler characteristic $V - E + F = 2$. -/
-theorem euler_polyhedron_formula (M : CombinatorialMap D) (h_planar : M.IsPlanar) :
-    M.eulerChar = 2 := sorry
+/-- Three points in the plane are collinear if the triangle they form has zero signed area. -/
+def Collinear (p q r : Point) : Prop :=
+  (q.1 - p.1) * (r.2 - p.2) - (q.2 - p.2) * (r.1 - p.1) = 0
 
-/-- **Planar Edge Bound (Standard)**:
-    For any connected planar map with $V \ge 3$ vertices where every face has degree \ge 3
-    (so $2E \ge 3F$), the number of edges satisfies $E \le 3V - 6$. -/
-theorem planar_edge_bound (V E F : ℕ) (h_euler : (V : ℤ) - E + F = 2)
-    (h_face_deg : 3 * F ≤ 2 * E) (hV : 3 ≤ V) : E ≤ 3 * V - 6 := sorry
+/-- A finite set of points `S` is collinear if all triples in `S` are collinear. -/
+def SetCollinear (S : Finset Point) : Prop :=
+  ∀ p ∈ S, ∀ q ∈ S, ∀ r ∈ S, Collinear p q r
 
-/-- **Triangle-Free Planar Edge Bound**:
-    For any connected triangle-free planar map with $V \ge 3$ vertices where every face has degree \ge 4
-    (so $2E \ge 4F$), the number of edges satisfies $E \le 2V - 4$. -/
-theorem planar_edge_bound_triangle_free (V E F : ℕ) (h_euler : (V : ℤ) - E + F = 2)
-    (h_face_deg : 4 * F ≤ 2 * E) (hV : 3 ≤ V) : E ≤ 2 * V - 4 := sorry
+/-- An ordinary line with respect to a finite point set `S` is a line passing through
+exactly two points of `S`. -/
+def IsOrdinaryLine (S : Finset Point) (p q : Point) : Prop :=
+  p ∈ S ∧ q ∈ S ∧ p ≠ q ∧ (∀ r ∈ S, Collinear p q r → r = p ∨ r = q)
 
-/-- **Non-Planarity of K₅**:
-    The complete graph $K_5$ ($V = 5, E = 10$) cannot be embedded as a planar map with face degree \ge 3. -/
-theorem non_planarity_k5 (F : ℕ) (h_euler : (5 : ℤ) - 10 + F = 2)
-    (h_face_deg : 3 * F ≤ 2 * 10) : False := sorry
+/-- **The Sylvester–Gallai Theorem (Freek Wiedijk #98):**
+Every finite, non-collinear set of points in the real Euclidean plane contains an ordinary line. -/
+theorem sylvester_gallai (S : Finset Point) (_h_card : 3 ≤ S.card) (h_non_collinear : ¬ SetCollinear S) :
+    ∃ p ∈ S, ∃ q ∈ S, p ≠ q ∧ IsOrdinaryLine S p q := sorry
 
-/-- **Non-Planarity of K₃,₃**:
-    The complete bipartite graph $K_{3,3}$ ($V = 6, E = 9$) cannot be embedded as a planar map with face degree \ge 4. -/
-theorem non_planarity_k33 (F : ℕ) (h_euler : (6 : ℤ) - 9 + F = 2)
-    (h_face_deg : 4 * F ≤ 2 * 9) : False := sorry
+end SylvesterGallai
