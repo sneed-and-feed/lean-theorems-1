@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "kneser_lovasz_chromatic_number"
+    "frankl_wilson_uniform",
+    "frankl_wilson_general"
   ],
   "permitted_axioms": [
     "propext",
