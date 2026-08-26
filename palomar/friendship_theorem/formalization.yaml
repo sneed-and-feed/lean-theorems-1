@@ -9,10 +9,11 @@ project:
   license: "CC0-1.0"
   description: >-
     A complete, machine-checked Lean 4 formalization of the Friendship Theorem (P. Erdős,
-    A. Rényi, and V. T. Sós, 1966; H. S. Wilf, 1971). Proves that any finite simple graph in
-    which every pair of distinct vertices shares exactly one common neighbor must contain a
-    universal vertex (the 'politician'), structuring the graph as a collection of triangles
-    sharing a central vertex (a windmill graph). Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A. Rényi, and V. T. Sós, 1966; H. S. Wilf, 1971). Proves that any finite simple graph on
+    at least three vertices (|V| ≥ 3) in which every pair of distinct vertices shares exactly
+    one common neighbor must contain a universal vertex (the 'politician'), structuring the
+    graph as a collection of triangles sharing a central vertex (a windmill graph). Verified
+    absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]

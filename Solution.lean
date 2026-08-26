@@ -1,1 +1,1 @@
-import Formalization.FriendshipWindmill
+import Formalization.FriendshipTheorem
