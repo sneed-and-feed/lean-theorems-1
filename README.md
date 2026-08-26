@@ -190,7 +190,7 @@ construction with its exact cardinality are fully proved.
   - `Walks.lean`: Walk counting, adjacency matrix powers $A^2 = (k-1)I + J \pmod p$, closed walk $\mathbb{Z}/p\mathbb{Z}$ cyclic shift group actions, and elimination of regular friendship graphs for $k \ge 3$.
   - `Windmill.lean`: 2-regular base case ($K_3$ triangle) and windmill graph properties.
 * **Theorems:** `friendship_theorem`, `two_regular_has_universal`, `no_regular_friendship_graph_ge_three`, `degree_eq_of_not_adj`
-* **Mathematical Statement:** If every pair of distinct vertices in a finite graph shares exactly one common neighbor, there exists a universal vertex ("politician") adjacent to all others.
+* **Mathematical Statement:** In any finite graph on at least three vertices ($|V| \ge 3$) where every pair of distinct vertices shares exactly one common neighbor, there exists a universal vertex ("politician") adjacent to all others.
 
 ---
 
