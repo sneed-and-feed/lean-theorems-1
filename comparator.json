@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "graham_pollak",
-    "graham_pollak_tight"
+    "HallMarriage.hall_marriage_theorem"
   ],
   "permitted_axioms": [
     "propext",
