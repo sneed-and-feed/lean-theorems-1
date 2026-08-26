@@ -1,33 +1,34 @@
 version: "v0.4"
 
 project:
-  name: "Pick's Theorem on Lattice Polygons (Wiedijk #92)"
+  name: "The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Pick's Theorem (Georg Alexander Pick, 1899;
-    Freek Wiedijk 100 Theorems #92). Formalizes elementary lattice triangulations of planar polygons,
-    Euler's disk characteristic V - E + F = 1, edge-face incidence double counting 3F = 2E_int + E_bd,
-    boundary gluing valuation additivity, and proves both the real formula Area = i + b/2 - 1 and the
-    exact integer form 2*Area = 2*i + b - 2, To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A comprehensive, machine-checked Lean 4 formalization of the Erdős–Szekeres Convex Polygon Theorem (1935).
+    Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
+    Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
+    of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
+    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
-  msc2020: ["52C05", "05C10", "11H06"]
+  msc2020: ["52C10", "05D10", "52A10"]
 
 sources:
-  - title: "Geometrisches zur Zahlenlehre"
+  - title: "A combinatorial problem in geometry"
     type: paper
     authors:
-      - "Georg Alexander Pick"
+      - "Paul Erdős"
+      - "George Szekeres"
     relationship: formalizes
-  - title: "Mathematical Snapshots"
-    type: book
+  - title: "Problem 1835"
+    type: paper
     authors:
-      - "Hugo Steinhaus"
+      - "Esther Klein"
     relationship: background
 
 automation:
