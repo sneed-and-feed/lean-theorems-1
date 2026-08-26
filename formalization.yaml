@@ -1,28 +1,28 @@
 version: "v0.4"
 
 project:
-  name: "Sperner's Lemma in 1D and 2D"
+  name: "Descartes's Rule of Signs"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Sperner's Lemma (1928) in 1D and 2D.
-    Proves the 1D color-switch parity theorem along paths and the 2D simplicial parity theorem
-    on triangulations with boundary via double-counting of panchromatic triangles and boundary doors.
+    A complete machine-checked Lean 4 formalization of Descartes's Rule of Signs (1637, Wiedijk #73).
+    Proves that for any non-zero real polynomial p(X), the number of positive real roots counted
+    with algebraic multiplicity is bounded above by the number of sign variations in its coefficients, and their difference is an even integer.
 
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
         docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "55M20", "57Q05"]
+  arxiv: [math.AG, math.CA]
+  msc2020: ["12D10", "26C10", "30C15"]
 
 sources:
-  - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
-    type: paper
+  - title: "La Géométrie"
+    type: book
     authors:
-      - "Emanuel Sperner"
+      - "René Descartes"
     relationship: formalizes
 
 automation:
