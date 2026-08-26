@@ -1,29 +1,35 @@
 version: "v0.4"
 
 project:
-  name: "Tutte's 1-Factor Theorem for Simple Graphs"
+  name: "Elekes's Sum-Product Inequality in Additive Combinatorics"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Tutte's 1-Factor Theorem (1947),
-    establishing the fundamental characterization that a finite simple graph has a 1-factor
-    (perfect matching) if and only if for every vertex subset U, the number of odd components
-    q(G \ U) is at most |U|. Also connects to matching defect and the Tutte–Berge formula.
+    A complete machine-checked Lean 4 formalization of György Elekes's landmark sum-product
+    inequalities (1997) via incidence geometry and the Szemerédi–Trotter theorem.
+    Proves the max sum-product bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum
+    bound |A + A| * |A * A| >= 1/16 |A|^(5/2), and structural additive-multiplicative expansion bounds.
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05C70", "05C75"]
+  arxiv: [math.CO, math.NT]
+  msc2020: ["11B75", "05D99", "52C10"]
 
 sources:
-  - title: "The factorization of linear graphs"
+  - title: "On the number of sums and products"
     type: paper
     authors:
-      - "W. T. Tutte"
+      - "György Elekes"
     relationship: formalizes
+  - title: "On sums and products of integers"
+    type: paper
+    authors:
+      - "Paul Erdős"
+      - "Endre Szemerédi"
+    relationship: background
 
 automation:
   methods:
