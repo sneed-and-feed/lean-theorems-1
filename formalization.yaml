@@ -1,40 +1,34 @@
 version: "v0.4"
 
 project:
-  name: "The Sylvester–Gallai Theorem on Ordinary Lines in the Euclidean Plane"
+  name: "The Szemerédi–Trotter Theorem on Point-Line Incidences"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Sylvester–Gallai theorem (J. J.
-    Sylvester 1893, T. Gallai 1944, L. M. Kelly 1948; Freek Wiedijk #98). Proves that every
-    finite non-collinear set of points in the real Euclidean plane contains an ordinary line
-    passing through exactly two points of the set, formalized via Kelly's minimal point-line distance argument.
+    A complete machine-checked Lean 4 formalization of the Szemerédi–Trotter theorem (1983)
+    on point-line incidences via László Székely's crossing lemma approach (1997).
+    Proves the explicit upper bound I <= 4(nm)^(2/3) + 4n + m, uniform bounds,
+    and the k-rich lines corollary.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.MG, math.CO]
-  msc2020: ["52C10", "52C35", "51M04"]
+  arxiv: [math.CO, math.MG]
+  msc2020: ["52C10", "05C10", "05C62"]
 
 sources:
-  - title: "Mathematical Question 11851"
+  - title: "Extremal problems in discrete geometry"
     type: paper
     authors:
-      - "J. J. Sylvester"
+      - "Endre Szemerédi"
+      - "William T. Trotter"
     relationship: formalizes
-  - title: "Solution to Problem 4065"
+  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
     type: paper
     authors:
-      - "Tibor Gallai"
-    relationship: formalizes
-  - title: "A problem of collinear points"
-    type: paper
-    authors:
-      - "H. S. M. Coxeter"
-      - "L. M. Kelly"
+      - "László A. Székely"
     relationship: adapts
 
 automation:
