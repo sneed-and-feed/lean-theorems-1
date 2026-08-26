@@ -11,7 +11,7 @@ project:
     A complete, machine-checked Lean 4 formalization of Schur's Theorem on sum-free partitions
     of integers (Issai Schur, 1916) and the Multicolor Triangle Ramsey Theorem. Proves that any
     r-coloring of the integers {1, ..., N} contains a monochromatic solution to x + y = z for
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.NT]
@@ -36,7 +36,7 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        Lean LSP checking under maintainer direction. All declarations rely
         strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:

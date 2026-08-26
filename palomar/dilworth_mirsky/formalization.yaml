@@ -13,7 +13,7 @@ project:
     (Leon Mirsky, 1971) on antichain covers. Proves that the maximum size of an antichain
     equals the minimum number of chains covering the poset, and dually that the maximum
     length of a chain equals the minimum number of antichains covering the poset. Verified
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
@@ -40,7 +40,7 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        Lean LSP checking under maintainer direction. All declarations rely
         strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:

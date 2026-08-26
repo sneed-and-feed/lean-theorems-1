@@ -12,10 +12,10 @@ project:
         Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
         Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
         of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
-        34.0-rc1). verifying the Happy Ending Problem.
-        To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+        verifying the Happy Ending Problem.
+        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-classification::
+classification:
   arxiv: [math.CO, math.MG]
   msc2020: ["52C10", "05D10", "52A10"]
 
@@ -37,7 +37,7 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction.
+        Lean LSP checking under maintainer direction.
         All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:

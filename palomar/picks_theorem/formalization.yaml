@@ -12,10 +12,10 @@ project:
         Freek Wiedijk 100 Theorems #92). Formalizes elementary lattice triangulations of planar polygons,
         Euler's disk characteristic V - E + F = 1, edge-face incidence double counting 3F = 2E_int + E_bd,
         boundary gluing valuation additivity, and proves both the real formula Area = i + b/2 - 1 and the
-        34.0-rc1). discrete formula 2*Area = 2*i + b - 2.
+        discrete formula 2*Area = 2*i + b - 2.
         To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-classification::
+classification:
   arxiv: [math.CO, math.MG]
   msc2020: ["52C05", "05C10", "11H06"]
 
@@ -36,7 +36,7 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction.
+        Lean LSP checking under maintainer direction.
         All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:

@@ -36,7 +36,7 @@ structure LatticeTriangulation where
 namespace LatticeTriangulation
 
 /-- Real area of the polygon (since each elementary triangle has area 1/2). -/
-def areaReal (T : LatticeTriangulation) : ℝ :=
+noncomputable def areaReal (T : LatticeTriangulation) : ℝ :=
   (T.F : ℝ) / 2
 
 end LatticeTriangulation

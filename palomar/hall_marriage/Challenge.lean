@@ -1,5 +1,6 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Lattice
 import Mathlib.Data.Fintype.Basic
 
 namespace HallMarriage
