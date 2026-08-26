@@ -1,45 +1,50 @@
 version: "v0.4"
 
 project:
-  name: "The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)"
+  name: "Euler's Polyhedron Formula"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Friendship Windmill Structure Theorem
-    (Erdős, Rényi, and Sós, 1966). Proves that any finite graph in which every pair of distinct vertices
-    shares exactly one common neighbor possesses a universal vertex w, has an odd number of vertices |V| = 2k + 1,
-    induces a 1-regular perfect matching on V \ {w}, and is isomorphic to the Dutch windmill graph Wd(k, 2)
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
+    (1758, Wiedijk #13) and fundamental topological graph theory bounds using Tutte-Edmonds
+    combinatorial maps (dart rotation systems). Formalizes planar combinatorial maps, concrete
+    polyhedral instances (including the regular tetrahedron map on 12 darts), classical planar
+    edge bounds E <= 3V - 6 and E <= 2V - 4, and complete non-planarity proofs for K5 and K3,3.
 
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05C75", "05C50", "05C07"]
+  arxiv: [math.CO, math.GT]
+  msc2020: ["05C10", "57M15", "52B05"]
 
 sources:
-  - title: "On a problem of graph theory"
+  - title: "Elementa doctrinae solidorum"
     type: paper
     authors:
-      - "Paul Erdős"
-      - "Alfréd Rényi"
-      - "Vera T. Sós"
-    relationship: formalizes
-  - title: "Proofs from THE BOOK"
-    type: book
+      - "Leonhard Euler"
+    relationship: inspired_by
+  - title: "A Combinatorial Approach to Embeddings and Maps"
+    type: paper
     authors:
-      - "Martin Aigner"
-      - "Günter M. Ziegler"
-    relationship: background
+      - "W. T. Tutte"
+      - "Jack Edmonds"
+    relationship: adapts
+  - title: "Recherches sur les polyèdres"
+    type: paper
+    authors:
+      - "A.-L. Cauchy"
+    relationship: inspired_by
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
