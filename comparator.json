@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "ore_hamiltonian",
-    "dirac_hamiltonian"
+    "descartes_rule_of_signs"
   ],
   "permitted_axioms": [
     "propext",
