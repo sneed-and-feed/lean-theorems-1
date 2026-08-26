@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "ore_hamiltonian",
-    "dirac_hamiltonian"
+    "picks_theorem",
+    "picks_theorem_two_area"
   ],
   "permitted_axioms": [
     "propext",
