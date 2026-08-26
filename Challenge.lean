@@ -1,32 +1,35 @@
-import Mathlib.Analysis.Convex.Basic
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Real.Basic
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Matching
+import Mathlib.Combinatorics.SimpleGraph.Tutte
+import Mathlib.Data.Fintype.Basic
 
-open BigOperators
+open SimpleGraph
+open Classical
 
-/-- A Colorful Convex System in ℝ^d consisting of d + 1 finite families of convex sets. -/
-structure ColorfulConvexSystem (d : ℕ) where
-  families : Fin (d + 1) → Finset (Set (Fin d → ℝ))
-  h_convex : ∀ (c : Fin (d + 1)) (S : Set (Fin d → ℝ)), S ∈ families c → Convex ℝ S
+namespace TutteOneFactor
 
-namespace ColorfulHelly
+variable {V : Type*} [Fintype V] [DecidableEq V]
 
-/-- Main Theorem: Lovász's Colorful Helly theorem (1974; first published proof, Bárány 1982).
-    If all colorful selections of `d + 1` sets intersect in positive dimension, then at least
-    one family has a non-empty global intersection. -/
-theorem colorful_helly (d : ℕ) (hd : 1 ≤ d) (sys : ColorfulConvexSystem d)
-    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
-      (∀ c, choice c ∈ sys.families c) →
-      (⋂ c : Fin (d + 1), choice c).Nonempty) :
-    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := sorry
+/-- A 1-factor of a simple graph `G` is a 1-regular spanning subgraph, i.e., a perfect matching. -/
+def IsOneFactor {G : SimpleGraph V} (M : G.Subgraph) : Prop :=
+  M.IsPerfectMatching
 
-/-- Lovász's Colorful Helly theorem in every dimension `d`, including `d = 0`: if all colorful
-    selections of `d + 1` sets intersect, then at least one family has a non-empty global
-    intersection. -/
-theorem colorful_helly_all_dimensions (d : ℕ) (sys : ColorfulConvexSystem d)
-    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
-      (∀ c, choice c ∈ sys.families c) →
-      (⋂ c : Fin (d + 1), choice c).Nonempty) :
-    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := sorry
+/-- A graph `G` has a 1-factor if there exists a spanning perfect matching. -/
+def HasOneFactor (G : SimpleGraph V) : Prop :=
+  ∃ M : G.Subgraph, M.IsPerfectMatching
 
-end ColorfulHelly
+/-- The number of odd connected components of `G \ U`. -/
+noncomputable def q (G : SimpleGraph V) (U : Set V) : ℕ :=
+  (((⊤ : G.Subgraph).deleteVerts U).coe.oddComponents).ncard
+
+/-- **Tutte's 1-Factor Theorem (Necessity Direction):**
+If `G` has a 1-factor, then for every subset `U ⊆ V`, the number of odd components `q(G \ U) ≤ |U|`. -/
+theorem tutte_necessity (G : SimpleGraph V) (hM : HasOneFactor G) (U : Set V) :
+    q G U ≤ U.ncard := sorry
+
+/-- **Tutte's 1-Factor Theorem (Equivalence):**
+A graph `G` has a 1-factor if and only if for all subsets `U ⊆ V`, `q(G \ U) ≤ |U|`. -/
+theorem tutte_1factor_theorem (G : SimpleGraph V) :
+    HasOneFactor G ↔ ∀ U : Set V, q G U ≤ U.ncard := sorry
+
+end TutteOneFactor
