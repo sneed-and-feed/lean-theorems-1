@@ -1,27 +1,28 @@
 version: "v0.4"
 
 project:
-  name: "Sperner's Lemma in 1D and 2D"
+  name: "The De Bruijn–Erdős Theorem on Incidence Geometry"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Sperner's Lemma (1928) in 1D and 2D.
-    Proves the 1D color-switch parity theorem along paths and the 2D simplicial parity theorem
-    on triangulations with boundary via double-counting of panchromatic triangles and boundary doors.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of the De Bruijn–Erdős theorem (1948)
+    in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
+    on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
+    bipartite double-counting argument. To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "55M20", "57Q05"]
+  arxiv: [math.CO, math.MG]
+  msc2020: ["05B25", "51E10", "51A15"]
 
 sources:
-  - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
+  - title: "On a combinatorial problem"
     type: paper
     authors:
-      - "Emanuel Sperner"
+      - "N. G. de Bruijn"
+      - "Paul Erdős"
     relationship: formalizes
 
 automation:
