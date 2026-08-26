@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "FriendshipTheorem.friendship_theorem"
+    "art_gallery_theorem"
   ],
   "permitted_axioms": [
     "propext",
