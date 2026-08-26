@@ -1,38 +1,34 @@
 version: "v0.4"
 
 project:
-  name: "Chvátal's Art Gallery Theorem & Fisk's 3-Coloring Proof"
+  name: "The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Chvátal's Art Gallery Theorem (1975)
-    via Steve Fisk's elegant 1978 3-coloring proof on triangulated polygon graphs. Proves that for
-    any 3-colorable planar triangulation graph on n vertices, there exists a guard set of size
-    at most floor(n / 3) covering all facial triangles (3-cliques), verified absent from core Mathlib
-Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A comprehensive, machine-checked Lean 4 formalization of the Erdős–Szekeres Convex Polygon Theorem (1935).
+    Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
+    Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
+    of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
-  msc2020: ["05C15", "05C10", "52C99"]
+  msc2020: ["52C10", "05D10", "52A10"]
 
 sources:
-  - title: "A combinatorial theorem in plane geometry"
+  - title: "A combinatorial problem in geometry"
     type: paper
     authors:
-      - "Václav Chvátal"
+      - "Paul Erdős"
+      - "George Szekeres"
     relationship: formalizes
-  - title: "A short proof of Chvátal's watchman theorem"
+  - title: "Problem 1835"
     type: paper
     authors:
-      - "Steve Fisk"
-    relationship: adapts
-  - title: "Art Gallery Theorems and Algorithms"
-    type: book
-    authors:
-      - "Joseph O'Rourke"
+      - "Esther Klein"
     relationship: background
 
 automation:
