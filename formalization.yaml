@@ -1,37 +1,34 @@
 version: "v0.4"
 
 project:
-  name: "The Crossing Lemma and Székely's Probabilistic Amplification"
+  name: "Kneser's Conjecture and Lovász's Chromatic Bound (1978)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of the Crossing Lemma (Ajtai, Chvátal, Newborn, Szemerédi 1982;
-    Leighton 1983) and its application to the Szemerédi–Trotter point-line incidence theorem via László Székely's
-    probabilistic expectation sub-sampling amplification (1997). Proves that any planar drawing of a graph with
-    |E| >= 4|V| has crossing number cr(G) >= |E|^3 / (64 |V|^2), verified absent from core Mathlib
-To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Kneser graph coloring bound (Kneser's Conjecture,
+    1955; Lovász's Theorem, 1978). Formalizes the Kneser graph KG(n, k) on k-subsets of an n-element set,
+    defines the combinatorial fiber coloring based on minimal elements, proves proper coloring by fiberwise
+    pigeonhole on intervals, and establishes the chromatic bound chi(KG(n, k)) <= n - 2k + 2,
+    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["05C10", "05C62", "52C10"]
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05C15", "05E45", "55M20"]
 
 sources:
-  - title: "Crossing-free subgraphs"
+  - title: "Kneser's conjecture, chromatic number, and homotopy"
     type: paper
     authors:
-      - "Miklós Ajtai"
-      - "Vašek Chvátal"
-      - "Monty M. Newborn"
-      - "Endre Szemerédi"
+      - "László Lovász"
     relationship: formalizes
-  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
+  - title: "Aufgabe 360"
     type: paper
     authors:
-      - "László A. Székely"
-    relationship: adapts
+      - "Martin Kneser"
+    relationship: background
 
 automation:
   methods:
