@@ -1,22 +1,22 @@
 version: "v0.4"
 
 project:
-  name: "3D Sperner's Lemma and Parity Invariant on Simplicial 3-Manifolds"
+  name: "Sperner's Lemma in 1D and 2D"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the three-dimensional Sperner's Lemma
-    and the parity conservation invariant on abstract simplicial 3-complexes with boundary.
-    Proves that for any 4-coloring of vertices, the number of fully colored (panchromatic)
-    tetrahedra is congruent modulo 2 to the number of 0-1-2 triangular boundary facets.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Sperner's Lemma (1928) in 1D and 2D.
+    Proves the 1D color-switch parity theorem along paths and the 2D simplicial parity theorem
+    on triangulations with boundary via double-counting of panchromatic triangles and boundary doors.
 
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
   arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "57Q05", "52A35"]
+  msc2020: ["05E45", "55M20", "57Q05"]
 
 sources:
   - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
@@ -30,8 +30,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
