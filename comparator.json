@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "DilworthTheorem.dilworth_theorem",
-    "DilworthTheorem.mirsky_theorem"
+    "kneser_lovasz_chromatic_number"
   ],
   "permitted_axioms": [
     "propext",
