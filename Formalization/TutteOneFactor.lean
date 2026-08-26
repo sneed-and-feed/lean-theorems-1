@@ -3,8 +3,6 @@ import Mathlib.Combinatorics.SimpleGraph.Matching
 import Mathlib.Combinatorics.SimpleGraph.Tutte
 import Mathlib.Combinatorics.SimpleGraph.DegreeSum
 import Mathlib.Data.Fintype.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Max
 
 open SimpleGraph
 open Classical
@@ -155,23 +153,21 @@ theorem hasOneFactor_iff_nu_eq (G : SimpleGraph V) (h_even : Even (Fintype.card 
     HasOneFactor G ↔ nu G = Fintype.card V / 2 := by
   constructor
   · rintro ⟨M, hM⟩
-    obtain ⟨k, hk⟩ := h_even
     have h_card : M.verts.ncard = 2 * (Fintype.card V / 2) := by
-      rw [hM.2.verts_eq_univ, Set.ncard_univ, Nat.card_eq_fintype_card]; omega
+      rw [hM.2.verts_eq_univ, Set.ncard_univ, Nat.card_eq_fintype_card]; obtain ⟨k, hk⟩ := h_even; omega
     have h_in : (Fintype.card V / 2) ∈ matchingSizes G := by
       simp only [matchingSizes, Finset.mem_filter, Finset.mem_range]
-      exact ⟨by omega, M, hM.1, h_card⟩
+      obtain ⟨k, hk⟩ := h_even; exact ⟨by omega, M, hM.1, h_card⟩
     exact le_antisymm (nu_le_card_div_two G) (Finset.le_max' _ _ h_in)
   · intro h
-    have hmem := Finset.max'_mem (matchingSizes G) (matchingSizes_nonempty G)
-    have : nu G ∈ matchingSizes G := hmem
-    rw [h] at this
-    rcases (Finset.mem_filter.mp this).2 with ⟨M, hM_match, hM_card⟩
-    obtain ⟨k, hk⟩ := h_even
+    have hmem : nu G ∈ matchingSizes G := Finset.max'_mem _ (matchingSizes_nonempty G)
+    rw [h, matchingSizes, Finset.mem_filter] at hmem
+    rcases hmem.2 with ⟨M, hM_match, hM_card⟩
     refine ⟨M, hM_match, fun v => ?_⟩
-    have h_eq : M.verts = Set.univ :=
-      Set.eq_of_subset_of_ncard_le (Set.subset_univ _)
-        (by rw [hM_card, Set.ncard_univ, Nat.card_eq_fintype_card]; omega) (Set.toFinite _)
+    have h_eq : M.verts = Set.univ := by
+      refine Set.eq_of_subset_of_ncard_le (Set.subset_univ _) ?_ (Set.toFinite _)
+      rw [hM_card, Set.ncard_univ, Nat.card_eq_fintype_card]
+      obtain ⟨k, hk⟩ := h_even; omega
     exact h_eq ▸ Set.mem_univ v
 
 /-! ## 5. Petersen's Theorem on Bridgeless Cubic Graphs -/
@@ -199,11 +195,7 @@ lemma sum_degree_eq_darts_fst (G : SimpleGraph V) (S : Finset V) :
     ext d; simp [eq_comm]
   rw [this, Finset.card_biUnion]
   · exact Finset.sum_congr rfl fun v _ => G.dart_fst_fiber_card_eq_degree v
-  · intro x _ y _ hne
-    dsimp [Function.onFun]
-    rw [Finset.disjoint_left]
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    rintro d rfl rfl; exact hne rfl
+  · intro x _ y _ hne; simp [Function.onFun, Finset.disjoint_left]; rintro d rfl; exact hne
 
 lemma card_crossDarts_self_eq_card_darts_induce (G : SimpleGraph V) (S : Finset V) :
     (crossDarts G S S).card = Fintype.card (G.induce (S : Set V)).Dart := by
@@ -233,7 +225,6 @@ lemma odd_card_crossDarts_compl_of_cubic (G : SimpleGraph V) (hcubic : IsCubic G
   rw [Finset.sum_congr rfl (fun v _ => hcubic v), Finset.sum_const, smul_eq_mul, mul_comm] at hsum
   obtain ⟨k, hk⟩ := even_card_crossDarts_self G S
   obtain ⟨m, hm⟩ := hS_odd
-  rw [hk, hm] at hsum
   exact ⟨3 * m + 1 - k, by omega⟩
 
 lemma card_crossDarts_ge_three_of_odd (G : SimpleGraph V) (hbridge : IsBridgeless G)

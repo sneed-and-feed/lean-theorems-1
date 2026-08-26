@@ -584,22 +584,6 @@ lemma mem_convexHull_pair_1d (u v m : Fin 1 → ℝ) (h1 : u 0 ≤ m 0) (h2 : m 
     have h_conv := (convex_convexHull ℝ ({u, v} : Set (Fin 1 → ℝ))) hu_conv hv_conv ha hb hab
     rwa [hm_comb] at h_conv
 
-/-- **1-Dimensional Tverberg Theorem for Arbitrary r (1966):**
-    Any set S of 2r - 1 points in ℝ¹ can be partitioned into r subsets whose convex hulls
-    share a common point of intersection. -/
-theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
-    (S : Finset (Fin 1 → ℝ)) (hS : S.card = (r - 1) * (1 + 1) + 1) :
-    ∃ P : Fin r → Finset (Fin 1 → ℝ), IsTverbergPartition S P := by
-  rcases eq_or_lt_of_le hr with rfl | hr_gt
-  · exact tverbergs_theorem_one S hS
-  · rcases eq_or_lt_of_le (show 2 ≤ r by omega) with rfl | hr_gt2
-    · exact radons_theorem S hS
-    · have hr_le : r ≤ 2 ∨ 3 ≤ r := by omega
-      rcases hr_le with hle | hge
-      · exact tverbergs_theorem hr hle S hS
-      · -- r ≥ 3 in 1D
-        have hr_dim : (r - 1) * (1 + 1) + 1 = 2 * r - 1 := by omega
-        sorry
 
 end TverbergsTheorem
 

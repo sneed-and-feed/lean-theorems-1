@@ -59,14 +59,9 @@ theorem erdos_szekeres_convex_polygon (k : ℕ) (hk : 3 ≤ k)
     (h_card : erdosSzekeresBound k ≤ S.card)
     (h_gen : InGeneralPosition S) :
     FormsConvexPolygon S k := by
-  have h_bound : Nat.choose (k + k - 4) (k - 2) + 1 ≤ S.card := by
-    have : k + k = 2 * k := by omega
-    rw [this]
-    exact h_card
-  have h_cup_cap := cup_cap_lemma k k hk hk S h_dist h_bound h_gen
-  rcases h_cup_cap with ⟨cup, hcup, hcup_sub⟩ | ⟨cap, hcap, hcap_sub⟩
-  · exact formsConvexPolygon_of_isCup S cup k hk hcup hcup_sub
-  · exact formsConvexPolygon_of_isCap S cap k hk hcap hcap_sub
+  rcases cup_cap_lemma k k hk hk S h_dist (by rwa [show k + k = 2 * k by omega]) h_gen with ⟨C, hC, hC_sub⟩ | ⟨C, hC, hC_sub⟩
+  · exact formsConvexPolygon_of_isCup S C k hk hC hC_sub
+  · exact formsConvexPolygon_of_isCap S C k hk hC hC_sub
 
 /-- For k = 3, every set of at least 3 points in general position with distinct x-coordinates
     contains a convex triangle. Exact evaluation: ES(3) = 3. -/
@@ -74,11 +69,8 @@ theorem erdos_szekeres_triangle (S : Finset Point2D)
     (h_dist : HasDistinctX S)
     (h_card : 3 ≤ S.card)
     (h_gen : InGeneralPosition S) :
-    FormsConvexPolygon S 3 := by
-  have h_bound : erdosSzekeresBound 3 ≤ S.card := by
-    dsimp [erdosSzekeresBound]
-    exact h_card
-  exact erdos_szekeres_convex_polygon 3 (by omega) S h_dist h_bound h_gen
+    FormsConvexPolygon S 3 :=
+  erdos_szekeres_convex_polygon 3 (by omega) S h_dist h_card h_gen
 
 /-- For k = 4, every set of at least 7 points in general position with distinct x-coordinates
     contains a convex quadrilateral (general upper bound `ES(4) ≤ 7`). -/
@@ -86,11 +78,8 @@ theorem erdos_szekeres_four_points (S : Finset Point2D)
     (h_dist : HasDistinctX S)
     (h_card : 7 ≤ S.card)
     (h_gen : InGeneralPosition S) :
-    FormsConvexPolygon S 4 := by
-  have h_bound : erdosSzekeresBound 4 ≤ S.card := by
-    dsimp [erdosSzekeresBound]
-    exact h_card
-  exact erdos_szekeres_convex_polygon 4 (by omega) S h_dist h_bound h_gen
+    FormsConvexPolygon S 4 :=
+  erdos_szekeres_convex_polygon 4 (by omega) S h_dist h_card h_gen
 
 /-- **Esther Klein's Theorem (1935 / Klein's Problem 1835):**
     Every set of at least `erdosSzekeresBound 4` (= 7) points in general position with distinct x-coordinates
@@ -100,7 +89,7 @@ theorem esther_klein_theorem (S : Finset Point2D)
     (h_card : erdosSzekeresBound 4 ≤ S.card)
     (h_gen : InGeneralPosition S) :
     FormsConvexPolygon S 4 :=
-  erdos_szekeres_four_points S h_dist h_card h_gen
+  erdos_szekeres_convex_polygon 4 (by omega) S h_dist h_card h_gen
 
 /-- The Erdős–Szekeres Exact Conjecture: ES(k) = 2^(k-2) + 1 for all k ≥ 3.
     Proven for k = 3 (ES=3), k = 4 (ES=5, Esther Klein), k = 5 (ES=9, Kalbfleisch et al.),

@@ -56,14 +56,14 @@ variable {d : ℕ}
 /-- Coordinate sum as a linear map. -/
 def sumCoord (n : ℕ) : (Fin n → ℝ) →ₗ[ℝ] ℝ where
   toFun c := ∑ i, c i
-  map_add' x y := by simp [Finset.sum_add_distrib]
-  map_smul' r x := by simp [Finset.mul_sum]
+  map_add' _ _ := sum_add_distrib
+  map_smul' _ _ := by simp [mul_sum]
 
 /-- Weighted sum of points as a linear map. -/
 def sumPoints (n : ℕ) (v : Fin n → (Fin d → ℝ)) : (Fin n → ℝ) →ₗ[ℝ] (Fin d → ℝ) where
   toFun c := ∑ i, c i • v i
-  map_add' x y := by simp [Finset.sum_add_distrib, add_smul]
-  map_smul' r x := by simp [Finset.smul_sum, mul_smul]
+  map_add' _ _ := by simp [sum_add_distrib, add_smul]
+  map_smul' _ _ := by simp [smul_sum, mul_smul]
 
 /-- The combined linear map for Radon's lemma. -/
 def radonMap (v : Fin (d + 2) → (Fin d → ℝ)) :
@@ -72,73 +72,41 @@ def radonMap (v : Fin (d + 2) → (Fin d → ℝ)) :
 
 lemma exists_nonzero_radon_coeff (v : Fin (d + 2) → (Fin d → ℝ)) :
     ∃ c : Fin (d + 2) → ℝ, c ≠ 0 ∧ (∑ i, c i = 0) ∧ (∑ i, c i • v i = 0) := by
-  have h_dom : Module.finrank ℝ (Fin (d + 2) → ℝ) = d + 2 := by
-    rw [Module.finrank_pi, Fintype.card_fin]
-  have h_cod : Module.finrank ℝ (ℝ × (Fin d → ℝ)) = d + 1 := by
-    rw [Module.finrank_prod, Module.finrank_self, Module.finrank_pi, Fintype.card_fin, add_comm]
-  have h_not_inj : ¬ Function.Injective (radonMap v) := by
-    intro h_inj
-    have h_le := LinearMap.finrank_le_finrank_of_injective h_inj
-    rw [h_dom, h_cod] at h_le
-    omega
-  have h_ker : LinearMap.ker (radonMap v) ≠ ⊥ := by
-    intro h
-    rw [LinearMap.ker_eq_bot] at h
-    exact h_not_inj h
-  rw [Submodule.ne_bot_iff] at h_ker
-  obtain ⟨c, hc_mem, hc_ne⟩ := h_ker
-  rw [LinearMap.mem_ker] at hc_mem
-  have h_eval : radonMap v c = (∑ i, c i, ∑ i, c i • v i) := rfl
-  rw [h_eval, Prod.mk_eq_zero] at hc_mem
-  exact ⟨c, hc_ne, hc_mem.1, hc_mem.2⟩
+  have h_not_inj : ¬ Function.Injective (radonMap v) := fun h ↦ by
+    have := LinearMap.finrank_le_finrank_of_injective h
+    simp [Module.finrank_prod] at this; omega
+  obtain ⟨c, hc_mem, hc_ne⟩ := (Submodule.ne_bot_iff _).1 (mt LinearMap.ker_eq_bot.mp h_not_inj)
+  exact ⟨c, hc_ne, (Prod.mk_eq_zero.mp hc_mem).1, (Prod.mk_eq_zero.mp hc_mem).2⟩
 
 theorem radons_theorem (S : Finset (Fin d → ℝ)) (hS : S.card = d + 2) :
     ∃ A B : Finset (Fin d → ℝ), A ⊆ S ∧ B ⊆ S ∧ Disjoint A B ∧ A ∪ B = S ∧
       (convexHull ℝ (A : Set (Fin d → ℝ)) ∩ convexHull ℝ (B : Set (Fin d → ℝ))).Nonempty := by
   classical
-  have h_card : Fintype.card S = d + 2 := by rw [Fintype.card_coe, hS]
-  let e : Fin (d + 2) ≃ S := (Fintype.equivFinOfCardEq h_card).symm
+  let e : Fin (d + 2) ≃ S := (Fintype.equivFinOfCardEq (by rw [Fintype.card_coe, hS])).symm
   let v : Fin (d + 2) → (Fin d → ℝ) := fun i ↦ (e i : Fin d → ℝ)
   obtain ⟨c, hc_ne, hc_sum, hc_sum_v⟩ := exists_nonzero_radon_coeff v
-  let I_pos : Finset (Fin (d + 2)) := Finset.univ.filter (fun i ↦ 0 < c i)
-  let I_neg : Finset (Fin (d + 2)) := Finset.univ.filter (fun i ↦ c i ≤ 0)
-  have h_disj_I : Disjoint I_pos I_neg := by
-    rw [Finset.disjoint_filter]
-    intro x _ hx_pos
-    linarith
-  have h_union_I : I_pos ∪ I_neg = Finset.univ := by
-    ext x
-    simp only [I_pos, I_neg, Finset.mem_union, Finset.mem_filter, Finset.mem_univ, true_and]
-    exact iff_true_intro (lt_or_ge 0 (c x))
-  have h_sum_split : (∑ i ∈ I_pos, c i) + (∑ i ∈ I_neg, c i) = 0 := by
-    rw [← Finset.sum_union h_disj_I, h_union_I, hc_sum]
-  have h_sum_v_split : (∑ i ∈ I_pos, c i • v i) + (∑ i ∈ I_neg, c i • v i) = 0 := by
-    rw [← Finset.sum_union h_disj_I, h_union_I, hc_sum_v]
-  have ⟨i₀, hi₀⟩ : ∃ i, c i ≠ 0 := by
-    contrapose! hc_ne
-    ext i
-    exact hc_ne i
+  let I_pos := Finset.univ.filter (fun i ↦ 0 < c i)
+  let I_neg := Finset.univ.filter (fun i ↦ c i ≤ 0)
+  have h_disj_I : Disjoint I_pos I_neg := disjoint_filter.mpr fun _ _ h => not_le.mpr h
+  have h_union_I : I_pos ∪ I_neg = univ := by
+    ext x; simp only [I_pos, I_neg, mem_union, mem_filter, mem_univ, true_and]; exact iff_true_intro (lt_or_ge 0 (c x))
+  have h_sum_split : (∑ i ∈ I_pos, c i) + (∑ i ∈ I_neg, c i) = 0 := by rw [← sum_union h_disj_I, h_union_I, hc_sum]
+  have h_sum_v_split : (∑ i ∈ I_pos, c i • v i) + (∑ i ∈ I_neg, c i • v i) = 0 := by rw [← sum_union h_disj_I, h_union_I, hc_sum_v]
+  have ⟨i₀, hi₀⟩ : ∃ i, c i ≠ 0 := by contrapose! hc_ne; ext i; exact hc_ne i
   have h_pos_sum : 0 < ∑ i ∈ I_pos, c i := by
     rcases lt_or_gt_of_ne hi₀ with h_neg | h_pos
-    · have hi₀_mem : i₀ ∈ I_neg := Finset.mem_filter.mpr ⟨Finset.mem_univ i₀, le_of_lt h_neg⟩
-      have h_sub : ∑ i ∈ I_neg \ {i₀}, c i ≤ 0 :=
-        Finset.sum_nonpos (fun i hi ↦ (Finset.mem_filter.mp (Finset.mem_sdiff.mp hi).1).2)
+    · have hi₀_mem : i₀ ∈ I_neg := mem_filter.mpr ⟨mem_univ _, le_of_lt h_neg⟩
+      have h_sub : ∑ i ∈ I_neg \ {i₀}, c i ≤ 0 := sum_nonpos fun i hi => (mem_filter.mp (mem_sdiff.mp hi).1).2
       have h_dec : ∑ i ∈ I_neg, c i = c i₀ + ∑ i ∈ I_neg \ {i₀}, c i := by
-        rw [← Finset.add_sum_erase _ _ hi₀_mem, Finset.sdiff_singleton_eq_erase]
-      have : ∑ i ∈ I_neg, c i < 0 := by linarith
+        rw [← add_sum_erase _ _ hi₀_mem, sdiff_singleton_eq_erase]
       linarith
-    · have hi₀_mem : i₀ ∈ I_pos := Finset.mem_filter.mpr ⟨Finset.mem_univ i₀, h_pos⟩
-      have h_ge : c i₀ ≤ ∑ i ∈ I_pos, c i :=
-        Finset.single_le_sum (fun i hi ↦ le_of_lt (Finset.mem_filter.mp hi).2) hi₀_mem
+    · have hi₀_mem : i₀ ∈ I_pos := mem_filter.mpr ⟨mem_univ _, h_pos⟩
+      have h_ge : c i₀ ≤ ∑ i ∈ I_pos, c i := single_le_sum (fun i hi => le_of_lt (mem_filter.mp hi).2) hi₀_mem
       linarith
   let C := ∑ i ∈ I_pos, c i
   have hC_pos : 0 < C := h_pos_sum
-  have hC_neg_sum : ∑ i ∈ I_neg, -c i = C := by
-    rw [Finset.sum_neg_distrib]
-    linarith [h_sum_split]
-  have hC_neg_pos : 0 < ∑ i ∈ I_neg, -c i := by
-    rw [hC_neg_sum]
-    exact hC_pos
+  have hC_neg_sum : ∑ i ∈ I_neg, -c i = C := by rw [sum_neg_distrib]; linarith [h_sum_split]
+  have hC_neg_pos : 0 < ∑ i ∈ I_neg, -c i := by rwa [hC_neg_sum]
   let A : Finset (Fin d → ℝ) := I_pos.image v
   let B : Finset (Fin d → ℝ) := I_neg.image v
   have hA_sub : A ⊆ S := by

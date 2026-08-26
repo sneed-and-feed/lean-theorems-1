@@ -1,8 +1,4 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Data.Real.Basic
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
 import Mathlib.Tactic
 
 set_option linter.unusedSectionVars false
@@ -63,10 +59,9 @@ structure PlanarDrawing where
     (4v / e)² e - 3 (4v / e) v = (4v / e)⁴ (e³ / (64 v²)). -/
 lemma szekely_poly_identity (v e : ℝ) (hv : 0 < v) (he : 0 < e) :
     (4 * v / e)^2 * e - 3 * (4 * v / e) * v = (4 * v / e)^4 * (e^3 / (64 * v^2)) := by
-  have hv2 : v^2 ≠ 0 := by positivity
-  have he_ne : e ≠ 0 := by positivity
-  field_simp
-  ring
+  have : e ≠ 0 := by positivity
+  have : v ≠ 0 := by positivity
+  field_simp; ring
 
 /-- Székely's expectation amplification theorem:
     If a drawing with v vertices, e edges, and cr crossings satisfies the sub-sampling
@@ -75,12 +70,11 @@ theorem szekely_crossing_amplification (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
     (h_dense : 4 * v ≤ e)
     (h_expect : (4 * v / e)^2 * e - 3 * (4 * v / e) * v ≤ (4 * v / e)^4 * cr) :
     e^3 ≤ 64 * v^2 * cr := by
-  have h_id := szekely_poly_identity v e hv he
-  rw [h_id] at h_expect
-  have hp4_pos : 0 < (4 * v / e)^4 := by positivity
-  have h_le : e^3 / (64 * v^2) ≤ cr := (mul_le_mul_iff_of_pos_left hp4_pos).mp h_expect
-  have hv2_pos : 0 < 64 * v^2 := by positivity
-  have h_mul := (div_le_iff₀ hv2_pos).mp h_le
+  rw [szekely_poly_identity v e hv he] at h_expect
+  have hp4 : 0 < (4 * v / e)^4 := by positivity
+  have h_le : e^3 / (64 * v^2) ≤ cr := (mul_le_mul_iff_of_pos_left hp4).mp h_expect
+  have hv2 : 0 < 64 * v^2 := by positivity
+  have h_mul := (div_le_iff₀ hv2).mp h_le
   linarith
 
 /-- The Crossing Lemma (Ajtai et al. 1982 / Leighton 1983 / Székely 1997):
@@ -90,8 +84,7 @@ theorem crossing_lemma (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
     (h_dense : 4 * v ≤ e)
     (h_expect : (4 * v / e)^2 * e - 3 * (4 * v / e) * v ≤ (4 * v / e)^4 * cr) :
     e^3 / (64 * v^2) ≤ cr := by
-  have h_id := szekely_poly_identity v e hv he
-  rw [h_id] at h_expect
+  rw [szekely_poly_identity v e hv he] at h_expect
   have hp4_pos : 0 < (4 * v / e)^4 := by positivity
   exact (mul_le_mul_iff_of_pos_left hp4_pos).mp h_expect
 
@@ -142,9 +135,7 @@ theorem edges_cubed_le_of_dense (sys : PointLineIncidenceSystem) (h_dense : 4 * 
     I(P, L) ≤ (if 4n ≤ e then e + m else 4n + m). -/
 theorem szemeredi_trotter_incidence_bound (sys : PointLineIncidenceSystem) :
     sys.I ≤ (if 4 * sys.n ≤ sys.e then sys.e + sys.m else 4 * sys.n + sys.m) := by
-  split_ifs with h_dense
-  · linarith [sys.h_edges]
-  · linarith [sys.h_edges]
+  split_ifs <;> linarith [sys.h_edges]
 
 /-- Szemerédi–Trotter dichotomy:
     Either the configuration is dense (4n ≤ e) with e³ ≤ 32 n² m² and I ≤ e + m,
@@ -153,12 +144,7 @@ theorem szemeredi_trotter_dichotomy (sys : PointLineIncidenceSystem) :
     (4 * sys.n ≤ sys.e ∧ sys.e^3 ≤ 32 * sys.n^2 * sys.m^2 ∧ sys.I ≤ sys.e + sys.m) ∨
     (sys.e < 4 * sys.n ∧ sys.I ≤ 4 * sys.n + sys.m) := by
   by_cases h_dense : 4 * sys.n ≤ sys.e
-  · left
-    refine ⟨h_dense, sys.edges_cubed_le_of_dense h_dense, ?_⟩
-    linarith [sys.h_edges]
-  · right
-    have : sys.e < 4 * sys.n := by linarith
-    refine ⟨this, ?_⟩
-    linarith [sys.h_edges]
+  · exact Or.inl ⟨h_dense, sys.edges_cubed_le_of_dense h_dense, by linarith [sys.h_edges]⟩
+  · exact Or.inr ⟨by linarith, by linarith [sys.h_edges]⟩
 
 end PointLineIncidenceSystem

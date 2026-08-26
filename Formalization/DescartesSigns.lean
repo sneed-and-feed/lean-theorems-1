@@ -1,15 +1,5 @@
-import Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Polynomial.Degree.Defs
-import Mathlib.Algebra.Polynomial.Degree.TrailingDegree
 import Mathlib.Algebra.Polynomial.RuleOfSigns
 import Mathlib.Analysis.Polynomial.Order
-import Mathlib.Topology.Order.IntermediateValue
-import Mathlib.Data.List.Basic
-import Mathlib.Data.Real.Basic
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
 
 open Polynomial
 
@@ -144,12 +134,7 @@ lemma sign_variations_nonzero_parity (l : List ℝ) (hl : ∀ x ∈ l, x ≠ 0) 
             linarith
         exact h_equiv
       · simp only [hab, ite_false, zero_add, ih_b]
-        have hab_pos : 0 < a * b := by
-          have : a * b ≠ 0 := mul_ne_zero ha hb
-          rcases lt_trichotomy (a * b) 0 with h | h | h
-          · exfalso; exact hab h
-          · contradiction
-          · exact h
+        have hab_pos : 0 < a * b := lt_of_le_of_ne (not_lt.mp hab) (mul_ne_zero ha hb).symm
         have h_prod : (a * b) * (b * t) = (a * t) * (b ^ 2) := by ring
         have hb2_pos : 0 < b ^ 2 := sq_pos_of_ne_zero hb
         constructor
@@ -687,14 +672,8 @@ theorem descartes_rule_of_signs (p : Polynomial ℝ) (hp : p ≠ 0) :
             mul_neg_of_neg_of_pos (neg_lt_zero.mpr hr) h_q_pos
           linarith
         · intro h_not_pos
-          have h_q_neg : trailingCoeff q * leadingCoeff q < 0 := by
-            rcases lt_trichotomy (trailingCoeff q * leadingCoeff q) 0 with h | h | h
-            · exact h
-            · have hq_lead_ne := leadingCoeff_ne_zero.mpr hq
-              have hq_tr_ne := trailingCoeff_nonzero_iff_nonzero.mpr hq
-              have : trailingCoeff q * leadingCoeff q ≠ 0 := mul_ne_zero hq_tr_ne hq_lead_ne
-              contradiction
-            · exfalso; exact h_not_pos h
+          have h_q_neg : trailingCoeff q * leadingCoeff q < 0 :=
+            lt_of_le_of_ne (not_lt.mp h_not_pos) (mul_ne_zero (trailingCoeff_nonzero_iff_nonzero.mpr hq) (leadingCoeff_ne_zero.mpr hq))
           exact mul_pos_of_neg_of_neg (neg_lt_zero.mpr hr) h_q_neg
       have h_var_flip : Even (poly_sign_variations p) ↔ ¬ Even (poly_sign_variations q) := by
         rw [poly_sign_variations_parity p hp, poly_sign_variations_parity q hq]

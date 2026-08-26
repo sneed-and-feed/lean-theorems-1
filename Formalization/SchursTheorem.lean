@@ -19,17 +19,15 @@ def ramseyTriangleBound : ℕ → ℕ
   | 0 => 2
   | r + 1 => (r + 1) * ramseyTriangleBound r + 1
 
-lemma ramseyTriangleBound_ge_two (r : ℕ) : 2 ≤ ramseyTriangleBound r := by
-  induction r with
-  | zero => decide
-  | succ r ih =>
+lemma ramseyTriangleBound_ge_two : ∀ (r : ℕ), 2 ≤ ramseyTriangleBound r
+  | 0 => by decide
+  | r + 1 => by
     dsimp [ramseyTriangleBound]
-    have : 1 ≤ r + 1 := by omega
+    have := ramseyTriangleBound_ge_two r
     nlinarith
 
-lemma ramseyTriangleBound_pos (r : ℕ) : 0 < ramseyTriangleBound r := by
-  have := ramseyTriangleBound_ge_two r
-  omega
+lemma ramseyTriangleBound_pos (r : ℕ) : 0 < ramseyTriangleBound r :=
+  lt_of_lt_of_le (by decide) (ramseyTriangleBound_ge_two r)
 
 /-- A triple of distinct vertices forming a monochromatic triangle of color `k`. -/
 def isMonoTriangle (c : α → α → Fin r) (S : Finset α) (u v w : α) (k : Fin r) : Prop :=
@@ -46,24 +44,12 @@ lemma exists_fiber_ge {r : ℕ} (S : Finset α) (f : α → Fin (r + 1)) (m : �
   by_contra! h_all
   have h_sum : S.card = ∑ k : Fin (r + 1), (S.filter (fun x => f x = k)).card := by
     rw [← card_biUnion]
-    · congr 1
-      ext x
-      simp only [mem_biUnion, mem_filter, mem_univ, true_and]
-      exact ⟨fun hx => ⟨f x, hx, rfl⟩, fun ⟨k, hx, _⟩ => hx⟩
-    · intro i _ j _ hij
-      dsimp [Function.onFun]
-      rw [Finset.disjoint_left]
-      intro x hx1 hx2
-      simp only [mem_filter] at hx1 hx2
-      exact hij (hx1.2.symm.trans hx2.2)
+    · congr 1; ext x; simp
+    · intro i _ j _ hij; dsimp [Function.onFun]; rw [Finset.disjoint_left]; intro x h1 h2; simp at h1 h2; exact hij (h1.2.symm.trans h2.2)
   have h_lt : ∑ k : Fin (r + 1), (S.filter (fun x => f x = k)).card < (r + 1) * m := by
-    have h_sum_lt : ∑ k : Fin (r + 1), (S.filter (fun x => f x = k)).card < ∑ k : Fin (r + 1), m := by
-      apply sum_lt_sum_of_nonempty Finset.univ_nonempty
-      intro k _
-      exact h_all k
-    rw [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul] at h_sum_lt
-    exact h_sum_lt
-  rw [← h_sum] at h_lt
+    calc ∑ k : Fin (r + 1), (S.filter (fun x => f x = k)).card
+      _ < ∑ k : Fin (r + 1), m := sum_lt_sum_of_nonempty Finset.univ_nonempty (fun k _ => h_all k)
+      _ = (r + 1) * m := by simp [mul_comm]
   omega
 
 /-- Reduce a color in `Fin (r + 1) \ {i_star}` to `Fin r`. -/

@@ -52,12 +52,8 @@ lemma neighbor_start_mem_support_of_maximal {G : SimpleGraph V} {u v : V} {p : G
     (hmax : ∀ {u' v' : V} (q : G.Walk u' v'), q.IsPath → q.length ≤ p.length)
     {w : V} (hw : G.Adj u w) : w ∈ p.support := by
   by_contra hnot
-  have hq_path : (p.cons hw.symm).IsPath := by
-    rw [Walk.isPath_def, Walk.support_cons, List.nodup_cons]
-    exact ⟨hnot, hp.support_nodup⟩
-  have hlen := hmax (p.cons hw.symm) hq_path
-  simp only [Walk.length_cons] at hlen
-  omega
+  have hlen := hmax (p.cons hw.symm) (by simp [Walk.isPath_def, hnot, hp.support_nodup])
+  revert hlen; simp [Walk.length_cons]
 
 lemma neighbor_end_mem_support_of_maximal {G : SimpleGraph V} {u v : V} {p : G.Walk u v}
     (hp : p.IsPath)
@@ -65,17 +61,13 @@ lemma neighbor_end_mem_support_of_maximal {G : SimpleGraph V} {u v : V} {p : G.W
     {w : V} (hw : G.Adj v w) : w ∈ p.support := by
   by_contra hnot
   have hq_path : (p.concat hw).IsPath := by
-    rw [Walk.isPath_def, Walk.support_concat]
-    rw [List.nodup_append]
+    rw [Walk.isPath_def, Walk.support_concat, List.nodup_append]
     refine ⟨hp.support_nodup, List.nodup_singleton w, ?_⟩
     intro a ha b hb
     simp only [List.mem_singleton] at hb
-    subst hb
-    rintro rfl
-    exact hnot ha
+    subst hb; rintro rfl; exact hnot ha
   have hlen := hmax (p.concat hw) hq_path
-  simp only [Walk.length_concat] at hlen
-  omega
+  revert hlen; simp [Walk.length_concat]
 
 lemma card_I_u_of_maximal {G : SimpleGraph V} [DecidableRel G.Adj] {u v : V} {p : G.Walk u v}
     (hp : p.IsPath)

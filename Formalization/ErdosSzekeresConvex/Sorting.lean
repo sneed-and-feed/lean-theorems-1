@@ -10,18 +10,6 @@ set_option linter.style.haveILetI false
 
 open Finset
 
-/-!
-# 2D Plane Rotation, Lexicographical Sorting, and Distinct X Coordinates
-
-This module formalizes:
-1. **Plane Rotations:** `rotate2D`, invariance of orientation determinants `orientationDet_rotate2D`,
-   injectivity `rotate2D_injective`, and preservation of general position `inGeneralPosition_rotate2D`.
-2. **Lexicographical Ordering:** `lexLE` on $\mathbb{R}^2$ (with `IsTrans`, `Std.Antisymm`, `Std.Total` instances).
-3. **Distinct X Coordinates & Sorting:** `HasDistinctX`, `HasDistinctX.subset`, and the key sorting lemma
-   `exists_x_sorted` which transforms any finite point set with distinct $x$-coordinates into a strictly
-   $x$-monotone list without duplicates.
--/
-
 /-- 2D rotation of a point parameterized by direction vector `(c, s)` on the unit circle `c^2 + s^2 = 1`. -/
 def rotate2D (c s : ℝ) (p : Point2D) : Point2D :=
   (p.1 * c - p.2 * s, p.1 * s + p.2 * c)
@@ -48,14 +36,10 @@ lemma inGeneralPosition_rotate2D (S : Finset Point2D) (c s : ℝ) (h_unit : c^2 
     (h_gen : InGeneralPosition S) :
     InGeneralPosition (S.image (rotate2D c s)) := by
   intro p q r hp hq hr hpq hqr hpr
-  obtain ⟨p0, hp0_in, rfl⟩ := Finset.mem_image.mp hp
-  obtain ⟨q0, hq0_in, rfl⟩ := Finset.mem_image.mp hq
-  obtain ⟨r0, hr0_in, rfl⟩ := Finset.mem_image.mp hr
-  have hpq0 : p0 ≠ q0 := fun heq => hpq (congrArg (rotate2D c s) heq)
-  have hqr0 : q0 ≠ r0 := fun heq => hqr (congrArg (rotate2D c s) heq)
-  have hpr0 : p0 ≠ r0 := fun heq => hpr (congrArg (rotate2D c s) heq)
+  simp only [Finset.mem_image] at hp hq hr
+  obtain ⟨p0, hp0, rfl⟩ := hp; obtain ⟨q0, hq0, rfl⟩ := hq; obtain ⟨r0, hr0, rfl⟩ := hr
   rw [orientationDet_rotate2D c s h_unit]
-  exact h_gen p0 q0 r0 hp0_in hq0_in hr0_in hpq0 hqr0 hpr0
+  exact h_gen p0 q0 r0 hp0 hq0 hr0 (hpq ∘ congrArg _) (hqr ∘ congrArg _) (hpr ∘ congrArg _)
 
 /-- Lexicographic ordering on ℝ² by x then y, used to canonicalize point sorting. -/
 def lexLE (p q : Point2D) : Prop :=
@@ -64,40 +48,26 @@ def lexLE (p q : Point2D) : Prop :=
 noncomputable instance : DecidableRel lexLE := Classical.decRel lexLE
 
 instance : IsTrans Point2D lexLE := ⟨by
-  intro a b c hab hbc
-  dsimp [lexLE] at *
-  rcases hab with ha1 | ⟨ha1, ha2⟩
-  · rcases hbc with hb1 | ⟨hb1, hb2⟩
-    · exact Or.inl (lt_trans ha1 hb1)
-    · exact Or.inl (by linarith)
-  · rcases hbc with hb1 | ⟨hb1, hb2⟩
-    · exact Or.inl (by linarith)
-    · exact Or.inr ⟨by linarith, by linarith⟩
+  rintro a b c (h1|⟨h1,h2⟩) (h3|⟨h3,h4⟩) <;> unfold lexLE
+  · exact Or.inl (h1.trans h3)
+  · exact Or.inl (h3 ▸ h1)
+  · exact Or.inl (h1 ▸ h3)
+  · exact Or.inr ⟨h1.trans h3, h2.trans h4⟩
 ⟩
 
 instance : Std.Antisymm lexLE := ⟨by
-  intro a b hab hba
-  dsimp [lexLE] at *
-  rcases hab with ha1 | ⟨ha1, ha2⟩
-  · rcases hba with hb1 | ⟨hb1, hb2⟩
-    · linarith
-    · linarith
-  · rcases hba with hb1 | ⟨hb1, hb2⟩
-    · linarith
-    · ext
-      · exact ha1
-      · linarith
+  rintro a b (h1|⟨h1,h2⟩) (h3|⟨h3,h4⟩) <;> try linarith
+  ext <;> linarith
 ⟩
 
 instance : Std.Total lexLE := ⟨by
   intro a b
-  dsimp [lexLE]
-  rcases lt_trichotomy a.1 b.1 with hlt | heq | hgt
-  · exact Or.inl (Or.inl hlt)
-  · rcases le_total a.2 b.2 with hle | hge
-    · exact Or.inl (Or.inr ⟨heq, hle⟩)
-    · exact Or.inr (Or.inr ⟨heq.symm, hge⟩)
-  · exact Or.inr (Or.inl hgt)
+  rcases lt_trichotomy a.1 b.1 with h|h|h
+  · exact Or.inl (Or.inl h)
+  · rcases le_total a.2 b.2 with h2|h2
+    · exact Or.inl (Or.inr ⟨h, h2⟩)
+    · exact Or.inr (Or.inr ⟨h.symm, h2⟩)
+  · exact Or.inr (Or.inl h)
 ⟩
 
 /-- Predicate asserting that a set of points has mutually distinct x-coordinates. -/
@@ -113,25 +83,15 @@ lemma exists_x_sorted (S : Finset Point2D) (hdist : HasDistinctX S) :
     ∃ L : List Point2D, L.Nodup ∧ L.toFinset = S ∧ L.length = S.card ∧
       ∀ i (hi : i + 1 < L.length), (L.get ⟨i, by omega⟩).1 < (L.get ⟨i + 1, by omega⟩).1 := by
   refine ⟨S.sort lexLE, Finset.sort_nodup S lexLE, ?_, Finset.length_sort lexLE, ?_⟩
-  · ext x
-    rw [List.mem_toFinset, Finset.mem_sort lexLE]
+  · ext x; simp
   · intro i hi
-    have h_sorted := Finset.pairwise_sort S lexLE
-    have hi_len : i + 1 < (S.sort lexLE).length := hi
-    have h_pair := List.pairwise_iff_get.mp h_sorted ⟨i, by omega⟩ ⟨i + 1, hi_len⟩ (by simp)
-    dsimp at h_pair
-    have h_ne : (S.sort lexLE).get ⟨i, by omega⟩ ≠ (S.sort lexLE).get ⟨i + 1, by omega⟩ := by
-      intro heq
+    have h_pair := List.pairwise_iff_get.mp (Finset.pairwise_sort S lexLE) ⟨i, by omega⟩ ⟨i + 1, hi⟩ (by simp)
+    have h_ne : (S.sort lexLE).get ⟨i, by omega⟩ ≠ (S.sort lexLE).get ⟨i + 1, hi⟩ := fun heq => by
       have h_inj := List.nodup_iff_injective_get.mp (Finset.sort_nodup S lexLE) heq
       have : i = i + 1 := by injection h_inj
       omega
-    have h_mem1 : (S.sort lexLE).get ⟨i, by omega⟩ ∈ S := by
-      rw [← Finset.mem_sort lexLE]
-      exact List.get_mem ..
-    have h_mem2 : (S.sort lexLE).get ⟨i + 1, by omega⟩ ∈ S := by
-      rw [← Finset.mem_sort lexLE]
-      exact List.get_mem ..
-    have h_x_ne := hdist _ _ h_mem1 h_mem2 h_ne
-    rcases h_pair with h_lt | ⟨h_eq, h_y⟩
+    have hm1 : (S.sort lexLE).get ⟨i, by omega⟩ ∈ S := (Finset.mem_sort lexLE).mp (List.get_mem ..)
+    have hm2 : (S.sort lexLE).get ⟨i + 1, hi⟩ ∈ S := (Finset.mem_sort lexLE).mp (List.get_mem ..)
+    rcases h_pair with h_lt | ⟨h_eq, _⟩
     · exact h_lt
-    · exact False.elim (h_x_ne h_eq)
+    · exact False.elim (hdist _ _ hm1 hm2 h_ne h_eq)

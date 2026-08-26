@@ -45,32 +45,16 @@ def IsSDR (A : ι → Finset α) (f : ι → α) : Prop :=
 /-- **Hall's Marriage Theorem (Necessity):**
 If a system of distinct representatives exists, then Hall's condition holds. -/
 theorem hall_marriage_necessary (A : ι → Finset α) (f : ι → α) (hf : IsSDR A f) :
-    HallCondition A := by
-  intro J
-  have h_sub : J.image f ⊆ J.biUnion A := by
-    intro x hx
-    rw [mem_image] at hx
-    rcases hx with ⟨i, hi, rfl⟩
-    rw [mem_biUnion]
-    exact ⟨i, hi, hf.2 i⟩
-  have h_card := card_le_card h_sub
-  rw [card_image_of_injective J hf.1] at h_card
-  exact h_card
+    HallCondition A := fun J ↦
+  (card_image_of_injective J hf.1).symm.trans_le <|
+    card_le_card (fun x hx => by rcases mem_image.1 hx with ⟨i, hi, rfl⟩; exact mem_biUnion.2 ⟨i, hi, hf.2 i⟩)
 
 lemma biUnion_sdiff (J : Finset ι) (A : ι → Finset α) (T : Finset α) :
     (J.biUnion (fun i => A i \ T)) = (J.biUnion A) \ T := by
-  ext x
-  simp only [mem_biUnion, mem_sdiff]
-  constructor
-  · rintro ⟨i, hi, hx1, hx2⟩
-    exact ⟨⟨i, hi, hx1⟩, hx2⟩
-  · rintro ⟨⟨i, hi, hx1⟩, hx2⟩
-    exact ⟨i, hi, hx1, hx2⟩
+  ext; simp; aesop
 
 lemma union_sdiff_self_right (U T : Finset α) : (U ∪ T) \ T = U \ T := by
-  ext x
-  simp only [mem_sdiff, mem_union]
-  tauto
+  ext; simp; tauto
 
 lemma card_sdiff_singleton_ge (U : Finset α) (x : α) :
     U.card - 1 ≤ (U \ {x}).card := by
@@ -264,28 +248,20 @@ it satisfies Hall's condition. -/
 theorem hall_marriage_theorem (A : ι → Finset α) :
     (∃ f : ι → α, IsSDR A f) ↔ HallCondition A := by
   constructor
-  · rintro ⟨f, hf⟩
-    exact hall_marriage_necessary A f hf
+  · rintro ⟨f, hf⟩; exact hall_marriage_necessary A f hf
   · intro hH
     by_cases h_empty : IsEmpty ι
-    · haveI := h_empty
-      refine ⟨fun i => (IsEmpty.false i).elim, ?_⟩
-      exact ⟨fun i => (IsEmpty.false i).elim, fun i => (IsEmpty.false i).elim⟩
+    · exact ⟨fun i => h_empty.elim i, fun i => h_empty.elim i, fun i => h_empty.elim i⟩
     · rw [not_isEmpty_iff] at h_empty
-      haveI : Nonempty ι := h_empty
       have i0 : ι := Classical.choice h_empty
       have h_sing := hH {i0}
       rw [card_singleton, singleton_biUnion] at h_sing
-      have hA_pos : 0 < (A i0).card := lt_of_lt_of_le Nat.zero_lt_one h_sing
-      have hA_nonempty : (A i0).Nonempty := card_pos.mp hA_pos
-      rcases hA_nonempty with ⟨x0, _⟩
+      rcases card_pos.1 (Nat.zero_lt_one.trans_le h_sing) with ⟨x0, _⟩
       haveI : Nonempty α := ⟨x0⟩
-      rcases hall_marriage_finset (Finset.univ.card) A Finset.univ rfl (fun J _ => hH J) with ⟨f, hf_mem, hf_inj⟩
-      refine ⟨f, ?_, fun i => hf_mem i (mem_univ i)⟩
-      intro i j hij
-      exact hf_inj i (mem_univ i) j (mem_univ j) hij
+      rcases hall_marriage_finset Finset.univ.card A Finset.univ rfl (fun J _ => hH J) with ⟨f, hf_mem, hf_inj⟩
+      exact ⟨f, fun i j hij => hf_inj i (mem_univ i) j (mem_univ j) hij, fun i => hf_mem i (mem_univ i)⟩
 
-#print axioms hall_marriage_theorem
+
 
 /-- An edge in the bipartite incidence graph between `ι` and `α` given by family `A`. -/
 def IsIncidenceEdge (A : ι → Finset α) (e : ι × α) : Prop :=
@@ -375,40 +351,21 @@ theorem hall_matching_theorem (A : ι → Finset α) :
     (∃ M : Finset (ι × α), IsMatching A M ∧ M.card = Fintype.card ι) ↔ HallCondition A := by
   constructor
   · rintro ⟨M, hM, hM_card⟩
-    have h_fst_inj : Set.InjOn Prod.fst (M : Set (ι × α)) :=
-      fun e1 he1 e2 he2 heq => hM.2.1 e1 he1 e2 he2 heq
     have h_im_univ : M.image Prod.fst = Finset.univ := by
       apply eq_univ_of_card
-      simp [card_image_of_injOn h_fst_inj, hM_card]
+      simp [card_image_of_injOn (fun e1 he1 e2 he2 heq => hM.2.1 e1 he1 e2 he2 heq), hM_card]
     have h_unique : ∀ i : ι, ∃! a : α, (i, a) ∈ M := by
       intro i
-      have h_in_univ : i ∈ (Finset.univ : Finset ι) := mem_univ i
-      rw [← h_im_univ, mem_image] at h_in_univ
-      rcases h_in_univ with ⟨⟨i', a⟩, he, rfl⟩
-      refine ⟨a, he, ?_⟩
-      intro a' ha'
-      have heq := hM.2.1 (i', a') ha' (i', a) he rfl
-      cases heq
-      rfl
-    let f : ι → α := fun i => (h_unique i).choose
-    have hf_mem_M : ∀ i : ι, (i, f i) ∈ M := fun i => (h_unique i).choose_spec.1
-    have hf_mem_A : ∀ i : ι, f i ∈ A i := fun i => hM.1 (i, f i) (hf_mem_M i)
-    have hf_inj : Function.Injective f := by
-      intro i j heq
-      have he1 : (i, f i) ∈ M := hf_mem_M i
-      have he2 : (j, f j) ∈ M := hf_mem_M j
-      rw [heq] at he1
-      have heq' := hM.2.2 (i, f j) he1 (j, f j) he2 rfl
-      cases heq'
-      rfl
-    have h_sdr : IsSDR A f := ⟨hf_inj, hf_mem_A⟩
-    exact hall_marriage_necessary A f h_sdr
+      rcases mem_image.1 (h_im_univ.symm ▸ mem_univ i) with ⟨⟨i', a⟩, he, rfl⟩
+      exact ⟨a, he, fun a' ha' => by cases hM.2.1 (i', a') ha' (i', a) he rfl; rfl⟩
+    have hf_mem_M : ∀ i, (i, (h_unique i).choose) ∈ M := fun i => (h_unique i).choose_spec.1
+    refine hall_marriage_necessary A (fun i => (h_unique i).choose) ⟨fun i j heq => ?_, fun i => hM.1 _ (hf_mem_M i)⟩
+    cases hM.2.2 _ (hf_mem_M i) _ (hf_mem_M j) (by exact heq)
+    rfl
   · intro hH
-    rcases (hall_marriage_theorem A).mpr hH with ⟨f, hf⟩
+    rcases (hall_marriage_theorem A).2 hH with ⟨f, hf⟩
     exact sdr_to_perfect_matching A f hf
 
-#print axioms hall_matching_theorem
-#print axioms matching_card_le_vertexCover_card
 
 end HallMarriage
 

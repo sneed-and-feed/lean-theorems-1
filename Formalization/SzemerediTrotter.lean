@@ -42,19 +42,7 @@ the Crossing Lemma immediately yields:
 -- Section 1: Real Power Utilities & Cubic Monotonicity
 -- ============================================================================
 
-/-- Strict monotonicity of the cube function for non-negative reals. -/
-lemma cube_lt_of_lt_of_nonneg {a b : ℝ} (ha : 0 ≤ a) (hab : a < b) : a^3 < b^3 :=
-  (Odd.strictMono_pow ⟨1, rfl⟩).lt_iff_lt.mpr hab
 
-/-- Monotonicity of the cube function on non-negative reals:
-    if $0 \le a \le b$, then $a^3 \le b^3$. -/
-lemma cube_le_cube_of_nonneg {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) : a^3 ≤ b^3 :=
-  (Odd.strictMono_pow ⟨1, rfl⟩).le_iff_le.mpr hab
-
-/-- Inverse monotonicity of the cube function:
-    if $a^3 \le b^3$ and $a \ge 0$, then $a \le b$. -/
-lemma le_of_cube_le_cube {a b : ℝ} (ha : 0 ≤ a) (h : a^3 ≤ b^3) : a ≤ b :=
-  (Odd.strictMono_pow ⟨1, rfl⟩).le_iff_le.mp h
 
 /-- Cube of a product with real exponent:
     for $x \ge 0$, $((x)^{2/3})^3 = x^2$. -/
@@ -76,8 +64,7 @@ theorem edge_bound_of_edges_cubed (e n m : ℝ) (hn : 0 ≤ n) (hm : 0 ≤ m)
     (h : e^3 ≤ 32 * n^2 * m^2) :
     e ≤ 4 * (n * m) ^ (2 / 3 : ℝ) := by
   have : e^3 ≤ (4 * (n * m) ^ (2 / 3 : ℝ))^3 := by
-    rw [scaled_bound_cube _ _ hn hm]
-    nlinarith [sq_nonneg (n * m)]
+    rw [scaled_bound_cube _ _ hn hm]; nlinarith [sq_nonneg (n * m)]
   exact (Odd.strictMono_pow ⟨1, rfl⟩).le_iff_le.mp this
 
 -- ============================================================================
@@ -93,8 +80,7 @@ theorem szemeredi_trotter_bound (sys : PointLineIncidenceSystem) :
   have hn : 0 ≤ sys.n := by linarith [sys.hn]
   have hm : 0 ≤ sys.m := by linarith [sys.hm]
   rcases sys.szemeredi_trotter_dichotomy with ⟨-, h_cube, h_I⟩ | ⟨-, h_I⟩
-  · have he := edge_bound_of_edges_cubed sys.e sys.n sys.m hn hm h_cube
-    linarith [h_I, he, sys.hn]
+  · linarith [edge_bound_of_edges_cubed sys.e sys.n sys.m hn hm h_cube, h_I, sys.hn]
   · have : 0 ≤ (sys.n * sys.m) ^ (2 / 3 : ℝ) := by positivity
     linarith
 

@@ -45,30 +45,16 @@ lemma orientationDet_pos_prs_of_pqr_qrs (p q r s : Point2D)
     (h_pqr : 0 < orientationDet p q r)
     (h_qrs : 0 < orientationDet q r s) :
     0 < orientationDet p r s := by
-  have h_id := orientationDet_four_p_r_s p q r s
-  have hrq : 0 < r.1 - q.1 := by linarith
-  have hrp : 0 < r.1 - p.1 := by linarith
-  have hsr : 0 < s.1 - r.1 := by linarith
-  have h1 : 0 < (r.1 - p.1) * orientationDet q r s := mul_pos hrp h_qrs
-  have h2 : 0 < (s.1 - r.1) * orientationDet p q r := mul_pos hsr h_pqr
-  have h_sum : 0 < (r.1 - p.1) * orientationDet q r s + (s.1 - r.1) * orientationDet p q r := add_pos h1 h2
-  rw [← h_id] at h_sum
-  exact pos_of_mul_pos_right h_sum (le_of_lt hrq)
+  have := orientationDet_four_p_r_s p q r s
+  nlinarith
 
 lemma orientationDet_pos_pqs_of_pqr_qrs (p q r s : Point2D)
     (hpq : p.1 < q.1) (hqr : q.1 < r.1) (hrs : r.1 < s.1)
     (h_pqr : 0 < orientationDet p q r)
     (h_qrs : 0 < orientationDet q r s) :
     0 < orientationDet p q s := by
-  have h_id := orientationDet_four_p_q_s p q r s
-  have hrq : 0 < r.1 - q.1 := by linarith
-  have hsq : 0 < s.1 - q.1 := by linarith
-  have hqp : 0 < q.1 - p.1 := by linarith
-  have h1 : 0 < (s.1 - q.1) * orientationDet p q r := mul_pos hsq h_pqr
-  have h2 : 0 < (q.1 - p.1) * orientationDet q r s := mul_pos hqp h_qrs
-  have h_sum : 0 < (s.1 - q.1) * orientationDet p q r + (q.1 - p.1) * orientationDet q r s := add_pos h1 h2
-  rw [← h_id] at h_sum
-  exact pos_of_mul_pos_right h_sum (le_of_lt hrq)
+  have := orientationDet_four_p_q_s p q r s
+  nlinarith
 
 lemma isCup_orientationDet_pos (pts : List Point2D) (a : ℕ) (hcup : IsCup pts a) :
     ∀ i j l (hi : i < pts.length) (hj : j < pts.length) (hl : l < pts.length) (hij : i < j) (hjl : j < l),
@@ -79,19 +65,10 @@ lemma isCup_orientationDet_pos (pts : List Point2D) (a : ℕ) (hcup : IsCup pts 
   induction' d using Nat.strong_induction_on with d ih generalizing i j l hi hj hl
   rcases eq_or_ne (i + 1) j with rfl | hj_gt
   · rcases eq_or_ne (i + 2) l with rfl | hl_gt
-    · have h_det := hcup.2.2 i hl
-      have h0 : (pts.get ⟨i, hi⟩) = pts.get ⟨i, by omega⟩ := by congr 1
-      have h1 : (pts.get ⟨i + 1, hj⟩) = pts.get ⟨i + 1, by omega⟩ := by congr 1
-      have h2 : (pts.get ⟨i + 2, hl⟩) = pts.get ⟨i + 2, by omega⟩ := by congr 1
-      rw [h0, h1, h2]
-      exact h_det
+    · exact hcup.2.2 i hl
     · have hl_prev : i + 2 < pts.length := by omega
       have h_rec := ih (l - (i + 1) - 2) (by omega) (i + 1) (i + 2) l (by omega) (by omega) hl (by omega) (by omega) (by omega)
       have h_base := hcup.2.2 i hl_prev
-      have h0 : pts.get ⟨i, by omega⟩ = pts.get ⟨i, hi⟩ := by congr 1
-      have h1 : pts.get ⟨i + 1, by omega⟩ = pts.get ⟨i + 1, hj⟩ := by congr 1
-      have h2 : pts.get ⟨i + 2, by omega⟩ = pts.get ⟨i + 2, hl_prev⟩ := by congr 1
-      rw [h0, h1, h2] at h_base
       have hpq : (pts.get ⟨i, hi⟩).1 < (pts.get ⟨i + 1, hj⟩).1 := isXMonotone_get_lt pts hcup.2.1 i (i+1) hi hj (by omega)
       have hqr : (pts.get ⟨i + 1, hj⟩).1 < (pts.get ⟨i + 2, hl_prev⟩).1 := isXMonotone_get_lt pts hcup.2.1 (i+1) (i+2) hj hl_prev (by omega)
       have hrs : (pts.get ⟨i + 2, hl_prev⟩).1 < (pts.get ⟨l, hl⟩).1 := isXMonotone_get_lt pts hcup.2.1 (i+2) l hl_prev hl (by omega)
@@ -191,30 +168,16 @@ lemma orientationDet_neg_prs_of_pqr_qrs (p q r s : Point2D)
     (h_pqr : orientationDet p q r < 0)
     (h_qrs : orientationDet q r s < 0) :
     orientationDet p r s < 0 := by
-  have h_id := orientationDet_four_p_r_s p q r s
-  have hrq : 0 < r.1 - q.1 := by linarith
-  have hrp : 0 < r.1 - p.1 := by linarith
-  have hsr : 0 < s.1 - r.1 := by linarith
-  have h1 : (r.1 - p.1) * orientationDet q r s < 0 := mul_neg_of_pos_of_neg hrp h_qrs
-  have h2 : (s.1 - r.1) * orientationDet p q r < 0 := mul_neg_of_pos_of_neg hsr h_pqr
-  have h_sum : (r.1 - p.1) * orientationDet q r s + (s.1 - r.1) * orientationDet p q r < 0 := by linarith
-  rw [← h_id] at h_sum
-  exact neg_of_mul_neg_right h_sum (le_of_lt hrq)
+  have := orientationDet_four_p_r_s p q r s
+  nlinarith
 
 lemma orientationDet_neg_pqs_of_pqr_qrs (p q r s : Point2D)
     (hpq : p.1 < q.1) (hqr : q.1 < r.1) (hrs : r.1 < s.1)
     (h_pqr : orientationDet p q r < 0)
     (h_qrs : orientationDet q r s < 0) :
     orientationDet p q s < 0 := by
-  have h_id := orientationDet_four_p_q_s p q r s
-  have hrq : 0 < r.1 - q.1 := by linarith
-  have hsq : 0 < s.1 - q.1 := by linarith
-  have hqp : 0 < q.1 - p.1 := by linarith
-  have h1 : (s.1 - q.1) * orientationDet p q r < 0 := mul_neg_of_pos_of_neg hsq h_pqr
-  have h2 : (q.1 - p.1) * orientationDet q r s < 0 := mul_neg_of_pos_of_neg hqp h_qrs
-  have h_sum : (s.1 - q.1) * orientationDet p q r + (q.1 - p.1) * orientationDet q r s < 0 := by linarith
-  rw [← h_id] at h_sum
-  exact neg_of_mul_neg_right h_sum (le_of_lt hrq)
+  have := orientationDet_four_p_q_s p q r s
+  nlinarith
 
 lemma isCap_orientationDet_neg (pts : List Point2D) (b : ℕ) (hcap : IsCap pts b) :
     ∀ i j l (hi : i < pts.length) (hj : j < pts.length) (hl : l < pts.length) (hij : i < j) (hjl : j < l),
@@ -225,19 +188,10 @@ lemma isCap_orientationDet_neg (pts : List Point2D) (b : ℕ) (hcap : IsCap pts 
   induction' d using Nat.strong_induction_on with d ih generalizing i j l hi hj hl
   rcases eq_or_ne (i + 1) j with rfl | hj_gt
   · rcases eq_or_ne (i + 2) l with rfl | hl_gt
-    · have h_det := hcap.2.2 i hl
-      have h0 : (pts.get ⟨i, hi⟩) = pts.get ⟨i, by omega⟩ := by congr 1
-      have h1 : (pts.get ⟨i + 1, hj⟩) = pts.get ⟨i + 1, by omega⟩ := by congr 1
-      have h2 : (pts.get ⟨i + 2, hl⟩) = pts.get ⟨i + 2, by omega⟩ := by congr 1
-      rw [h0, h1, h2]
-      exact h_det
+    · exact hcap.2.2 i hl
     · have hl_prev : i + 2 < pts.length := by omega
       have h_rec := ih (l - (i + 1) - 2) (by omega) (i + 1) (i + 2) l (by omega) (by omega) hl (by omega) (by omega) (by omega)
       have h_base := hcap.2.2 i hl_prev
-      have h0 : pts.get ⟨i, by omega⟩ = pts.get ⟨i, hi⟩ := by congr 1
-      have h1 : pts.get ⟨i + 1, by omega⟩ = pts.get ⟨i + 1, hj⟩ := by congr 1
-      have h2 : pts.get ⟨i + 2, by omega⟩ = pts.get ⟨i + 2, hl_prev⟩ := by congr 1
-      rw [h0, h1, h2] at h_base
       have hpq : (pts.get ⟨i, hi⟩).1 < (pts.get ⟨i + 1, hj⟩).1 := isXMonotone_get_lt pts hcap.2.1 i (i+1) hi hj (by omega)
       have hqr : (pts.get ⟨i + 1, hj⟩).1 < (pts.get ⟨i + 2, hl_prev⟩).1 := isXMonotone_get_lt pts hcap.2.1 (i+1) (i+2) hj hl_prev (by omega)
       have hrs : (pts.get ⟨i + 2, hl_prev⟩).1 < (pts.get ⟨l, hl⟩).1 := isXMonotone_get_lt pts hcap.2.1 (i+2) l hl_prev hl (by omega)

@@ -43,16 +43,7 @@ def walkCount (G : SimpleGraph V) [DecidableRel G.Adj] (u v : V) : ℕ → ℕ
 
 lemma walkCount_one (u v : V) :
     walkCount G u v 1 = if v ∈ G.neighborFinset u then (1 : ℕ) else 0 := by
-  dsimp [walkCount]
-  by_cases hv : v ∈ G.neighborFinset u
-  · have : ∑ x ∈ G.neighborFinset u, (if x = v then (1 : ℕ) else 0) = 1 := by
-      rw [Finset.sum_ite_eq' _ v]
-      rw [if_pos hv]
-    rw [this, if_pos hv]
-  · have : ∑ x ∈ G.neighborFinset u, (if x = v then (1 : ℕ) else 0) = 0 := by
-      rw [Finset.sum_ite_eq' _ v]
-      rw [if_neg hv]
-    rw [this, if_neg hv]
+  simp [walkCount]
 
 lemma walkCount_two (h_friend : HasFriendshipProperty G) (k : ℕ)
     (h_reg : ∀ v : V, G.degree v = k) (u v : V) :

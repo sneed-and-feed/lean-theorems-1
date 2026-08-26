@@ -74,42 +74,21 @@ def Collinear (p q r : Point2D) : Prop :=
 def lineThrough (p q : Point2D) : Set Point2D :=
   {r | Collinear p q r}
 
-lemma collinear_self_left (p q : Point2D) : Collinear p q p := by
-  dsimp [Collinear, crossProd, cross]
-  ring
+lemma collinear_self_left (p q : Point2D) : Collinear p q p := by dsimp [Collinear, crossProd, cross]; ring
+lemma collinear_self_right (p q : Point2D) : Collinear p q q := by dsimp [Collinear, crossProd, cross]; ring
+lemma collinear_self_first_two (p r : Point2D) : Collinear p p r := by dsimp [Collinear, crossProd, cross]; ring
 
-lemma collinear_self_right (p q : Point2D) : Collinear p q q := by
-  dsimp [Collinear, crossProd, cross]
-  ring
+lemma mem_lineThrough_left (p q : Point2D) : p ∈ lineThrough p q := collinear_self_left p q
+lemma mem_lineThrough_right (p q : Point2D) : q ∈ lineThrough p q := collinear_self_right p q
 
-lemma collinear_self_first_two (p r : Point2D) : Collinear p p r := by
-  dsimp [Collinear, crossProd, cross]
-  ring
+lemma crossProd_perm_right (p q r : Point2D) : crossProd p r q = - crossProd p q r := by dsimp [crossProd, cross]; ring
+lemma collinear_perm_right (p q r : Point2D) : Collinear p r q ↔ Collinear p q r := by rw [Collinear, Collinear, crossProd_perm_right, neg_eq_zero]
 
-lemma mem_lineThrough_left (p q : Point2D) : p ∈ lineThrough p q :=
-  collinear_self_left p q
-
-lemma mem_lineThrough_right (p q : Point2D) : q ∈ lineThrough p q :=
-  collinear_self_right p q
-
-lemma crossProd_perm_right (p q r : Point2D) : crossProd p r q = - crossProd p q r := by
-  dsimp [crossProd, cross]
-  ring
-
-lemma collinear_perm_right (p q r : Point2D) : Collinear p r q ↔ Collinear p q r := by
-  rw [Collinear, Collinear, crossProd_perm_right, neg_eq_zero]
-
-lemma crossProd_perm_left (p q r : Point2D) : crossProd q p r = - crossProd p q r := by
-  dsimp [crossProd, cross]
-  ring
-
-lemma collinear_perm_left (p q r : Point2D) : Collinear q p r ↔ Collinear p q r := by
-  rw [Collinear, Collinear, crossProd_perm_left, neg_eq_zero]
+lemma crossProd_perm_left (p q r : Point2D) : crossProd q p r = - crossProd p q r := by dsimp [crossProd, cross]; ring
+lemma collinear_perm_left (p q r : Point2D) : Collinear q p r ↔ Collinear p q r := by rw [Collinear, Collinear, crossProd_perm_left, neg_eq_zero]
 
 lemma lineThrough_comm (p q : Point2D) : lineThrough p q = lineThrough q p := by
-  ext r
-  simp only [lineThrough, Set.mem_setOf_eq]
-  exact (collinear_perm_left p q r).symm
+  ext r; exact (collinear_perm_left p q r).symm
 
 -- ============================================================================
 -- Section 2: Line Parameterization & Uniqueness
@@ -124,28 +103,14 @@ def dot (u v : Point2D) : ℝ :=
   u.1 * v.1 + u.2 * v.2
 
 lemma sqNorm_pos_of_ne {u : Point2D} (h : u ≠ (0, 0)) : 0 < sqNorm u := by
-  dsimp [sqNorm]
-  have h1 : u.1 ≠ 0 ∨ u.2 ≠ 0 := by
-    contrapose! h
-    ext
-    · exact h.1
-    · exact h.2
-  rcases h1 with h1 | h2
-  · have : 0 < u.1 ^ 2 := sq_pos_of_ne_zero h1
-    have : 0 ≤ u.2 ^ 2 := sq_nonneg _
-    linarith
-  · have : 0 < u.2 ^ 2 := sq_pos_of_ne_zero h2
-    have : 0 ≤ u.1 ^ 2 := sq_nonneg _
-    linarith
+  have : u.1 ≠ 0 ∨ u.2 ≠ 0 := by contrapose! h; ext <;> tauto
+  rcases this with h1 | h2 <;> (unfold sqNorm; positivity)
 
 lemma sqNorm_pos_of_points_ne {p q : Point2D} (h : p ≠ q) :
     0 < sqNorm (q.1 - p.1, q.2 - p.2) := by
-  apply sqNorm_pos_of_ne
-  intro h0
-  apply h
-  ext
-  · linarith [congr_arg Prod.fst h0]
-  · linarith [congr_arg Prod.snd h0]
+  apply sqNorm_pos_of_ne; contrapose! h; ext
+  · have := congr_arg Prod.fst h; linarith
+  · have := congr_arg Prod.snd h; linarith
 
 lemma sqNorm_ne_zero_of_points_ne {p q : Point2D} (h : p ≠ q) :
     sqNorm (q.1 - p.1, q.2 - p.2) ≠ 0 :=
@@ -225,55 +190,38 @@ lemma crossProd_param (p q r : Point2D) (t1 t2 : ℝ) :
 lemma paramPoint_inj (p q : Point2D) (hne : p ≠ q) (t1 t2 : ℝ) :
     paramPoint p q t1 = paramPoint p q t2 → t1 = t2 := by
   intro heq
-  let v : Point2D := (q.1 - p.1, q.2 - p.2)
-  have hv_ne : sqNorm v ≠ 0 := sqNorm_ne_zero_of_points_ne hne
-  have h1 : (t1 - t2) * v.1 = 0 := by
-    have hfst := congr_arg Prod.fst heq
-    dsimp [paramPoint, v] at hfst
-    linarith
-  have h2 : (t1 - t2) * v.2 = 0 := by
-    have hsnd := congr_arg Prod.snd heq
-    dsimp [paramPoint, v] at hsnd
-    linarith
-  have : (t1 - t2) ^ 2 * sqNorm v = 0 := by
-    dsimp [sqNorm, v]
+  have h_norm : sqNorm (q.1 - p.1, q.2 - p.2) ≠ 0 := sqNorm_ne_zero_of_points_ne hne
+  have hfst := congr_arg Prod.fst heq
+  have hsnd := congr_arg Prod.snd heq
+  dsimp [paramPoint] at hfst hsnd
+  have : t1 - t2 = 0 := by
+    apply mul_right_cancel₀ h_norm
     calc
-      (t1 - t2) ^ 2 * (v.1 ^ 2 + v.2 ^ 2)
-      _ = ((t1 - t2) * v.1) ^ 2 + ((t1 - t2) * v.2) ^ 2 := by ring
-      _ = 0 ^ 2 + 0 ^ 2 := by rw [h1, h2]
-      _ = 0 := by ring
-  cases mul_eq_zero.mp this with
-  | inl h =>
-    have : t1 - t2 = 0 := sq_eq_zero_iff.mp h
-    linarith
-  | inr h =>
-    exact False.elim (hv_ne h)
+      _ = (t1 - t2) * sqNorm (q.1 - p.1, q.2 - p.2) := by ring
+      _ = 0 := by dsimp [sqNorm]; linear_combination (q.1 - p.1) * hfst + (q.2 - p.2) * hsnd
+      _ = 0 * sqNorm (q.1 - p.1, q.2 - p.2) := by ring
+  exact eq_of_sub_eq_zero this
 
 /-- Two distinct points on a line uniquely determine the line. -/
 lemma lineThrough_eq_of_mem (p q u v : Point2D) (hpq : p ≠ q)
     (hu : u ∈ lineThrough p q) (hv : v ∈ lineThrough p q) (huv : u ≠ v) :
     lineThrough u v = lineThrough p q := by
-  have hu_col : Collinear p q u := hu
-  have hv_col : Collinear p q v := hv
-  let tu := paramVal p q u
-  let tv := paramVal p q v
-  have hu_eq : u = paramPoint p q tu := collinear_param_eq p q u hpq hu_col
-  have hv_eq : v = paramPoint p q tv := collinear_param_eq p q v hpq hv_col
-  have ht_ne : tv - tu ≠ 0 := by
-    intro h_zero
-    have : tu = tv := by linarith
-    apply huv
-    rw [hu_eq, hv_eq, this]
+  have hu_eq : u = paramPoint p q (paramVal p q u) := collinear_param_eq p q u hpq hu
+  have hv_eq : v = paramPoint p q (paramVal p q v) := collinear_param_eq p q v hpq hv
+  have ht_ne : paramVal p q v - paramVal p q u ≠ 0 := by
+    intro h; apply huv; rw [hu_eq, hv_eq, sub_eq_zero.mp h]
   ext r
   simp only [lineThrough, Set.mem_setOf_eq, Collinear]
-  rw [hu_eq, hv_eq, crossProd_param p q r tu tv]
+  have h_cross : crossProd u v r = crossProd (paramPoint p q (paramVal p q u)) (paramPoint p q (paramVal p q v)) r := by
+    calc crossProd u v r
+      _ = crossProd (paramPoint p q (paramVal p q u)) v r := congrArg (fun x => crossProd x v r) hu_eq
+      _ = crossProd (paramPoint p q (paramVal p q u)) (paramPoint p q (paramVal p q v)) r := congrArg (fun y => crossProd (paramPoint p q (paramVal p q u)) y r) hv_eq
+  rw [h_cross, crossProd_param, mul_eq_zero, sub_eq_zero]
   constructor
-  · intro h
-    cases mul_eq_zero.mp h with
-    | inl h_t => exact False.elim (ht_ne h_t)
-    | inr h_cross => exact h_cross
-  · intro h
-    rw [h, mul_zero]
+  · rintro (heq | hcol)
+    · exact False.elim (ht_ne (sub_eq_zero.mpr heq))
+    · exact hcol
+  · exact Or.inr
 
 -- ============================================================================
 -- Section 3: Point Configurations & Spanned Lines

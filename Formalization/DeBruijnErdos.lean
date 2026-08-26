@@ -43,72 +43,39 @@ lemma pointDegree_le_card (L : Finset (Finset α)) (p : α) :
 
 lemma card_filter_not_mem (L : Finset (Finset α)) (p : α) :
     (L.filter (fun l => p ∉ l)).card = L.card - pointDegree L p := by
-  have h_disj : Disjoint (L.filter (fun l => p ∈ l)) (L.filter (fun l => p ∉ l)) := by
-    rw [Finset.disjoint_left]
-    intro x hx1 hx2
-    simp only [Finset.mem_filter] at hx1 hx2
-    exact hx2.2 hx1.2
-  have h_union : L = (L.filter (fun l => p ∈ l)) ∪ (L.filter (fun l => p ∉ l)) := by
-    ext x
-    simp only [Finset.mem_union, Finset.mem_filter]
-    constructor
-    · intro hx
-      by_cases hp : p ∈ x
-      · exact Or.inl ⟨hx, hp⟩
-      · exact Or.inr ⟨hx, hp⟩
-    · rintro (⟨hx, _⟩ | ⟨hx, _⟩) <;> exact hx
-  have h_card : L.card = pointDegree L p + (L.filter (fun l => p ∉ l)).card := by
-    conv_lhs => rw [h_union]
-    rw [Finset.card_union_of_disjoint h_disj]
-    rfl
+  have hd : Disjoint (L.filter (fun l => p ∈ l)) (L.filter (fun l => p ∉ l)) := by simp [disjoint_filter]
+  have hL : L.card = pointDegree L p + (L.filter (fun l => p ∉ l)).card := by
+    rw [pointDegree, ← card_union_of_disjoint hd]; congr 1; ext; simp; tauto
   omega
 
 lemma exists_line_not_mem {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) {p : α} (hp : p ∈ P) :
     ∃ l ∈ L, p ∉ l := by
-  by_contra h_all
-  have h_all' : ∀ l ∈ L, p ∈ l := by
-    intro l hl
-    by_contra h_not
-    exact h_all ⟨l, hl, h_not⟩
-  have h_diff_card : (P.erase p).card = P.card - 1 := Finset.card_erase_of_mem hp
-  have h_diff_ge_2 : 2 ≤ (P.erase p).card := by
-    have := h.three_le_card
-    omega
-  have h_pos1 : 0 < (P.erase p).card := by omega
-  obtain ⟨u, hu⟩ := Finset.card_pos.mp h_pos1
-  have hu_mem_P : u ∈ P := (Finset.mem_erase.mp hu).2
-  have hu_ne_p : u ≠ p := (Finset.mem_erase.mp hu).1
-  have h_erase2_card : ((P.erase p).erase u).card = (P.erase p).card - 1 :=
-    Finset.card_erase_of_mem hu
-  have h_pos2 : 0 < ((P.erase p).erase u).card := by omega
-  obtain ⟨v, hv⟩ := Finset.card_pos.mp h_pos2
-  have hv_erase : v ∈ P.erase p := (Finset.mem_erase.mp hv).2
-  have hv_ne_u : v ≠ u := (Finset.mem_erase.mp hv).1
-  have hv_mem_P : v ∈ P := (Finset.mem_erase.mp hv_erase).2
-  have hv_ne_p : v ≠ p := (Finset.mem_erase.mp hv_erase).1
-  have h_ne_uv : u ≠ v := hv_ne_u.symm
-  obtain ⟨l1, ⟨hl1_L, hu_l1, hv_l1⟩, -⟩ := h.unique_line u hu_mem_P v hv_mem_P h_ne_uv
-  have hp_l1 : p ∈ l1 := h_all' l1 hl1_L
-  have h_not_sub : ¬ P ⊆ l1 := h.non_collinear l1 hl1_L
-  obtain ⟨w, hw_P, hw_nl1⟩ := Finset.not_subset.mp h_not_sub
-  have hw_ne_p : w ≠ p := by
-    rintro rfl
-    exact hw_nl1 hp_l1
-  have hw_ne_u : w ≠ u := by
-    rintro rfl
-    exact hw_nl1 hu_l1
-  have h_ne_uw : u ≠ w := hw_ne_u.symm
-  obtain ⟨l2, ⟨hl2_L, hu_l2, hw_l2⟩, -⟩ := h.unique_line u hu_mem_P w hw_P h_ne_uw
-  have hp_l2 : p ∈ l2 := h_all' l2 hl2_L
-  obtain ⟨l_pu, ⟨-, -, -⟩, hl_pu_uniq⟩ := h.unique_line p hp u hu_mem_P (Ne.symm hu_ne_p)
-  have hl1_eq : l1 = l_pu := hl_pu_uniq l1 ⟨hl1_L, hp_l1, hu_l1⟩
-  have hl2_eq : l2 = l_pu := hl_pu_uniq l2 ⟨hl2_L, hp_l2, hu_l2⟩
-  have hl1_eq_l2 : l1 = l2 := hl1_eq.trans hl2_eq.symm
-  have hw_in_l1 : w ∈ l1 := by
-    rw [hl1_eq_l2]
-    exact hw_l2
-  exact hw_nl1 hw_in_l1
+  by_contra! h_all
+  obtain ⟨u, hu, hu_ne⟩ : ∃ u ∈ P, u ≠ p := by
+    by_contra! h_eq
+    have : P ⊆ {p} := fun x hx => by simp [h_eq x hx]
+    have : P.card ≤ 1 := (card_le_card this).trans (by simp)
+    linarith [h.three_le_card]
+  obtain ⟨v, hv, hv_ne_p, hv_ne_u⟩ : ∃ v ∈ P, v ≠ p ∧ v ≠ u := by
+    by_contra! h_eq
+    have : P ⊆ {p, u} := fun x hx => by
+      simp only [mem_insert, mem_singleton]
+      rcases eq_or_ne x p with rfl | hxp
+      · exact Or.inl rfl
+      · exact Or.inr (h_eq x hx hxp)
+    have : P.card ≤ 2 := (card_le_card this).trans (by clear this; by_cases h : p = u <;> simp [h])
+    linarith [h.three_le_card]
+  obtain ⟨l1, ⟨hl1_L, hu_l1, hv_l1⟩, -⟩ := h.unique_line u hu v hv hv_ne_u.symm
+  obtain ⟨w, hw, hw_nl1⟩ : ∃ w ∈ P, w ∉ l1 := by
+    by_contra! h_sub
+    exact h.non_collinear l1 hl1_L h_sub
+  have hw_ne_u : w ≠ u := by rintro rfl; exact hw_nl1 hu_l1
+  obtain ⟨l2, ⟨hl2_L, hu_l2, hw_l2⟩, -⟩ := h.unique_line u hu w hw hw_ne_u.symm
+  obtain ⟨l_pu, ⟨-, -, -⟩, hl_pu_uniq⟩ := h.unique_line p hp u hu hu_ne.symm
+  have hl1_eq : l1 = l_pu := hl_pu_uniq l1 ⟨hl1_L, h_all l1 hl1_L, hu_l1⟩
+  have hl2_eq : l2 = l_pu := hl_pu_uniq l2 ⟨hl2_L, h_all l2 hl2_L, hu_l2⟩
+  exact hw_nl1 (hl1_eq.trans hl2_eq.symm ▸ hw_l2)
 
 noncomputable def lineThrough {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) (p q : α) (hp : p ∈ P) (hq : q ∈ P) (hne : p ≠ q) : Finset α :=
@@ -125,60 +92,36 @@ lemma card_line_le_pointDegree {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) {l : Finset α} (hl : l ∈ L) {p : α} (hp : p ∈ P) (hp_not : p ∉ l) :
     l.card ≤ pointDegree L p := by
   let f : α → Finset α := fun q =>
-    if hq : q ∈ l then
-      lineThrough h p q hp (h.line_subset l hl hq) (fun heq => hp_not (heq ▸ hq))
-    else ∅
+    if hq : q ∈ l then lineThrough h p q hp (h.line_subset l hl hq) (by rintro rfl; exact hp_not hq) else ∅
   have h_img_sub : l.image f ⊆ L.filter (fun k => p ∈ k) := by
     intro k hk
-    obtain ⟨q, hq_l, rfl⟩ := Finset.mem_image.mp hk
-    dsimp [f]
-    rw [dif_pos hq_l]
-    have h_spec := lineThrough_mem h p q hp (h.line_subset l hl hq_l)
-      (fun heq => hp_not (heq ▸ hq_l))
-    exact Finset.mem_filter.mpr ⟨h_spec.1, h_spec.2.1⟩
+    obtain ⟨q, hq, rfl⟩ := mem_image.mp hk
+    simp only [f, dif_pos hq]
+    exact mem_filter.mpr ⟨(lineThrough_mem ..).1, (lineThrough_mem ..).2.1⟩
   have h_inj : ∀ q1 ∈ l, ∀ q2 ∈ l, f q1 = f q2 → q1 = q2 := by
     intro q1 hq1 q2 hq2 h_eq
-    dsimp [f] at h_eq
-    rw [dif_pos hq1, dif_pos hq2] at h_eq
     by_contra h_ne
-    have hq1_P : q1 ∈ P := h.line_subset l hl hq1
-    have hq2_P : q2 ∈ P := h.line_subset l hl hq2
-    let K := lineThrough h p q1 hp hq1_P (fun heq => hp_not (heq ▸ hq1))
-    have hK1 := lineThrough_mem h p q1 hp hq1_P (fun heq => hp_not (heq ▸ hq1))
-    have hK2 : K ∈ L ∧ p ∈ K ∧ q2 ∈ K := by
-      have hK_eq : K = lineThrough h p q2 hp hq2_P (fun heq => hp_not (heq ▸ hq2)) := h_eq
-      rw [hK_eq]
-      exact lineThrough_mem h p q2 hp hq2_P (fun heq => hp_not (heq ▸ hq2))
-    obtain ⟨l_q1q2, ⟨-, -, -⟩, hl_uniq⟩ := h.unique_line q1 hq1_P q2 hq2_P h_ne
-    have hl_eq : l = l_q1q2 := hl_uniq l ⟨hl, hq1, hq2⟩
-    have hK_eq : K = l_q1q2 := hl_uniq K ⟨hK1.1, hK1.2.2, hK2.2.2⟩
-    have hl_eq_K : l = K := hl_eq.trans hK_eq.symm
-    have hp_in_l : p ∈ l := by
-      rw [hl_eq_K]
-      exact hK1.2.1
-    exact hp_not hp_in_l
-  have h_card_eq : (l.image f).card = l.card :=
-    Finset.card_image_of_injOn (fun q1 hq1 q2 hq2 => h_inj q1 hq1 q2 hq2)
-  rw [← h_card_eq]
-  exact Finset.card_le_card h_img_sub
+    simp only [f, dif_pos hq1, dif_pos hq2] at h_eq
+    have hq1_P := h.line_subset l hl hq1
+    have hq2_P := h.line_subset l hl hq2
+    obtain ⟨l', hl', h_uniq⟩ := h.unique_line q1 hq1_P q2 hq2_P h_ne
+    have h1 := h_uniq l ⟨hl, hq1, hq2⟩
+    have hm1 := lineThrough_mem h p q1 hp hq1_P (by rintro rfl; exact hp_not hq1)
+    have hm2 := lineThrough_mem h p q2 hp hq2_P (by rintro rfl; exact hp_not hq2)
+    have h2 := h_uniq _ ⟨hm2.1, h_eq ▸ hm1.2.2, hm2.2.2⟩
+    exact hp_not (h1.trans h2.symm ▸ hm2.2.1)
+  exact (card_image_of_injOn h_inj).symm ▸ card_le_card h_img_sub
 
 lemma two_le_pointDegree {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) {p : α} (hp : p ∈ P) :
     2 ≤ pointDegree L p := by
-  obtain ⟨l, hl_L, hp_nl⟩ := exists_line_not_mem h hp
-  have h2 : 2 ≤ l.card := h.line_card_ge_two l hl_L
-  have h_le : l.card ≤ pointDegree L p := card_line_le_pointDegree h hl_L hp hp_nl
-  exact h2.trans h_le
+  obtain ⟨l, hl, hp_nl⟩ := exists_line_not_mem h hp
+  exact (h.line_card_ge_two l hl).trans (card_line_le_pointDegree h hl hp hp_nl)
 
 lemma card_line_lt_card_points {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) {l : Finset α} (hl : l ∈ L) :
-    l.card < P.card := by
-  have h_sub : l ⊆ P := h.line_subset l hl
-  have h_not_sub : ¬ P ⊆ l := h.non_collinear l hl
-  have h_ne : l ≠ P := by
-    rintro rfl
-    exact h_not_sub (Finset.Subset.refl _)
-  exact Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨h_sub, h_ne⟩)
+    l.card < P.card :=
+  card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨h.line_subset l hl, by rintro rfl; exact h.non_collinear l hl (Subset.refl _)⟩)
 
 lemma double_sum_swap (P : Finset α) (L : Finset (Finset α)) (g : α → Finset α → ℝ) :
     ∑ l ∈ L, ∑ p ∈ P \ l, g p l = ∑ p ∈ P, ∑ l ∈ L.filter (fun k => p ∉ k), g p l := by
@@ -195,27 +138,12 @@ lemma double_sum_swap (P : Finset α) (L : Finset (Finset α)) (g : α → Finse
 lemma sum_lines_eq_card_lines {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) :
     ∑ l ∈ L, ∑ p ∈ P \ l, (1 / ((P.card : ℝ) - (l.card : ℝ))) = (L.card : ℝ) := by
-  have h_inner (l : Finset α) (hl : l ∈ L) :
-      ∑ p ∈ P \ l, (1 / ((P.card : ℝ) - (l.card : ℝ))) = 1 := by
-    rw [Finset.sum_const]
-    have h_sub : l ⊆ P := h.line_subset l hl
-    have h_diff_card : (P \ l).card = P.card - l.card := by
-      rw [Finset.card_sdiff, Finset.inter_eq_left.mpr h_sub]
-    have h_lt : l.card < P.card := card_line_lt_card_points h hl
-    have h_pos : (P.card : ℝ) - (l.card : ℝ) ≠ 0 := by
-      have : (l.card : ℝ) < (P.card : ℝ) := Nat.cast_lt.mpr h_lt
-      linarith
-    have h_cast : ((P \ l).card : ℝ) = (P.card : ℝ) - (l.card : ℝ) := by
-      rw [h_diff_card]
-      have : l.card ≤ P.card := Nat.le_of_lt h_lt
-      exact Nat.cast_sub this
-    rw [nsmul_eq_mul, h_cast, mul_one_div, div_self h_pos]
-  have h_outer : ∑ l ∈ L, ∑ p ∈ P \ l, (1 / ((P.card : ℝ) - (l.card : ℝ))) =
-      ∑ l ∈ L, (1 : ℝ) := by
-    apply Finset.sum_congr rfl
+  trans ∑ l ∈ L, (1 : ℝ)
+  · apply sum_congr rfl
     intro l hl
-    exact h_inner l hl
-  rw [h_outer, Finset.sum_const, nsmul_eq_mul, mul_one]
+    rw [sum_const, nsmul_eq_mul, card_sdiff, inter_eq_left.mpr (h.line_subset l hl), Nat.cast_sub (card_le_card (h.line_subset l hl)), mul_one_div, div_self]
+    exact sub_ne_zero.mpr (by exact_mod_cast (card_line_lt_card_points h hl).ne')
+  · simp
 
 lemma sum_points_eval (P : Finset α) (L : Finset (Finset α)) :
     ∑ p ∈ P, ∑ l ∈ L.filter (fun k => p ∉ k), (1 / ((P.card : ℝ) - (pointDegree L p : ℝ))) =

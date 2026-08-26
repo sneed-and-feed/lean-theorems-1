@@ -43,42 +43,30 @@ lemma isXMonotone_get_lt_step (pts : List Point2D)
     (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i + 1 + k, h_ik⟩).1 := by
   induction' k with k ih
   · exact hx i h_ik
-  · have h_prev : i + 1 + k < pts.length := by omega
-    have h1 := ih h_prev
-    have h2 := hx (i + 1 + k) h_ik
-    exact lt_trans h1 h2
+  · exact lt_trans (ih (by omega)) (hx _ h_ik)
 
 lemma isXMonotone_get_lt (pts : List Point2D)
     (hx : ∀ i (hi : i + 1 < pts.length), (pts.get ⟨i, by omega⟩).1 < (pts.get ⟨i+1, by omega⟩).1)
     (i j : ℕ) (hi : i < pts.length) (hj : j < pts.length) (hij : i < j) :
     (pts.get ⟨i, hi⟩).1 < (pts.get ⟨j, hj⟩).1 := by
-  have h_diff : ∃ k, j = i + 1 + k := ⟨j - (i + 1), by omega⟩
-  rcases h_diff with ⟨k, rfl⟩
+  obtain ⟨k, rfl⟩ : ∃ k, j = i + 1 + k := ⟨j - (i + 1), by omega⟩
   exact isXMonotone_get_lt_step pts hx i k hj
 
 lemma isCup_nodup (pts : List Point2D) (a : ℕ) (hcup : IsCup pts a) : pts.Nodup := by
   rw [List.nodup_iff_injective_get]
   intro ⟨i, hi⟩ ⟨j, hj⟩ heq
-  by_contra h_ne
-  have h_ne_idx : i ≠ j := fun h => h_ne (Fin.ext h)
-  wlog hlt : i < j generalizing i j hi hj
-  · have hgt : j < i := lt_of_le_of_ne (not_lt.mp hlt) h_ne_idx.symm
-    exact this j hj i hi heq.symm (Ne.symm h_ne) h_ne_idx.symm hgt
-  have h_lt_x := isXMonotone_get_lt pts hcup.2.1 i j hi hj hlt
-  have h_eq_x : (pts.get ⟨i, hi⟩).1 = (pts.get ⟨j, hj⟩).1 := by rw [heq]
-  linarith
+  rcases lt_trichotomy i j with h | h | h
+  · exact False.elim <| ne_of_lt (isXMonotone_get_lt pts hcup.2.1 i j hi hj h) (by rw [heq])
+  · exact Fin.ext h
+  · exact False.elim <| ne_of_gt (isXMonotone_get_lt pts hcup.2.1 j i hj hi h) (by rw [heq])
 
 lemma isCap_nodup (pts : List Point2D) (b : ℕ) (hcap : IsCap pts b) : pts.Nodup := by
   rw [List.nodup_iff_injective_get]
   intro ⟨i, hi⟩ ⟨j, hj⟩ heq
-  by_contra h_ne
-  have h_ne_idx : i ≠ j := fun h => h_ne (Fin.ext h)
-  wlog hlt : i < j generalizing i j hi hj
-  · have hgt : j < i := lt_of_le_of_ne (not_lt.mp hlt) h_ne_idx.symm
-    exact this j hj i hi heq.symm (Ne.symm h_ne) h_ne_idx.symm hgt
-  have h_lt_x := isXMonotone_get_lt pts hcap.2.1 i j hi hj hlt
-  have h_eq_x : (pts.get ⟨i, hi⟩).1 = (pts.get ⟨j, hj⟩).1 := by rw [heq]
-  linarith
+  rcases lt_trichotomy i j with h | h | h
+  · exact False.elim <| ne_of_lt (isXMonotone_get_lt pts hcap.2.1 i j hi hj h) (by rw [heq])
+  · exact Fin.ext h
+  · exact False.elim <| ne_of_gt (isXMonotone_get_lt pts hcap.2.1 j i hj hi h) (by rw [heq])
 
 lemma isCap_cons (p0 : Point2D) (pts : List Point2D) (b : ℕ) (hb : 3 ≤ b)
     (h_len : pts.length = b - 1)
@@ -92,39 +80,13 @@ lemma isCap_cons (p0 : Point2D) (pts : List Point2D) (b : ℕ) (hb : 3 ≤ b)
   · intro i hi
     simp only [List.get_eq_getElem] at h_x_rest h_x0 ⊢
     rcases i with _ | i
-    · have h0_lt : 0 < pts.length := by
-        simp only [List.length_cons] at hi
-        omega
-      have h0 : (p0 :: pts)[0] = p0 := rfl
-      have h1 : (p0 :: pts)[1] = pts[0] := rfl
-      rw [h0, h1]
-      exact h_x0 h0_lt
-    · have hi_pts : i + 1 < pts.length := by
-        simp only [List.length_cons] at hi
-        omega
-      have h0 : (p0 :: pts)[i + 1] = pts[i] := rfl
-      have h1 : (p0 :: pts)[i + 1 + 1] = pts[i + 1] := rfl
-      rw [h0, h1]
-      exact h_x_rest i hi_pts
+    · exact h_x0 (by simp only [List.length_cons] at hi; omega)
+    · exact h_x_rest i (by simp only [List.length_cons] at hi; omega)
   · intro i hi
     simp only [List.get_eq_getElem] at h_rest h_first ⊢
     rcases i with _ | i
-    · have h2le : 2 ≤ pts.length := by
-        simp only [List.length_cons] at hi
-        omega
-      have h0 : (p0 :: pts)[0] = p0 := rfl
-      have h1 : (p0 :: pts)[1] = pts[0] := rfl
-      have h2 : (p0 :: pts)[2] = pts[1] := rfl
-      rw [h0, h1, h2]
-      exact h_first h2le
-    · have hi_pts : i + 2 < pts.length := by
-        simp only [List.length_cons] at hi
-        omega
-      have h0 : (p0 :: pts)[i + 1] = pts[i] := rfl
-      have h1 : (p0 :: pts)[i + 1 + 1] = pts[i + 1] := rfl
-      have h2 : (p0 :: pts)[i + 1 + 2] = pts[i + 2] := rfl
-      rw [h0, h1, h2]
-      exact h_rest i hi_pts
+    · exact h_first (by simp only [List.length_cons] at hi; omega)
+    · exact h_rest i (by simp only [List.length_cons] at hi; omega)
 
 lemma isCup_append_one (pts : List Point2D) (q : Point2D) (a : ℕ) (ha : 4 ≤ a)
     (h_len : pts.length = a - 1)
@@ -219,12 +181,9 @@ lemma cup_cap_induction (s : ℕ) :
       omega
     have hb_card : b ≤ S.card := by rw [← h_ch]; exact h_card
     let L := L_all.take b
-    have hL_sub : ∀ p ∈ L, p ∈ S := by
-      intro p hp
-      have := List.mem_of_mem_take hp
-      have h_mem : p ∈ L_all.toFinset := List.mem_toFinset.mpr this
-      rw [hL_toFinset] at h_mem
-      exact h_mem
+    have hL_sub : ∀ p ∈ L, p ∈ S := fun p hp => by
+      have := List.mem_toFinset.mpr (List.mem_of_mem_take hp)
+      rwa [hL_toFinset] at this
     have hL_b_len : L.length = b := by
       rw [List.length_take, hL_len]
       exact min_eq_left hb_card
@@ -300,12 +259,9 @@ lemma cup_cap_induction (s : ℕ) :
         omega
       have ha_card : a ≤ S.card := by rw [← h_ch]; exact h_card
       let L := L_all.take a
-      have hL_sub : ∀ p ∈ L, p ∈ S := by
-        intro p hp
-        have := List.mem_of_mem_take hp
-        have h_mem : p ∈ L_all.toFinset := List.mem_toFinset.mpr this
-        rw [hL_toFinset] at h_mem
-        exact h_mem
+      have hL_sub : ∀ p ∈ L, p ∈ S := fun p hp => by
+        have := List.mem_toFinset.mpr (List.mem_of_mem_take hp)
+        rwa [hL_toFinset] at this
       have hL_a_len : L.length = a := by
         rw [List.length_take, hL_len]
         exact min_eq_left ha_card

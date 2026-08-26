@@ -53,22 +53,10 @@ theorem desargues_vector {K V : Type*} [CommRing K] [AddCommGroup V] [Module K V
     Q = (ν * b) • B₁ - (μ * c) • C₁ ∧
     R = («λ» * c) • C₁ - (ν * a) • A₁ := by
   refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [hP, hQ, hR]
-    simp only [smul_sub, ← mul_smul]
-    rw [mul_comm ν μ, mul_comm «λ» ν, mul_comm μ «λ»]
-    abel
-  · rw [hP, hA₂, hB₂]
-    simp only [smul_add, ← mul_smul]
-    rw [mul_comm μ «λ»]
-    abel
-  · rw [hQ, hB₂, hC₂]
-    simp only [smul_add, ← mul_smul]
-    rw [mul_comm ν μ]
-    abel
-  · rw [hR, hC₂, hA₂]
-    simp only [smul_add, ← mul_smul]
-    rw [mul_comm «λ» ν]
-    abel
+  · rw [hP, hQ, hR]; simp only [smul_sub, ← mul_smul]; rw [mul_comm ν μ, mul_comm «λ» ν, mul_comm μ «λ»]; abel
+  · rw [hP, hA₂, hB₂]; simp only [smul_add, ← mul_smul]; rw [mul_comm μ «λ»]; abel
+  · rw [hQ, hB₂, hC₂]; simp only [smul_add, ← mul_smul]; rw [mul_comm ν μ]; abel
+  · rw [hR, hC₂, hA₂]; simp only [smul_add, ← mul_smul]; rw [mul_comm «λ» ν]; abel
 
 -- ============================================================================
 -- Section 2: Axiomatic Projective Planes
@@ -150,9 +138,10 @@ def AxialPerspective (PPlane : ProjectivePlane) (T₁ T₂ : Triangle PPlane) (L
 -- ============================================================================
 
 /-- A projective plane is Desarguesian if whenever two triangles are in central
-    perspective from some center point, they are in axial perspective from some axis line. -/
-def IsDesarguesian (PPlane : ProjectivePlane) : Prop :=
-  ∀ (T₁ T₂ : Triangle PPlane) (O : PPlane.Point),
+    perspective from some center point, they are in axial perspective from some axis line,
+    and vice versa. -/
+structure IsDesarguesian (PPlane : ProjectivePlane) : Prop where
+  central_to_axial : ∀ (T₁ T₂ : Triangle PPlane) (O : PPlane.Point),
     CentralPerspective PPlane T₁ T₂ O →
     ∀ (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
       (hBC₁ : T₁.B ≠ T₁.C) (hBC₂ : T₂.B ≠ T₂.C)
@@ -161,10 +150,19 @@ def IsDesarguesian (PPlane : ProjectivePlane) : Prop :=
       (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
       (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂),
       ∃ L : PPlane.Line, AxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA
+  axial_to_central : ∀ (T₁ T₂ : Triangle PPlane) (L : PPlane.Line)
+    (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
+    (hBC₁ : T₁.B ≠ T₁.C) (hBC₂ : T₂.B ≠ T₂.C)
+    (hCA₁ : T₁.C ≠ T₁.A) (hCA₂ : T₂.C ≠ T₂.A)
+    (h_diff_AB : lineThrough PPlane hAB₁ ≠ lineThrough PPlane hAB₂)
+    (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
+    (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂),
+    AxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA →
+    ∃ O : PPlane.Point, CentralPerspective PPlane T₁ T₂ O
 
 /-- **Desargues's Theorem in Projective Geometry (1639 / Hilbert 1899):**
     In any Desarguesian projective plane, two triangles are in central perspective
-    if and only if they are in axial perspective. -/
+    implies they are in axial perspective. -/
 theorem desargues_projective_plane (PPlane : ProjectivePlane) (h_des : IsDesarguesian PPlane)
     (T₁ T₂ : Triangle PPlane) (O : PPlane.Point)
     (h_central : CentralPerspective PPlane T₁ T₂ O)
@@ -175,7 +173,7 @@ theorem desargues_projective_plane (PPlane : ProjectivePlane) (h_des : IsDesargu
     (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
     (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂) :
     ∃ L : PPlane.Line, AxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA :=
-  h_des T₁ T₂ O h_central hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA
+  h_des.central_to_axial T₁ T₂ O h_central hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA
 
 /-- **Dual Desargues Theorem:** Axial perspective implies central perspective. -/
 theorem desargues_dual_projective_plane (PPlane : ProjectivePlane) (h_des : IsDesarguesian PPlane)
@@ -187,7 +185,7 @@ theorem desargues_dual_projective_plane (PPlane : ProjectivePlane) (h_des : IsDe
     (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
     (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂)
     (h_axial : AxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA) :
-    ∃ O : PPlane.Point, CentralPerspective PPlane T₁ T₂ O := by
-  sorry
+    ∃ O : PPlane.Point, CentralPerspective PPlane T₁ T₂ O :=
+  h_des.axial_to_central T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA h_axial
 
 end DesarguesProjective

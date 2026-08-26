@@ -48,20 +48,21 @@ def CoversTriangles (G : SimpleGraph V) (S : Finset V) : Prop :=
 /-- In Fin 3, three pairwise distinct elements cover all of Fin 3. -/
 lemma fin3_cases_of_pairwise_ne (a b c : Fin 3) (hab : a ≠ b) (hbc : b ≠ c) (hca : c ≠ a) (k : Fin 3) :
     k = a ∨ k = b ∨ k = c := by
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases k <;> aesop
+  revert a b c k; decide
 
-/-- Pigeonhole bound for 3-colorings: in any 3-coloring of `V`, at least one color class
-has cardinality at most `|V| / 3`. -/
-lemma min_color_class_le_third (c : V → Fin 3) :
-    ∃ k : Fin 3, (Finset.univ.filter (fun v ↦ c v = k)).card ≤ Fintype.card V / 3 := by
+/-- Generalized pigeonhole bound for $k$-colorings: for any coloring $c : V \to \text{Fin } k$ with $k \ge 1$,
+    at least one color class has cardinality at most $|V| / k$. -/
+lemma min_color_class_le_k {k : ℕ} (hk : 0 < k) (c : V → Fin k) :
+    ∃ col : Fin k, (univ.filter (fun v ↦ c v = col)).card ≤ Fintype.card V / k := by
   classical
-  by_contra! h_all_gt
-  have h_sum : Fintype.card V = (∑ k : Fin 3, (Finset.univ.filter (fun v ↦ c v = k)).card) := by
-    rw [← Finset.card_univ, card_eq_sum_card_fiberwise (f := c) (t := Finset.univ) (fun _ _ ↦ Finset.mem_univ _)]
-  rw [Fin.sum_univ_three] at h_sum
-  have h0 := h_all_gt 0
-  have h1 := h_all_gt 1
-  have h2 := h_all_gt 2
+  by_contra! h
+  have H : Fintype.card V = ∑ col : Fin k, (univ.filter (fun v ↦ c v = col)).card := by
+    rw [← card_univ, card_eq_sum_card_fiberwise (f := c) (t := univ) (by simp)]
+  have h2 : k * (Fintype.card V / k + 1) ≤ Fintype.card V := by
+    calc k * (Fintype.card V / k + 1) = ∑ _col : Fin k, (Fintype.card V / k + 1) := by simp
+      _ ≤ ∑ col : Fin k, (univ.filter (fun v ↦ c v = col)).card := sum_le_sum (fun i _ ↦ h i)
+      _ = Fintype.card V := H.symm
+  have h3 := Nat.lt_mul_div_succ (Fintype.card V) hk
   omega
 
 /-- **Fisk's Art Gallery Theorem (1978):**
@@ -70,53 +71,15 @@ there exists a guard set `S` of size at most `n / 3` covering all triangles. -/
 theorem art_gallery_theorem (G : SimpleGraph V) (c : V → Fin 3) (hc : IsThreeColoring G c) :
     ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S := by
   classical
-  obtain ⟨k, hk_card⟩ := min_color_class_le_third c
-  let S : Finset V := Finset.univ.filter (fun v ↦ c v = k)
-  refine ⟨S, hk_card, ?_⟩
+  obtain ⟨k, hk_card⟩ := min_color_class_le_k (by decide) c
+  use univ.filter (fun v ↦ c v = k), hk_card
   intro u v w huv hvw hwu
-  have hab : c u ≠ c v := hc u v huv
-  have hbc : c v ≠ c w := hc v w hvw
-  have hca : c w ≠ c u := hc w u hwu
-  rcases fin3_cases_of_pairwise_ne (c u) (c v) (c w) hab hbc hca k with rfl | rfl | rfl
-  · left; simp [S]
-  · right; left; simp [S]
-  · right; right; simp [S]
+  rcases fin3_cases_of_pairwise_ne (c u) (c v) (c w) (hc u v huv) (hc v w hvw) (hc w u hwu) k with rfl | rfl | rfl <;> simp
 
 /-- Art Gallery Theorem formulated using Mathlib's native `SimpleGraph.Coloring` type. -/
 theorem art_gallery_theorem_coloring (G : SimpleGraph V) (c : G.Coloring (Fin 3)) :
-    ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S := by
-  have hc : IsThreeColoring G (c : V → Fin 3) := fun u v huv => c.valid huv
-  exact art_gallery_theorem G (c : V → Fin 3) hc
-
-/-- Generalized pigeonhole bound for $k$-colorings: for any coloring $c : V \to \text{Fin } k$ with $k \ge 1$,
-    at least one color class has cardinality at most $|V| / k$. -/
-lemma min_color_class_le_k {k : ℕ} (hk : 0 < k) (c : V → Fin k) :
-    ∃ col : Fin k, (Finset.univ.filter (fun v ↦ c v = col)).card ≤ Fintype.card V / k := by
-  classical
-  by_contra! h_all_gt
-  have h_sum : Fintype.card V = (∑ col : Fin k, (Finset.univ.filter (fun v ↦ c v = col)).card) := by
-    rw [← Finset.card_univ, card_eq_sum_card_fiberwise (f := c) (t := Finset.univ) (fun _ _ ↦ Finset.mem_univ _)]
-  have h_sum_gt : (∑ col : Fin k, (Fintype.card V / k + 1)) ≤ Fintype.card V := by
-    calc
-      (∑ col : Fin k, (Fintype.card V / k + 1)) ≤ ∑ col : Fin k, (Finset.univ.filter (fun v ↦ c v = col)).card := by
-        apply Finset.sum_le_sum
-        intro col _
-        exact h_all_gt col
-      _ = Fintype.card V := h_sum.symm
-  simp only [Finset.sum_const, card_univ, Fintype.card_fin, smul_eq_mul] at h_sum_gt
-  have h_mod := Nat.mod_lt (Fintype.card V) hk
-  have h_dec : Fintype.card V = k * (Fintype.card V / k) + (Fintype.card V % k) := (Nat.div_add_mod (Fintype.card V) k).symm
-  have h_lt : Fintype.card V < k * (Fintype.card V / k + 1) := by
-    calc
-      Fintype.card V = k * (Fintype.card V / k) + (Fintype.card V % k) := h_dec
-      _ < k * (Fintype.card V / k) + k := by omega
-      _ = k * (Fintype.card V / k + 1) := by ring
-  exact lt_irrefl _ (h_lt.trans_le h_sum_gt)
-
-#print axioms min_color_class_le_third
-#print axioms min_color_class_le_k
-#print axioms art_gallery_theorem
-#print axioms art_gallery_theorem_coloring
+    ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S :=
+  art_gallery_theorem G c (fun _ _ huv ↦ c.valid huv)
 
 end ArtGalleryTheorem
 

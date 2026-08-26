@@ -1,4 +1,3 @@
-import Formalization.SzemerediTrotter
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
@@ -102,26 +101,34 @@ lemma scaled_bound_cube_two (n : ℝ) (hn : 0 ≤ n) :
 theorem edge_bound_of_edges_cubed (e n : ℝ) (hn : 0 ≤ n)
     (h : e^3 ≤ 64 * n^4) :
     e ≤ 4 * n ^ (4 / 3 : ℝ) := by
-  by_cases he : 0 ≤ e
-  · exact SzemerediTrotter.le_of_cube_le_cube he (by rwa [scaled_bound_cube_four n hn])
-  · have : 0 ≤ 4 * n ^ (4 / 3 : ℝ) := by positivity
-    linarith
+  apply (Odd.pow_le_pow (by decide : Odd 3)).1
+  calc
+    e^3 ≤ 64 * n^4 := h
+    _ = (4 * n ^ (4 / 3 : ℝ))^3 := (scaled_bound_cube_four n hn).symm
 
 /-- Linear to fractional power dominance for $n \ge 8$:
     $4n \le 2 n^{4/3}$. -/
 lemma four_mul_le_two_rpow_four_thirds (n : ℝ) (hn8 : 8 ≤ n) :
     4 * n ≤ 2 * n ^ (4 / 3 : ℝ) := by
-  have : 0 ≤ n := by linarith
-  have : 0 ≤ n^3 := by positivity
-  refine SzemerediTrotter.le_of_cube_le_cube (by linarith) (by rw [scaled_bound_cube_two n ‹_›]; nlinarith)
+  have hn : 0 ≤ n := by linarith
+  have : n^3 * 8 ≤ n^3 * n := mul_le_mul_of_nonneg_left hn8 (by positivity)
+  apply (Odd.pow_le_pow (by decide : Odd 3)).1
+  calc
+    (4 * n)^3 = 64 * n^3 := by ring
+    _ ≤ 8 * n^4 := by linarith
+    _ = (2 * n ^ (4 / 3 : ℝ))^3 := (scaled_bound_cube_two n hn).symm
 
 /-- Linear to fractional power dominance for $n \ge 1$:
     $4n \le 4 n^{4/3}$. -/
 lemma four_mul_le_four_rpow_four_thirds (n : ℝ) (hn1 : 1 ≤ n) :
     4 * n ≤ 4 * n ^ (4 / 3 : ℝ) := by
-  have : 0 ≤ n := by linarith
-  have : 0 ≤ n^3 := by positivity
-  refine SzemerediTrotter.le_of_cube_le_cube (by linarith) (by rw [scaled_bound_cube_four n ‹_›]; nlinarith)
+  have hn : 0 ≤ n := by linarith
+  have : n^3 * 1 ≤ n^3 * n := mul_le_mul_of_nonneg_left hn1 (by positivity)
+  apply (Odd.pow_le_pow (by decide : Odd 3)).1
+  calc
+    (4 * n)^3 = 64 * n^3 := by ring
+    _ ≤ 64 * n^4 := by linarith
+    _ = (4 * n ^ (4 / 3 : ℝ))^3 := (scaled_bound_cube_four n hn).symm
 
 -- ============================================================================
 -- Section 3: Crossing Lemma Application & Dichotomy
@@ -196,12 +203,5 @@ theorem erdos_unit_distances_asymptotic :
     ∃ C : ℝ, 0 < C ∧ ∀ sys : UnitDistanceSystem,
       sys.u ≤ C * sys.n ^ (4 / 3 : ℝ) :=
   ⟨6, by norm_num, erdos_unit_distances_global_bound⟩
-
-#print axioms erdos_unit_distances_edge_bound
-#print axioms erdos_unit_distances_bound
-#print axioms erdos_unit_distances_bound_tight
-#print axioms erdos_unit_distances_uniform_bound
-#print axioms erdos_unit_distances_global_bound
-#print axioms erdos_unit_distances_asymptotic
 
 end ErdosUnitDistances

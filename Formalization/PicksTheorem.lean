@@ -86,37 +86,24 @@ namespace LatticeTriangulation
     F = 2i + b - 2. -/
 theorem face_count_z (T : LatticeTriangulation) :
     (T.F : ℤ) = 2 * (T.i : ℤ) + (T.b : ℤ) - 2 := by
-  have hV := T.h_V_split
-  have hE := T.h_E_split
-  have hBd := T.h_E_bd
-  have hEuler := T.h_euler
-  have hInc := T.h_incidence
-  omega
+  have := T.h_V_split; have := T.h_E_split; have := T.h_E_bd; have := T.h_euler; have := T.h_incidence; omega
 
 /-- Face count identity for elementary lattice triangulations in ℕ (when b ≥ 2):
     F = 2i + b - 2. -/
 theorem face_count_nat (T : LatticeTriangulation) (hb : 2 ≤ T.b) :
-    T.F = 2 * T.i + T.b - 2 := by
-  have hz := T.face_count_z
-  omega
+    T.F = 2 * T.i + T.b - 2 := by have hz := T.face_count_z; omega
 
 /-- Total number of edges determined by interior and boundary vertices:
     E = 3i + 2b - 3. -/
 theorem edge_count_z (T : LatticeTriangulation) :
     (T.E : ℤ) = 3 * (T.i : ℤ) + 2 * (T.b : ℤ) - 3 := by
-  have hEuler := T.h_euler
-  have hV := T.h_V_split
-  have hF := T.face_count_z
-  omega
+  have := T.h_euler; have := T.h_V_split; have := T.face_count_z; omega
 
 /-- Number of interior edges in terms of interior and boundary vertices:
     E_int = 3i + b - 3. -/
 theorem interior_edge_count_z (T : LatticeTriangulation) :
     (T.E_int : ℤ) = 3 * (T.i : ℤ) + (T.b : ℤ) - 3 := by
-  have hE := T.h_E_split
-  have hBd := T.h_E_bd
-  have hEtot := T.edge_count_z
-  omega
+  have := T.h_E_split; have := T.h_E_bd; have := T.edge_count_z; omega
 
 /-- Real area of the polygon (since each elementary triangle has area 1/2). -/
 def areaReal (T : LatticeTriangulation) : ℝ :=
@@ -126,11 +113,9 @@ def areaReal (T : LatticeTriangulation) : ℝ :=
     Area(P) = i + b / 2 - 1. -/
 theorem picks_theorem_real (T : LatticeTriangulation) :
     T.areaReal = (T.i : ℝ) + (T.b : ℝ) / 2 - 1 := by
-  have hF : (T.F : ℝ) = 2 * (T.i : ℝ) + (T.b : ℝ) - 2 := by
-    have hz := T.face_count_z
-    exact_mod_cast hz
+  have hz := T.face_count_z
   dsimp [areaReal]
-  linarith
+  linarith [show (T.F : ℝ) = 2 * (T.i : ℝ) + (T.b : ℝ) - 2 by exact_mod_cast hz]
 
 /-- Additive natural number form of Pick's Theorem:
     2 * Area = 2 * i + b - 2. -/
@@ -180,12 +165,7 @@ namespace LatticeTriangulationWithHoles
     F = 2i + b + 2h - 2. -/
 theorem face_count_z (T : LatticeTriangulationWithHoles) :
     (T.F : ℤ) = 2 * (T.i : ℤ) + (T.b : ℤ) + 2 * (T.h : ℤ) - 2 := by
-  have hV := T.h_V_split
-  have hE := T.h_E_split
-  have hBd := T.h_E_bd
-  have hEuler := T.h_euler
-  have hInc := T.h_incidence
-  omega
+  have := T.h_V_split; have := T.h_E_split; have := T.h_E_bd; have := T.h_euler; have := T.h_incidence; omega
 
 /-- Real area of the polygon with h holes: Area = F / 2. -/
 def areaReal (T : LatticeTriangulationWithHoles) : ℝ :=
@@ -195,11 +175,9 @@ def areaReal (T : LatticeTriangulationWithHoles) : ℝ :=
     Area(P) = i + b / 2 + h - 1. -/
 theorem picks_theorem_with_holes_real (T : LatticeTriangulationWithHoles) :
     T.areaReal = (T.i : ℝ) + (T.b : ℝ) / 2 + (T.h : ℝ) - 1 := by
-  have hF : (T.F : ℝ) = 2 * (T.i : ℝ) + (T.b : ℝ) + 2 * (T.h : ℝ) - 2 := by
-    have hz := T.face_count_z
-    exact_mod_cast hz
+  have hz := T.face_count_z
   dsimp [areaReal]
-  linarith
+  linarith [show (T.F : ℝ) = 2 * (T.i : ℝ) + (T.b : ℝ) + 2 * (T.h : ℝ) - 2 by exact_mod_cast hz]
 
 /-- Integer double area formula for polygons with h holes:
     2 * Area = 2 * i + b + 2 * h - 2. -/
@@ -264,10 +242,7 @@ theorem pickInvariant_glue (P₁ P₂ : LatticePolygonData) (k : ℕ) (hk : 2 �
     (h_b_sum : 3 ≤ P₁.b + P₂.b - 2 * k + 2) :
     (P₁.glue P₂ k hk hk_le₁ hk_le₂ h_b_sum).pickInvariant =
       P₁.pickInvariant + P₂.pickInvariant := by
-  dsimp [glue, pickInvariant]
-  have h1 : 2 ≤ k := hk
-  have h2 : 2 * k ≤ P₁.b + P₂.b := by omega
-  omega
+  dsimp [glue, pickInvariant]; omega
 
 /-- Gluing Preservation Theorem:
     If Pick's formula holds for P₁ and P₂, then it holds for their glued union P₁ ∪ P₂. -/
@@ -276,18 +251,14 @@ theorem satisfiesPick_glue (P₁ P₂ : LatticePolygonData) (k : ℕ) (hk : 2 �
     (h_b_sum : 3 ≤ P₁.b + P₂.b - 2 * k + 2)
     (h₁ : P₁.SatisfiesPick) (h₂ : P₂.SatisfiesPick) :
     (P₁.glue P₂ k hk hk_le₁ hk_le₂ h_b_sum).SatisfiesPick := by
-  have h_add := pickInvariant_glue P₁ P₂ k hk hk_le₁ hk_le₂ h_b_sum
-  dsimp [SatisfiesPick, glue] at *
-  omega
+  dsimp [SatisfiesPick, glue, pickInvariant] at *; omega
 
 /-- Real form of Pick's Theorem for any polygon satisfying the Pick property:
     Area(P) = i + b / 2 - 1. -/
 theorem areaReal_eq_of_satisfiesPick (P : LatticePolygonData) (h : P.SatisfiesPick) :
     P.areaReal = (P.i : ℝ) + (P.b : ℝ) / 2 - 1 := by
   dsimp [SatisfiesPick, pickInvariant, areaReal] at *
-  have hq : (P.areaTwo : ℝ) = 2 * (P.i : ℝ) + (P.b : ℝ) - 2 := by
-    exact_mod_cast h
-  linarith
+  linarith [show (P.areaTwo : ℝ) = 2 * (P.i : ℝ) + (P.b : ℝ) - 2 by exact_mod_cast h]
 
 end LatticePolygonData
 

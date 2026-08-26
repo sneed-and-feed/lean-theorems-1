@@ -1,8 +1,6 @@
-import Formalization.CrossingLemma
 import Formalization.SzemerediTrotter
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Prod
 import Mathlib.Data.Finset.Image
 import Mathlib.Data.Real.Basic

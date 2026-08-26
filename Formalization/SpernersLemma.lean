@@ -53,52 +53,34 @@ lemma fin2_cases (a b : Fin 2) : a = b ∨ (a = 0 ∧ b = 1) ∨ (a = 1 ∧ b = 
 lemma fin2_ne_iff (a b : Fin 2) : a ≠ b ↔ (a = 0 ∧ b = 1) ∨ (a = 1 ∧ b = 0) := by
   fin_cases a <;> fin_cases b <;> simp
 
-lemma fin2_eq_or_ne_of_ne {a b c : Fin 2} (h : a ≠ b) : (a ≠ c ↔ b = c) := by
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> simp_all
+lemma fin2_eq_or_ne_of_ne {a b c : Fin 2} (h : a ≠ b) : (a ≠ c ↔ b = c) := by revert a b c h; decide
 
 lemma switchCount_succ {n : ℕ} (f : Fin (n + 2) → Fin 2) :
     switchCount f = (if f 0 ≠ f 1 then 1 else 0) + switchCount (fun i => f i.succ) := by
-  dsimp [switchCount]
-  rw [Fin.sum_univ_succ]
-  have h1 (i : Fin n) : (Fin.succ i).castSucc = (Fin.castSucc i).succ := by ext; rfl
-  have h_zero : (0 : Fin (n + 1)).castSucc = (0 : Fin (n + 2)) := by ext; rfl
-  have h_succ0 : (0 : Fin (n + 1)).succ = (1 : Fin (n + 2)) := by ext; rfl
-  simp_rw [h1, h_zero, h_succ0]
+  dsimp [switchCount]; rw [Fin.sum_univ_succ]; rfl
 
 /-- 1D Sperner's Lemma Parity: The number of color switches along a path is odd
     if and only if the endpoints have different colors. -/
 theorem sperner_1d_parity {n : ℕ} (f : Fin (n + 1) → Fin 2) :
     Odd (switchCount f) ↔ f 0 ≠ f (Fin.last n) := by
   induction n with
-  | zero =>
-    simp [switchCount]
+  | zero => simp [switchCount]
   | succ n ih =>
-    let g : Fin (n + 1) → Fin 2 := fun i => f i.succ
-    have h_split := switchCount_succ f
-    rw [h_split]
-    have ih_g := ih g
-    dsimp [g] at ih_g
+    rw [switchCount_succ f]
+    have ih_g : Odd _ ↔ f 1 ≠ f (Fin.last (n + 1)) := ih (fun i => f i.succ)
     split_ifs with h_step
-    · have h_equiv := @fin2_eq_or_ne_of_ne (f 0) (f 1) (f (Fin.last (n + 1))) h_step
-      rw [add_comm, Nat.odd_add_one, ih_g, not_not, ← h_equiv]
-    · push Not at h_step
-      rw [zero_add, ih_g, h_step]
+    · rw [add_comm, Nat.odd_add_one, ih_g, not_not, ← fin2_eq_or_ne_of_ne h_step]
+    · push Not at h_step; rw [zero_add, ih_g, h_step]
 
 /-- 1D Sperner's Lemma (Existence): If a 1D path is colored with 2 colors such that
     the endpoints have different colors, there exists at least one edge whose endpoints
     have different colors. -/
 theorem sperner_1d_exists {n : ℕ} (f : Fin (n + 1) → Fin 2) (h_ends : f 0 ≠ f (Fin.last n)) :
     ∃ i : Fin n, f i.castSucc ≠ f i.succ := by
+  by_contra! h
+  have h0 : switchCount f = 0 := sum_eq_zero fun i _ => by simp [h i]
   have h_odd : Odd (switchCount f) := (sperner_1d_parity f).mpr h_ends
-  have h_pos : 0 < switchCount f := Odd.pos h_odd
-  dsimp [switchCount] at h_pos
-  by_contra! h_none
-  have h_all_zero : (∑ i : Fin n, if f i.castSucc ≠ f i.succ then 1 else 0) = 0 := by
-    apply Finset.sum_eq_zero
-    intro i _
-    simp [h_none i]
-  rw [h_all_zero] at h_pos
-  exact lt_irrefl 0 h_pos
+  simp_all
 
 /-!
 ### 2. 2D Triangulations and Combinatorial Surfaces
@@ -165,36 +147,19 @@ lemma fin3_local_door_count (a b d : Fin 3) :
      (if ({a, d} : Finset (Fin 3)) = ({0, 1} : Finset (Fin 3)) then 1 else 0) +
      (if ({b, d} : Finset (Fin 3)) = ({0, 1} : Finset (Fin 3)) then 1 else 0)) % 2 =
     if ({a, b, d} : Finset (Fin 3)) = Finset.univ then 1 else 0 := by
-  fin_cases a <;> fin_cases b <;> fin_cases d <;> decide
+  revert a b d; decide
 
 /-- The 2-element subsets of a 3-element set `{u, v, w}` are exactly `{u, v}`, `{u, w}`, `{v, w}`. -/
 lemma triangle_edges_eq {u v w : α} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠ w) :
     ({u, v, w} : Finset α).powerset.filter (fun s => s.card = 2) = {{u, v}, {u, w}, {v, w}} := by
-  ext s
-  simp only [mem_filter, mem_powerset, mem_insert, mem_singleton]
+  ext s; simp only [Finset.mem_filter, Finset.mem_powerset, Finset.mem_insert, Finset.mem_singleton]
   constructor
-  · rintro ⟨hs_sub, hs_card⟩
-    rcases card_eq_two.mp hs_card with ⟨x, y, hxy, rfl⟩
-    have hx : x ∈ ({u, v, w} : Finset α) := hs_sub (mem_insert_self x {y})
-    have hy : y ∈ ({u, v, w} : Finset α) := hs_sub (mem_insert_of_mem (mem_singleton_self y))
-    simp only [mem_insert, mem_singleton] at hx hy
-    rcases hx with rfl | rfl | rfl <;> rcases hy with rfl | rfl | rfl <;> try contradiction
-    · left; rfl
-    · right; left; rfl
-    · left; rw [pair_comm]
-    · right; right; rfl
-    · right; left; rw [pair_comm]
-    · right; right; rw [pair_comm]
-  · rintro (rfl | rfl | rfl)
-    · constructor
-      · intro x hx; simp only [mem_insert, mem_singleton] at hx ⊢; tauto
-      · exact card_pair huv
-    · constructor
-      · intro x hx; simp only [mem_insert, mem_singleton] at hx ⊢; tauto
-      · exact card_pair huw
-    · constructor
-      · intro x hx; simp only [mem_insert, mem_singleton] at hx ⊢; tauto
-      · exact card_pair hvw
+  · rintro ⟨hsub, hcard⟩
+    rcases Finset.card_eq_two.mp hcard with ⟨x, y, hxy, rfl⟩
+    have hx : x ∈ ({u, v, w} : Finset α) := hsub (by simp)
+    have hy : y ∈ ({u, v, w} : Finset α) := hsub (by simp)
+    aesop
+  · rintro (rfl | rfl | rfl) <;> simp_all
 
 lemma distinct_edges {u v w : α} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠ w) :
     ({u, v} : Finset α) ∉ ({{u, w}, {v, w}} : Finset (Finset α)) ∧
@@ -202,36 +167,19 @@ lemma distinct_edges {u v w : α} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠ w
     ({u, v} : Finset α) ≠ ({u, w} : Finset α) ∧
     ({u, v} : Finset α) ≠ ({v, w} : Finset α) ∧
     ({u, w} : Finset α) ≠ ({v, w} : Finset α) := by
-  have h_ne1 : ({u, v} : Finset α) ≠ {u, w} := by
-    intro h
-    have : v ∈ ({u, w} : Finset α) := by rw [← h]; simp
-    simp only [mem_insert, mem_singleton] at this
-    rcases this with rfl | rfl <;> [exact huv.symm rfl; exact hvw.symm rfl]
-  have h_ne2 : ({u, v} : Finset α) ≠ {v, w} := by
-    intro h
-    have : u ∈ ({v, w} : Finset α) := by rw [← h]; simp
-    simp only [mem_insert, mem_singleton] at this
-    rcases this with rfl | rfl <;> [exact huv rfl; exact huw rfl]
-  have h_ne3 : ({u, w} : Finset α) ≠ {v, w} := by
-    intro h
-    have : u ∈ ({v, w} : Finset α) := by rw [← h]; simp
-    simp only [mem_insert, mem_singleton] at this
-    rcases this with rfl | rfl <;> [exact huv rfl; exact huw rfl]
-  refine ⟨?_, ?_, h_ne1, h_ne2, h_ne3⟩
-  · simp only [mem_insert, mem_singleton, not_or]
-    exact ⟨h_ne1, h_ne2⟩
-  · simp only [mem_singleton]
-    exact h_ne3
+  have h1 : ({u, v} : Finset α) ≠ {u, w} := fun h => by have := Finset.ext_iff.mp h v; clear h; simp_all
+  have h2 : ({u, v} : Finset α) ≠ {v, w} := fun h => by have := Finset.ext_iff.mp h u; clear h; simp_all
+  have h3 : ({u, w} : Finset α) ≠ {v, w} := fun h => by have := Finset.ext_iff.mp h u; clear h; simp_all
+  simp only [Finset.mem_insert, Finset.mem_singleton, not_or, ne_eq]
+  exact ⟨⟨h1, h2⟩, h3, h1, h2, h3⟩
 
 lemma triangle01Edges_eq {u v w : α} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠ w) (c : α → Fin 3) :
     triangle01Edges c {u, v, w} =
     ({{u, v}, {u, w}, {v, w}} : Finset (Finset α)).filter (fun s => s.image c = ({0, 1} : Finset (Fin 3))) := by
-  dsimp [triangle01Edges]
-  have h_filt : ({u, v, w} : Finset α).powerset.filter (fun s => s.card = 2 ∧ s.image c = ({0, 1} : Finset (Fin 3))) =
-      (({u, v, w} : Finset α).powerset.filter (fun s => s.card = 2)).filter (fun s => s.image c = ({0, 1} : Finset (Fin 3))) := by
-    ext x
-    simp only [mem_filter, and_assoc]
-  rw [h_filt, triangle_edges_eq huv huw hvw]
+  ext s
+  have := Finset.ext_iff.mp (triangle_edges_eq huv huw hvw) s
+  simp only [triangle01Edges, Finset.mem_filter] at this ⊢
+  aesop
 
 lemma triangleDoorCount_eq {u v w : α} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠ w) (c : α → Fin 3) :
     triangleDoorCount c {u, v, w} =
@@ -239,28 +187,11 @@ lemma triangleDoorCount_eq {u v w : α} (huv : u ≠ v) (huw : u ≠ w) (hvw : v
     (if ({c u, c w} : Finset (Fin 3)) = {0, 1} then 1 else 0) +
     (if ({c v, c w} : Finset (Fin 3)) = {0, 1} then 1 else 0) := by
   dsimp [triangleDoorCount]
-  rw [triangle01Edges_eq huv huw hvw c]
-  have ⟨h_disj1, h_disj2, h_ne1, h_ne2, h_ne3⟩ := distinct_edges huv huw hvw
-  have h_im_uv : ({u, v} : Finset α).image c = {c u, c v} := by
-    simp [Finset.image_insert, Finset.image_singleton]
-  have h_im_uw : ({u, w} : Finset α).image c = {c u, c w} := by
-    simp [Finset.image_insert, Finset.image_singleton]
-  have h_im_vw : ({v, w} : Finset α).image c = {c v, c w} := by
-    simp [Finset.image_insert, Finset.image_singleton]
-  rw [filter_insert, filter_insert, filter_singleton]
-  rw [h_im_uv, h_im_uw, h_im_vw]
-  split_ifs with h1 h2 h3
-  · rw [card_insert_of_notMem h_disj1, card_insert_of_notMem h_disj2, card_singleton]
-  · rw [show (insert {u, v} (insert {u, w} (∅ : Finset (Finset α)))) = {{u, v}, {u, w}} by rfl,
-        card_pair h_ne1]
-  · rw [show (insert {u, v} { {v, w} }) = ({{u, v}, {v, w}} : Finset (Finset α)) by rfl,
-        card_pair h_ne2]
-  · rw [show (insert {u, v} (∅ : Finset (Finset α))) = {{u, v}} by rfl, card_singleton]
-  · rw [show (insert {u, w} { {v, w} }) = ({{u, w}, {v, w}} : Finset (Finset α)) by rfl,
-        card_pair h_ne3]
-  · rw [show (insert {u, w} (∅ : Finset (Finset α))) = {{u, w}} by rfl, card_singleton]
-  · rw [card_singleton]
-  · rw [card_empty]
+  rw [triangle01Edges_eq huv huw hvw c, Finset.card_filter]
+  have ⟨h_disj1, h_disj2, _, _, _⟩ := distinct_edges huv huw hvw
+  simp only [Finset.sum_insert h_disj1, Finset.sum_insert h_disj2, Finset.sum_singleton]
+  simp [Finset.image_insert, Finset.image_singleton]
+  ring
 
 /-- The local triangle door count modulo 2 is 1 if and only if the triangle is panchromatic. -/
 lemma triangleDoorCount_mod_two (c : α → Fin 3) (t : Finset α) (ht : t.card = 3) :
@@ -282,63 +213,33 @@ lemma triangleDoorCount_mod_two (c : α → Fin 3) (t : Finset α) (ht : t.card 
 ### 4. Global Double-Counting Relation
 -/
 
-lemma card_filter_eq_sum_ite (s : Finset (Finset α)) (p : Finset α → Prop) [DecidablePred p] :
-    (s.filter p).card = ∑ x ∈ s, if p x then 1 else 0 := by
-  induction s using Finset.induction with
-  | empty => simp
-  | @insert a s has ih =>
-    rw [filter_insert, sum_insert has]
-    split_ifs with h
-    · rw [card_insert_of_notMem (by simp [has]), ih, add_comm]
-    · rw [ih, zero_add]
-
 lemma sum_mod_two_eq (s : Finset (Finset α)) (f : Finset α → ℕ) (p : Finset α → Prop) [DecidablePred p]
     (h_mod : ∀ t ∈ s, f t % 2 = if p t then 1 else 0) :
     (∑ t ∈ s, f t) % 2 = (s.filter p).card % 2 := by
-  induction s using Finset.induction with
+  rw [Finset.card_filter]
+  induction s using Finset.induction_on with
   | empty => simp
-  | @insert a s has ih =>
-    rw [Finset.sum_insert has, Finset.filter_insert]
-    have ha := h_mod a (Finset.mem_insert_self a s)
-    have ih_s := ih (fun t ht => h_mod t (Finset.mem_insert_of_mem ht))
-    split_ifs with hp
-    · rw [Finset.card_insert_of_notMem (by simp [has])]
-      have h_add : (f a + ∑ t ∈ s, f t) % 2 = (f a % 2 + (∑ t ∈ s, f t) % 2) % 2 := Nat.add_mod (f a) _ 2
-      simp only [hp, ite_true] at ha
-      rw [h_add, ha, ih_s]
-      omega
-    · have h_add : (f a + ∑ t ∈ s, f t) % 2 = (f a % 2 + (∑ t ∈ s, f t) % 2) % 2 := Nat.add_mod (f a) _ 2
-      simp only [hp, ite_false] at ha
-      rw [h_add, ha, ih_s, zero_add, Nat.mod_mod]
+  | insert a s has ih =>
+    rw [Finset.sum_insert has, Finset.sum_insert has]
+    have h1 := h_mod a (Finset.mem_insert_self a s)
+    have h2 := ih fun t ht => h_mod t (Finset.mem_insert_of_mem ht)
+    omega
 
 lemma sum_boundary_eq (T : Triangulation2D α) (c : α → Fin 3) :
     (∑ e ∈ T.boundaryEdges, if is01Edge c e then (T.incidentTriangles e).card else 0) =
     (T.boundaryEdges.filter (is01Edge c)).card := by
-  have : (∑ e ∈ T.boundaryEdges, if is01Edge c e then (T.incidentTriangles e).card else 0) =
-      ∑ e ∈ T.boundaryEdges, if is01Edge c e then 1 else 0 := by
-    apply Finset.sum_congr rfl
-    intro e he
-    have he_card : (T.incidentTriangles e).card = 1 := (mem_filter.mp he).2
-    rw [he_card]
-  rw [this, ← card_filter_eq_sum_ite]
+  rw [Finset.card_filter]
+  refine Finset.sum_congr rfl (fun e he => ?_)
+  have : (T.incidentTriangles e).card = 1 := (Finset.mem_filter.mp he).2
+  split_ifs <;> omega
 
 lemma sum_interior_eq (T : Triangulation2D α) (c : α → Fin 3) :
     (∑ e ∈ T.interiorEdges, if is01Edge c e then (T.incidentTriangles e).card else 0) =
     2 * (T.interiorEdges.filter (is01Edge c)).card := by
-  have : (∑ e ∈ T.interiorEdges, if is01Edge c e then (T.incidentTriangles e).card else 0) =
-      ∑ e ∈ T.interiorEdges, if is01Edge c e then 2 else 0 := by
-    apply Finset.sum_congr rfl
-    intro e he
-    have he_card : (T.incidentTriangles e).card = 2 := (mem_filter.mp he).2
-    rw [he_card]
-  rw [this]
-  have h_mul : (∑ e ∈ T.interiorEdges, if is01Edge c e then 2 else 0) =
-      2 * ∑ e ∈ T.interiorEdges, if is01Edge c e then 1 else 0 := by
-    rw [Finset.mul_sum]
-    apply Finset.sum_congr rfl
-    intro e _
-    split_ifs <;> ring
-  rw [h_mul, ← card_filter_eq_sum_ite]
+  rw [Finset.card_filter, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun e he => ?_)
+  have : (T.incidentTriangles e).card = 2 := (Finset.mem_filter.mp he).2
+  split_ifs <;> omega
 
 /-- The total door count across all triangles equals boundary doors plus twice interior doors. -/
 theorem double_counting_sum_eq (T : Triangulation2D α) (c : α → Fin 3) :
@@ -360,7 +261,7 @@ theorem double_counting_sum_eq (T : Triangulation2D α) (c : α → Fin 3) :
         exact ⟨he_edges, he_sub, he_card, he_im⟩
       · rintro ⟨he_edges, he_sub, he_card, he_im⟩
         exact ⟨he_sub, he_card, he_im⟩
-    rw [h_sub, card_filter_eq_sum_ite]
+    rw [h_sub, Finset.card_filter]
     rfl
   have h_sum_rew : (∑ t ∈ T.triangles, triangleDoorCount c t) =
       ∑ t ∈ T.triangles, ∑ e ∈ T.edges, if e ⊆ t ∧ is01Edge c e then 1 else 0 := by
@@ -371,12 +272,10 @@ theorem double_counting_sum_eq (T : Triangulation2D α) (c : α → Fin 3) :
       if is01Edge c e then (T.incidentTriangles e).card else 0 := by
     dsimp [Triangulation2D.incidentTriangles]
     split_ifs with h_01
-    · have : (∑ t ∈ T.triangles, if e ⊆ t ∧ is01Edge c e then 1 else 0) =
-          ∑ t ∈ T.triangles, if e ⊆ t then 1 else 0 := by
-        apply Finset.sum_congr rfl
-        intro t _
-        simp [h_01]
-      rw [this, ← card_filter_eq_sum_ite]
+    · rw [Finset.card_filter]
+      apply Finset.sum_congr rfl
+      intro t _
+      simp [h_01]
     · apply Finset.sum_eq_zero
       intro t _
       simp [h_01]
@@ -420,8 +319,7 @@ theorem sperner_2d_parity (T : Triangulation2D α) (c : α → Fin 3) :
     exact triangleDoorCount_mod_two c t (T.triangle_card t ht)
   have h_right : (∑ t ∈ T.triangles, triangleDoorCount c t) % 2 =
       (T.boundaryEdges.filter (is01Edge c)).card % 2 := by
-    rw [double_counting_sum_eq]
-    rw [Nat.add_mod]
+    rw [double_counting_sum_eq, Nat.add_mod]
     have : (2 * (T.interiorEdges.filter (is01Edge c)).card) % 2 = 0 := by omega
     rw [this, add_zero, Nat.mod_mod]
   rw [← h_left, h_right]
@@ -441,8 +339,6 @@ theorem sperner_2d_odd (T : Triangulation2D α) (c : α → Fin 3)
 theorem sperner_2d_exists (T : Triangulation2D α) (c : α → Fin 3)
     (h_bd : Odd (T.boundaryEdges.filter (is01Edge c)).card) :
     ∃ t ∈ T.triangles, isPanchromatic c t := by
-  have h_odd : Odd (T.triangles.filter (isPanchromatic c)).card := sperner_2d_odd T c h_bd
-  have h_pos : 0 < (T.triangles.filter (isPanchromatic c)).card := Odd.pos h_odd
-  rw [Finset.card_pos] at h_pos
-  rcases Finset.filter_nonempty_iff.mp h_pos with ⟨t, ht, h_pan⟩
-  exact ⟨t, ht, h_pan⟩
+  have h_pos : 0 < (T.triangles.filter (isPanchromatic c)).card := Odd.pos (sperner_2d_odd T c h_bd)
+  rw [Finset.card_pos, Finset.filter_nonempty_iff] at h_pos
+  exact h_pos

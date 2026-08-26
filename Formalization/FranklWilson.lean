@@ -85,14 +85,8 @@ lemma sum_monomial_singleton (p : ℕ) (A B : Finset α) :
     (∑ i ∈ A, monomial p {i} B) = ((A ∩ B).card : ZMod p) := by
   simp_rw [monomial_singleton]
   have h_filter : (∑ i ∈ A, (if i ∈ B then (1 : ZMod p) else 0)) =
-      ∑ i ∈ A.filter (· ∈ B), (1 : ZMod p) := by
-    rw [sum_filter]
-  rw [h_filter, sum_const, nsmul_eq_mul, mul_one]
-  have h_eq : A.filter (· ∈ B) = A ∩ B := by
-    ext x
-    simp [mem_filter, mem_inter]
-  rw [h_eq]
-
+      ∑ i ∈ A.filter (· ∈ B), (1 : ZMod p) := by rw [sum_filter]
+  rw [h_filter, sum_const, nsmul_eq_mul, mul_one, filter_mem_eq_inter]
 
 -- ============================================================================
 -- Section 3: Evaluation Polynomials and Linear Independence
@@ -105,48 +99,26 @@ def evalPoly (p : ℕ) (L : Finset (ZMod p)) (A : Finset α) (B : Finset α) : Z
 lemma evalPoly_self_ne_zero (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p))
     (fam : ModuloPIntersectingFamily (α := α) p L) (A : Finset α) (hA : A ∈ fam.F) :
     evalPoly p L A A ≠ 0 := by
-  dsimp [evalPoly]
-  rw [inter_self]
+  simp only [evalPoly, inter_self]
   intro h_zero
   obtain ⟨l, hl, heq⟩ := prod_eq_zero_iff.mp h_zero
-  have h_sub : (A.card : ZMod p) = l := sub_eq_zero.mp heq
-  have hl_in : (A.card : ZMod p) ∈ L := by
-    rw [h_sub]
-    exact hl
-  exact fam.h_self A hA hl_in
-
+  exact fam.h_self A hA (by rwa [sub_eq_zero.mp heq])
 
 lemma evalPoly_other_eq_zero (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p))
     (fam : ModuloPIntersectingFamily (α := α) p L) (A B : Finset α)
     (hA : A ∈ fam.F) (hB : B ∈ fam.F) (hne : A ≠ B) :
     evalPoly p L A B = 0 := by
-  dsimp [evalPoly]
-  have hl_mem : ((A ∩ B).card : ZMod p) ∈ L := fam.h_inter A hA B hB hne
-  exact prod_eq_zero hl_mem (sub_self _)
+  exact prod_eq_zero (fam.h_inter A hA B hB hne) (sub_self _)
 
 lemma evalPoly_linearIndependent (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p))
     (fam : ModuloPIntersectingFamily (α := α) p L) :
     LinearIndependent (ZMod p) (fun (A : fam.F) ↦ (evalPoly p L A.1 : (Finset α → ZMod p))) := by
   rw [linearIndependent_iff']
   intro s g hg i hi
-  have h_eval : (∑ A ∈ s, g A • (evalPoly p L A.1 : Finset α → ZMod p)) i.1 = 0 := by
-    rw [hg]
-    rfl
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at h_eval
-  have h_single : (∑ A ∈ s, g A * evalPoly p L A.1 i.1) = g i * evalPoly p L i.1 i.1 := by
-    apply sum_eq_single i
-    · intro A _ hAi
-      have hne : (A : Finset α) ≠ i.1 := by
-        intro heq
-        exact hAi (Subtype.ext heq)
-      rw [evalPoly_other_eq_zero p L fam A.1 i.1 A.2 i.2 hne, mul_zero]
-    · intro h_not_mem
-      exact False.elim (h_not_mem hi)
-  rw [h_single] at h_eval
-  have h_nz := evalPoly_self_ne_zero p L fam i.1 i.2
-  cases mul_eq_zero.mp h_eval with
-  | inl hg_zero => exact hg_zero
-  | inr h_zero => exact False.elim (h_nz h_zero)
+  have h_eval : (∑ A ∈ s, g A * evalPoly p L A.1 i.1) = 0 := by
+    simpa [Finset.sum_apply, Pi.smul_apply] using congr_fun hg i.1
+  rw [sum_eq_single i (fun A _ hAi => by rw [evalPoly_other_eq_zero p L fam A.1 i.1 A.2 i.2 (Subtype.coe_ne_coe.mpr hAi), mul_zero]) (fun h => (h hi).elim)] at h_eval
+  exact (mul_eq_zero.mp h_eval).resolve_right (evalPoly_self_ne_zero p L fam i.1 i.2)
 
 
 -- ============================================================================
@@ -243,21 +215,15 @@ lemma prod_card_inter_sub_mem_degSubmodule (p : ℕ) (A : Finset α) (T : Finset
     (fun B ↦ ∏ l ∈ T, (((A ∩ B).card : ZMod p) - l) : Finset α → ZMod p) ∈ degSubmodule (α := α) p T.card := by
   induction T using Finset.induction_on with
   | empty =>
-    have h_one : (fun B ↦ ∏ l ∈ (∅ : Finset (ZMod p)), (((A ∩ B).card : ZMod p) - l) : Finset α → ZMod p) = 1 := by
-      ext B
-      simp
+    have h_one : (fun B ↦ ∏ l ∈ (∅ : Finset (ZMod p)), (((A ∩ B).card : ZMod p) - l) : Finset α → ZMod p) = 1 := rfl
     rw [card_empty, h_one]
     exact one_mem_degSubmodule p 0
-  | @insert l T' hl ih =>
+  | insert l T' hl ih =>
     rw [card_insert_of_notMem hl]
     have h_prod : (fun B ↦ ∏ x ∈ insert l T', (((A ∩ B).card : ZMod p) - x) : Finset α → ZMod p) =
-        (fun B ↦ ((A ∩ B).card : ZMod p) - l) * (fun B ↦ ∏ x ∈ T', (((A ∩ B).card : ZMod p) - x)) := by
-      ext B
-      simp [prod_insert hl]
-    rw [h_prod]
-    have h_step := mul_mem_degSubmodule p (card_inter_sub_const_mem_degSubmodule p A l) ih
-    rw [add_comm]
-    exact h_step
+        (fun B ↦ ((A ∩ B).card : ZMod p) - l) * (fun B ↦ ∏ x ∈ T', (((A ∩ B).card : ZMod p) - x)) := by ext B; exact prod_insert hl
+    rw [h_prod, add_comm]
+    exact mul_mem_degSubmodule p (card_inter_sub_const_mem_degSubmodule p A l) ih
 
 
 lemma evalPoly_mem_degSubmodule (p : ℕ) (L : Finset (ZMod p)) (A : Finset α) :
@@ -275,21 +241,14 @@ lemma card_filter_le_card_subsets (s : ℕ) :
       (Finset.range (s + 1)).biUnion (fun i ↦ powersetCard i (Finset.univ : Finset α)) := by
     ext I
     simp only [mem_filter, mem_univ, true_and, mem_biUnion, mem_range, mem_powersetCard, subset_univ]
-    constructor
-    · intro hI
-      exact ⟨I.card, Nat.lt_succ_of_le hI, rfl⟩
-    · rintro ⟨i, hi, rfl⟩
-      exact Nat.le_of_lt_succ hi
+    exact ⟨fun h => ⟨I.card, by omega, rfl⟩, by rintro ⟨i, hi, rfl⟩; omega⟩
   rw [h_eq, card_biUnion]
-  · apply sum_congr rfl
-    intro i _
-    rw [card_powersetCard, card_univ]
-  · intro i _ j _ hij
-    dsimp [Function.onFun]
+  · exact sum_congr rfl (fun i _ => by rw [card_powersetCard, card_univ])
+  · intro i _ j _ hij; dsimp [Function.onFun]
     rw [Finset.disjoint_iff_ne]
-    rintro I hI J hJ rfl
-    rw [mem_powersetCard] at hI hJ
-    exact hij (hI.2.symm.trans hJ.2)
+    intro I hI J hJ eq
+    subst eq
+    exact hij (Eq.trans (mem_powersetCard.mp hI).2.symm (mem_powersetCard.mp hJ).2)
 
 lemma fintype_card_subtype_le_card (s : ℕ) :
     Fintype.card {I : Finset α // I.card ≤ s} =
@@ -357,45 +316,20 @@ lemma monomial_sum_univ_sub (p : ℕ) (k : ℕ) (J : Finset α) (B : {B : Finset
     ((k : ZMod p) - (J.card : ZMod p)) * monomial p J B.1 =
       ∑ i ∈ Finset.univ \ J, monomial p (insert i J) B.1 := by
   have h_tot : (∑ i ∈ (Finset.univ : Finset α), monomial p {i} B.1) = (k : ZMod p) := by
-    rw [sum_monomial_singleton]
-    have h_inter : (Finset.univ ∩ B.1) = B.1 := by
-      ext x
-      simp
-    rw [h_inter, B.2]
+    rw [sum_monomial_singleton, univ_inter, B.2]
   have h_split : (∑ i ∈ (Finset.univ : Finset α), monomial p {i} B.1 * monomial p J B.1) =
       (∑ i ∈ J, monomial p {i} B.1 * monomial p J B.1) +
         ∑ i ∈ Finset.univ \ J, monomial p {i} B.1 * monomial p J B.1 := by
-    have h_disj : Disjoint J (Finset.univ \ J) := disjoint_sdiff
-    have h_union : J ∪ (Finset.univ \ J) = Finset.univ := union_sdiff_of_subset (subset_univ J)
-    nth_rw 1 [← h_union]
-    rw [sum_union h_disj]
+    rw [← sum_union disjoint_sdiff, union_sdiff_of_subset (subset_univ J)]
   have h_lhs : (∑ i ∈ (Finset.univ : Finset α), monomial p {i} B.1 * monomial p J B.1) =
-      (k : ZMod p) * monomial p J B.1 := by
-    rw [← sum_mul, h_tot]
+      (k : ZMod p) * monomial p J B.1 := by rw [← sum_mul, h_tot]
   have h_J_part : (∑ i ∈ J, monomial p {i} B.1 * monomial p J B.1) = (J.card : ZMod p) * monomial p J B.1 := by
-    have h_term : ∀ i ∈ J, monomial p {i} B.1 * monomial p J B.1 = monomial p J B.1 := by
-      intro i hi
-      rw [← monomial_union]
-      have h_u : {i} ∪ J = J := by
-        ext x
-        simp only [mem_union, mem_singleton]
-        constructor
-        · rintro (rfl | hx)
-          · exact hi
-          · exact hx
-        · intro hx
-          exact Or.inr hx
-      rw [h_u]
-    rw [sum_congr rfl h_term, sum_const, nsmul_eq_mul]
+    refine Eq.trans (sum_congr rfl (fun i hi => ?_)) (by rw [sum_const, nsmul_eq_mul])
+    rw [← monomial_union, singleton_union, insert_eq_of_mem hi]
   have h_diff_part : (∑ i ∈ Finset.univ \ J, monomial p {i} B.1 * monomial p J B.1) =
       ∑ i ∈ Finset.univ \ J, monomial p (insert i J) B.1 := by
-    apply sum_congr rfl
-    intro i _
-    rw [← monomial_union]
-    have h_u : {i} ∪ J = insert i J := by
-      ext x
-      simp
-    rw [h_u]
+    refine sum_congr rfl (fun i _ => ?_)
+    rw [← monomial_union, singleton_union]
   rw [h_lhs, h_J_part, h_diff_part] at h_split
   linear_combination h_split
 

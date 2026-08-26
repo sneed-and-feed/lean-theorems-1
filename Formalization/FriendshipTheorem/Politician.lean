@@ -104,54 +104,34 @@ lemma adj_of_degree_ne (h_friend : HasFriendshipProperty G) {u v : V}
 lemma adj_or_eq_of_degree_ne (h_friend : HasFriendshipProperty G) {a b : V}
     (h_deg_ne : G.degree a ≠ G.degree b) (x : V) :
     x = a ∨ x = b ∨ G.Adj a x ∨ G.Adj b x := by
-  by_cases hxa : x = a
-  · exact Or.inl hxa
-  · by_cases hxb : x = b
-    · exact Or.inr (Or.inl hxb)
-    · by_cases h_adja : G.Adj a x
-      · exact Or.inr (Or.inr (Or.inl h_adja))
-      · by_cases h_adjb : G.Adj b x
-        · exact Or.inr (Or.inr (Or.inr h_adjb))
-        · have h1 := degree_eq_of_not_adj h_friend (Ne.symm hxa) h_adja
-          have h2 := degree_eq_of_not_adj h_friend (Ne.symm hxb) h_adjb
-          rw [h1, ← h2] at h_deg_ne
-          exact (h_deg_ne rfl).elim
+  by_contra h; push Not at h; rcases h with ⟨hxa, hxb, hadja, hadjb⟩
+  exact h_deg_ne <| (degree_eq_of_not_adj h_friend hxa.symm hadja).trans
+    (degree_eq_of_not_adj h_friend hxb.symm hadjb).symm
 
 lemma neighbor_diff_deg_eq (h_friend : HasFriendshipProperty G) {a b : V}
     (hab : G.Adj a b) (_h_deg_ne : G.degree a ≠ G.degree b)
     {x : V} (hx : x ∈ G.neighborFinset a)
     (hxb : x ≠ b) (hxc : x ≠ commonNeighbor h_friend hab.ne) :
     G.degree x = G.degree b := by
-  have hxa : G.Adj a x := by rwa [G.mem_neighborFinset] at hx
-  have hx_ne_a : x ≠ a := hxa.ne.symm
-  have h_not_xb : ¬ G.Adj x b := by
-    intro hxb_adj
-    have hx_mem_inter : x ∈ G.neighborFinset a ∩ G.neighborFinset b := by
-      rw [Finset.mem_inter, G.mem_neighborFinset, G.mem_neighborFinset]
-      exact ⟨hxa, hxb_adj.symm⟩
-    have hx_eq_c := commonNeighbor_eq_of_mem h_friend hab.ne hx_mem_inter
-    exact hxc hx_eq_c
-  have h_ne_xb : x ≠ b := hxb
-  exact degree_eq_of_not_adj h_friend h_ne_xb h_not_xb
+  apply degree_eq_of_not_adj h_friend hxb
+  intro hxb_adj
+  apply hxc <| commonNeighbor_eq_of_mem h_friend hab.ne _
+  rw [Finset.mem_inter, G.mem_neighborFinset, G.mem_neighborFinset]
+  exact ⟨by rwa [G.mem_neighborFinset] at hx, hxb_adj.symm⟩
 
 lemma degree_ge_two_of_adj (h_friend : HasFriendshipProperty G) {a b : V} (hab : G.Adj a b) :
     2 ≤ G.degree b := by
   let c := commonNeighbor h_friend hab.ne
-  have hac : G.Adj a c := commonNeighbor_adj_left h_friend hab.ne
-  have hbc : G.Adj b c := commonNeighbor_adj_right h_friend hab.ne
-  have h_ac_ne : a ≠ c := hac.ne
   have h_sub : {a, c} ⊆ G.neighborFinset b := by
     intro x hx
-    rw [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with (rfl | rfl)
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl
     · rw [G.mem_neighborFinset]
       exact hab.symm
     · rw [G.mem_neighborFinset]
-      exact hbc
-  have h_card_pair : ({a, c} : Finset V).card = 2 := Finset.card_pair h_ac_ne
-  have h_le := Finset.card_le_card h_sub
-  rw [h_card_pair] at h_le
-  exact h_le
+      exact commonNeighbor_adj_right h_friend hab.ne
+  have := Finset.card_le_card h_sub
+  rwa [Finset.card_pair (commonNeighbor_adj_left h_friend hab.ne).ne] at this
 
 /-- In a friendship graph, if there are two vertices of different degrees, the vertex with
 strictly larger degree is universal (connected to all other vertices). -/
@@ -302,14 +282,11 @@ lemma even_degree_of_friendship (h_friend : HasFriendshipProperty G) (u : V) :
   have hf_mem : ∀ x ∈ G.neighborFinset u, f x ∈ G.neighborFinset u := by
     intro x hx
     rw [hf_def hx]
-    have := commonNeighbor_mem_inter h_friend (h_ne_of_mem hx)
-    rw [Finset.mem_inter] at this
-    exact this.1
+    exact (Finset.mem_inter.mp (commonNeighbor_mem_inter h_friend (h_ne_of_mem hx))).1
   have hf_ne : ∀ x ∈ G.neighborFinset u, f x ≠ x := by
     intro x hx
     rw [hf_def hx]
-    have := commonNeighbor_adj_right h_friend (h_ne_of_mem hx)
-    exact this.ne.symm
+    exact (commonNeighbor_adj_right h_friend (h_ne_of_mem hx)).ne.symm
   have hf_invol : ∀ x ∈ G.neighborFinset u, f (f x) = x := by
     intro x hx
     have hfx_in := hf_mem x hx
@@ -323,8 +300,7 @@ lemma even_degree_of_friendship (h_friend : HasFriendshipProperty G) (u : V) :
       rw [Finset.mem_inter, G.mem_neighborFinset, G.mem_neighborFinset]
       have : G.Adj u x := by rwa [G.mem_neighborFinset] at hx
       exact ⟨this, hadj_xy.symm⟩
-    have h_eq := commonNeighbor_eq_of_mem h_friend (h_ne_of_mem hfx_in) hx_mem_inter
-    exact h_eq.symm
+    exact (commonNeighbor_eq_of_mem h_friend (h_ne_of_mem hfx_in) hx_mem_inter).symm
   have h_deg : G.degree u = (G.neighborFinset u).card := rfl
   rw [h_deg]
   exact even_card_of_involution (G.neighborFinset u) f hf_mem hf_ne hf_invol

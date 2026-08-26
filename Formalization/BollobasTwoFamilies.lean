@@ -20,52 +20,28 @@ lemma bollobas_events_disjoint {α : Type*} [DecidableEq α] [Preorder α] {m : 
     (hi : ∀ a ∈ A i, ∀ b ∈ B i, π a < π b)
     (hj : ∀ a ∈ A j, ∀ b ∈ B j, π a < π b) :
     False := by
-  have h1 : (A i ∩ B j).Nonempty := by
-    rw [Finset.nonempty_iff_ne_empty]
-    intro h_emp
-    exact (h_inter i j hij) (Finset.disjoint_iff_inter_eq_empty.mpr h_emp)
-  have h2 : (A j ∩ B i).Nonempty := by
-    rw [Finset.nonempty_iff_ne_empty]
-    intro h_emp
-    exact (h_inter j i hij.symm) (Finset.disjoint_iff_inter_eq_empty.mpr h_emp)
-  obtain ⟨x, hx⟩ := h1
-  obtain ⟨y, hy⟩ := h2
-  rw [Finset.mem_inter] at hx hy
-  have h_xy : π x < π y := hi x hx.1 y hy.2
-  have h_yx : π y < π x := hj y hy.1 x hx.2
-  exact lt_asymm h_xy h_yx
+  obtain ⟨x, hxA, hxB⟩ := Finset.not_disjoint_iff.mp (h_inter i j hij)
+  obtain ⟨y, hyA, hyB⟩ := Finset.not_disjoint_iff.mp (h_inter j i hij.symm)
+  exact lt_asymm (hi x hxA y hyB) (hj y hyA x hxB)
 
 lemma choose_mul_eq (a b : ℕ) (ha : 1 ≤ a) :
     ((a + b).choose a : ℝ) * a = (a + b : ℝ) * (((a - 1) + b).choose (a - 1) : ℝ) := by
-  have h1 : a - 1 + 1 = a := Nat.sub_add_cancel ha
-  have h2 : (a - 1 + b) + 1 = a + b := by omega
   have h := Nat.add_one_mul_choose_eq (a - 1 + b) (a - 1)
-  rw [h1, h2] at h
-  have h_nat : (a + b).choose a * a = (a + b) * (a - 1 + b).choose (a - 1) := by
-    rw [← h, mul_comm]
-  exact_mod_cast congr_arg (fun x : ℕ => (x : ℝ)) h_nat
+  rw [Nat.sub_add_cancel ha, show a - 1 + b + 1 = a + b by omega] at h
+  exact_mod_cast h.symm
 
 lemma sum_term_eq (a b : ℕ) (ha : 1 ≤ a) :
     (a : ℝ) * (1 / (((a - 1) + b).choose (a - 1) : ℝ)) = (a + b : ℝ) * (1 / ((a + b).choose a : ℝ)) := by
-  have h_ch1 : 0 < (((a - 1) + b).choose (a - 1) : ℝ) := by
-    exact_mod_cast Nat.choose_pos (by omega)
-  have h_ch2 : 0 < ((a + b).choose a : ℝ) := by
-    exact_mod_cast Nat.choose_pos (by omega)
-  have h_mul := choose_mul_eq a b ha
-  have h_ne1 : (((a - 1) + b).choose (a - 1) : ℝ) ≠ 0 := ne_of_gt h_ch1
-  have h_ne2 : ((a + b).choose a : ℝ) ≠ 0 := ne_of_gt h_ch2
-  rw [mul_one_div, mul_one_div]
-  rw [div_eq_iff h_ne1, div_mul_eq_mul_div, eq_div_iff h_ne2]
-  linarith
+  have h1 : (0 : ℝ) < ((a - 1) + b).choose (a - 1) := by exact_mod_cast Nat.choose_pos (by omega)
+  have h2 : (0 : ℝ) < (a + b).choose a := by exact_mod_cast Nat.choose_pos (by omega)
+  rw [mul_one_div, mul_one_div, div_eq_div_iff h1.ne.symm h2.ne.symm, mul_comm (a:ℝ)]
+  exact choose_mul_eq a b ha
 
 lemma sum_split_3 {α : Type*} [DecidableEq α] (X s t : Finset α)
     (h_disj : Disjoint s t) (hs : s ⊆ X) (ht : t ⊆ X) (f : α → ℝ) :
     (∑ x ∈ X, f x) = (∑ x ∈ s, f x) + (∑ x ∈ t, f x) + (∑ x ∈ X \ (s ∪ t), f x) := by
-  have h_sub : s ∪ t ⊆ X := Finset.union_subset hs ht
-  have h_union : X = (s ∪ t) ∪ (X \ (s ∪ t)) := (Finset.union_sdiff_of_subset h_sub).symm
-  have h_disj1 : Disjoint (s ∪ t) (X \ (s ∪ t)) := Finset.disjoint_sdiff
-  nth_rw 1 [h_union]
-  rw [Finset.sum_union h_disj1, Finset.sum_union h_disj]
+  rw [← Finset.sum_union h_disj, ← Finset.sum_union Finset.disjoint_sdiff,
+      Finset.union_sdiff_of_subset (Finset.union_subset hs ht)]
 
 lemma sum_single_pair_step {α : Type*} [DecidableEq α] (X A B : Finset α)
     (h_disj : Disjoint A B) (hA : A ⊆ X) (hB : B ⊆ X) (ha : 1 ≤ A.card) :
@@ -115,31 +91,13 @@ lemma sum_single_pair_step {α : Type*} [DecidableEq α] (X A B : Finset α)
 
 lemma sum_subtype_eq_sum_ite {ι : Type*} [Fintype ι] [DecidableEq ι] (P : ι → Prop) [DecidablePred P] (f : ι → ℝ) :
     (∑ i : { i : ι // P i }, f i.1) = ∑ i : ι, if P i then f i else 0 := by
-  have h_bij : (∑ i : { i : ι // P i }, f i.1) = ∑ i ∈ Finset.univ.filter P, f i := by
-    apply Finset.sum_nbij (fun x => x.1)
-    · intro x _
-      exact Finset.mem_filter.mpr ⟨Finset.mem_univ x.1, x.2⟩
-    · intro x _ y _ h
-      exact Subtype.ext h
-    · intro y hy
-      exact ⟨⟨y, (Finset.mem_filter.mp hy).2⟩, Finset.mem_univ _, rfl⟩
-    · intro _ _
-      rfl
-  rw [h_bij, Finset.sum_filter]
+  have h : _ := @Finset.sum_subtype ι ℝ _ P inferInstance (Finset.filter P Finset.univ) (by simp) f
+  rw [← h, Finset.sum_filter]
 
 lemma sum_subtype_eq_sum_ite_nat {ι : Type*} [Fintype ι] [DecidableEq ι] (P : ι → Prop) [DecidablePred P] (f : ι → ℕ) :
     (∑ i : { i : ι // P i }, f i.1) = ∑ i : ι, if P i then f i else 0 := by
-  have h_bij : (∑ i : { i : ι // P i }, f i.1) = ∑ i ∈ Finset.univ.filter P, f i := by
-    apply Finset.sum_nbij (fun x => x.1)
-    · intro x _
-      exact Finset.mem_filter.mpr ⟨Finset.mem_univ x.1, x.2⟩
-    · intro x _ y _ h
-      exact Subtype.ext h
-    · intro y hy
-      exact ⟨⟨y, (Finset.mem_filter.mp hy).2⟩, Finset.mem_univ _, rfl⟩
-    · intro _ _
-      rfl
-  rw [h_bij, Finset.sum_filter]
+  have h : _ := @Finset.sum_subtype ι ℕ _ P inferInstance (Finset.filter P Finset.univ) (by simp) f
+  rw [← h, Finset.sum_filter]
 
 lemma subfamily_card_lt {α : Type*} [DecidableEq α] {ι : Type*} [Fintype ι] [DecidableEq ι]
     (A B : ι → Finset α) (x : α) (i0 : ι) (hx : x ∈ A i0 ∪ B i0)

@@ -296,9 +296,6 @@ lemma pythagorean_decomp (a0 b0 p : Point) (hne : a0 ≠ b0) (t : ℝ) :
   field_simp
   ring
 
-lemma sq_le_sq_of_le_of_nonneg {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) : a ^ 2 ≤ b ^ 2 := by
-  nlinarith
-
 lemma exists_closer_pair_sorted (t1 t2 t3 tq : ℝ) (h12 : t1 < t2) (h23 : t2 < t3) :
     ∃ (ti tj : ℝ), (ti = t1 ∨ ti = t2 ∨ ti = t3) ∧
                    (tj = t1 ∨ tj = t2 ∨ tj = t3) ∧
@@ -306,18 +303,9 @@ lemma exists_closer_pair_sorted (t1 t2 t3 tq : ℝ) (h12 : t1 < t2) (h23 : t2 < 
                    (tj - ti) ^ 2 ≤ (ti - tq) ^ 2 := by
   by_cases hq : tq ≤ t2
   · refine ⟨t3, t2, Or.inr (Or.inr rfl), Or.inr (Or.inl rfl), h23.ne', ?_⟩
-    have h_diff_pos : 0 ≤ t3 - t2 := by linarith
-    have h_le : t3 - t2 ≤ t3 - tq := by linarith
-    have h_sq : (t3 - t2) ^ 2 ≤ (t3 - tq) ^ 2 := sq_le_sq_of_le_of_nonneg h_diff_pos h_le
-    have : (t2 - t3) ^ 2 = (t3 - t2) ^ 2 := by ring
-    linarith
-  · have hq_lt : t2 < tq := not_le.mp hq
-    refine ⟨t1, t2, Or.inl rfl, Or.inr (Or.inl rfl), h12.ne, ?_⟩
-    have h_diff_pos : 0 ≤ t2 - t1 := by linarith
-    have h_le : t2 - t1 ≤ tq - t1 := by linarith
-    have h_sq : (t2 - t1) ^ 2 ≤ (tq - t1) ^ 2 := sq_le_sq_of_le_of_nonneg h_diff_pos h_le
-    have : (t1 - tq) ^ 2 = (tq - t1) ^ 2 := by ring
-    linarith
+    nlinarith
+  · refine ⟨t1, t2, Or.inl rfl, Or.inr (Or.inl rfl), h12.ne, ?_⟩
+    nlinarith
 
 lemma exists_closer_pair_1d (t1 t2 t3 tq : ℝ) (h12 : t1 ≠ t2) (h13 : t1 ≠ t3) (h23 : t2 ≠ t3) :
     ∃ (ti tj : ℝ), (ti = t1 ∨ ti = t2 ∨ ti = t3) ∧

@@ -85,18 +85,7 @@ lemma fin4_local_door_count (a b d e : Fin 4) :
 
 lemma erase_four_first {a b c d : α} (hab : a ≠ b) (hac : a ≠ c) (had : a ≠ d) :
     ({a, b, c, d} : Finset α).erase a = {b, c, d} := by
-  ext t
-  simp only [mem_erase, mem_insert, mem_singleton]
-  constructor
-  · rintro ⟨hta, (rfl | rfl | rfl | rfl)⟩
-    · exact (hta rfl).elim
-    · exact Or.inl rfl
-    · exact Or.inr (Or.inl rfl)
-    · exact Or.inr (Or.inr rfl)
-  · rintro (rfl | rfl | rfl)
-    · exact ⟨hab.symm, Or.inr (Or.inl rfl)⟩
-    · exact ⟨hac.symm, Or.inr (Or.inr (Or.inl rfl))⟩
-    · exact ⟨had.symm, Or.inr (Or.inr (Or.inr rfl))⟩
+  ext t; simp only [mem_erase, mem_insert, mem_singleton]; aesop
 
 lemma distinct_four_faces {u v w z : α}
     (huv : u ≠ v) (huw : u ≠ w) (huz : u ≠ z) (hvw : v ≠ w) (hvz : v ≠ z) (hwz : w ≠ z) :

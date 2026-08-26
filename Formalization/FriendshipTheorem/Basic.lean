@@ -1,7 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Finite
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Fintype.Basic
 
 /-!
 # Basic Definitions and Lemmas for Friendship Graphs
@@ -51,51 +49,37 @@ noncomputable def commonNeighbor (h_friend : HasFriendshipProperty G) {u v : V} 
   Finset.card_eq_one.mp (h_friend u v huv) |>.choose
 
 lemma commonNeighbor_mem_inter (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v) :
-    commonNeighbor h_friend huv ∈ G.neighborFinset u ∩ G.neighborFinset v := by
-  have h := Finset.card_eq_one.mp (h_friend u v huv) |>.choose_spec
-  rw [h]
-  exact Finset.mem_singleton_self _
+    commonNeighbor h_friend huv ∈ G.neighborFinset u ∩ G.neighborFinset v :=
+  (Finset.card_eq_one.mp (h_friend u v huv)).choose_spec.symm ▸ Finset.mem_singleton_self _
 
 lemma inter_eq_singleton_commonNeighbor (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v) :
     G.neighborFinset u ∩ G.neighborFinset v = {commonNeighbor h_friend huv} :=
   Finset.card_eq_one.mp (h_friend u v huv) |>.choose_spec
 
 lemma commonNeighbor_adj_left (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v) :
-    G.Adj u (commonNeighbor h_friend huv) := by
-  have h := commonNeighbor_mem_inter h_friend huv
-  rw [Finset.mem_inter, G.mem_neighborFinset] at h
-  exact h.1
+    G.Adj u (commonNeighbor h_friend huv) :=
+  (G.mem_neighborFinset u _).mp (Finset.mem_inter.mp (commonNeighbor_mem_inter h_friend huv)).1
 
 lemma commonNeighbor_adj_right (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v) :
-    G.Adj v (commonNeighbor h_friend huv) := by
-  have h := commonNeighbor_mem_inter h_friend huv
-  rw [Finset.mem_inter, G.mem_neighborFinset, G.mem_neighborFinset] at h
-  exact h.2
-
-lemma commonNeighbor_symm (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v) :
-    commonNeighbor h_friend huv = commonNeighbor h_friend huv.symm := by
-  have h1 : commonNeighbor h_friend huv ∈ G.neighborFinset v ∩ G.neighborFinset u := by
-    rw [Finset.inter_comm]
-    exact commonNeighbor_mem_inter h_friend huv
-  have h2 := inter_eq_singleton_commonNeighbor h_friend huv.symm
-  rw [h2, Finset.mem_singleton] at h1
-  exact h1
+    G.Adj v (commonNeighbor h_friend huv) :=
+  (G.mem_neighborFinset v _).mp (Finset.mem_inter.mp (commonNeighbor_mem_inter h_friend huv)).2
 
 lemma commonNeighbor_eq_of_mem (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v)
     {w : V} (hw : w ∈ G.neighborFinset u ∩ G.neighborFinset v) :
-    w = commonNeighbor h_friend huv := by
-  have h := inter_eq_singleton_commonNeighbor h_friend huv
-  rw [h, Finset.mem_singleton] at hw
-  exact hw
+    w = commonNeighbor h_friend huv :=
+  Finset.mem_singleton.mp (inter_eq_singleton_commonNeighbor h_friend huv ▸ hw)
+
+lemma commonNeighbor_symm (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v) :
+    commonNeighbor h_friend huv = commonNeighbor h_friend huv.symm :=
+  commonNeighbor_eq_of_mem h_friend huv.symm <|
+    Finset.mem_inter.mpr (Finset.mem_inter.mp (commonNeighbor_mem_inter h_friend huv)).symm
 
 lemma commonNeighbor_ne_left (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v) :
-    commonNeighbor h_friend huv ≠ u := by
-  have hadj := commonNeighbor_adj_left h_friend huv
-  exact hadj.ne.symm
+    commonNeighbor h_friend huv ≠ u :=
+  (commonNeighbor_adj_left h_friend huv).ne.symm
 
 lemma commonNeighbor_ne_right (h_friend : HasFriendshipProperty G) {u v : V} (huv : u ≠ v) :
-    commonNeighbor h_friend huv ≠ v := by
-  have hadj := commonNeighbor_adj_right h_friend huv
-  exact hadj.ne.symm
+    commonNeighbor h_friend huv ≠ v :=
+  (commonNeighbor_adj_right h_friend huv).ne.symm
 
 end FriendshipTheorem
