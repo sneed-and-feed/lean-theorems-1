@@ -2,9 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "Sperner3D.sperner_3d_parity",
-    "Sperner3D.sperner_3d_odd",
-    "Sperner3D.sperner_3d_exists"
+    "sperner_1d_parity",
+    "sperner_2d_parity"
   ],
   "permitted_axioms": [
     "propext",
