@@ -1,29 +1,30 @@
 version: "v0.4"
 
 project:
-  name: "3D Sperner's Lemma and Parity Invariant on Simplicial 3-Manifolds"
+  name: "The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the three-dimensional Sperner's Lemma
-    and the parity conservation invariant on abstract simplicial 3-complexes with boundary.
-    Proves that for any 4-coloring of vertices, the number of fully colored (panchromatic)
-    tetrahedra is congruent modulo 2 to the number of 0-1-2 triangular boundary facets.
-    To the maintainers' knowledge, the 3D combinatorial parity and manifold formulation of
-    Sperner's Lemma was To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of the Frankl–Wilson theorem (1981)
+    for modulo-p intersecting set families. Uses the polynomial linear algebra method
+    over ZMod p to prove both the general non-uniform bound |F| <= sum_{i=0}^s choose(n, i)
+    and the uniform cardinality bound |F| <= choose(n, s).
+    To the maintainers' knowledge, the Frankl–Wilson theorem was verified absent from core
+To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "57Q05", "52A35"]
+  arxiv: [math.CO]
+  msc2020: ["05D05", "11B75", "15A03"]
 
 sources:
-  - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
+  - title: "Intersection theorems with geometric consequences"
     type: paper
     authors:
-      - "Emanuel Sperner"
+      - "P. Frankl"
+      - "R. M. Wilson"
     relationship: formalizes
 
 automation:
