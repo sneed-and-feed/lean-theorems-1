@@ -2,10 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SzemerediTrotter.szemeredi_trotter_bound",
-    "SzemerediTrotter.szemeredi_trotter_uniform_bound",
-    "SzemerediTrotter.szemeredi_trotter_constant_exists",
-    "SzemerediTrotter.k_rich_lines_bound"
+    "tuckers_lemma"
   ],
   "permitted_axioms": [
     "propext",
