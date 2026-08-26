@@ -1,45 +1,37 @@
 version: "v0.4"
 
 project:
-  name: "The Graham–Pollak Theorem on Bipartite Partitions of Complete Graphs"
+  name: "Bondy's Theorem on Induced Subsets"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Graham–Pollak theorem (1971)
-    and its tightness on complete bipartite partitions of complete graphs. Proves that any
-    partition of the edges of the complete graph K_n into m complete bipartite subgraphs
-    requires at least n - 1 bipartite graphs (m >= n - 1), adapting Helge Tverberg's 1982
-    linear-algebraic quadratic form argument. Also formalizes the canonical star partition
-    proving tightness. To the maintainers' knowledge, Graham–Pollak was not previously formalized
+    A complete machine-checked Lean 4 formalization of J. A. Bondy's 1972 theorem on induced subsets.
+    Proves that for any family F of n distinct subsets of an arbitrary finite ground set X, there exists
+    a distinguishing subset S ⊆ X of cardinality at most n - 1 such that the restriction map s ↦ s ∩ S
+    is injective on F. To the maintainers' knowledge, the theorem was not found in an exact declaration,
 To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05C50", "05C70", "15A03"]
+  msc2020: ["05D05", "05C65"]
 
 sources:
-  - title: "On embedding graphs in squashed cubes"
+  - title: "Induced subsets"
     type: paper
     authors:
-      - "R. L. Graham"
-      - "H. O. Pollak"
+      - "J. A. Bondy"
     relationship: formalizes
-  - title: "On the decomposition of K_n into complete bipartite graphs"
-    type: paper
-    authors:
-      - "Helge Tverberg"
-    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

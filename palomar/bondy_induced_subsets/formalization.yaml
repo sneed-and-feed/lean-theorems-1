@@ -12,7 +12,7 @@ project:
     Proves that for any family F of n distinct subsets of an arbitrary finite ground set X, there exists
     a distinguishing subset S ⊆ X of cardinality at most n - 1 such that the restriction map s ↦ s ∩ S
     is injective on F. To the maintainers' knowledge, the theorem was not found in an exact declaration,
-    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
   arxiv: [math.CO]

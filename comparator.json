@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "graham_pollak",
-    "graham_pollak_tight"
+    "bondy_induced_subsets"
   ],
   "permitted_axioms": [
     "propext",
