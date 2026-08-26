@@ -83,3 +83,4 @@ theorem art_gallery_theorem_coloring (G : SimpleGraph V) (c : G.Coloring (Fin 3)
 
 end ArtGalleryTheorem
 
+export ArtGalleryTheorem (IsThreeColoring CoversTriangles art_gallery_theorem)

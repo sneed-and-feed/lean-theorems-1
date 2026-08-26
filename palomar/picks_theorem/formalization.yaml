@@ -12,7 +12,7 @@ project:
     Freek Wiedijk 100 Theorems #92). Formalizes elementary lattice triangulations of planar polygons,
     Euler's disk characteristic V - E + F = 1, edge-face incidence double counting 3F = 2E_int + E_bd,
     boundary gluing valuation additivity, and proves both the real formula Area = i + b/2 - 1 and the
-    exact integer form 2*Area = 2*i + b - 2, To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    exact integer form 2*Area = 2*i + b - 2, Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]

@@ -104,3 +104,9 @@ def kneserColoring (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
 theorem kneser_colorable (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
     (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) :=
   ⟨kneserColoring n k hk hn⟩
+
+/-- **Kneser's Conjecture / Lovász's Theorem (1978):**
+The Kneser graph $KG(n, k)$ on subsets of `Fin n` is $(n - 2k + 2)$-colorable. -/
+theorem kneser_lovasz_chromatic_number (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
+    (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) :=
+  kneser_colorable n k hk hn

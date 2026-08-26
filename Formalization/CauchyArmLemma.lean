@@ -99,3 +99,5 @@ theorem cauchy_arm_lemma (hn : n ≤ 2) (P Q : PolygonalChain n)
   · exact cauchy_arm_lemma_two P Q h_len h_ang
 
 end CauchyArmLemma
+
+export CauchyArmLemma (PolygonalChain distSq dot vecSub EdgeLengthsMatch AnglesOpen cauchy_arm_lemma)

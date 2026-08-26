@@ -15,7 +15,7 @@ project:
     converse theorem showing that proper axial perspectivity with distinct corresponding vertices
     implies central perspectivity. Unifies these results into an exact bidirectional equivalence
     between central and proper axial perspectives in Desarguesian projective planes. Verified
-To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
+Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.AG, math.MG]

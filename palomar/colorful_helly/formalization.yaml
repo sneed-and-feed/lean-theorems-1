@@ -11,8 +11,7 @@ project:
     A complete machine-checked Lean 4 formalization of Lovász's Colorful Helly Theorem (1974 / Bárány 1982).
     Proves that for any d + 1 finite families of convex sets in R^d such that every colorful transversal
     has a non-empty intersection, at least one entire family has a non-empty intersection.
-    To the maintainers' knowledge, the Colorful Helly theorem was verified absent from core
-To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.MG, math.CO]

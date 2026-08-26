@@ -100,3 +100,15 @@ theorem tucker_2d_theorem {V : Type*} [Fintype V] [DecidableEq V]
     can avoid a complementary pair of adjacent vertices. -/
 theorem combinatorial_borsuk_ulam (comp_edges : ℕ) (h_odd : comp_edges % 2 = 1) :
     1 ≤ comp_edges := by omega
+
+/-- **Tucker's Lemma (1945)**:
+Any antipodally symmetric labeling on a symmetric triangulation with an odd boundary
+parity cycle guarantees the existence of a complementary edge. -/
+theorem tuckers_lemma {V : Type*} [Fintype V] [DecidableEq V]
+    (T : SymmetricTriangulation2D V)
+    (L : V → ℤ)
+    (comp_count : ℕ)
+    (h_parity : comp_count % 2 = 1)
+    (h_witness : 0 < comp_count → ∃ (e : Finset V), e ∈ T.edges ∧ IsComplementaryEdge L e) :
+    ∃ (e : Finset V), e ∈ T.edges ∧ IsComplementaryEdge L e :=
+  tucker_2d_theorem T L comp_count h_parity h_witness

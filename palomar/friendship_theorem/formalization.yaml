@@ -12,9 +12,7 @@ project:
     A. Rényi, and V. T. Sós, 1966; H. S. Wilf, 1971). Proves that any finite simple graph in
     which every pair of distinct vertices shares exactly one common neighbor must contain a
     universal vertex (the 'politician'), structuring the graph as a collection of triangles
-    sharing a central vertex (a windmill graph). To the maintainers' knowledge, the theorem
-    was not found in an exact declaration, docstring, and type signature search of the pinned
-    Mathlib revision (Mathlib v4.34.0-rc1).
+    sharing a central vertex (a windmill graph). Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]

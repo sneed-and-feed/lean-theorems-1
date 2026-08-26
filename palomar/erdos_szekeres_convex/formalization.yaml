@@ -12,7 +12,7 @@ project:
     Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
     Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
     of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
-    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]

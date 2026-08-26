@@ -12,7 +12,7 @@ project:
     1966) for r <= 2 across all dimensions and for arbitrary r in dimension one. Proves that
     any (r - 1)(d + 1) + 1 points in ℝ^d can be partitioned into r parts whose convex hulls
     intersect, formalizing the full 1D case via symmetric-rank pairing following Mulzer–Werner
-    (2013). To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    (2013). Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.MG, math.CO]

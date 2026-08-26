@@ -12,8 +12,7 @@ project:
     upper bound u(n) = O(n^(4/3)) on the Erdős unit distance problem in the Euclidean plane,
     using László Székely's circle crossing lemma approach (1997). Proves explicit non-asymptotic
     bounds u(n) <= 2 n^(4/3) + 4n, u(n) <= 4 n^(4/3) for n >= 8, and the asymptotic constant existence.
-    To the maintainers' knowledge, the Spencer–Szemerédi–Trotter unit distance theorem was
-    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]

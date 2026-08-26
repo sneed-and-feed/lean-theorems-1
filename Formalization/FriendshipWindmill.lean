@@ -235,4 +235,12 @@ theorem friendship_edge_count (G : SimpleGraph V) [DecidableRel G.Adj]
   rw [h_deg_w, h_sum_other] at h_sum
   omega
 
+/-- **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)**:
+Every finite graph satisfying the friendship property is a windmill graph $Wd(k, 2)$ consisting of $k$ triangles sharing a universal vertex. -/
+theorem friendship_windmill (G : SimpleGraph V) [DecidableRel G.Adj]
+    (h_friend : HasFriendshipProperty G) : ∃ (w : V) (k : ℕ), IsWindmillGraph G w k :=
+  friendship_is_windmill G h_friend
+
 end FriendshipWindmill
+
+export FriendshipWindmill (HasFriendshipProperty IsUniversalVertex IsWindmillGraph friendship_windmill)

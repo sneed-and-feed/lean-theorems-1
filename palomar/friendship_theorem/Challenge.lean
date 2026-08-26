@@ -1,3 +1,4 @@
+import Mathlib.Data.Fintype.Card
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Finite
 
