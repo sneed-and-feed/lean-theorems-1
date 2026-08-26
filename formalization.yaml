@@ -1,17 +1,17 @@
 version: "v0.4"
 
 project:
-  name: "The Szemerédi–Trotter Theorem on Point-Line Incidences"
+  name: "Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Szemerédi–Trotter theorem (1983)
-    on point-line incidences via László Székely's crossing lemma approach (1997).
-    Proves the explicit upper bound I <= 4(nm)^(2/3) + 4n + m, uniform bounds,
-    and the k-rich lines corollary.
+    A complete machine-checked Lean 4 formalization of the Spencer–Szemerédi–Trotter (1984)
+    upper bound u(n) = O(n^(4/3)) on the Erdős unit distance problem in the Euclidean plane,
+    using László Székely's circle crossing lemma approach (1997). Proves explicit non-asymptotic
+    bounds u(n) <= 2 n^(4/3) + 4n, u(n) <= 4 n^(4/3) for n >= 8, and the asymptotic constant existence.
     Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
@@ -19,12 +19,18 @@ classification:
   msc2020: ["52C10", "05C10", "05C62"]
 
 sources:
-  - title: "Extremal problems in discrete geometry"
+  - title: "Unit distances in the Euclidean plane"
     type: paper
     authors:
+      - "Joel Spencer"
       - "Endre Szemerédi"
       - "William T. Trotter"
     relationship: formalizes
+  - title: "On Sets of Distances of n Points"
+    type: paper
+    authors:
+      - "Paul Erdős"
+    relationship: background
   - title: "Crossing numbers and hard Erdős problems in discrete geometry"
     type: paper
     authors:

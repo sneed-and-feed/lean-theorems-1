@@ -2,10 +2,10 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SzemerediTrotter.szemeredi_trotter_bound",
-    "SzemerediTrotter.szemeredi_trotter_uniform_bound",
-    "SzemerediTrotter.szemeredi_trotter_constant_exists",
-    "SzemerediTrotter.k_rich_lines_bound"
+    "ErdosUnitDistances.erdos_unit_distances_bound",
+    "ErdosUnitDistances.erdos_unit_distances_bound_tight",
+    "ErdosUnitDistances.erdos_unit_distances_uniform_bound",
+    "ErdosUnitDistances.erdos_unit_distances_asymptotic"
   ],
   "permitted_axioms": [
     "propext",
