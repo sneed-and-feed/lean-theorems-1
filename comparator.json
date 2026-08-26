@@ -2,7 +2,10 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "art_gallery_theorem"
+    "BecksTheorem.becks_theorem",
+    "BecksTheorem.sum_card_pairs_eq",
+    "BecksTheorem.pair_counting_bound",
+    "BecksTheorem.becks_dichotomy_parameterized"
   ],
   "permitted_axioms": [
     "propext",
