@@ -1,34 +1,34 @@
 version: "v0.4"
 
 project:
-  name: "Elekes's Sum-Product Inequality in Additive Combinatorics"
+  name: "Cauchy's Arm Lemma and Convex Rigidity Foundations"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of György Elekes's landmark sum-product
-    inequalities (1997) via incidence geometry and the Szemerédi–Trotter theorem.
-    Proves the max sum-product bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum
-    bound |A + A| * |A * A| >= 1/16 |A|^(5/2), and structural additive-multiplicative expansion bounds.
+    A machine-checked Lean 4 formalization of Cauchy's Arm Lemma (1813), the fundamental geometric
+    engine underpinning Cauchy's Rigidity Theorem for 3D convex polyhedra. Formalizes 2D polygonal chains,
+    squared Euclidean distance metrics, vector inner products, and proves that opening the internal joint
+    angles of a chain increases the distance between its endpoints for chains of length at most 2,
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.NT]
-  msc2020: ["11B75", "05D99", "52C10"]
+  arxiv: [math.MG, math.CO]
+  msc2020: ["52C25", "52A10", "52B10"]
 
 sources:
-  - title: "On the number of sums and products"
+  - title: "Recherches sur les polyèdres: Premier Mémoire"
     type: paper
     authors:
-      - "György Elekes"
+      - "Augustin-Louis Cauchy"
     relationship: formalizes
-  - title: "On sums and products of integers"
-    type: paper
+  - title: "Proofs from THE BOOK"
+    type: book
     authors:
-      - "Paul Erdős"
-      - "Endre Szemerédi"
+      - "Martin Aigner"
+      - "Günter M. Ziegler"
     relationship: background
 
 automation:
@@ -36,8 +36,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
