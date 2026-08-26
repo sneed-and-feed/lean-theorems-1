@@ -1,1 +1,1 @@
-import Formalization.SpernersLemma
+import Formalization.SylvesterGallai
