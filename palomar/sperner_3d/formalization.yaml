@@ -13,7 +13,7 @@ project:
     Proves that for any 4-coloring of vertices, the number of fully colored (panchromatic)
     tetrahedra is congruent modulo 2 to the number of 0-1-2 triangular boundary facets.
     To the maintainers' knowledge, the 3D combinatorial parity and manifold formulation of
-    Sperner's Lemma was verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    Sperner's Lemma was To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.AT]
@@ -39,6 +39,5 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    The formalization and Challenge/Solution parity were verified through human audit by the
-    maintainers with interactive proof assistance and refactoring. Verified with 0 errors,
-    0 warnings, 0 sorries, and 0 custom axioms.
+    Challenge contains deliberate statement holes. Solution verified through human audit by the
+    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
