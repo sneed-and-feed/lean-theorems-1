@@ -1,39 +1,27 @@
+import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Data.Fintype.Basic
 
-open Finset
+namespace SylvesterGallai
 
-variable {α : Type*} [DecidableEq α] [Fintype α]
+/-- A point in the 2D real affine plane. -/
+abbrev Point := ℝ × ℝ
 
-/-- **Erdős–Ko–Rado Theorem (1961):**
-Let `α` be a finite type of size `n` with `n ≥ 2k` and `k ≥ 1`.
-If `ℱ` is an intersecting family of `k`-element subsets of `α`, then
-`|ℱ| ≤ Nat.choose (n - 1) (k - 1)`. -/
-theorem erdos_ko_rado {n k : ℕ}
-    (hn : Fintype.card α = n) (hk : 1 ≤ k) (h2k : 2 * k ≤ n)
-    (F : Finset (Finset α))
-    (hF_k : ∀ A ∈ F, A.card = k)
-    (h_inter : ∀ A ∈ F, ∀ B ∈ F, ¬ Disjoint A B) :
-    F.card ≤ Nat.choose (n - 1) (k - 1) := sorry
+/-- Three points in the plane are collinear if the triangle they form has zero signed area. -/
+def Collinear (p q r : Point) : Prop :=
+  (q.1 - p.1) * (r.2 - p.2) - (q.2 - p.2) * (r.1 - p.1) = 0
 
-/-- A family `F` of sets is a star (canonically centered) if all sets share a common element `x`. -/
-def IsStarFamily (F : Finset (Finset α)) : Prop :=
-  ∃ x : α, ∀ A ∈ F, x ∈ A
+/-- A finite set of points `S` is collinear if all triples in `S` are collinear. -/
+def SetCollinear (S : Finset Point) : Prop :=
+  ∀ p ∈ S, ∀ q ∈ S, ∀ r ∈ S, Collinear p q r
 
-/-- The Hilton–Milner extremal bound: $inom{n-1}{k-1} - inom{n-k-1}{k-1} + 1$. -/
-def hiltonMilnerBound (n k : ℕ) : ℕ :=
-  Nat.choose (n - 1) (k - 1) - Nat.choose (n - k - 1) (k - 1) + 1
+/-- An ordinary line with respect to a finite point set `S` is a line passing through
+exactly two points of `S`. -/
+def IsOrdinaryLine (S : Finset Point) (p q : Point) : Prop :=
+  p ∈ S ∧ q ∈ S ∧ p ≠ q ∧ (∀ r ∈ S, Collinear p q r → r = p ∨ r = q)
 
-/-- **Sharpness of the Hilton--Milner bound.** For every `2 ≤ k` and `2k < n`,
-there is a uniform, pairwise-intersecting, non-star family whose cardinality is exactly
-`hiltonMilnerBound n k`. This is the classical exceptional-set construction described
-after Theorem 1 of Bulavka--Woodroofe (2026). -/
-theorem exists_hiltonMilner_extremizer {n k : ℕ} (hn : Fintype.card α = n)
-    (hk : 2 ≤ k) (h2k : 2 * k < n) :
-    ∃ F : Finset (Finset α),
-      (∀ A ∈ F, A.card = k) ∧
-      (∀ A ∈ F, ∀ B ∈ F, ¬ Disjoint A B) ∧
-      ¬ IsStarFamily F ∧
-      F.card = hiltonMilnerBound n k := sorry
+/-- **The Sylvester–Gallai Theorem (Freek Wiedijk #98):**
+Every finite, non-collinear set of points in the real Euclidean plane contains an ordinary line. -/
+theorem sylvester_gallai (S : Finset Point) (_h_card : 3 ≤ S.card) (h_non_collinear : ¬ SetCollinear S) :
+    ∃ p ∈ S, ∃ q ∈ S, p ≠ q ∧ IsOrdinaryLine S p q := sorry
+
+end SylvesterGallai
