@@ -1,26 +1,23 @@
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Fintype.Basic
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Finite
 
-namespace HallMarriage
+namespace FriendshipTheorem
 
-open Finset
+variable {V : Type*} [Fintype V] [DecidableEq V]
 
-variable {ι α : Type*} [DecidableEq ι] [DecidableEq α] [Fintype ι]
+/-- The friendship property: every pair of distinct vertices has exactly one common neighbor. -/
+def HasFriendshipProperty (G : SimpleGraph V) [DecidableRel G.Adj] : Prop :=
+  ∀ u v : V, u ≠ v → (G.neighborFinset u ∩ G.neighborFinset v).card = 1
 
-/-- Hall's marriage condition: for every subset of indices `J`, the union of sets `A i` for `i ∈ J`
-has cardinality at least `|J|`. -/
-def HallCondition (A : ι → Finset α) : Prop :=
-  ∀ J : Finset ι, J.card ≤ (J.biUnion A).card
+/-- A universal vertex (or "politician") in `G` that is adjacent to all other vertices. -/
+def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
+  ∀ v : V, v ≠ w → G.Adj w v
 
-/-- A System of Distinct Representatives (SDR) / Transversal for the indexed family `A`. -/
-def IsSDR (A : ι → Finset α) (f : ι → α) : Prop :=
-  Function.Injective f ∧ ∀ i : ι, f i ∈ A i
+/-- **The Friendship Theorem (Erdős–Rényi–Sós 1966):**
+Any finite simple graph in which every pair of distinct vertices shares exactly one
+common neighbor has a universal vertex. -/
+theorem friendship_theorem (G : SimpleGraph V) [DecidableRel G.Adj]
+    (h_friend : HasFriendshipProperty G) (h_card : 3 ≤ Fintype.card V) :
+    ∃ w : V, IsUniversalVertex G w := sorry
 
-/-- **Hall's Marriage Theorem (Sufficiency / Equivalence, Freek Wiedijk #87):**
-A finite collection of sets admits a system of distinct representatives if and only if
-it satisfies Hall's condition. -/
-theorem hall_marriage_theorem (A : ι → Finset α) :
-    (∃ f : ι → α, IsSDR A f) ↔ HallCondition A := sorry
-
-end HallMarriage
+end FriendshipTheorem
