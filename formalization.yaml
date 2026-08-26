@@ -1,27 +1,34 @@
 version: "v0.4"
 
 project:
-  name: "Descartes's Rule of Signs"
+  name: "Radon's Lemma and Helly's Theorem on Convex Sets"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Descartes's Rule of Signs (1637, Wiedijk #73).
-    Proves that for any non-zero real polynomial p(X), the number of positive real roots counted
-    with algebraic multiplicity is bounded above by the number of sign variations in its coefficients
-    and has the same parity. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Radon's Lemma (Johann Radon, 1921)
+    and Helly's Theorem on intersecting families of convex sets (Eduard Helly, 1923; Freek
+    Wiedijk #99) from first principles. Proves that any d + 2 points in ℝ^d admit a Radon
+    partition, and uses Radon's lemma by induction to prove Helly's theorem for finite
+    collections of convex sets. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.AG, math.CA]
-  msc2020: ["12D10", "26C10", "30C15"]
+  arxiv: [math.MG, math.CO]
+  msc2020: ["52A35", "52A20", "52C10"]
 
 sources:
-  - title: "La Géométrie"
-    type: book
+  - title: "Mengen konvexer Körper, die einen gemeinsamen Punkt enthalten"
+    type: paper
     authors:
-      - "René Descartes"
+      - "Johann Radon"
+    relationship: formalizes
+  - title: "Über Mengen konvexer Körper mit gemeinschaftlichen Punkten"
+    type: paper
+    authors:
+      - "Eduard Helly"
     relationship: formalizes
 
 automation:
@@ -29,8 +36,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
