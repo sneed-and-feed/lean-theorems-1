@@ -1,26 +1,24 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Fintype.Basic
+import Mathlib.Combinatorics.SimpleGraph.Hamiltonian
+import Mathlib.Data.Fintype.Card
 
-variable (α : Type*) [DecidableEq α] [Fintype α]
+open SimpleGraph
 
-/-- The adjacency relation for the Kneser graph: two k-subsets are adjacent iff they are disjoint. -/
-def kneserRel (k : ℕ) (A B : {s : Finset α // s.card = k}) : Prop :=
-  Disjoint A.val B.val ∧ A ≠ B
+/-- **Ore's Theorem (1960)**:
+A simple graph $G$ on $n \ge 3$ vertices in which $\deg(u) + \deg(v) \ge n$ for every pair of
+distinct non-adjacent vertices $u, v$ contains a Hamiltonian cycle. -/
+theorem ore_hamiltonian {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hn : 3 ≤ Fintype.card V)
+    (hore : ∀ u v : V, u ≠ v → ¬ G.Adj u v →
+      Fintype.card V ≤ G.degree u + G.degree v) :
+    ∃ (v : V) (p : G.Walk v v), p.IsHamiltonianCycle := sorry
 
-instance (k : ℕ) : Std.Symm (kneserRel α k) where
-  symm _ _ h := ⟨h.1.symm, h.2.symm⟩
-
-instance (k : ℕ) : Std.Irrefl (kneserRel α k) where
-  irrefl _ h := h.2 rfl
-
-/-- The Kneser graph `KG(α, k)` whose vertices are the `k`-element subsets of `α`. -/
-def kneserGraph (k : ℕ) : SimpleGraph {s : Finset α // s.card = k} :=
-  SimpleGraph.fromRel (kneserRel α k)
-
-/-- **Kneser's Conjecture / Lovász's Theorem (1978):**
-The Kneser graph $KG(n, k)$ on subsets of `Fin n` is $(n - 2k + 2)$-colorable. -/
-theorem kneser_lovasz_chromatic_number (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
-    (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) := sorry
+/-- **Dirac's Theorem (1952)**:
+A simple graph $G$ on $n \ge 3$ vertices with minimum degree $\delta(G) \ge \lceil n / 2 \rceil$
+contains a Hamiltonian cycle. -/
+theorem dirac_hamiltonian {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hn : 3 ≤ Fintype.card V)
+    (hdirac : ∀ v : V, (Fintype.card V + 1) / 2 ≤ G.degree v) :
+    ∃ (v : V) (p : G.Walk v v), p.IsHamiltonianCycle := sorry
