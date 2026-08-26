@@ -1,27 +1,28 @@
 version: "v0.4"
 
 project:
-  name: "Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem"
+  name: "Tutte's 1-Factor Theorem for Simple Graphs"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Tucker's Combinatorial Lemma (Albert W. Tucker, 1945),
-    the discrete foundational precursor to the Borsuk–Ulam Theorem in algebraic topology.
-    Formalizes discrete 1D sign changes, symmetric triangulations with antipodal involutions,
+    A complete machine-checked Lean 4 formalization of Tutte's 1-Factor Theorem (1947),
+    establishing the fundamental characterization that a finite simple graph has a 1-factor
+    (perfect matching) if and only if for every vertex subset U, the number of odd components
+    q(G \ U) is at most |U|. Also connects to matching defect and the Tutte–Berge formula.
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "55M20", "57M15"]
+  arxiv: [math.CO]
+  msc2020: ["05C70", "05C75"]
 
 sources:
-  - title: "Some topological properties of disk and sphere"
+  - title: "The factorization of linear graphs"
     type: paper
     authors:
-      - "Albert W. Tucker"
+      - "W. T. Tutte"
     relationship: formalizes
 
 automation:
@@ -29,8 +30,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
