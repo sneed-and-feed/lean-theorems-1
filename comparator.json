@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "picks_theorem",
-    "picks_theorem_two_area"
+    "RadonHelly.radons_theorem",
+    "RadonHelly.hellys_theorem"
   ],
   "permitted_axioms": [
     "propext",
