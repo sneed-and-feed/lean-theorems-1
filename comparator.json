@@ -2,9 +2,10 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "Sperner3D.sperner_3d_parity",
-    "Sperner3D.sperner_3d_odd",
-    "Sperner3D.sperner_3d_exists"
+    "BecksTheorem.becks_theorem",
+    "BecksTheorem.sum_card_pairs_eq",
+    "BecksTheorem.pair_counting_bound",
+    "BecksTheorem.becks_dichotomy_parameterized"
   ],
   "permitted_axioms": [
     "propext",
