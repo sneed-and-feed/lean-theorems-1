@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "desargues_vector",
-    "DesarguesProjective.desargues_converse_projective_plane"
+    "art_gallery_theorem"
   ],
   "permitted_axioms": [
     "propext",

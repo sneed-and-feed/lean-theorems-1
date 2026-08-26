@@ -1,34 +1,38 @@
 version: "v0.4"
 
 project:
-  name: "Desargues's Theorem in Vector and Axiomatic Projective Geometry"
+  name: "Chvátal's Art Gallery Theorem & Fisk's 3-Coloring Proof"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Desargues's theorem (Wiedijk #53) in both
-    module-theoretic vector geometry and synthetic axiomatic projective planes. Proves that centrally
-    perspective triangles have collinear side-intersection points in modules over commutative rings,
-    and proves the non-trivial converse theorem in Desarguesian projective planes under proper nondegeneracy
-    hypotheses. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Chvátal's Art Gallery Theorem (1975)
+    via Steve Fisk's elegant 1978 3-coloring proof on triangulated polygon graphs. Proves that for
+    any 3-colorable planar triangulation graph on n vertices, there exists a guard set of size
+    at most floor(n / 3) covering all facial triangles (3-cliques), verified absent from core Mathlib
+    (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.AG, math.MG]
-  msc2020: ["51A05", "51A30", "14N05"]
+  arxiv: [math.CO, math.MG]
+  msc2020: ["05C15", "05C10", "52C99"]
 
 sources:
-  - title: "Manière universelle de Mr. Girard Desargues, pour pratiquer la perspective par petit-pied, comme le geometral"
-    type: book
+  - title: "A combinatorial theorem in plane geometry"
+    type: paper
     authors:
-      - "Girard Desargues"
-      - "Abraham Bosse"
+      - "Václav Chvátal"
     relationship: formalizes
-  - title: "Grundlagen der Geometrie"
+  - title: "A short proof of Chvátal's watchman theorem"
+    type: paper
+    authors:
+      - "Steve Fisk"
+    relationship: adapts
+  - title: "Art Gallery Theorems and Algorithms"
     type: book
     authors:
-      - "David Hilbert"
+      - "Joseph O'Rourke"
     relationship: background
 
 automation:
@@ -36,8 +40,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
