@@ -1,30 +1,38 @@
 version: "v0.4"
 
 project:
-  name: "The De Bruijn–Erdős Theorem on Incidence Geometry"
+  name: "Desargues's Theorem and Synthetic Projective Equivalence"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the De Bruijn–Erdős theorem (1948)
-        in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
-        on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
-        metric perturbation proof.
-        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Desargues's theorem and its converse
+    in synthetic axiomatic projective planes. Formalizes Hilbert-style incidence axioms for
+    projective planes, establishes that centrally perspective triangles induce a proper axial
+    perspective where the axis is distinct from all triangle sides, and formalizes the non-trivial
+    converse theorem showing that proper axial perspectivity with distinct corresponding vertices
+    implies central perspectivity. Unifies these results into an exact bidirectional equivalence
+    between central and proper axial perspectives in Desarguesian projective planes. Verified
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["05B25", "51E10", "51A15"]
+  arxiv: [math.AG, math.MG]
+  msc2020: ["51A05", "51A30", "14N05"]
 
 sources:
-  - title: "On a combinatorial problem"
-    type: paper
+  - title: "Grundlagen der Geometrie"
+    type: book
     authors:
-      - "N. G. de Bruijn"
-      - "Paul Erdős"
-    relationship: formalizes
+      - "David Hilbert"
+    relationship: adapts
+  - title: "Manière universelle de Mr Desargues, pour pratiquer la perspective par petit-pied, comme le géométral"
+    type: book
+    authors:
+      - "Girard Desargues"
+      - "Abraham Bosse"
+    relationship: background
 
 automation:
   methods:
