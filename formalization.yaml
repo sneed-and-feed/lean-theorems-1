@@ -1,28 +1,33 @@
 version: "v0.4"
 
 project:
-  name: "Bollobás's Two Families Theorem"
+  name: "Ore's and Dirac's Theorems on Hamiltonian Cycles"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Béla Bollobás's 1965 Two Families Theorem
-    in extremal set theory. Proves the skew LYM-type inequality for pairs of disjoint subsets (A_i, B_i)
-    with cross-intersecting properties via strong induction on the sum of set sizes.
+    A complete machine-checked Lean 4 formalization of Ore's theorem (1960) and Dirac's theorem (1952)
+    on the existence of Hamiltonian cycles in simple graphs. Proves Ore's degree-sum condition via maximal
+    path cycle-closure and connectivity arguments, and derives Dirac's minimum-degree theorem as a corollary.
     To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05D05", "05C35"]
+  msc2020: ["05C38", "05C45"]
 
 sources:
-  - title: "On generalized graphs"
+  - title: "Note on Hamilton circuits"
     type: paper
     authors:
-      - "Béla Bollobás"
+      - "Øystein Ore"
     relationship: formalizes
+  - title: "Some theorems on abstract graphs"
+    type: paper
+    authors:
+      - "G. A. Dirac"
+    relationship: adapts
 
 automation:
   methods:

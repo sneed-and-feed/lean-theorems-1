@@ -11,7 +11,7 @@ project:
     A complete machine-checked Lean 4 formalization of Ore's theorem (1960) and Dirac's theorem (1952)
     on the existence of Hamiltonian cycles in simple graphs. Proves Ore's degree-sum condition via maximal
     path cycle-closure and connectivity arguments, and derives Dirac's minimum-degree theorem as a corollary.
-    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
@@ -42,6 +42,5 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    The formalization and Challenge/Solution parity were verified through human audit by the maintainers
-    with interactive proof assistance and refactoring. Verified with 0 errors, 0 warnings, 0 sorries,
-    and 0 custom axioms.
+    Challenge contains deliberate statement holes. Solution verified through human audit by the
+    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "bollobas_two_families"
+    "ore_hamiltonian",
+    "dirac_hamiltonian"
   ],
   "permitted_axioms": [
     "propext",
