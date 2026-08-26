@@ -20,6 +20,8 @@ classification:
 sources:
   - title: "Über die Kongruenz x^m + y^m ≡ z^m (mod p)"
     type: paper
+    year: 1916
+    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
     authors:
       - "Issai Schur"
     relationship: formalizes

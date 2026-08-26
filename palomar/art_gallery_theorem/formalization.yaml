@@ -9,12 +9,13 @@ project:
   license: "CC0-1.0"
   description: >-
     A complete, machine-checked Lean 4 formalization of Chvátal's Art Gallery Theorem (1975)
-    via Steve Fisk's elegant 1978 3-coloring proof on triangulated polygon graphs. Proves that for
-    any 3-colorable planar triangulation graph on n vertices, there exists a guard set of size
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+        via Steve Fisk's elegant 1978 3-coloring proof on triangulated polygon graphs. Proves that for
+        any 3-colorable planar triangulation graph on n vertices, there exists a guard set of size
+        34.0-rc1).
+        34.0-rc1). floor(n/3).
+        To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-classification:
+classification::
   arxiv: [math.CO, math.MG]
   msc2020: ["05C15", "05C10", "52C99"]
 

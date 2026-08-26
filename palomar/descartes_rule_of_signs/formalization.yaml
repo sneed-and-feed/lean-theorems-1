@@ -1,4 +1,4 @@
-version: "v0.4"
+﻿version: "v0.4"
 
 project:
   name: "Descartes's Rule of Signs"
@@ -10,9 +10,10 @@ project:
   description: >-
     A complete machine-checked Lean 4 formalization of Descartes's Rule of Signs (1637, Wiedijk #73).
     Proves that for any non-zero real polynomial p(X), the number of positive real roots counted
-    with algebraic multiplicity is bounded above by the number of sign variations in its coefficients
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    with algebraic multiplicity is bounded above by the number of sign variations in its coefficients, and their difference is an even integer.
 
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
   arxiv: [math.AG, math.CA]
   msc2020: ["12D10", "26C10", "30C15"]

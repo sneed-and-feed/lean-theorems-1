@@ -21,6 +21,8 @@ classification:
 sources:
   - title: "Intersection theorems with geometric consequences"
     type: paper
+    year: 1981
+    venue: "Combinatorica"
     authors:
       - "P. Frankl"
       - "R. M. Wilson"

@@ -20,11 +20,15 @@ classification:
 sources:
   - title: "Note on Hamilton circuits"
     type: paper
+    year: 1960
+    venue: "American Mathematical Monthly"
     authors:
       - "Øystein Ore"
     relationship: formalizes
   - title: "Some theorems on abstract graphs"
     type: paper
+    year: 1952
+    venue: "Proceedings of the London Mathematical Society"
     authors:
       - "G. A. Dirac"
     relationship: adapts

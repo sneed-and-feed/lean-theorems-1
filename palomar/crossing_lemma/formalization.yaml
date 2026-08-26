@@ -9,12 +9,13 @@ project:
   license: "CC0-1.0"
   description: >-
     A machine-checked Lean 4 formalization of the Crossing Lemma (Ajtai, Chvátal, Newborn, Szemerédi 1982;
-    Leighton 1983) and its application to the Szemerédi–Trotter point-line incidence theorem via László Székely's
-    probabilistic expectation sub-sampling amplification (1997). Proves that any planar drawing of a graph with
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+        Leighton 1983) and its application to the Szemerédi–Trotter point-line incidence theorem via László Székely's
+        probabilistic expectation sub-sampling amplification (1997). Proves that any planar drawing of a graph with
+        34.0-rc1).
+        34.0-rc1). e >= 4v edges has at least e^3 / 64v^2 crossings.
+        To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-classification:
+classification::
   arxiv: [math.CO, math.MG]
   msc2020: ["05C10", "05C62", "52C10"]
 

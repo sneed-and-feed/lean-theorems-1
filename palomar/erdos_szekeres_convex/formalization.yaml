@@ -9,12 +9,13 @@ project:
   license: "CC0-1.0"
   description: >-
     A comprehensive, machine-checked Lean 4 formalization of the Erdős–Szekeres Convex Polygon Theorem (1935).
-    Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
-    Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
-    of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+        Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
+        Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
+        of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
+        34.0-rc1). verifying the Happy Ending Problem.
+        To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-classification:
+classification::
   arxiv: [math.CO, math.MG]
   msc2020: ["52C10", "05D10", "52A10"]
 

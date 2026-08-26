@@ -22,11 +22,15 @@ classification:
 sources:
   - title: "A Decomposition Theorem for Partially Ordered Sets"
     type: paper
+    year: 1950
+    venue: "Annals of Mathematics"
     authors:
       - "R. P. Dilworth"
     relationship: formalizes
   - title: "A dual of Dilworth's decomposition theorem"
     type: paper
+    year: 1971
+    venue: "American Mathematical Monthly"
     authors:
       - "Leon Mirsky"
     relationship: formalizes

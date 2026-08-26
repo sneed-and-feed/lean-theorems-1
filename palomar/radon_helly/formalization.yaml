@@ -1,4 +1,4 @@
-version: "v0.4"
+﻿version: "v0.4"
 
 project:
   name: "Radon's Lemma and Helly's Theorem on Convex Sets"
@@ -11,10 +11,10 @@ project:
     A complete, machine-checked Lean 4 formalization of Radon's Lemma (Johann Radon, 1921)
     and Helly's Theorem on intersecting families of convex sets (Eduard Helly, 1923; Freek
     Wiedijk #99) from first principles. Proves that any d + 2 points in ℝ^d admit a Radon
-    partition, and uses Radon's lemma by induction to prove Helly's theorem for finite
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    partition, and uses Radon's lemma by induction to prove Helly's theorem for finite families of convex sets.
 
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
   arxiv: [math.MG, math.CO]
   msc2020: ["52A35", "52A20", "52C10"]

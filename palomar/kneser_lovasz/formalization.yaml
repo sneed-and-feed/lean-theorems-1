@@ -21,11 +21,15 @@ classification:
 sources:
   - title: "Kneser's conjecture, chromatic number, and homotopy"
     type: paper
+    year: 1978
+    venue: "Journal of Combinatorial Theory, Series A"
     authors:
       - "László Lovász"
     relationship: formalizes
   - title: "Aufgabe 360"
     type: paper
+    year: 1955
+    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
     authors:
       - "Martin Kneser"
     relationship: background

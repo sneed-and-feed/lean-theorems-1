@@ -9,11 +9,12 @@ project:
   license: "CC0-1.0"
   description: >-
     A complete machine-checked Lean 4 formalization of the De Bruijn–Erdős theorem (1948)
-    in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
-    on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+        in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
+        on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
+        34.0-rc1). metric perturbation proof.
+        To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-classification:
+classification::
   arxiv: [math.CO, math.MG]
   msc2020: ["05B25", "51E10", "51A15"]
 

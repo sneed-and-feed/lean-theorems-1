@@ -12,7 +12,6 @@ project:
     the discrete foundational precursor to the Borsuk–Ulam Theorem in algebraic topology.
     Formalizes discrete 1D sign changes, symmetric triangulations with antipodal involutions,
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.AT]
