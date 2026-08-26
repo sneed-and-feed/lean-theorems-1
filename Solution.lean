@@ -1,1 +1,1 @@
-import Formalization.FranklWilson
+import Formalization.FriendshipTheorem

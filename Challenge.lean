@@ -1,34 +1,23 @@
-import Mathlib.Data.Fintype.Card
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.ZMod.Basic
-import Mathlib.Algebra.Field.ZMod
-import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Finite
 
-open Finset
+namespace FriendshipTheorem
 
-variable {α : Type*} [Fintype α] [DecidableEq α]
+variable {V : Type*} [Fintype V] [DecidableEq V]
 
-/-- A family of subsets whose pairwise intersection cardinalities mod p lie in L. -/
-structure ModuloPIntersectingFamily (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p)) where
-  /-- The family of subsets -/
-  F : Finset (Finset α)
-  /-- Forbidden self-size residue: |A| mod p ∉ L -/
-  h_self : ∀ A ∈ F, (A.card : ZMod p) ∉ L
-  /-- Allowed pairwise intersection residues: |A ∩ B| mod p ∈ L for A ≠ B -/
-  h_inter : ∀ A ∈ F, ∀ B ∈ F, A ≠ B → ((A ∩ B).card : ZMod p) ∈ L
+/-- The friendship property: every pair of distinct vertices has exactly one common neighbor. -/
+def HasFriendshipProperty (G : SimpleGraph V) [DecidableRel G.Adj] : Prop :=
+  ∀ u v : V, u ≠ v → (G.neighborFinset u ∩ G.neighborFinset v).card = 1
 
-/-- General Frankl–Wilson Theorem (1981):
-    |F| ≤ ∑_{i=0}^s Nat.choose n i where s = |L|. -/
-theorem frankl_wilson_general (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p))
-    (fam : ModuloPIntersectingFamily (α := α) p L) :
-    fam.F.card ≤ ∑ i ∈ Finset.range (L.card + 1), Nat.choose (Fintype.card α) i := sorry
+/-- A universal vertex (or "politician") in `G` that is adjacent to all other vertices. -/
+def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
+  ∀ v : V, v ≠ w → G.Adj w v
 
-/-- Uniform Cardinality Frankl–Wilson Theorem (1981):
-    If all subsets in F have equal size k with (k : ZMod p) ∉ L, and k mod p ≠ j mod p for all j < |L|,
-    then |F| ≤ Nat.choose n s. -/
-theorem frankl_wilson_uniform (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p))
-    (fam : ModuloPIntersectingFamily (α := α) p L)
-    (k : ℕ) (h_uniform : ∀ A ∈ fam.F, A.card = k)
-    (hk_diff : ∀ j < L.card, (k : ZMod p) ≠ (j : ZMod p)) :
-    fam.F.card ≤ Nat.choose (Fintype.card α) L.card := sorry
+/-- **The Friendship Theorem (Erdős–Rényi–Sós 1966):**
+Any finite simple graph on at least three vertices (3 ≤ |V|) in which every pair of distinct
+vertices shares exactly one common neighbor has a universal vertex. -/
+theorem friendship_theorem (G : SimpleGraph V) [DecidableRel G.Adj]
+    (h_friend : HasFriendshipProperty G) (h_card : 3 ≤ Fintype.card V) :
+    ∃ w : V, IsUniversalVertex G w := sorry
+
+end FriendshipTheorem
