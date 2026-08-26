@@ -1,42 +1,38 @@
 version: "v0.4"
 
 project:
-  name: "Kneser's Conjecture and Lovász's Chromatic Bound (1978)"
+  name: "The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Kneser graph coloring bound (Kneser's Conjecture,
-    1955; Lovász's Theorem, 1978). Formalizes the Kneser graph KG(n, k) on k-subsets of an n-element set,
-    defines the combinatorial fiber coloring based on minimal elements, proves proper coloring by fiberwise
-    pigeonhole on intervals, and establishes the chromatic bound chi(KG(n, k)) <= n - 2k + 2,
+    A complete machine-checked Lean 4 formalization of the Frankl–Wilson theorem (1981)
+    for modulo-p intersecting set families. Uses the polynomial linear algebra method
+    over ZMod p to prove both the general non-uniform bound |F| <= sum_{i=0}^s choose(n, i)
+    and the uniform cardinality bound |F| <= choose(n, s).
     Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05C15", "05E45", "55M20"]
+  arxiv: [math.CO]
+  msc2020: ["05D05", "11B75", "15A03"]
 
 sources:
-  - title: "Kneser's conjecture, chromatic number, and homotopy"
+  - title: "Intersection theorems with geometric consequences"
     type: paper
     authors:
-      - "László Lovász"
+      - "P. Frankl"
+      - "R. M. Wilson"
     relationship: formalizes
-  - title: "Aufgabe 360"
-    type: paper
-    authors:
-      - "Martin Kneser"
-    relationship: background
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

@@ -1,26 +1,34 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex
+import Mathlib.Data.Fintype.Card
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Algebra.Field.ZMod
+import Mathlib.Data.Nat.Choose.Basic
 
-variable (α : Type*) [DecidableEq α] [Fintype α]
+open Finset
 
-/-- The adjacency relation for the Kneser graph: two k-subsets are adjacent iff they are disjoint. -/
-def kneserRel (k : ℕ) (A B : {s : Finset α // s.card = k}) : Prop :=
-  Disjoint A.val B.val ∧ A ≠ B
+variable {α : Type*} [Fintype α] [DecidableEq α]
 
-instance (k : ℕ) : Std.Symm (kneserRel α k) where
-  symm _ _ h := ⟨h.1.symm, h.2.symm⟩
+/-- A family of subsets whose pairwise intersection cardinalities mod p lie in L. -/
+structure ModuloPIntersectingFamily (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p)) where
+  /-- The family of subsets -/
+  F : Finset (Finset α)
+  /-- Forbidden self-size residue: |A| mod p ∉ L -/
+  h_self : ∀ A ∈ F, (A.card : ZMod p) ∉ L
+  /-- Allowed pairwise intersection residues: |A ∩ B| mod p ∈ L for A ≠ B -/
+  h_inter : ∀ A ∈ F, ∀ B ∈ F, A ≠ B → ((A ∩ B).card : ZMod p) ∈ L
 
-instance (k : ℕ) : Std.Irrefl (kneserRel α k) where
-  irrefl _ h := h.2 rfl
+/-- General Frankl–Wilson Theorem (1981):
+    |F| ≤ ∑_{i=0}^s Nat.choose n i where s = |L|. -/
+theorem frankl_wilson_general (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p))
+    (fam : ModuloPIntersectingFamily (α := α) p L) :
+    fam.F.card ≤ ∑ i ∈ Finset.range (L.card + 1), Nat.choose (Fintype.card α) i := sorry
 
-/-- The Kneser graph `KG(α, k)` whose vertices are the `k`-element subsets of `α`. -/
-def kneserGraph (k : ℕ) : SimpleGraph {s : Finset α // s.card = k} :=
-  SimpleGraph.fromRel (kneserRel α k)
-
-/-- **Kneser's Conjecture / Lovász's Theorem (1978):**
-The Kneser graph $KG(n, k)$ on subsets of `Fin n` is $(n - 2k + 2)$-colorable. -/
-theorem kneser_lovasz_chromatic_number (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
-    (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) := sorry
+/-- Uniform Cardinality Frankl–Wilson Theorem (1981):
+    If all subsets in F have equal size k with (k : ZMod p) ∉ L, and k mod p ≠ j mod p for all j < |L|,
+    then |F| ≤ Nat.choose n s. -/
+theorem frankl_wilson_uniform (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p))
+    (fam : ModuloPIntersectingFamily (α := α) p L)
+    (k : ℕ) (h_uniform : ∀ A ∈ fam.F, A.card = k)
+    (hk_diff : ∀ j < L.card, (k : ZMod p) ≠ (j : ZMod p)) :
+    fam.F.card ≤ Nat.choose (Fintype.card α) L.card := sorry
