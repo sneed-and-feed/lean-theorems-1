@@ -36,7 +36,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **4** | **Descartes's Rule of Signs** | #73 | `f8f43442121755af91a70ad650d714dfbd326974` | `palomar/descartes_rule_of_signs/comparator.json` | [ ] Ready |
 | **5** | **Radon's Lemma & Helly's Theorem** | #99 | `8640fa71ac7d050e04a5653c8537a268abb7e7f0` | `palomar/radon_helly/comparator.json` | [ ] Ready |
 | **6** | **Pick's Theorem on Lattice Polygons** | #92 | `cac4bcf75095fde63d5cd10620c12ca663e7c0bf` | `palomar/picks_theorem/comparator.json` | [ ] Flagged for Geometry Refactor (manufactured triangulation) |
-| **7** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `7e1fb030446b88b4a9ef2a80eaa28ba06d92a244` | `palomar/euler_polyhedron/comparator.json` | [ ] Pending Refactor (Rotation Systems in `cb78c945`) |
+| **7** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `9ab9d153d836012ee8cc9c7123c2e6f56f307929` | `palomar/euler_polyhedron/comparator.json` | [ ] Ready |
 | | **Tier 2: Celebrated Combinatorics** | | | | |
 | **8** | **Chvátal's Art Gallery Theorem (Fisk's 3-Coloring)** | — | `741ef84e35db054d7d903b8975467f62f334e684` | `palomar/art_gallery_theorem/comparator.json` | [ ] Ready |
 | **9** | **Erdős–Szekeres Convex Polygon (Happy Ending 1935)** | — | `81f459c3cc35e066a5113e85b47d80fdba046b97` | `palomar/erdos_szekeres_convex/comparator.json` | [ ] Ready |
