@@ -1,27 +1,27 @@
 version: "v0.4"
 
 project:
-  name: "Bollobás's Two Families Theorem"
+  name: "Bondy's Theorem on Induced Subsets"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Béla Bollobás's 1965 Two Families Theorem
-    in extremal set theory. Proves the skew LYM-type inequality for pairs of disjoint subsets (A_i, B_i)
-    with cross-intersecting properties via strong induction on the sum of set sizes.
+    A complete machine-checked Lean 4 formalization of J. A. Bondy's 1972 theorem on induced subsets.
+    Proves that for any family F of n distinct subsets of a ground set X, there exists a distinguishing
+    subset S ⊆ X of cardinality at most n - 1 such that the restriction map s ↦ s ∩ S is injective on F.
     Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05D05", "05C35"]
+  msc2020: ["05D05", "05C65"]
 
 sources:
-  - title: "On generalized graphs"
+  - title: "Induced subsets"
     type: paper
     authors:
-      - "Béla Bollobás"
+      - "J. A. Bondy"
     relationship: formalizes
 
 automation:
