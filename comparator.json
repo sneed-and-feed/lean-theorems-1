@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "art_gallery_theorem"
+    "erdos_szekeres_convex_polygon"
   ],
   "permitted_axioms": [
     "propext",
