@@ -1,37 +1,49 @@
 version: "v0.4"
 
 project:
-  name: "Sperner's Lemma in 1D and 2D"
+  name: "The Sylvester–Gallai Theorem on Ordinary Lines in the Euclidean Plane"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Sperner's Lemma (1928) in 1D and 2D.
-    Proves the 1D color-switch parity theorem along paths and the 2D simplicial parity theorem
-    on triangulations with boundary via double-counting of panchromatic triangles and boundary doors.
+    A complete, machine-checked Lean 4 formalization of the Sylvester–Gallai theorem (J. J.
+    Sylvester 1893, T. Gallai 1944, L. M. Kelly 1948; Freek Wiedijk #98). Proves that every
+    finite non-collinear set of points in the real Euclidean plane contains an ordinary line
+    passing through exactly two points of the set, formalized via Kelly's minimal point-line distance argument.
 
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
         docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "55M20", "57Q05"]
+  arxiv: [math.MG, math.CO]
+  msc2020: ["52C10", "52C35", "51M04"]
 
 sources:
-  - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
+  - title: "Mathematical Question 11851"
     type: paper
     authors:
-      - "Emanuel Sperner"
+      - "J. J. Sylvester"
     relationship: formalizes
+  - title: "Solution to Problem 4065"
+    type: paper
+    authors:
+      - "Tibor Gallai"
+    relationship: formalizes
+  - title: "A problem of collinear points"
+    type: paper
+    authors:
+      - "H. S. M. Coxeter"
+      - "L. M. Kelly"
+    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
