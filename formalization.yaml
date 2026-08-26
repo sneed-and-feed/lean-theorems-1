@@ -1,29 +1,37 @@
 version: "v0.4"
 
 project:
-  name: "Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem"
+  name: "The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Tucker's Combinatorial Lemma (Albert W. Tucker, 1945),
-    the discrete foundational precursor to the Borsuk–Ulam Theorem in algebraic topology.
-    Formalizes discrete 1D sign changes, symmetric triangulations with antipodal involutions,
-    complementary edge predicates, and parity conservation theorems, verified absent from core Mathlib
-To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Friendship Windmill Structure Theorem
+    (Erdős, Rényi, and Sós, 1966). Proves that any finite graph in which every pair of distinct vertices
+    shares exactly one common neighbor possesses a universal vertex w, has an odd number of vertices |V| = 2k + 1,
+    induces a 1-regular perfect matching on V \ {w}, and is isomorphic to the Dutch windmill graph Wd(k, 2)
+    with exactly 3k edges, To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "55M20", "57M15"]
+  arxiv: [math.CO]
+  msc2020: ["05C75", "05C50", "05C07"]
 
 sources:
-  - title: "Some topological properties of disk and sphere"
+  - title: "On a problem of graph theory"
     type: paper
     authors:
-      - "Albert W. Tucker"
+      - "Paul Erdős"
+      - "Alfréd Rényi"
+      - "Vera T. Sós"
     relationship: formalizes
+  - title: "Proofs from THE BOOK"
+    type: book
+    authors:
+      - "Martin Aigner"
+      - "Günter M. Ziegler"
+    relationship: background
 
 automation:
   methods:

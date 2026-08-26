@@ -1,29 +1,32 @@
+import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Int.Basic
+import Mathlib.Data.Fintype.Basic
 
-/-- Abstract 2D antipodally symmetric triangulation. -/
-structure SymmetricTriangulation2D (V : Type*) [Fintype V] [DecidableEq V] where
-  /-- Antipodal involution on vertices -/
-  antipodal : V ≃ V
-  /-- Involution property: antipodal(antipodal(v)) = v -/
-  antipodal_sq : ∀ v, antipodal (antipodal v) = v
-  /-- Edges (1-simplices) of the triangulation -/
-  edges : Finset (Finset V)
-  /-- Every edge has size 2 -/
-  h_edges_card : ∀ e ∈ edges, e.card = 2
+open Finset SimpleGraph
 
-/-- An edge e = {u, v} is complementary under labeling L if L(u) = -L(v). -/
-def IsComplementaryEdge {V : Type*} (L : V → ℤ) (e : Finset V) : Prop :=
-  ∃ (u v : V), u ∈ e ∧ v ∈ e ∧ u ≠ v ∧ L u = - L v
+variable {V : Type*} [Fintype V] [DecidableEq V] [Nonempty V]
 
-/-- **Tucker's Lemma (Albert W. Tucker, 1945)**:
-Any antipodally symmetric labeling on a symmetric triangulation with an odd boundary
-parity cycle guarantees the existence of a complementary edge. -/
-theorem tuckers_lemma {V : Type*} [Fintype V] [DecidableEq V]
-    (T : SymmetricTriangulation2D V)
-    (L : V → ℤ)
-    (comp_count : ℕ)
-    (h_parity : comp_count % 2 = 1)
-    (h_witness : 0 < comp_count → ∃ (e : Finset V), e ∈ T.edges ∧ IsComplementaryEdge L e) :
-    ∃ (e : Finset V), e ∈ T.edges ∧ IsComplementaryEdge L e := sorry
+/-- The friendship property: every pair of distinct vertices has exactly one common neighbor. -/
+def HasFriendshipProperty (G : SimpleGraph V) [DecidableRel G.Adj] : Prop :=
+  ∀ u v : V, u ≠ v → (G.neighborFinset u ∩ G.neighborFinset v).card = 1
+
+/-- A universal vertex (politician) in `G` that is adjacent to all other vertices. -/
+def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
+  ∀ v : V, v ≠ w → G.Adj w v
+
+/-- Predicate defining a windmill graph $Wd(k, 2)$: a central vertex `w` connected to
+    `k` vertex-disjoint triangles. -/
+def IsWindmillGraph (G : SimpleGraph V) (w : V) (k : ℕ) : Prop :=
+  IsUniversalVertex G w ∧
+  Fintype.card V = 2 * k + 1 ∧
+  ∃ (matching : Finset (Finset V)),
+    matching.card = k ∧
+    (∀ e ∈ matching, e.card = 2 ∧ w ∉ e) ∧
+    (∀ e₁ ∈ matching, ∀ e₂ ∈ matching, e₁ ≠ e₂ → Disjoint e₁ e₂) ∧
+    (∀ u v, u ≠ w → v ≠ w → (G.Adj u v ↔ {u, v} ∈ matching))
+
+/-- **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)**:
+Every finite graph satisfying the friendship property is a windmill graph $Wd(k, 2)$ consisting of $k$ triangles sharing a universal vertex. -/
+theorem friendship_windmill (G : SimpleGraph V) [DecidableRel G.Adj]
+    (h_friend : HasFriendshipProperty G) : ∃ (w : V) (k : ℕ), IsWindmillGraph G w k := sorry
