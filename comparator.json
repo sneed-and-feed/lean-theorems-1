@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "graham_pollak",
-    "graham_pollak_tight"
+    "desargues_vector",
+    "DesarguesProjective.desargues_converse_projective_plane"
   ],
   "permitted_axioms": [
     "propext",
