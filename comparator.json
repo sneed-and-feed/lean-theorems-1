@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "DeBruijnErdos.de_bruijn_erdos"
+    "SchursTheorem.schurs_theorem",
+    "SchursTheorem.ramsey_triangle"
   ],
   "permitted_axioms": [
     "propext",
