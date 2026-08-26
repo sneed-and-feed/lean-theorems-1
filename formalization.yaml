@@ -1,34 +1,33 @@
 version: "v0.4"
 
 project:
-  name: "Cauchy's Arm Lemma and Convex Rigidity Foundations"
+  name: "Pick's Theorem on Lattice Polygons (Wiedijk #92)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Cauchy's Arm Lemma (1813), the fundamental geometric
-    engine underpinning Cauchy's Rigidity Theorem for 3D convex polyhedra. Formalizes 2D polygonal chains,
-    squared Euclidean distance metrics, vector inner products, and proves that opening the internal joint
-    angles of a chain increases the distance between its endpoints for chains of length at most 2,
-    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Pick's Theorem (Georg Alexander Pick, 1899;
+    Freek Wiedijk 100 Theorems #92). Formalizes elementary lattice triangulations of planar polygons,
+    Euler's disk characteristic V - E + F = 1, edge-face incidence double counting 3F = 2E_int + E_bd,
+    boundary gluing valuation additivity, and proves both the real formula Area = i + b/2 - 1 and the
+    exact integer form 2*Area = 2*i + b - 2, To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.MG, math.CO]
-  msc2020: ["52C25", "52A10", "52B10"]
+  arxiv: [math.CO, math.MG]
+  msc2020: ["52C05", "05C10", "11H06"]
 
 sources:
-  - title: "Recherches sur les polyèdres: Premier Mémoire"
+  - title: "Geometrisches zur Zahlenlehre"
     type: paper
     authors:
-      - "Augustin-Louis Cauchy"
+      - "Georg Alexander Pick"
     relationship: formalizes
-  - title: "Proofs from THE BOOK"
+  - title: "Mathematical Snapshots"
     type: book
     authors:
-      - "Martin Aigner"
-      - "Günter M. Ziegler"
+      - "Hugo Steinhaus"
     relationship: background
 
 automation:

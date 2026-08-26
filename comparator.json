@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "cauchy_arm_lemma"
+    "picks_theorem",
+    "picks_theorem_two_area"
   ],
   "permitted_axioms": [
     "propext",

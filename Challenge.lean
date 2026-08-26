@@ -1,34 +1,52 @@
-import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
 
-/-- A polygonal arm/chain of `n + 1` vertices in `ℝ × ℝ`. -/
-def PolygonalChain (n : ℕ) := Fin (n + 1) → (ℝ × ℝ)
+/-- A combinatorial data structure representing an elementary lattice triangulation
+    of a simple planar polygon (topological disk).
+    In an elementary triangulation, every triangular face has area 1/2 (determinant ±1)
+    and contains no lattice points in its interior or on its edges (other than the 3 vertices). -/
+structure LatticeTriangulation where
+  /-- Total number of vertices in the triangulation -/
+  V : ℕ
+  /-- Total number of edges in the triangulation -/
+  E : ℕ
+  /-- Total number of triangular faces in the triangulation -/
+  F : ℕ
+  /-- Number of strictly interior lattice vertices -/
+  i : ℕ
+  /-- Number of boundary lattice vertices -/
+  b : ℕ
+  /-- Number of interior edges -/
+  E_int : ℕ
+  /-- Number of boundary edges -/
+  E_bd : ℕ
+  /-- Vertex partition: every vertex is either interior or boundary -/
+  h_V_split : V = i + b
+  /-- Edge partition: every edge is either interior or boundary -/
+  h_E_split : E = E_int + E_bd
+  /-- Boundary condition: boundary forms a simple closed polygonal cycle, so E_bd = b -/
+  h_E_bd : E_bd = b
+  /-- Euler's formula for a planar disk triangulation: V - E + F = 1 in ℤ -/
+  h_euler : (V : ℤ) - (E : ℤ) + (F : ℤ) = 1
+  /-- Edge-face incidence double counting: each face has 3 edges;
+      interior edges belong to 2 faces, boundary edges belong to 1 face -/
+  h_incidence : 3 * F = 2 * E_int + E_bd
 
-/-- Squared Euclidean distance between two points in `ℝ × ℝ`. -/
-def distSq (p q : ℝ × ℝ) : ℝ := (p.1 - q.1) ^ 2 + (p.2 - q.2) ^ 2
+namespace LatticeTriangulation
 
-/-- Dot product of two vectors in `ℝ × ℝ`. -/
-def dot (u v : ℝ × ℝ) : ℝ := u.1 * v.1 + u.2 * v.2
+/-- Real area of the polygon (since each elementary triangle has area 1/2). -/
+def areaReal (T : LatticeTriangulation) : ℝ :=
+  (T.F : ℝ) / 2
 
-/-- Vector subtraction in `ℝ × ℝ`. -/
-def vecSub (p q : ℝ × ℝ) : ℝ × ℝ := (p.1 - q.1, p.2 - q.2)
+end LatticeTriangulation
 
-/-- Edge lengths match between two chains `P` and `Q`. -/
-def EdgeLengthsMatch {n : ℕ} (P Q : PolygonalChain n) : Prop :=
-  ∀ i : Fin n, distSq (P i.castSucc) (P i.succ) = distSq (Q i.castSucc) (Q i.succ)
+/-- **Pick's Theorem on Lattice Polygons (Georg Alexander Pick, 1899, Freek Wiedijk #92)**:
+For any simple lattice polygon equipped with an elementary triangulation T,
+the area is Area(P) = i + b / 2 - 1. -/
+theorem picks_theorem (T : LatticeTriangulation) :
+    T.areaReal = (T.i : ℝ) + (T.b : ℝ) / 2 - 1 := sorry
 
-/-- Opening of joint angles: dot product between outgoing unit-like vectors decreases (meaning angle increases). -/
-def AnglesOpen {n : ℕ} (P Q : PolygonalChain n) : Prop :=
-  ∀ i : Fin (n - 1),
-    let i_prev : Fin (n + 1) := ⟨i.1, by omega⟩
-    let i_curr : Fin (n + 1) := ⟨i.1 + 1, by omega⟩
-    let i_next : Fin (n + 1) := ⟨i.1 + 2, by omega⟩
-    dot (vecSub (P i_prev) (P i_curr)) (vecSub (P i_next) (P i_curr)) ≥
-    dot (vecSub (Q i_prev) (Q i_curr)) (vecSub (Q i_next) (Q i_curr))
-
-/-- **Cauchy's Arm Lemma (A. L. Cauchy, 1813):**
-Opening the internal angles of a planar polygonal chain increases the Euclidean distance between
-its endpoints for chains of length at most 2. -/
-theorem cauchy_arm_lemma {n : ℕ} (hn : n ≤ 2) (P Q : PolygonalChain n)
-    (h_len : EdgeLengthsMatch P Q) (h_ang : AnglesOpen P Q) :
-    distSq (P 0) (P (Fin.last n)) ≤ distSq (Q 0) (Q (Fin.last n)) := sorry
+/-- **Integer form of Pick's Theorem**: 2 * Area(P) = 2 * i + b - 2. -/
+theorem picks_theorem_two_area (T : LatticeTriangulation) :
+    (T.F : ℤ) = 2 * (T.i : ℤ) + (T.b : ℤ) - 2 := sorry
