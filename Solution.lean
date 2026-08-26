@@ -1,1 +1,1 @@
-import Formalization.Sperner3D
+import Formalization.BecksTheorem
