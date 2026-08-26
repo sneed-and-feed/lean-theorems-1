@@ -1,28 +1,22 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Data.Fintype.Card
+import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Fintype.Basic
 
-namespace SylvesterGallai
+open Finset
 
-/-- A point in the 2D real affine plane. -/
-abbrev Point := ℝ × ℝ
+/-- A valid proper 3-coloring of the vertices of graph `G`. -/
+def IsThreeColoring {V : Type*} (G : SimpleGraph V) (c : V → Fin 3) : Prop :=
+  ∀ u v : V, G.Adj u v → c u ≠ c v
 
-/-- Three points in the plane are collinear if the triangle they form has zero signed area. -/
-def Collinear (p q r : Point) : Prop :=
-  (q.1 - p.1) * (r.2 - p.2) - (q.2 - p.2) * (r.1 - p.1) = 0
+/-- A guard set `S` covers every 3-clique / facial triangle in `G`. -/
+def CoversTriangles {V : Type*} (G : SimpleGraph V) (S : Finset V) : Prop :=
+  ∀ u v w : V, G.Adj u v → G.Adj v w → G.Adj w u → (u ∈ S ∨ v ∈ S ∨ w ∈ S)
 
-/-- A finite set of points `S` is collinear if all triples in `S` are collinear. -/
-def SetCollinear (S : Finset Point) : Prop :=
-  ∀ p ∈ S, ∀ q ∈ S, ∀ r ∈ S, Collinear p q r
-
-/-- An ordinary line with respect to a finite point set `S` is a line passing through
-exactly two points of `S`. -/
-def IsOrdinaryLine (S : Finset Point) (p q : Point) : Prop :=
-  p ∈ S ∧ q ∈ S ∧ p ≠ q ∧ (∀ r ∈ S, Collinear p q r → r = p ∨ r = q)
-
-/-- **The Sylvester–Gallai Theorem (Freek Wiedijk #98):**
-Every finite, non-collinear set of points in the real Euclidean plane contains an ordinary line. -/
-theorem sylvester_gallai (S : Finset Point) (_h_card : 3 ≤ S.card) (h_non_collinear : ¬ SetCollinear S) :
-    ∃ p ∈ S, ∃ q ∈ S, p ≠ q ∧ IsOrdinaryLine S p q := sorry
-
-end SylvesterGallai
+/-- **Chvátal's Art Gallery Theorem / Fisk's Triangulation 3-Coloring (1975, 1978)**:
+Given a 3-colorable maximal outerplanar / triangulation graph `G` on `n` vertices,
+there exists a guard set `S` of size at most `⌊n / 3⌋` covering all facial triangles. -/
+theorem art_gallery_theorem {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (c : V → Fin 3) (hc : IsThreeColoring G c) :
+    ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S := sorry

@@ -1,1 +1,1 @@
-import Formalization.SylvesterGallai
+import Formalization.ArtGalleryTheorem
