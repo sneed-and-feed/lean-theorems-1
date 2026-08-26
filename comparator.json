@@ -2,8 +2,10 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "frankl_wilson_uniform",
-    "frankl_wilson_general"
+    "BecksTheorem.becks_theorem",
+    "BecksTheorem.sum_card_pairs_eq",
+    "BecksTheorem.pair_counting_bound",
+    "BecksTheorem.becks_dichotomy_parameterized"
   ],
   "permitted_axioms": [
     "propext",

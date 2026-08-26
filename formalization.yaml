@@ -1,30 +1,29 @@
 version: "v0.4"
 
 project:
-  name: "The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families"
+  name: "Beck's Theorem on Point Configurations and Incidence Geometry"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Frankl–Wilson theorem (1981)
-    for modulo-p intersecting set families. Uses the polynomial linear algebra method
-    over ZMod p to prove both the general non-uniform bound |F| <= sum_{i=0}^s choose(n, i)
-    and the uniform cardinality bound |F| <= choose(n, s).
-    To the maintainers' knowledge, the Frankl–Wilson theorem was verified absent from core
+    A complete machine-checked Lean 4 formalization of József Beck's theorem (1983)
+    in combinatorial incidence geometry. Proves the fundamental dichotomy that any finite set
+    of n points in the Euclidean plane either contains a line with Omega(n) points or spans
+    Omega(n^2) distinct lines, establishing the exact pairs double-counting identity and
+    parameterized bounds. To the maintainers' knowledge, Beck's theorem was verified absent
 To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05D05", "11B75", "15A03"]
+  arxiv: [math.CO, math.MG]
+  msc2020: ["52C10", "52C30", "05B25"]
 
 sources:
-  - title: "Intersection theorems with geometric consequences"
+  - title: "On the lattice property of the plane and some problems of Dirac, Motzkin and Erdős in combinatorial geometry"
     type: paper
     authors:
-      - "P. Frankl"
-      - "R. M. Wilson"
+      - "József Beck"
     relationship: formalizes
 
 automation:
