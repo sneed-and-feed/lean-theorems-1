@@ -1,35 +1,36 @@
 version: "v0.4"
 
 project:
-  name: "Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem"
+  name: "Elekes's Sum-Product Inequality in Additive Combinatorics"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Dilworth's Theorem (Robert P.
-    Dilworth, 1950) on chain decompositions of finite posets and Mirsky's Dual Theorem
-    (Leon Mirsky, 1971) on antichain covers. Proves that the maximum size of an antichain
-    equals the minimum number of chains covering the poset, and dually that the maximum
-    length of a chain equals the minimum number of antichains covering the poset. Verified
-    absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of György Elekes's landmark sum-product
+    inequalities (1997) via incidence geometry and the Szemerédi–Trotter theorem.
+    Proves the max sum-product bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum
+    bound |A + A| * |A * A| >= 1/16 |A|^(5/2), and structural additive-multiplicative expansion bounds.
+    To the maintainers' knowledge, Elekes's sum-product theorem was verified absent from core
+    Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO]
-  msc2020: ["06A07", "05A18", "05D15"]
+  arxiv: [math.CO, math.NT]
+  msc2020: ["11B75", "05D99", "52C10"]
 
 sources:
-  - title: "A Decomposition Theorem for Partially Ordered Sets"
+  - title: "On the number of sums and products"
     type: paper
     authors:
-      - "R. P. Dilworth"
+      - "György Elekes"
     relationship: formalizes
-  - title: "A dual of Dilworth's decomposition theorem"
+  - title: "On sums and products of integers"
     type: paper
     authors:
-      - "Leon Mirsky"
-    relationship: formalizes
+      - "Paul Erdős"
+      - "Endre Szemerédi"
+    relationship: background
 
 automation:
   methods:
