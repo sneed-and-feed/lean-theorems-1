@@ -1,1 +1,1 @@
-import Formalization.DilworthTheorem
+import Formalization.ArtGalleryTheorem

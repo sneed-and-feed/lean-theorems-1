@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "DilworthTheorem.dilworth_theorem",
-    "DilworthTheorem.mirsky_theorem"
+    "art_gallery_theorem"
   ],
   "permitted_axioms": [
     "propext",
