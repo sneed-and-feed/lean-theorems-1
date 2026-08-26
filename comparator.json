@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "HallMarriage.hall_marriage_theorem"
+    "kneser_lovasz_chromatic_number"
   ],
   "permitted_axioms": [
     "propext",

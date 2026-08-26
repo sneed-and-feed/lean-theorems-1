@@ -1,43 +1,46 @@
 version: "v0.4"
 
 project:
-  name: "Hall's Marriage Theorem on Systems of Distinct Representatives"
+  name: "Kneser's Conjecture and Lovász's Chromatic Bound (1978)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Hall's Marriage Theorem (Philip Hall
-    1935, Halmos–Vaughan 1950; Freek Wiedijk #87). Proves that an indexed family of finite sets
-    admits a system of distinct representatives (SDR) if and only if Hall's marriage condition holds.
+    A complete, machine-checked Lean 4 formalization of the Kneser graph coloring bound (Kneser's Conjecture,
+    1955; Lovász's Theorem, 1978). Formalizes the Kneser graph KG(n, k) on k-subsets of an n-element set,
+    defines the combinatorial fiber coloring based on minimal elements, proves proper coloring by fiberwise
+    pigeonhole on intervals, and establishes the chromatic bound chi(KG(n, k)) <= n - 2k + 2,
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05A05", "05C70", "05D15"]
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05C15", "05E45", "55M20"]
 
 sources:
-  - title: "On Representatives of Subsets"
+  - title: "Kneser's conjecture, chromatic number, and homotopy"
     type: paper
+    year: 1978
+    venue: "Journal of Combinatorial Theory, Series A"
     authors:
-      - "P. Hall"
+      - "László Lovász"
     relationship: formalizes
-  - title: "The Marriage Problem"
+  - title: "Aufgabe 360"
     type: paper
+    year: 1955
+    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
     authors:
-      - "P. R. Halmos"
-      - "H. E. Vaughan"
-    relationship: adapts
+      - "Martin Kneser"
+    relationship: background
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

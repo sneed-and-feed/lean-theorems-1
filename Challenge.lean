@@ -1,27 +1,26 @@
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Lattice
 import Mathlib.Data.Fintype.Basic
 
-namespace HallMarriage
+variable (α : Type*) [DecidableEq α] [Fintype α]
 
-open Finset
+/-- The adjacency relation for the Kneser graph: two k-subsets are adjacent iff they are disjoint. -/
+def kneserRel (k : ℕ) (A B : {s : Finset α // s.card = k}) : Prop :=
+  Disjoint A.val B.val ∧ A ≠ B
 
-variable {ι α : Type*} [DecidableEq ι] [DecidableEq α] [Fintype ι]
+instance (k : ℕ) : Std.Symm (kneserRel α k) where
+  symm _ _ h := ⟨h.1.symm, h.2.symm⟩
 
-/-- Hall's marriage condition: for every subset of indices `J`, the union of sets `A i` for `i ∈ J`
-has cardinality at least `|J|`. -/
-def HallCondition (A : ι → Finset α) : Prop :=
-  ∀ J : Finset ι, J.card ≤ (J.biUnion A).card
+instance (k : ℕ) : Std.Irrefl (kneserRel α k) where
+  irrefl _ h := h.2 rfl
 
-/-- A System of Distinct Representatives (SDR) / Transversal for the indexed family `A`. -/
-def IsSDR (A : ι → Finset α) (f : ι → α) : Prop :=
-  Function.Injective f ∧ ∀ i : ι, f i ∈ A i
+/-- The Kneser graph `KG(α, k)` whose vertices are the `k`-element subsets of `α`. -/
+def kneserGraph (k : ℕ) : SimpleGraph {s : Finset α // s.card = k} :=
+  SimpleGraph.fromRel (kneserRel α k)
 
-/-- **Hall's Marriage Theorem (Sufficiency / Equivalence, Freek Wiedijk #87):**
-A finite collection of sets admits a system of distinct representatives if and only if
-it satisfies Hall's condition. -/
-theorem hall_marriage_theorem (A : ι → Finset α) :
-    (∃ f : ι → α, IsSDR A f) ↔ HallCondition A := sorry
-
-end HallMarriage
+/-- **Kneser's Conjecture / Lovász's Theorem (1978):**
+The Kneser graph $KG(n, k)$ on subsets of `Fin n` is $(n - 2k + 2)$-colorable. -/
+theorem kneser_lovasz_chromatic_number (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
+    (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) := sorry
