@@ -1,33 +1,35 @@
 version: "v0.4"
 
 project:
-  name: "Lovász's Colorful Helly Theorem for Convex Sets"
+  name: "Elekes's Sum-Product Inequality in Additive Combinatorics"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Lovász's Colorful Helly Theorem (1974 / Bárány 1982).
-    Proves that for any d + 1 finite families of convex sets in R^d such that every colorful transversal
-    has a non-empty intersection, at least one entire family has a non-empty intersection.
-    To the maintainers' knowledge, the Colorful Helly theorem was verified absent from core
+    A complete machine-checked Lean 4 formalization of György Elekes's landmark sum-product
+    inequalities (1997) via incidence geometry and the Szemerédi–Trotter theorem.
+    Proves the max sum-product bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum
+    bound |A + A| * |A * A| >= 1/16 |A|^(5/2), and structural additive-multiplicative expansion bounds.
+    To the maintainers' knowledge, Elekes's sum-product theorem was verified absent from core
 To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
-  arxiv: [math.MG, math.CO]
-  msc2020: ["52A35", "52A20", "05D15"]
+  arxiv: [math.CO, math.NT]
+  msc2020: ["11B75", "05D99", "52C10"]
 
 sources:
-  - title: "A generalization of Carathéodory's theorem"
+  - title: "On the number of sums and products"
     type: paper
     authors:
-      - "Imre Bárány"
+      - "György Elekes"
     relationship: formalizes
-  - title: "Problem 206"
+  - title: "On sums and products of integers"
     type: paper
     authors:
-      - "László Lovász"
+      - "Paul Erdős"
+      - "Endre Szemerédi"
     relationship: background
 
 automation:
