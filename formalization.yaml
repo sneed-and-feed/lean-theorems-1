@@ -1,34 +1,39 @@
 version: "v0.4"
 
 project:
-  name: "Pick's Theorem on Lattice Polygons (Wiedijk #92)"
+  name: "Chvátal's Art Gallery Theorem & Fisk's 3-Coloring Proof"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Pick's Theorem (Georg Alexander Pick, 1899;
-        Freek Wiedijk 100 Theorems #92). Formalizes elementary lattice triangulations of planar polygons,
-        Euler's disk characteristic V - E + F = 1, edge-face incidence double counting 3F = 2E_int + E_bd,
-        boundary gluing valuation additivity, and proves both the real formula Area = i + b/2 - 1 and the
-        34.0-rc1). discrete formula 2*Area = 2*i + b - 2.
+    A complete, machine-checked Lean 4 formalization of Chvátal's Art Gallery Theorem (1975)
+        via Steve Fisk's elegant 1978 3-coloring proof on triangulated polygon graphs. Proves that for
+        any 3-colorable planar triangulation graph on n vertices, there exists a guard set of size
+        34.0-rc1).
+        34.0-rc1). floor(n/3).
         To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification::
   arxiv: [math.CO, math.MG]
-  msc2020: ["52C05", "05C10", "11H06"]
+  msc2020: ["05C15", "05C10", "52C99"]
 
 sources:
-  - title: "Geometrisches zur Zahlenlehre"
+  - title: "A combinatorial theorem in plane geometry"
     type: paper
     authors:
-      - "Georg Alexander Pick"
+      - "Václav Chvátal"
     relationship: formalizes
-  - title: "Mathematical Snapshots"
+  - title: "A short proof of Chvátal's watchman theorem"
+    type: paper
+    authors:
+      - "Steve Fisk"
+    relationship: adapts
+  - title: "Art Gallery Theorems and Algorithms"
     type: book
     authors:
-      - "Hugo Steinhaus"
+      - "Joseph O'Rourke"
     relationship: background
 
 automation:

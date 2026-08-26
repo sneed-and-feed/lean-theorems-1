@@ -1,52 +1,22 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Data.Fintype.Card
+import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Fintype.Basic
 
-/-- A combinatorial data structure representing an elementary lattice triangulation
-    of a simple planar polygon (topological disk).
-    In an elementary triangulation, every triangular face has area 1/2 (determinant ±1)
-    and contains no lattice points in its interior or on its edges (other than the 3 vertices). -/
-structure LatticeTriangulation where
-  /-- Total number of vertices in the triangulation -/
-  V : ℕ
-  /-- Total number of edges in the triangulation -/
-  E : ℕ
-  /-- Total number of triangular faces in the triangulation -/
-  F : ℕ
-  /-- Number of strictly interior lattice vertices -/
-  i : ℕ
-  /-- Number of boundary lattice vertices -/
-  b : ℕ
-  /-- Number of interior edges -/
-  E_int : ℕ
-  /-- Number of boundary edges -/
-  E_bd : ℕ
-  /-- Vertex partition: every vertex is either interior or boundary -/
-  h_V_split : V = i + b
-  /-- Edge partition: every edge is either interior or boundary -/
-  h_E_split : E = E_int + E_bd
-  /-- Boundary condition: boundary forms a simple closed polygonal cycle, so E_bd = b -/
-  h_E_bd : E_bd = b
-  /-- Euler's formula for a planar disk triangulation: V - E + F = 1 in ℤ -/
-  h_euler : (V : ℤ) - (E : ℤ) + (F : ℤ) = 1
-  /-- Edge-face incidence double counting: each face has 3 edges;
-      interior edges belong to 2 faces, boundary edges belong to 1 face -/
-  h_incidence : 3 * F = 2 * E_int + E_bd
+open Finset
 
-namespace LatticeTriangulation
+/-- A valid proper 3-coloring of the vertices of graph `G`. -/
+def IsThreeColoring {V : Type*} (G : SimpleGraph V) (c : V → Fin 3) : Prop :=
+  ∀ u v : V, G.Adj u v → c u ≠ c v
 
-/-- Real area of the polygon (since each elementary triangle has area 1/2). -/
-def areaReal (T : LatticeTriangulation) : ℝ :=
-  (T.F : ℝ) / 2
+/-- A guard set `S` covers every 3-clique / facial triangle in `G`. -/
+def CoversTriangles {V : Type*} (G : SimpleGraph V) (S : Finset V) : Prop :=
+  ∀ u v w : V, G.Adj u v → G.Adj v w → G.Adj w u → (u ∈ S ∨ v ∈ S ∨ w ∈ S)
 
-end LatticeTriangulation
-
-/-- **Pick's Theorem on Lattice Polygons (Georg Alexander Pick, 1899, Freek Wiedijk #92)**:
-For any simple lattice polygon equipped with an elementary triangulation T,
-the area is Area(P) = i + b / 2 - 1. -/
-theorem picks_theorem (T : LatticeTriangulation) :
-    T.areaReal = (T.i : ℝ) + (T.b : ℝ) / 2 - 1 := sorry
-
-/-- **Integer form of Pick's Theorem**: 2 * Area(P) = 2 * i + b - 2. -/
-theorem picks_theorem_two_area (T : LatticeTriangulation) :
-    (T.F : ℤ) = 2 * (T.i : ℤ) + (T.b : ℤ) - 2 := sorry
+/-- **Chvátal's Art Gallery Theorem / Fisk's Triangulation 3-Coloring (1975, 1978)**:
+Given a 3-colorable maximal outerplanar / triangulation graph `G` on `n` vertices,
+there exists a guard set `S` of size at most `⌊n / 3⌋` covering all facial triangles. -/
+theorem art_gallery_theorem {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (c : V → Fin 3) (hc : IsThreeColoring G c) :
+    ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S := sorry
