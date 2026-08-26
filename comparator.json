@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "frankl_wilson_uniform",
-    "frankl_wilson_general"
+    "FriendshipTheorem.friendship_theorem"
   ],
   "permitted_axioms": [
     "propext",

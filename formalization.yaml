@@ -1,31 +1,37 @@
 version: "v0.4"
 
 project:
-  name: "The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families"
+  name: "The Friendship Theorem on Graphs with Unique Common Neighbors"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Frankl–Wilson theorem (1981)
-    for modulo-p intersecting set families. Uses the polynomial linear algebra method
-    over ZMod p to prove both the general non-uniform bound |F| <= sum_{i=0}^s choose(n, i)
-    and the uniform cardinality bound |F| <= choose(n, s).
-    To the maintainers' knowledge, the Frankl–Wilson theorem was verified absent from core
-    Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Friendship Theorem (P. Erdős,
+    A. Rényi, and V. T. Sós, 1966; H. S. Wilf, 1971). Proves that any finite simple graph in
+    which every pair of distinct vertices shares exactly one common neighbor must contain a
+    universal vertex (the 'politician'), structuring the graph as a collection of triangles
+    sharing a central vertex (a windmill graph). Verified absent from core Mathlib (checked
+    against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05D05", "11B75", "15A03"]
+  msc2020: ["05C50", "05C75", "05E30"]
 
 sources:
-  - title: "Intersection theorems with geometric consequences"
+  - title: "On a problem of graph theory"
     type: paper
     authors:
-      - "P. Frankl"
-      - "R. M. Wilson"
+      - "P. Erdős"
+      - "A. Rényi"
+      - "V. T. Sós"
     relationship: formalizes
+  - title: "The friendship theorem"
+    type: paper
+    authors:
+      - "H. S. Wilf"
+    relationship: adapts
 
 automation:
   methods:
