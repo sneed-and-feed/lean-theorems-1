@@ -1,1 +1,1 @@
-import Formalization.EulerPolyhedron
+import Formalization.SpernersLemma
