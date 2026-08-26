@@ -2,11 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "ElekesSumProduct.elekes_max_sum_product_bound",
-    "ElekesSumProduct.elekes_product_sum_bound",
-    "ElekesSumProduct.elekes_sum_product_constant_exists",
-    "ElekesSumProduct.elekes_product_constant_exists",
-    "ElekesSumProduct.elekes_sum_or_product"
+    "bollobas_two_families",
+    "bollobas_uniform"
   ],
   "permitted_axioms": [
     "propext",

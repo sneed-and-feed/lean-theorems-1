@@ -1,44 +1,38 @@
 version: "v0.4"
 
 project:
-  name: "Elekes's Sum-Product Inequality in Additive Combinatorics"
+  name: "Bollobás's Two Families Theorem (Set Pairs Inequality)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of György Elekes's landmark sum-product
-    inequalities (1997) via incidence geometry and the Szemerédi–Trotter theorem.
-    Proves the max sum-product bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum
-    bound |A + A| * |A * A| >= 1/16 |A|^(5/2), and structural additive-multiplicative expansion bounds.
-    To the maintainers' knowledge, Elekes's sum-product theorem was verified absent from core
-To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Béla Bollobás's 1965 Two Families Theorem
+    (Set Pairs Inequality) in extremal set theory. Proves the skew LYM-type inequality for pairs of
+    disjoint subsets (A_i, B_i) satisfying cross-intersection conditions A_i ∩ B_j ≠ ∅ for i ≠ j,
+    and deduces the uniform bound m ≤ C(a+b, a) for uniform families of sizes a and b.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring,
+    and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.NT]
-  msc2020: ["11B75", "05D99", "52C10"]
+  arxiv: [math.CO]
+  msc2020: ["05D05", "05C35"]
 
 sources:
-  - title: "On the number of sums and products"
+  - title: "On generalized graphs"
     type: paper
     authors:
-      - "György Elekes"
+      - "Béla Bollobás"
     relationship: formalizes
-  - title: "On sums and products of integers"
-    type: paper
-    authors:
-      - "Paul Erdős"
-      - "Endre Szemerédi"
-    relationship: background
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
