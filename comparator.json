@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "bondy_induced_subsets"
+    "cauchy_arm_lemma"
   ],
   "permitted_axioms": [
     "propext",
