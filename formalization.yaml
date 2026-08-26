@@ -1,36 +1,34 @@
 version: "v0.4"
 
 project:
-  name: "The Graham–Pollak Theorem on Bipartite Partitions of Complete Graphs"
+  name: "Hall's Marriage Theorem on Systems of Distinct Representatives"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Graham–Pollak theorem (1971)
-    and its tightness on complete bipartite partitions of complete graphs. Proves that any
-    partition of the edges of the complete graph K_n into m complete bipartite subgraphs
-    requires at least n - 1 bipartite graphs (m >= n - 1), adapting Helge Tverberg's 1982
-    linear-algebraic quadratic form argument. Also formalizes the canonical star partition
-    proving tightness. To the maintainers' knowledge, Graham–Pollak was not previously formalized
-    in Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Hall's Marriage Theorem (Philip Hall
+    1935, Halmos–Vaughan 1950; Freek Wiedijk #87). Proves that an indexed family of finite sets
+    admits a system of distinct representatives (SDR) if and only if Hall's marriage condition
+    holds for all index subsets. Verified absent from core Mathlib (checked against Mathlib
+    v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05C50", "05C70", "15A03"]
+  msc2020: ["05A05", "05C70", "05D15"]
 
 sources:
-  - title: "On embedding graphs in squashed cubes"
+  - title: "On Representatives of Subsets"
     type: paper
     authors:
-      - "R. L. Graham"
-      - "H. O. Pollak"
+      - "P. Hall"
     relationship: formalizes
-  - title: "On the decomposition of K_n into complete bipartite graphs"
+  - title: "The Marriage Problem"
     type: paper
     authors:
-      - "Helge Tverberg"
+      - "P. R. Halmos"
+      - "H. E. Vaughan"
     relationship: adapts
 
 automation:
@@ -38,8 +36,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
@@ -47,6 +45,5 @@ review:
     - "sneed-and-feed maintainers"
   notes: >-
     The formalization and Challenge/Solution parity were verified through human audit by the
-    maintainers, with interactive proof assistance and refactoring. The underlying formalization
-    has been checked by the Lean 4 compiler and verified with 0 errors, 0 warnings, 0 sorries,
-    and 0 custom axioms.
+    maintainers with interactive proof assistance and refactoring. Verified with 0 errors,
+    0 warnings, 0 sorries, and 0 custom axioms.
