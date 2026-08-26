@@ -1,1 +1,1 @@
-import Formalization.FriendshipTheorem
+import Formalization.EulerPolyhedron
