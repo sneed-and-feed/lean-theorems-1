@@ -1,1 +1,1 @@
-import Formalization.OreHamiltonian
+import Formalization.SchursTheorem
