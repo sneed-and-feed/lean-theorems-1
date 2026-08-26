@@ -1,29 +1,43 @@
-import Mathlib.Algebra.Polynomial.RuleOfSigns
-import Mathlib.Analysis.Polynomial.Order
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Order.Antichain
 
-open Polynomial
+namespace DilworthTheorem
 
-/-- Number of sign variations in a real sequence (ignoring zeros). -/
-noncomputable def sign_variations : List ℝ → ℕ
-  | [] => 0
-  | [_] => 0
-  | x :: y :: rest =>
-    if x = 0 then sign_variations (y :: rest)
-    else if y = 0 then sign_variations (x :: rest)
-    else (if x * y < 0 then 1 else 0) + sign_variations (y :: rest)
+variable {α : Type*} [DecidableEq α] [PartialOrder α]
 
-/-- Sign variations of the non-zero coefficients of a polynomial p(X). -/
-noncomputable def poly_sign_variations (p : Polynomial ℝ) : ℕ :=
-  sign_variations (List.ofFn (fun i : Fin (p.natDegree + 1) => p.coeff (i : ℕ)))
+/-- A subset of `α` is a chain if every two elements are comparable. -/
+def IsChain (s : Set α) : Prop :=
+  ∀ x y, x ∈ s → y ∈ s → x ≤ y ∨ y ≤ x
 
-/-- Total number of positive real roots of p(X) counted with algebraic multiplicity. -/
-noncomputable def pos_roots_count (p : Polynomial ℝ) : ℕ :=
-  (p.roots.filter (· > (0 : ℝ))).card
+/-- A subset of `α` is an antichain if no two distinct elements are comparable. -/
+def IsAntichain (s : Set α) : Prop :=
+  ∀ x y, x ∈ s → y ∈ s → x ≠ y → ¬(x ≤ y) ∧ ¬(y ≤ x)
 
-/-- **Descartes's Rule of Signs (1637, Wiedijk #73)**:
-The number of positive real roots of a non-zero real polynomial $p(X)$ (counted with multiplicity)
-is bounded above by the number of sign variations in its coefficient sequence, and differs from it
-by an even non-negative integer. -/
-theorem descartes_rule_of_signs (p : Polynomial ℝ) (hp : p ≠ 0) :
-    pos_roots_count p ≤ poly_sign_variations p ∧
-    Even (poly_sign_variations p - pos_roots_count p) := sorry
+/-- A chain partition / cover of a finset `S` into `k` chains. -/
+def IsChainCover (S : Finset α) {k : ℕ} (C : Fin k → Finset α) : Prop :=
+  (∀ i, IsChain (C i : Set α)) ∧
+  (Finset.biUnion Finset.univ C = S) ∧
+  (∀ i j, i ≠ j → Disjoint (C i) (C j))
+
+/-- An antichain partition / cover of a finset `S` into `k` antichains. -/
+def IsAntichainCover (S : Finset α) {k : ℕ} (A : Fin k → Finset α) : Prop :=
+  (∀ i, IsAntichain (A i : Set α)) ∧
+  (Finset.biUnion Finset.univ A = S) ∧
+  (∀ i j, i ≠ j → Disjoint (A i) (A j))
+
+/-- **Dilworth's Theorem (R. P. Dilworth, 1950):**
+If every antichain in a finite poset `S` has size at most `k`, then `S` can be partitioned
+into `k` chains. -/
+theorem dilworth_theorem (S : Finset α) (k : ℕ)
+    (h_anti : ∀ A ⊆ S, IsAntichain (A : Set α) → A.card ≤ k) :
+    ∃ C : Fin k → Finset α, IsChainCover S C := sorry
+
+/-- **Mirsky's Theorem (Dual Dilworth Theorem, L. Mirsky, 1971):**
+If every chain in a finite poset `S` has size at most `m`, then `S` can be partitioned
+into `m` antichains. -/
+theorem mirsky_theorem (S : Finset α) (m : ℕ)
+    (h_chain : ∀ C ⊆ S, IsChain (C : Set α) → C.card ≤ m) :
+    ∃ A : Fin m → Finset α, IsAntichainCover S A := sorry
+
+end DilworthTheorem

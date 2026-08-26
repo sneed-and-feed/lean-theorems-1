@@ -1,28 +1,38 @@
 version: "v0.4"
 
 project:
-  name: "Descartes's Rule of Signs"
+  name: "Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Descartes's Rule of Signs (1637, Wiedijk #73).
-    Proves that for any non-zero real polynomial p(X), the number of positive real roots counted
-    with algebraic multiplicity is bounded above by the number of sign variations in its coefficients, and their difference is an even integer.
+    A complete, machine-checked Lean 4 formalization of Dilworth's Theorem (Robert P.
+    Dilworth, 1950) on chain decompositions of finite posets and Mirsky's Dual Theorem
+    (Leon Mirsky, 1971) on antichain covers. Proves that the maximum size of an antichain
+    equals the minimum number of chains covering the poset, and dually that the maximum
+    length of a chain equals the minimum number of antichains covering the poset. Verified
+    Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.AG, math.CA]
-  msc2020: ["12D10", "26C10", "30C15"]
+  arxiv: [math.CO]
+  msc2020: ["06A07", "05A18", "05D15"]
 
 sources:
-  - title: "La Géométrie"
-    type: book
+  - title: "A Decomposition Theorem for Partially Ordered Sets"
+    type: paper
+    year: 1950
+    venue: "Annals of Mathematics"
     authors:
-      - "René Descartes"
+      - "R. P. Dilworth"
+    relationship: formalizes
+  - title: "A dual of Dilworth's decomposition theorem"
+    type: paper
+    year: 1971
+    venue: "American Mathematical Monthly"
+    authors:
+      - "Leon Mirsky"
     relationship: formalizes
 
 automation:
@@ -30,8 +40,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
