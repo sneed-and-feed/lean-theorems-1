@@ -1,33 +1,32 @@
-import Mathlib.Data.Fintype.Card
-import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Real.Basic
 
-open Finset SimpleGraph
+open Finset
 
-variable {V : Type*} [Fintype V] [DecidableEq V] [Nonempty V]
+/-- A complete bipartite decomposition of K_n is given by a family of pairs of disjoint subsets
+    (L_k, R_k) such that every distinct pair of vertices {u, v} is covered by exactly one bipartite graph. -/
+def IsCompleteBipartitePartition (n m : ℕ) (L R : Fin m → Finset (Fin n)) : Prop :=
+  (∀ k, Disjoint (L k) (R k)) ∧
+  (∀ u v : Fin n, u ≠ v →
+    ∃! k : Fin m, (u ∈ L k ∧ v ∈ R k) ∨ (u ∈ R k ∧ v ∈ L k))
 
-/-- The friendship property: every pair of distinct vertices has exactly one common neighbor. -/
-def HasFriendshipProperty (G : SimpleGraph V) [DecidableRel G.Adj] : Prop :=
-  ∀ u v : V, u ≠ v → (G.neighborFinset u ∩ G.neighborFinset v).card = 1
+/-- The left vertex of the k-th star in the canonical star decomposition of $. -/
+def starPartition_L (n : ℕ) (k : Fin (n - 1)) : Finset (Fin n) :=
+  {⟨k.val, by have := k.isLt; omega⟩}
 
-/-- A universal vertex (politician) in `G` that is adjacent to all other vertices. -/
-def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
-  ∀ v : V, v ≠ w → G.Adj w v
+/-- The right vertices of the k-th star in the canonical star decomposition of $. -/
+def starPartition_R (n : ℕ) (k : Fin (n - 1)) : Finset (Fin n) :=
+  Finset.univ.filter (fun j : Fin n => k.val < j.val)
 
-/-- Predicate defining a windmill graph $Wd(k, 2)$: a central vertex `w` connected to
-    `k` vertex-disjoint triangles. -/
-def IsWindmillGraph (G : SimpleGraph V) (w : V) (k : ℕ) : Prop :=
-  IsUniversalVertex G w ∧
-  Fintype.card V = 2 * k + 1 ∧
-  ∃ (matching : Finset (Finset V)),
-    matching.card = k ∧
-    (∀ e ∈ matching, e.card = 2 ∧ w ∉ e) ∧
-    (∀ e₁ ∈ matching, ∀ e₂ ∈ matching, e₁ ≠ e₂ → Disjoint e₁ e₂) ∧
-    (∀ u v, u ≠ w → v ≠ w → (G.Adj u v ↔ {u, v} ∈ matching))
+/-- **The Graham–Pollak Theorem (1971)**:
+Every partition of the edge set of the complete graph $ into $ complete bipartite
+subgraphs requires at least  - 1$ bipartite graphs ( \ge n - 1$). -/
+theorem graham_pollak (n m : ℕ) (L R : Fin m → Finset (Fin n))
+    (h : IsCompleteBipartitePartition n m L R) :
+    n - 1 ≤ m := sorry
 
-/-- **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)**:
-Every finite graph satisfying the friendship property is a windmill graph $Wd(k, 2)$ consisting of $k$ triangles sharing a universal vertex. -/
-theorem friendship_windmill (G : SimpleGraph V) [DecidableRel G.Adj]
-    (h_friend : HasFriendshipProperty G) : ∃ (w : V) (k : ℕ), IsWindmillGraph G w k := sorry
+/-- **Tightness of the Graham–Pollak Theorem**:
+$ can be partitioned into  - 1$ complete bipartite graphs (specifically, stars). -/
+theorem graham_pollak_tight (n : ℕ) :
+    IsCompleteBipartitePartition n (n - 1) (starPartition_L n) (starPartition_R n) := sorry
