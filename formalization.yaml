@@ -1,35 +1,37 @@
 version: "v0.4"
 
 project:
-  name: "The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)"
+  name: "The Crossing Lemma and Székely's Probabilistic Amplification"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A comprehensive, machine-checked Lean 4 formalization of the Erdős–Szekeres Convex Polygon Theorem (1935).
-    Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
-    Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
-    of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
-    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A machine-checked Lean 4 formalization of the Crossing Lemma (Ajtai, Chvátal, Newborn, Szemerédi 1982;
+    Leighton 1983) and its application to the Szemerédi–Trotter point-line incidence theorem via László Székely's
+    probabilistic expectation sub-sampling amplification (1997). Proves that any planar drawing of a graph with
+    |E| >= 4|V| has crossing number cr(G) >= |E|^3 / (64 |V|^2), verified absent from core Mathlib
+To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "05D10", "52A10"]
+  msc2020: ["05C10", "05C62", "52C10"]
 
 sources:
-  - title: "A combinatorial problem in geometry"
+  - title: "Crossing-free subgraphs"
     type: paper
     authors:
-      - "Paul Erdős"
-      - "George Szekeres"
+      - "Miklós Ajtai"
+      - "Vašek Chvátal"
+      - "Monty M. Newborn"
+      - "Endre Szemerédi"
     relationship: formalizes
-  - title: "Problem 1835"
+  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
     type: paper
     authors:
-      - "Esther Klein"
-    relationship: background
+      - "László A. Székely"
+    relationship: adapts
 
 automation:
   methods:
