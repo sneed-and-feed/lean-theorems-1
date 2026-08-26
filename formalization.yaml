@@ -1,43 +1,36 @@
 version: "v0.4"
 
 project:
-  name: "The Szemerédi–Trotter Theorem on Point-Line Incidences"
+  name: "Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Szemerédi–Trotter theorem (1983)
-    on point-line incidences via László Székely's crossing lemma approach (1997).
-    Proves the explicit upper bound I <= 4(nm)^(2/3) + 4n + m, uniform bounds,
-    and the k-rich lines corollary.
+    A machine-checked Lean 4 formalization of Tucker's Combinatorial Lemma (Albert W. Tucker, 1945),
+    the discrete foundational precursor to the Borsuk–Ulam Theorem in algebraic topology.
+    Formalizes discrete 1D sign changes, symmetric triangulations with antipodal involutions,
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "05C10", "05C62"]
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05E45", "55M20", "57M15"]
 
 sources:
-  - title: "Extremal problems in discrete geometry"
+  - title: "Some topological properties of disk and sphere"
     type: paper
     authors:
-      - "Endre Szemerédi"
-      - "William T. Trotter"
+      - "Albert W. Tucker"
     relationship: formalizes
-  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
-    type: paper
-    authors:
-      - "László A. Székely"
-    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
