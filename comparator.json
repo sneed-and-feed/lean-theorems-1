@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "crossing_lemma"
+    "DeBruijnErdos.de_bruijn_erdos"
   ],
   "permitted_axioms": [
     "propext",
