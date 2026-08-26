@@ -11,9 +11,10 @@ project:
     A complete, machine-checked Lean 4 formalization of the Graham–Pollak theorem (1971)
     and its tightness on complete bipartite partitions of complete graphs. Proves that any
     partition of the edges of the complete graph K_n into m complete bipartite subgraphs
-    requires at least n - 1 bipartite graphs (m >= n - 1), using Tverberg's 1982 algebraic
-    and linear-algebraic reduction on quadratic forms. Also formalizes the canonical star
-    partition proving tightness.
+    requires at least n - 1 bipartite graphs (m >= n - 1), adapting Helge Tverberg's 1982
+    linear-algebraic quadratic form argument. Also formalizes the canonical star partition
+    proving tightness. To the maintainers' knowledge, Graham–Pollak was not previously formalized
+    in Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
@@ -26,10 +27,10 @@ sources:
       - "R. L. Graham"
       - "H. O. Pollak"
     relationship: formalizes
-  - title: "A technique for proving that a graph does not have certain properties"
+  - title: "On the decomposition of K_n into complete bipartite graphs"
     type: paper
     authors:
-      - "H. Tverberg"
+      - "Helge Tverberg"
     relationship: adapts
 
 automation:
@@ -41,10 +42,11 @@ automation:
         All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
-  status: agent-reviewed
+  status: self-assessed
   reviewers:
     - "sneed-and-feed maintainers"
-    - "Interactive Lean LSP and kernel verification"
   notes: >-
-    The formalization has undergone proof golfing, eliminating redundant steps and lemmas,
-    and verified through Lean 4 and Mathlib with 0 errors, 0 warnings, 0 sorries, and 0 custom axioms.
+    The formalization and Challenge/Solution parity were verified through human audit by the
+    maintainers, with interactive proof assistance and refactoring. The underlying formalization
+    has been checked by the Lean 4 compiler and verified with 0 errors, 0 warnings, 0 sorries,
+    and 0 custom axioms.
