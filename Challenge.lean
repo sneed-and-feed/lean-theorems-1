@@ -1,63 +1,39 @@
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Data.Fintype.Basic
 
-open scoped Real
+open Finset
 
-namespace ElekesSumProduct
+variable {α : Type*} [DecidableEq α] [Fintype α]
 
-/-- Combinatorial Elekes Configuration representing a finite set $A \subset \mathbb{R}$
-    of size $N$, its sumset $A+A$, its productset $A\cdot A$, and the associated
-    point-line incidence system. -/
-structure ElekesConfiguration where
-  N : ℝ
-  sum_card : ℝ
-  prod_card : ℝ
-  P_card : ℝ
-  L_card : ℝ
-  I : ℝ
-  e : ℝ
-  cr : ℝ
-  hN : 1 ≤ N
-  hP : 1 ≤ P_card
-  h_sum_pos : 1 ≤ sum_card
-  h_prod_pos : 1 ≤ prod_card
-  h_prod_bound : P_card ≤ sum_card * prod_card
-  h_L : L_card = N^2
-  h_inc : N^3 ≤ I
-  h_edges : I - L_card ≤ e
-  h_crossings : cr ≤ L_card^2 / 2
-  h_crossing_lemma : 4 * P_card ≤ e → e^3 ≤ 64 * P_card^2 * cr
+/-- **Erdős–Ko–Rado Theorem (1961):**
+Let `α` be a finite type of size `n` with `n ≥ 2k` and `k ≥ 1`.
+If `ℱ` is an intersecting family of `k`-element subsets of `α`, then
+`|ℱ| ≤ Nat.choose (n - 1) (k - 1)`. -/
+theorem erdos_ko_rado {n k : ℕ}
+    (hn : Fintype.card α = n) (hk : 1 ≤ k) (h2k : 2 * k ≤ n)
+    (F : Finset (Finset α))
+    (hF_k : ∀ A ∈ F, A.card = k)
+    (h_inter : ∀ A ∈ F, ∀ B ∈ F, ¬ Disjoint A B) :
+    F.card ≤ Nat.choose (n - 1) (k - 1) := sorry
 
-/-- **Elekes's Product-Sum Theorem (Explicit Constant $c = 1/16$)**:
-    For any finite set $A \subset \mathbb{R}$ of size $N \ge 1$:
-    $$|A + A| \cdot |A \cdot A| \ge \frac{1}{16} |A|^{5/2}$$ -/
-theorem elekes_product_sum_bound (conf : ElekesConfiguration) :
-    (1 / 16 : ℝ) * conf.N ^ (5 / 2 : ℝ) ≤ conf.sum_card * conf.prod_card := sorry
+/-- A family `F` of sets is a star (canonically centered) if all sets share a common element `x`. -/
+def IsStarFamily (F : Finset (Finset α)) : Prop :=
+  ∃ x : α, ∀ A ∈ F, x ∈ A
 
-/-- **Elekes's Maximum Sum-Product Theorem (Explicit Constant $c = 1/4$)**:
-    For any finite set $A \subset \mathbb{R}$ of size $N \ge 1$:
-    $$\max(|A + A|, |A \cdot A|) \ge \frac{1}{4} |A|^{5/4}$$ -/
-theorem elekes_max_sum_product_bound (conf : ElekesConfiguration) :
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ max conf.sum_card conf.prod_card := sorry
+/-- The Hilton–Milner extremal bound: $inom{n-1}{k-1} - inom{n-k-1}{k-1} + 1$. -/
+def hiltonMilnerBound (n k : ℕ) : ℕ :=
+  Nat.choose (n - 1) (k - 1) - Nat.choose (n - k - 1) (k - 1) + 1
 
-/-- **Elekes Sum-Product Constant Existence Theorem (Max Form)**:
-    There exists an absolute universal constant $c > 0$ such that for every
-    Elekes configuration, $\max(|A + A|, |A \cdot A|) \ge c |A|^{5/4}$. -/
-theorem elekes_sum_product_constant_exists :
-    ∃ c : ℝ, 0 < c ∧ ∀ conf : ElekesConfiguration,
-      c * conf.N ^ (5 / 4 : ℝ) ≤ max conf.sum_card conf.prod_card := sorry
-
-/-- **Elekes Product-Sum Constant Existence Theorem (Product Form)**:
-    There exists an absolute universal constant $c > 0$ such that for every
-    Elekes configuration, $|A + A| \cdot |A \cdot A| \ge c |A|^{5/2}$. -/
-theorem elekes_product_constant_exists :
-    ∃ c : ℝ, 0 < c ∧ ∀ conf : ElekesConfiguration,
-      c * conf.N ^ (5 / 2 : ℝ) ≤ conf.sum_card * conf.prod_card := sorry
-
-/-- Corollary: Either $|A + A| \ge \frac{1}{4} |A|^{5/4}$ or $|A \cdot A| \ge \frac{1}{4} |A|^{5/4}$. -/
-theorem elekes_sum_or_product (conf : ElekesConfiguration) :
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.sum_card ∨
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.prod_card := sorry
-
-end ElekesSumProduct
+/-- **Sharpness of the Hilton--Milner bound.** For every `2 ≤ k` and `2k < n`,
+there is a uniform, pairwise-intersecting, non-star family whose cardinality is exactly
+`hiltonMilnerBound n k`. This is the classical exceptional-set construction described
+after Theorem 1 of Bulavka--Woodroofe (2026). -/
+theorem exists_hiltonMilner_extremizer {n k : ℕ} (hn : Fintype.card α = n)
+    (hk : 2 ≤ k) (h2k : 2 * k < n) :
+    ∃ F : Finset (Finset α),
+      (∀ A ∈ F, A.card = k) ∧
+      (∀ A ∈ F, ∀ B ∈ F, ¬ Disjoint A B) ∧
+      ¬ IsStarFamily F ∧
+      F.card = hiltonMilnerBound n k := sorry

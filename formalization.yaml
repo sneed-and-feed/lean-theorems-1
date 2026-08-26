@@ -1,36 +1,41 @@
 version: "v0.4"
 
 project:
-  name: "Elekes's Sum-Product Inequality in Additive Combinatorics"
+  name: "The Erdős–Ko–Rado Theorem and Hilton–Milner Extremizer"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of György Elekes's landmark sum-product
-    inequalities (1997) via incidence geometry and the Szemerédi–Trotter theorem.
-    Proves the max sum-product bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum
-    bound |A + A| * |A * A| >= 1/16 |A|^(5/2), and structural additive-multiplicative expansion bounds.
-    To the maintainers' knowledge, Elekes's sum-product theorem was verified absent from core
-    Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Erdős–Ko–Rado theorem (1961) on
+    intersecting families of finite sets using Katona's circle method (1972), along with the
+    construction of the classical Hilton–Milner (1967) extremal non-star intersecting family.
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.NT]
-  msc2020: ["11B75", "05D99", "52C10"]
+  arxiv: [math.CO]
+  msc2020: ["05D05", "05A05"]
 
 sources:
-  - title: "On the number of sums and products"
+  - title: "Intersection theorems for systems of finite sets"
     type: paper
     authors:
-      - "György Elekes"
+      - "P. Erdős"
+      - "C. Ko"
+      - "R. Rado"
     relationship: formalizes
-  - title: "On sums and products of integers"
+  - title: "A simple proof of the Erdös-Chao Ko-Rado theorem"
     type: paper
     authors:
-      - "Paul Erdős"
-      - "Endre Szemerédi"
-    relationship: background
+      - "G. O. H. Katona"
+    relationship: adapts
+  - title: "Some intersection theorems for systems of finite sets"
+    type: paper
+    authors:
+      - "A. J. W. Hilton"
+      - "E. C. Milner"
+    relationship: formalizes
 
 automation:
   methods:
