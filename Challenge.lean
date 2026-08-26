@@ -1,27 +1,26 @@
-import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Fintype.Basic
 
-namespace SylvesterGallai
+namespace HallMarriage
 
-/-- A point in the 2D real affine plane. -/
-abbrev Point := ℝ × ℝ
+open Finset
 
-/-- Three points in the plane are collinear if the triangle they form has zero signed area. -/
-def Collinear (p q r : Point) : Prop :=
-  (q.1 - p.1) * (r.2 - p.2) - (q.2 - p.2) * (r.1 - p.1) = 0
+variable {ι α : Type*} [DecidableEq ι] [DecidableEq α] [Fintype ι]
 
-/-- A finite set of points `S` is collinear if all triples in `S` are collinear. -/
-def SetCollinear (S : Finset Point) : Prop :=
-  ∀ p ∈ S, ∀ q ∈ S, ∀ r ∈ S, Collinear p q r
+/-- Hall's marriage condition: for every subset of indices `J`, the union of sets `A i` for `i ∈ J`
+has cardinality at least `|J|`. -/
+def HallCondition (A : ι → Finset α) : Prop :=
+  ∀ J : Finset ι, J.card ≤ (J.biUnion A).card
 
-/-- An ordinary line with respect to a finite point set `S` is a line passing through
-exactly two points of `S`. -/
-def IsOrdinaryLine (S : Finset Point) (p q : Point) : Prop :=
-  p ∈ S ∧ q ∈ S ∧ p ≠ q ∧ (∀ r ∈ S, Collinear p q r → r = p ∨ r = q)
+/-- A System of Distinct Representatives (SDR) / Transversal for the indexed family `A`. -/
+def IsSDR (A : ι → Finset α) (f : ι → α) : Prop :=
+  Function.Injective f ∧ ∀ i : ι, f i ∈ A i
 
-/-- **The Sylvester–Gallai Theorem (Freek Wiedijk #98):**
-Every finite, non-collinear set of points in the real Euclidean plane contains an ordinary line. -/
-theorem sylvester_gallai (S : Finset Point) (_h_card : 3 ≤ S.card) (h_non_collinear : ¬ SetCollinear S) :
-    ∃ p ∈ S, ∃ q ∈ S, p ≠ q ∧ IsOrdinaryLine S p q := sorry
+/-- **Hall's Marriage Theorem (Sufficiency / Equivalence, Freek Wiedijk #87):**
+A finite collection of sets admits a system of distinct representatives if and only if
+it satisfies Hall's condition. -/
+theorem hall_marriage_theorem (A : ι → Finset α) :
+    (∃ f : ι → α, IsSDR A f) ↔ HallCondition A := sorry
 
-end SylvesterGallai
+end HallMarriage
