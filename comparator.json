@@ -2,7 +2,10 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "erdos_szekeres_convex_polygon"
+    "ErdosUnitDistances.erdos_unit_distances_bound",
+    "ErdosUnitDistances.erdos_unit_distances_bound_tight",
+    "ErdosUnitDistances.erdos_unit_distances_uniform_bound",
+    "ErdosUnitDistances.erdos_unit_distances_asymptotic"
   ],
   "permitted_axioms": [
     "propext",

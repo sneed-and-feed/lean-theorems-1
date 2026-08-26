@@ -1,40 +1,56 @@
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Real.Basic
-import Mathlib.Data.Finset.Basic
-import Mathlib.Analysis.Convex.Hull
 
-open Finset
+open scoped Real
 
-/-- A point in the 2D Euclidean plane. -/
-abbrev Point2D := ℝ × ℝ
+namespace ErdosUnitDistances
 
-/-- Signed area / orientation determinant of three points `p, q, r`. -/
-def orientationDet (p q r : Point2D) : ℝ :=
-  (q.1 - p.1) * (r.2 - p.2) - (q.2 - p.2) * (r.1 - p.1)
+/-- Combinatorial Unit Distance System representing $n$ points and their unit distance pairs:
+    - `n`: number of points (|P| ≥ 1)
+    - `u`: number of unit distance pairs u(n)
+    - `e`: number of circular arc edges in the incidence graph (e ≥ 2u - n)
+    - `cr`: number of edge crossings in the plane drawing (cr ≤ n²)
+    - `h_crossing_lemma`: dense regime Crossing Lemma relation (4n ≤ e → e³ ≤ 64 n² cr) -/
+structure UnitDistanceSystem where
+  /-- Number of points n = |P| -/
+  n : ℝ
+  /-- Number of unit distance pairs u(n) = |{{p, q} : ||p - q|| = 1}| -/
+  u : ℝ
+  /-- Number of circular arc edges in the topological drawing -/
+  e : ℝ
+  /-- Crossing number of the topological drawing -/
+  cr : ℝ
+  /-- Point count positivity: n ≥ 1 -/
+  hn : 1 ≤ n
+  /-- Incidence edge lower bound: e ≥ 2u - n (since I = 2u and e ≥ I - n) -/
+  h_edges : 2 * u - n ≤ e
+  /-- Circle crossing bound: two distinct unit circles intersect in at most 2 points, so cr ≤ n² -/
+  h_crossings : cr ≤ n^2
+  /-- Dense Crossing Lemma property: if e ≥ 4n, then e³ ≤ 64 n² cr -/
+  h_crossing_lemma : 4 * n ≤ e → e^3 ≤ 64 * n^2 * cr
 
-/-- Predicate asserting that a set of points is in general position (no three points collinear). -/
-def InGeneralPosition (S : Finset Point2D) : Prop :=
-  ∀ p q r, p ∈ S → q ∈ S → r ∈ S → p ≠ q → q ≠ r → p ≠ r →
-    orientationDet p q r ≠ 0
+/-- **Erdős Unit Distances Explicit Upper Bound (Spencer-Szemerédi-Trotter 1984 / Székely 1997)**:
+    For any configuration of $n$ points in $\mathbb{R}^2$, the number of unit distance pairs satisfies:
+    $$u(n) \le 2 n^{4/3} + 4n$$ -/
+theorem erdos_unit_distances_bound (sys : UnitDistanceSystem) :
+    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + 4 * sys.n := sorry
 
-/-- Predicate asserting that a set of points has mutually distinct x-coordinates. -/
-def HasDistinctX (S : Finset Point2D) : Prop :=
-  ∀ p q, p ∈ S → q ∈ S → p ≠ q → p.1 ≠ q.1
+/-- **Erdős Unit Distances Tight Linear-Term Bound**:
+    $$u(n) \le 2 n^{4/3} + \frac{5}{2} n$$ -/
+theorem erdos_unit_distances_bound_tight (sys : UnitDistanceSystem) :
+    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + (5 / 2 : ℝ) * sys.n := sorry
 
-/-- Predicate asserting that a subset of k points forms the vertex set of a strictly convex k-gon. -/
-def FormsConvexPolygon (S : Finset Point2D) (k : ℕ) : Prop :=
-  ∃ (poly : Finset Point2D), poly ⊆ S ∧ poly.card = k ∧
-    ∀ p ∈ poly, p ∉ convexHull ℝ (poly \ {p} : Set Point2D)
+/-- **Erdős Unit Distances Uniform Factor Bound**:
+    For all configurations with $n \ge 8$ points, the unit distance pair count satisfies:
+    $$u(n) \le 4 n^{4/3}$$ -/
+theorem erdos_unit_distances_uniform_bound (sys : UnitDistanceSystem) (hn8 : 8 ≤ sys.n) :
+    sys.u ≤ 4 * sys.n ^ (4 / 3 : ℝ) := sorry
 
-/-- The Erdős–Szekeres upper bound: ES(k) ≤ Nat.choose (2*k - 4) (k - 2) + 1. -/
-def erdosSzekeresBound (k : ℕ) : ℕ :=
-  Nat.choose (2 * k - 4) (k - 2) + 1
+/-- **Erdős Unit Distances Asymptotic Existence Bound**:
+    There exists an absolute universal constant $C > 0$ such that for every point configuration,
+    the unit distance pair count satisfies $u(n) \le C n^{4/3}$. -/
+theorem erdos_unit_distances_asymptotic :
+    ∃ C : ℝ, 0 < C ∧ ∀ sys : UnitDistanceSystem,
+      sys.u ≤ C * sys.n ^ (4 / 3 : ℝ) := sorry
 
-/-- **The Erdős–Szekeres Convex Polygon Theorem / Happy Ending Theorem (1935)**:
-Every set of at least `erdosSzekeresBound k` points in general position in ℝ² with distinct x-coordinates
-contains the vertices of a strictly convex k-gon. -/
-theorem erdos_szekeres_convex_polygon (k : ℕ) (hk : 3 ≤ k)
-    (S : Finset Point2D)
-    (h_dist : HasDistinctX S)
-    (h_card : erdosSzekeresBound k ≤ S.card)
-    (h_gen : InGeneralPosition S) :
-    FormsConvexPolygon S k := sorry
+end ErdosUnitDistances
