@@ -1,28 +1,28 @@
 version: "v0.4"
 
 project:
-  name: "Beck's Theorem on Point Configurations and Incidence Geometry"
+  name: "Bollobás's Two Families Theorem (Set Pairs Inequality)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of József Beck's theorem (1983)
-    in combinatorial incidence geometry. Proves the fundamental dichotomy that any finite set
-    of n points in the Euclidean plane either contains a line with Omega(n) points or spans
-    Omega(n^2) distinct lines, establishing the exact pairs double-counting identity and
+    A complete machine-checked Lean 4 formalization of Béla Bollobás's 1965 Two Families Theorem
+    (Set Pairs Inequality) in extremal set theory. Proves the skew LYM-type inequality for pairs of
+    disjoint subsets (A_i, B_i) satisfying cross-intersection conditions A_i ∩ B_j ≠ ∅ for i ≠ j,
+    and deduces the uniform bound m ≤ C(a+b, a) for uniform families of sizes a and b.
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "52C30", "05B25"]
+  arxiv: [math.CO]
+  msc2020: ["05D05", "05C35"]
 
 sources:
-  - title: "On the lattice property of the plane and some problems of Dirac, Motzkin and Erdős in combinatorial geometry"
+  - title: "On generalized graphs"
     type: paper
     authors:
-      - "József Beck"
+      - "Béla Bollobás"
     relationship: formalizes
 
 automation:
@@ -30,8 +30,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
