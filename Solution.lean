@@ -1,1 +1,1 @@
-import Formalization.RadonHelly
+import Formalization.PicksTheorem

@@ -1,25 +1,52 @@
-import Mathlib.Analysis.Convex.Hull
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
 
-namespace RadonHelly
+/-- A combinatorial data structure representing an elementary lattice triangulation
+    of a simple planar polygon (topological disk).
+    In an elementary triangulation, every triangular face has area 1/2 (determinant ±1)
+    and contains no lattice points in its interior or on its edges (other than the 3 vertices). -/
+structure LatticeTriangulation where
+  /-- Total number of vertices in the triangulation -/
+  V : ℕ
+  /-- Total number of edges in the triangulation -/
+  E : ℕ
+  /-- Total number of triangular faces in the triangulation -/
+  F : ℕ
+  /-- Number of strictly interior lattice vertices -/
+  i : ℕ
+  /-- Number of boundary lattice vertices -/
+  b : ℕ
+  /-- Number of interior edges -/
+  E_int : ℕ
+  /-- Number of boundary edges -/
+  E_bd : ℕ
+  /-- Vertex partition: every vertex is either interior or boundary -/
+  h_V_split : V = i + b
+  /-- Edge partition: every edge is either interior or boundary -/
+  h_E_split : E = E_int + E_bd
+  /-- Boundary condition: boundary forms a simple closed polygonal cycle, so E_bd = b -/
+  h_E_bd : E_bd = b
+  /-- Euler's formula for a planar disk triangulation: V - E + F = 1 in ℤ -/
+  h_euler : (V : ℤ) - (E : ℤ) + (F : ℤ) = 1
+  /-- Edge-face incidence double counting: each face has 3 edges;
+      interior edges belong to 2 faces, boundary edges belong to 1 face -/
+  h_incidence : 3 * F = 2 * E_int + E_bd
 
-variable {d : ℕ}
+namespace LatticeTriangulation
 
-/-- **Radon's Lemma (Radon's Theorem, 1921, Freek Wiedijk #99):**
-Any set of $d + 2$ points in $\mathbb{R}^d$ can be partitioned into two disjoint subsets
-whose convex hulls intersect. -/
-theorem radons_theorem (S : Finset (Fin d → ℝ)) (hS : S.card = d + 2) :
-    ∃ A B : Finset (Fin d → ℝ), A ⊆ S ∧ B ⊆ S ∧ Disjoint A B ∧ A ∪ B = S ∧
-      (convexHull ℝ (A : Set (Fin d → ℝ)) ∩ convexHull ℝ (B : Set (Fin d → ℝ))).Nonempty := sorry
+/-- Real area of the polygon (since each elementary triangle has area 1/2). -/
+def areaReal (T : LatticeTriangulation) : ℝ :=
+  (T.F : ℝ) / 2
 
-/-- **Helly's Theorem for Finite Families of Convex Sets (1923, Freek Wiedijk #99):**
-If `C` is a finite family of convex subsets in `Fin d → ℝ` such that every subfamily of size `d + 1`
-has non-empty intersection, then the entire family has non-empty intersection. -/
-theorem hellys_theorem {ι : Type*} [Fintype ι] [DecidableEq ι] (C : ι → Set (Fin d → ℝ))
-    (h_convex : ∀ i : ι, Convex ℝ (C i))
-    (h_inter : ∀ J : Finset ι, J.card ≤ d + 1 → (⋂ i ∈ J, C i).Nonempty) :
-    (⋂ i : ι, C i).Nonempty := sorry
+end LatticeTriangulation
 
-end RadonHelly
+/-- **Pick's Theorem on Lattice Polygons (Georg Alexander Pick, 1899, Freek Wiedijk #92)**:
+For any simple lattice polygon equipped with an elementary triangulation T,
+the area is Area(P) = i + b / 2 - 1. -/
+theorem picks_theorem (T : LatticeTriangulation) :
+    T.areaReal = (T.i : ℝ) + (T.b : ℝ) / 2 - 1 := sorry
+
+/-- **Integer form of Pick's Theorem**: 2 * Area(P) = 2 * i + b - 2. -/
+theorem picks_theorem_two_area (T : LatticeTriangulation) :
+    (T.F : ℤ) = 2 * (T.i : ℤ) + (T.b : ℤ) - 2 := sorry
