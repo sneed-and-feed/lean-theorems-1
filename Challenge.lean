@@ -1,64 +1,27 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Finite
-import Mathlib.Combinatorics.SimpleGraph.Acyclic
-import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
-import Mathlib.Data.Fintype.Card
-import Mathlib.Data.Finset.Card
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Basic
 
-open Finset SimpleGraph
+namespace SylvesterGallai
 
-/-- A connected planar map, built inductively from a single vertex. -/
-inductive PlanarMap : Type where
-  | vertex : PlanarMap
-  | addPendant : PlanarMap → PlanarMap
-  | addFaceEdge : PlanarMap → PlanarMap
-deriving DecidableEq, Repr
+/-- A point in the 2D real affine plane. -/
+abbrev Point := ℝ × ℝ
 
-namespace PlanarMap
+/-- Three points in the plane are collinear if the triangle they form has zero signed area. -/
+def Collinear (p q r : Point) : Prop :=
+  (q.1 - p.1) * (r.2 - p.2) - (q.2 - p.2) * (r.1 - p.1) = 0
 
-/-- Number of vertices in a planar map. -/
-def vertexCount : PlanarMap → ℕ
-  | vertex => 1
-  | addPendant p => p.vertexCount + 1
-  | addFaceEdge p => p.vertexCount
+/-- A finite set of points `S` is collinear if all triples in `S` are collinear. -/
+def SetCollinear (S : Finset Point) : Prop :=
+  ∀ p ∈ S, ∀ q ∈ S, ∀ r ∈ S, Collinear p q r
 
-/-- Number of edges in a planar map. -/
-def edgeCount : PlanarMap → ℕ
-  | vertex => 0
-  | addPendant p => p.edgeCount + 1
-  | addFaceEdge p => p.edgeCount + 1
+/-- An ordinary line with respect to a finite point set `S` is a line passing through
+exactly two points of `S`. -/
+def IsOrdinaryLine (S : Finset Point) (p q : Point) : Prop :=
+  p ∈ S ∧ q ∈ S ∧ p ≠ q ∧ (∀ r ∈ S, Collinear p q r → r = p ∨ r = q)
 
-/-- Number of faces in a planar map (including the unbounded exterior face). -/
-def faceCount : PlanarMap → ℕ
-  | vertex => 1
-  | addPendant p => p.faceCount
-  | addFaceEdge p => p.faceCount + 1
+/-- **The Sylvester–Gallai Theorem (Freek Wiedijk #98):**
+Every finite, non-collinear set of points in the real Euclidean plane contains an ordinary line. -/
+theorem sylvester_gallai (S : Finset Point) (_h_card : 3 ≤ S.card) (h_non_collinear : ¬ SetCollinear S) :
+    ∃ p ∈ S, ∃ q ∈ S, p ≠ q ∧ IsOrdinaryLine S p q := sorry
 
-/-- Euler characteristic of a planar map: χ(P) = V - E + F. -/
-def eulerChar (P : PlanarMap) : ℤ :=
-  (P.vertexCount : ℤ) - (P.edgeCount : ℤ) + (P.faceCount : ℤ)
-
-end PlanarMap
-
-/-- **Euler's Polyhedron Formula (1758, Wiedijk #13)**:
-For any inductively generated connected planar map, $V - E + F = 2$. -/
-theorem euler_polyhedron_formula (P : PlanarMap) : P.eulerChar = 2 := sorry
-
-section SimpleGraphBridge
-
-variable {V : Type*} [Fintype V] [DecidableEq V]
-
-/-- The number of faces of a connected graph G relative to a spanning tree T.
-    Defined as the number of non-tree edges plus 1 (the unbounded face). -/
-def spanningTreeFaceCount (G : SimpleGraph V) [DecidableRel G.Adj]
-    (T : SimpleGraph V) [DecidableRel T.Adj] : ℕ :=
-  G.edgeFinset.card - T.edgeFinset.card + 1
-
-/-- **Euler's Formula for Connected Graphs via Spanning Trees**:
-For any finite connected graph $G$ with spanning tree $T$, $V - E + F = 2$ in $\mathbb{Z}$. -/
-theorem euler_connected_graph (G : SimpleGraph V) [DecidableRel G.Adj]
-    (T : SimpleGraph V) [DecidableRel T.Adj]
-    (hT : T.IsTree) (hle : T ≤ G) :
-    (Fintype.card V : ℤ) - (G.edgeFinset.card : ℤ) + (spanningTreeFaceCount G T : ℤ) = 2 := sorry
-
-end SimpleGraphBridge
+end SylvesterGallai
