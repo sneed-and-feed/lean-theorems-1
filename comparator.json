@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "cauchy_arm_lemma"
+    "ColorfulHelly.colorful_helly",
+    "ColorfulHelly.colorful_helly_all_dimensions"
   ],
   "permitted_axioms": [
     "propext",
