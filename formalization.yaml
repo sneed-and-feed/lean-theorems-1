@@ -1,46 +1,45 @@
 version: "v0.4"
 
 project:
-  name: "The Friendship Theorem on Graphs with Unique Common Neighbors"
+  name: "The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Friendship Theorem (P. Erdős,
-    A. Rényi, and V. T. Sós, 1966; H. S. Wilf, 1971). Proves that any finite simple graph on
-    at least three vertices (|V| ≥ 3) in which every pair of distinct vertices shares exactly
-    one common neighbor must contain a universal vertex (the 'politician'), structuring the
-    graph as a collection of triangles sharing a central vertex (a windmill graph).
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Friendship Windmill Structure Theorem
+    (Erdős, Rényi, and Sós, 1966). Proves that any finite graph in which every pair of distinct vertices
+    shares exactly one common neighbor possesses a universal vertex w, has an odd number of vertices |V| = 2k + 1,
+    induces a 1-regular perfect matching on V \ {w}, and is isomorphic to the Dutch windmill graph Wd(k, 2)
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05C50", "05C75", "05E30"]
+  msc2020: ["05C75", "05C50", "05C07"]
 
 sources:
   - title: "On a problem of graph theory"
     type: paper
     authors:
-      - "P. Erdős"
-      - "A. Rényi"
-      - "V. T. Sós"
+      - "Paul Erdős"
+      - "Alfréd Rényi"
+      - "Vera T. Sós"
     relationship: formalizes
-  - title: "The friendship theorem"
-    type: paper
+  - title: "Proofs from THE BOOK"
+    type: book
     authors:
-      - "H. S. Wilf"
-    relationship: adapts
+      - "Martin Aigner"
+      - "Günter M. Ziegler"
+    relationship: background
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
