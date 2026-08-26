@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "euler_polyhedron_formula",
+    "CombinatorialMap.euler_polyhedron_formula",
     "planar_edge_bound",
     "planar_edge_bound_triangle_free",
     "non_planarity_k5",

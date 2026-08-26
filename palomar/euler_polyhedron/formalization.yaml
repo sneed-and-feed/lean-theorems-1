@@ -1,50 +1,50 @@
 version: "v0.4"
 
 project:
-  name: "Euler's Polyhedron Formula"
+  name: "Euler's Polyhedron Formula for Combinatorial Maps"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
-    (1758, Wiedijk #13) and fundamental topological graph theory bounds using Tutte-Edmonds
-    combinatorial maps (dart rotation systems). Formalizes planar combinatorial maps, concrete
-    polyhedral instances (including the regular tetrahedron map on 12 darts), classical planar
-    edge bounds E <= 3V - 6 and E <= 2V - 4, and complete non-planarity proofs for K5 and K3,3.
+    A complete machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
+    (1758, Wiedijk #13) and its topological planarity obstructions via the Tutte-Edmonds permutation
+    framework (combinatorial maps / rotation systems). Defines darts, fixed-point-free edge involutions,
+    vertex cyclic rotations, and face boundary cycles, formalizing the core identity along with the
+    standard planar edge bound E <= 3V - 6, the triangle-free bound E <= 2V - 4, the average degree
+    bound (< 6), and the non-planarity of K_5 and K_{3,3}. To the maintainers' knowledge, the theorem
+    was not found in an exact declaration name, docstring, and type signature search of the pinned
+    Mathlib revision (Mathlib v4.34.0-rc1).
 
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
   arxiv: [math.CO, math.GT]
-  msc2020: ["05C10", "57M15", "52B05"]
+  msc2020: ["05C10", "57M15", "05C65"]
 
 sources:
   - title: "Elementa doctrinae solidorum"
     type: paper
     authors:
       - "Leonhard Euler"
-    relationship: inspired_by
-  - title: "A Combinatorial Approach to Embeddings and Maps"
+    relationship: background
+  - title: "A census of planar maps"
     type: paper
     authors:
       - "W. T. Tutte"
-      - "Jack Edmonds"
     relationship: adapts
-  - title: "Recherches sur les polyèdres"
+  - title: "A combinatorial representation for polyhedral surfaces"
     type: paper
     authors:
-      - "A.-L. Cauchy"
-    relationship: inspired_by
+      - "Jack Edmonds"
+    relationship: formalizes
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

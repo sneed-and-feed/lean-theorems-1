@@ -1,1 +1,1 @@
-import Formalization.TverbergsTheorem
+import Formalization.CombinatorialMap.EulerFormula

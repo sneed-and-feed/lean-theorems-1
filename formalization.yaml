@@ -1,42 +1,49 @@
 version: "v0.4"
 
 project:
-  name: "Tverberg's Partition Theorem and the Full One-Dimensional Case"
+  name: "Euler's Polyhedron Formula for Combinatorial Maps"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Tverberg's Theorem (Helge Tverberg,
-    1966) for r <= 2 across all dimensions and for arbitrary r in dimension one. Proves that
-    any (r - 1)(d + 1) + 1 points in ℝ^d can be partitioned into r parts whose convex hulls
-    intersect, formalizing the full 1D case via symmetric-rank pairing following Mulzer–Werner
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
+    (1758, Wiedijk #13) and its topological planarity obstructions via the Tutte-Edmonds permutation
+    framework (combinatorial maps / rotation systems). Defines darts, fixed-point-free edge involutions,
+    vertex cyclic rotations, and face boundary cycles, formalizing the core identity along with the
+    standard planar edge bound E <= 3V - 6, the triangle-free bound E <= 2V - 4, the average degree
+    bound (< 6), and the non-planarity of K_5 and K_{3,3}. To the maintainers' knowledge, the theorem
+    was not found in an exact declaration name, docstring, and type signature search of the pinned
+    Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.MG, math.CO]
-  msc2020: ["52A35", "52C10", "52A20"]
+  arxiv: [math.CO, math.GT]
+  msc2020: ["05C10", "57M15", "05C65"]
 
 sources:
-  - title: "A generalization of Radon's theorem"
+  - title: "Elementa doctrinae solidorum"
     type: paper
     authors:
-      - "Helge Tverberg"
-    relationship: formalizes
-  - title: "Approximating Tverberg points in linear time for any fixed dimension"
+      - "Leonhard Euler"
+    relationship: background
+  - title: "A census of planar maps"
     type: paper
     authors:
-      - "Wolfgang Mulzer"
-      - "Daniel Werner"
+      - "W. T. Tutte"
     relationship: adapts
+  - title: "A combinatorial representation for polyhedral surfaces"
+    type: paper
+    authors:
+      - "Jack Edmonds"
+    relationship: formalizes
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
         strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
