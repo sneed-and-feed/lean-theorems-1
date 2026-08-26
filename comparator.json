@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "friendship_windmill"
+    "graham_pollak",
+    "graham_pollak_tight"
   ],
   "permitted_axioms": [
     "propext",

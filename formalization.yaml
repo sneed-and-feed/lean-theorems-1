@@ -1,44 +1,44 @@
 version: "v0.4"
 
 project:
-  name: "The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)"
+  name: "The Graham–Pollak Theorem on Bipartite Partitions of Complete Graphs"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Friendship Windmill Structure Theorem
-    (Erdős, Rényi, and Sós, 1966). Proves that any finite graph in which every pair of distinct vertices
-    shares exactly one common neighbor possesses a universal vertex w, has an odd number of vertices |V| = 2k + 1,
-    induces a 1-regular perfect matching on V \ {w}, and is isomorphic to the Dutch windmill graph Wd(k, 2)
-    with exactly 3k edges, verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Graham–Pollak theorem (1971)
+    and its tightness on complete bipartite partitions of complete graphs. Proves that any
+    partition of the edges of the complete graph K_n into m complete bipartite subgraphs
+    requires at least n - 1 bipartite graphs (m >= n - 1), adapting Helge Tverberg's 1982
+    linear-algebraic quadratic form argument. Also formalizes the canonical star partition
+    proving tightness. To the maintainers' knowledge, Graham–Pollak was not previously formalized
+    in Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05C75", "05C50", "05C07"]
+  msc2020: ["05C50", "05C70", "15A03"]
 
 sources:
-  - title: "On a problem of graph theory"
+  - title: "On embedding graphs in squashed cubes"
     type: paper
     authors:
-      - "Paul Erdős"
-      - "Alfréd Rényi"
-      - "Vera T. Sós"
+      - "R. L. Graham"
+      - "H. O. Pollak"
     relationship: formalizes
-  - title: "Proofs from THE BOOK"
-    type: book
+  - title: "On the decomposition of K_n into complete bipartite graphs"
+    type: paper
     authors:
-      - "Martin Aigner"
-      - "Günter M. Ziegler"
-    relationship: background
+      - "Helge Tverberg"
+    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction.
+        Lean LSP checking with Gemini models under maintainer direction and human verification.
         All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
@@ -46,6 +46,7 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    The formalization and Challenge/Solution parity were verified through human audit by the maintainers
-    with interactive proof assistance and refactoring. Verified with 0 errors, 0 warnings, 0 sorries,
+    The formalization and Challenge/Solution parity were verified through human audit by the
+    maintainers, with interactive proof assistance and refactoring. The underlying formalization
+    has been checked by the Lean 4 compiler and verified with 0 errors, 0 warnings, 0 sorries,
     and 0 custom axioms.
