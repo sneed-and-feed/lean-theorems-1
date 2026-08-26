@@ -1,29 +1,35 @@
 version: "v0.4"
 
 project:
-  name: "The De Bruijn–Erdős Theorem on Incidence Geometry"
+  name: "Desargues's Theorem in Vector and Axiomatic Projective Geometry"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the De Bruijn–Erdős theorem (1948)
-    in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
-    on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
-    bipartite double-counting argument. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Desargues's theorem (Wiedijk #53) in both
+    module-theoretic vector geometry and synthetic axiomatic projective planes. Proves that centrally
+    perspective triangles have collinear side-intersection points in modules over commutative rings,
+    and proves the non-trivial converse theorem in Desarguesian projective planes under proper nondegeneracy
+    hypotheses. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["05B25", "51E10", "51A15"]
+  arxiv: [math.AG, math.MG]
+  msc2020: ["51A05", "51A30", "14N05"]
 
 sources:
-  - title: "On a combinatorial problem"
-    type: paper
+  - title: "Manière universelle de Mr. Girard Desargues, pour pratiquer la perspective par petit-pied, comme le geometral"
+    type: book
     authors:
-      - "N. G. de Bruijn"
-      - "Paul Erdős"
+      - "Girard Desargues"
+      - "Abraham Bosse"
     relationship: formalizes
+  - title: "Grundlagen der Geometrie"
+    type: book
+    authors:
+      - "David Hilbert"
+    relationship: background
 
 automation:
   methods:
