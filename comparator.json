@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "DeBruijnErdos.de_bruijn_erdos"
+    "ore_hamiltonian",
+    "dirac_hamiltonian"
   ],
   "permitted_axioms": [
     "propext",

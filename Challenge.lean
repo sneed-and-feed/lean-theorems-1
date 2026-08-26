@@ -1,30 +1,24 @@
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Hamiltonian
+import Mathlib.Data.Fintype.Card
 
-open Finset
+open SimpleGraph
 
-namespace DeBruijnErdos
+/-- **Ore's Theorem (1960)**:
+A simple graph $G$ on $n \ge 3$ vertices in which $\deg(u) + \deg(v) \ge n$ for every pair of
+distinct non-adjacent vertices $u, v$ contains a Hamiltonian cycle. -/
+theorem ore_hamiltonian {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hn : 3 ≤ Fintype.card V)
+    (hore : ∀ u v : V, u ≠ v → ¬ G.Adj u v →
+      Fintype.card V ≤ G.degree u + G.degree v) :
+    ∃ (v : V) (p : G.Walk v v), p.IsHamiltonianCycle := sorry
 
-variable {α : Type*} [DecidableEq α]
-
-/-- A finite linear space consists of a set of points `P : Finset α` and a set of lines
-`L : Finset (Finset α)` satisfying:
-1. Every line is a subset of `P`.
-2. Every line contains at least 2 points.
-3. Any two distinct points lie on a unique line.
-4. Non-collinearity: no single line contains all points `P`.
-5. Non-degeneracy: there are at least 3 points. -/
-structure LinearSpace (P : Finset α) (L : Finset (Finset α)) : Prop where
-  line_subset : ∀ l ∈ L, l ⊆ P
-  line_card_ge_two : ∀ l ∈ L, 2 ≤ l.card
-  unique_line : ∀ u ∈ P, ∀ v ∈ P, u ≠ v → ∃! l ∈ L, u ∈ l ∧ v ∈ l
-  non_collinear : ∀ l ∈ L, ¬ P ⊆ l
-  three_le_card : 3 ≤ P.card
-
-/-- **The De Bruijn–Erdős Theorem on Incidence Geometry (1948)**:
-In any finite non-collinear linear space with at least 3 points, the number of lines
-is at least the number of points: `|P| ≤ |L|`. -/
-theorem de_bruijn_erdos {P : Finset α} {L : Finset (Finset α)}
-    (h : LinearSpace P L) : P.card ≤ L.card := sorry
-
-end DeBruijnErdos
+/-- **Dirac's Theorem (1952)**:
+A simple graph $G$ on $n \ge 3$ vertices with minimum degree $\delta(G) \ge \lceil n / 2 \rceil$
+contains a Hamiltonian cycle. -/
+theorem dirac_hamiltonian {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hn : 3 ≤ Fintype.card V)
+    (hdirac : ∀ v : V, (Fintype.card V + 1) / 2 ≤ G.degree v) :
+    ∃ (v : V) (p : G.Walk v v), p.IsHamiltonianCycle := sorry
