@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "bollobas_two_families",
-    "bollobas_uniform"
+    "bondy_induced_subsets"
   ],
   "permitted_axioms": [
     "propext",
