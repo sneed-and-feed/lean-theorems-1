@@ -1,34 +1,32 @@
+import Mathlib.Analysis.Convex.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
 
-/-- A polygonal arm/chain of `n + 1` vertices in `ℝ × ℝ`. -/
-def PolygonalChain (n : ℕ) := Fin (n + 1) → (ℝ × ℝ)
+open BigOperators
 
-/-- Squared Euclidean distance between two points in `ℝ × ℝ`. -/
-def distSq (p q : ℝ × ℝ) : ℝ := (p.1 - q.1) ^ 2 + (p.2 - q.2) ^ 2
+/-- A Colorful Convex System in ℝ^d consisting of d + 1 finite families of convex sets. -/
+structure ColorfulConvexSystem (d : ℕ) where
+  families : Fin (d + 1) → Finset (Set (Fin d → ℝ))
+  h_convex : ∀ (c : Fin (d + 1)) (S : Set (Fin d → ℝ)), S ∈ families c → Convex ℝ S
 
-/-- Dot product of two vectors in `ℝ × ℝ`. -/
-def dot (u v : ℝ × ℝ) : ℝ := u.1 * v.1 + u.2 * v.2
+namespace ColorfulHelly
 
-/-- Vector subtraction in `ℝ × ℝ`. -/
-def vecSub (p q : ℝ × ℝ) : ℝ × ℝ := (p.1 - q.1, p.2 - q.2)
+/-- Main Theorem: Lovász's Colorful Helly theorem (1974; first published proof, Bárány 1982).
+    If all colorful selections of `d + 1` sets intersect in positive dimension, then at least
+    one family has a non-empty global intersection. -/
+theorem colorful_helly (d : ℕ) (hd : 1 ≤ d) (sys : ColorfulConvexSystem d)
+    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
+      (∀ c, choice c ∈ sys.families c) →
+      (⋂ c : Fin (d + 1), choice c).Nonempty) :
+    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := sorry
 
-/-- Edge lengths match between two chains `P` and `Q`. -/
-def EdgeLengthsMatch {n : ℕ} (P Q : PolygonalChain n) : Prop :=
-  ∀ i : Fin n, distSq (P i.castSucc) (P i.succ) = distSq (Q i.castSucc) (Q i.succ)
+/-- Lovász's Colorful Helly theorem in every dimension `d`, including `d = 0`: if all colorful
+    selections of `d + 1` sets intersect, then at least one family has a non-empty global
+    intersection. -/
+theorem colorful_helly_all_dimensions (d : ℕ) (sys : ColorfulConvexSystem d)
+    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
+      (∀ c, choice c ∈ sys.families c) →
+      (⋂ c : Fin (d + 1), choice c).Nonempty) :
+    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := sorry
 
-/-- Opening of joint angles: dot product between outgoing unit-like vectors decreases (meaning angle increases). -/
-def AnglesOpen {n : ℕ} (P Q : PolygonalChain n) : Prop :=
-  ∀ i : Fin (n - 1),
-    let i_prev : Fin (n + 1) := ⟨i.1, by omega⟩
-    let i_curr : Fin (n + 1) := ⟨i.1 + 1, by omega⟩
-    let i_next : Fin (n + 1) := ⟨i.1 + 2, by omega⟩
-    dot (vecSub (P i_prev) (P i_curr)) (vecSub (P i_next) (P i_curr)) ≥
-    dot (vecSub (Q i_prev) (Q i_curr)) (vecSub (Q i_next) (Q i_curr))
-
-/-- **Cauchy's Arm Lemma (A. L. Cauchy, 1813):**
-Opening the internal angles of a planar polygonal chain increases the Euclidean distance between
-its endpoints for chains of length at most 2. -/
-theorem cauchy_arm_lemma {n : ℕ} (hn : n ≤ 2) (P Q : PolygonalChain n)
-    (h_len : EdgeLengthsMatch P Q) (h_ang : AnglesOpen P Q) :
-    distSq (P 0) (P (Fin.last n)) ≤ distSq (Q 0) (Q (Fin.last n)) := sorry
+end ColorfulHelly
