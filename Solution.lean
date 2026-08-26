@@ -1,1 +1,1 @@
-import Formalization.ElekesSumProduct
+import Formalization.CauchyArmLemma

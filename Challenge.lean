@@ -1,63 +1,34 @@
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
 
-open scoped Real
+/-- A polygonal arm/chain of `n + 1` vertices in `ℝ × ℝ`. -/
+def PolygonalChain (n : ℕ) := Fin (n + 1) → (ℝ × ℝ)
 
-namespace ElekesSumProduct
+/-- Squared Euclidean distance between two points in `ℝ × ℝ`. -/
+def distSq (p q : ℝ × ℝ) : ℝ := (p.1 - q.1) ^ 2 + (p.2 - q.2) ^ 2
 
-/-- Combinatorial Elekes Configuration representing a finite set $A \subset \mathbb{R}$
-    of size $N$, its sumset $A+A$, its productset $A\cdot A$, and the associated
-    point-line incidence system. -/
-structure ElekesConfiguration where
-  N : ℝ
-  sum_card : ℝ
-  prod_card : ℝ
-  P_card : ℝ
-  L_card : ℝ
-  I : ℝ
-  e : ℝ
-  cr : ℝ
-  hN : 1 ≤ N
-  hP : 1 ≤ P_card
-  h_sum_pos : 1 ≤ sum_card
-  h_prod_pos : 1 ≤ prod_card
-  h_prod_bound : P_card ≤ sum_card * prod_card
-  h_L : L_card = N^2
-  h_inc : N^3 ≤ I
-  h_edges : I - L_card ≤ e
-  h_crossings : cr ≤ L_card^2 / 2
-  h_crossing_lemma : 4 * P_card ≤ e → e^3 ≤ 64 * P_card^2 * cr
+/-- Dot product of two vectors in `ℝ × ℝ`. -/
+def dot (u v : ℝ × ℝ) : ℝ := u.1 * v.1 + u.2 * v.2
 
-/-- **Elekes's Product-Sum Theorem (Explicit Constant $c = 1/16$)**:
-    For any finite set $A \subset \mathbb{R}$ of size $N \ge 1$:
-    $$|A + A| \cdot |A \cdot A| \ge \frac{1}{16} |A|^{5/2}$$ -/
-theorem elekes_product_sum_bound (conf : ElekesConfiguration) :
-    (1 / 16 : ℝ) * conf.N ^ (5 / 2 : ℝ) ≤ conf.sum_card * conf.prod_card := sorry
+/-- Vector subtraction in `ℝ × ℝ`. -/
+def vecSub (p q : ℝ × ℝ) : ℝ × ℝ := (p.1 - q.1, p.2 - q.2)
 
-/-- **Elekes's Maximum Sum-Product Theorem (Explicit Constant $c = 1/4$)**:
-    For any finite set $A \subset \mathbb{R}$ of size $N \ge 1$:
-    $$\max(|A + A|, |A \cdot A|) \ge \frac{1}{4} |A|^{5/4}$$ -/
-theorem elekes_max_sum_product_bound (conf : ElekesConfiguration) :
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ max conf.sum_card conf.prod_card := sorry
+/-- Edge lengths match between two chains `P` and `Q`. -/
+def EdgeLengthsMatch {n : ℕ} (P Q : PolygonalChain n) : Prop :=
+  ∀ i : Fin n, distSq (P i.castSucc) (P i.succ) = distSq (Q i.castSucc) (Q i.succ)
 
-/-- **Elekes Sum-Product Constant Existence Theorem (Max Form)**:
-    There exists an absolute universal constant $c > 0$ such that for every
-    Elekes configuration, $\max(|A + A|, |A \cdot A|) \ge c |A|^{5/4}$. -/
-theorem elekes_sum_product_constant_exists :
-    ∃ c : ℝ, 0 < c ∧ ∀ conf : ElekesConfiguration,
-      c * conf.N ^ (5 / 4 : ℝ) ≤ max conf.sum_card conf.prod_card := sorry
+/-- Opening of joint angles: dot product between outgoing unit-like vectors decreases (meaning angle increases). -/
+def AnglesOpen {n : ℕ} (P Q : PolygonalChain n) : Prop :=
+  ∀ i : Fin (n - 1),
+    let i_prev : Fin (n + 1) := ⟨i.1, by omega⟩
+    let i_curr : Fin (n + 1) := ⟨i.1 + 1, by omega⟩
+    let i_next : Fin (n + 1) := ⟨i.1 + 2, by omega⟩
+    dot (vecSub (P i_prev) (P i_curr)) (vecSub (P i_next) (P i_curr)) ≥
+    dot (vecSub (Q i_prev) (Q i_curr)) (vecSub (Q i_next) (Q i_curr))
 
-/-- **Elekes Product-Sum Constant Existence Theorem (Product Form)**:
-    There exists an absolute universal constant $c > 0$ such that for every
-    Elekes configuration, $|A + A| \cdot |A \cdot A| \ge c |A|^{5/2}$. -/
-theorem elekes_product_constant_exists :
-    ∃ c : ℝ, 0 < c ∧ ∀ conf : ElekesConfiguration,
-      c * conf.N ^ (5 / 2 : ℝ) ≤ conf.sum_card * conf.prod_card := sorry
-
-/-- Corollary: Either $|A + A| \ge \frac{1}{4} |A|^{5/4}$ or $|A \cdot A| \ge \frac{1}{4} |A|^{5/4}$. -/
-theorem elekes_sum_or_product (conf : ElekesConfiguration) :
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.sum_card ∨
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.prod_card := sorry
-
-end ElekesSumProduct
+/-- **Cauchy's Arm Lemma (A. L. Cauchy, 1813):**
+Opening the internal angles of a planar polygonal chain increases the Euclidean distance between
+its endpoints for chains of length at most 2. -/
+theorem cauchy_arm_lemma {n : ℕ} (hn : n ≤ 2) (P Q : PolygonalChain n)
+    (h_len : EdgeLengthsMatch P Q) (h_ang : AnglesOpen P Q) :
+    distSq (P 0) (P (Fin.last n)) ≤ distSq (Q 0) (Q (Fin.last n)) := sorry
