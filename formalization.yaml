@@ -1,35 +1,34 @@
 version: "v0.4"
 
 project:
-  name: "Radon's Lemma and Helly's Theorem on Convex Sets"
+  name: "Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Radon's Lemma (Johann Radon, 1921)
-    and Helly's Theorem on intersecting families of convex sets (Eduard Helly, 1923; Freek
-    Wiedijk #99) from first principles. Proves that any d + 2 points in ℝ^d admit a Radon
-    partition, and uses Radon's lemma by induction to prove Helly's theorem for finite
-    collections of convex sets. Verified absent from core Mathlib (checked against Mathlib
-    v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Schur's Theorem on sum-free partitions
+    of integers (Issai Schur, 1916) and the Multicolor Triangle Ramsey Theorem. Proves that any
+    r-coloring of the integers {1, ..., N} contains a monochromatic solution to x + y = z for
+    N = ramseyTriangleBound(r), derived via edge-coloring complete graphs. Verified absent
+    from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.MG, math.CO]
-  msc2020: ["52A35", "52A20", "52C10"]
+  arxiv: [math.CO, math.NT]
+  msc2020: ["05D10", "11B75", "05C55"]
 
 sources:
-  - title: "Mengen konvexer Körper, die einen gemeinsamen Punkt enthalten"
+  - title: "Über die Kongruenz x^m + y^m ≡ z^m (mod p)"
     type: paper
     authors:
-      - "Johann Radon"
+      - "Issai Schur"
     relationship: formalizes
-  - title: "Über Mengen konvexer Körper mit gemeinschaftlichen Punkten"
+  - title: "On a Problem in Formal Logic"
     type: paper
     authors:
-      - "Eduard Helly"
-    relationship: formalizes
+      - "Frank P. Ramsey"
+    relationship: background
 
 automation:
   methods:
