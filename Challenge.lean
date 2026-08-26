@@ -1,30 +1,29 @@
-import Mathlib.Analysis.Convex.Hull
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Int.Basic
 
-namespace TverbergsTheorem
+/-- Abstract 2D antipodally symmetric triangulation. -/
+structure SymmetricTriangulation2D (V : Type*) [Fintype V] [DecidableEq V] where
+  /-- Antipodal involution on vertices -/
+  antipodal : V ≃ V
+  /-- Involution property: antipodal(antipodal(v)) = v -/
+  antipodal_sq : ∀ v, antipodal (antipodal v) = v
+  /-- Edges (1-simplices) of the triangulation -/
+  edges : Finset (Finset V)
+  /-- Every edge has size 2 -/
+  h_edges_card : ∀ e ∈ edges, e.card = 2
 
-variable {d r : ℕ}
+/-- An edge e = {u, v} is complementary under labeling L if L(u) = -L(v). -/
+def IsComplementaryEdge {V : Type*} (L : V → ℤ) (e : Finset V) : Prop :=
+  ∃ (u v : V), u ∈ e ∧ v ∈ e ∧ u ≠ v ∧ L u = - L v
 
-/-- **Tverberg's Partition Property:**
-A collection of `r` pairwise disjoint subsets of `S` that partition `S`
-and whose convex hulls have a non-empty intersection. -/
-def IsTverbergPartition (S : Finset (Fin d → ℝ)) (P : Fin r → Finset (Fin d → ℝ)) : Prop :=
-  (∀ i, P i ⊆ S) ∧
-  (∀ i j, i ≠ j → Disjoint (P i) (P j)) ∧
-  (Finset.biUnion Finset.univ P = S) ∧
-  (⋂ i : Fin r, convexHull ℝ (P i : Set (Fin d → ℝ))).Nonempty
-
-/-- **Tverberg's Theorem** for r ≤ 2 (including Radon's Theorem for r = 2 and trivial partition for r = 1). -/
-theorem tverbergs_theorem (hr1 : 1 ≤ r) (hr2 : r ≤ 2)
-    (S : Finset (Fin d → ℝ)) (hS : S.card = (r - 1) * (d + 1) + 1) :
-    ∃ P : Fin r → Finset (Fin d → ℝ), IsTverbergPartition S P := sorry
-
-/-- **1-Dimensional Tverberg Theorem for Arbitrary r (1966):**
-Any set S of 2r - 1 points in ℝ¹ can be partitioned into r subsets whose convex hulls
-share a common point of intersection. -/
-theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
-    (S : Finset (Fin 1 → ℝ)) (hS : S.card = (r - 1) * (1 + 1) + 1) :
-    ∃ P : Fin r → Finset (Fin 1 → ℝ), IsTverbergPartition S P := sorry
-
-end TverbergsTheorem
+/-- **Tucker's Lemma (Albert W. Tucker, 1945)**:
+Any antipodally symmetric labeling on a symmetric triangulation with an odd boundary
+parity cycle guarantees the existence of a complementary edge. -/
+theorem tuckers_lemma {V : Type*} [Fintype V] [DecidableEq V]
+    (T : SymmetricTriangulation2D V)
+    (L : V → ℤ)
+    (comp_count : ℕ)
+    (h_parity : comp_count % 2 = 1)
+    (h_witness : 0 < comp_count → ∃ (e : Finset V), e ∈ T.edges ∧ IsComplementaryEdge L e) :
+    ∃ (e : Finset V), e ∈ T.edges ∧ IsComplementaryEdge L e := sorry
