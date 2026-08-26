@@ -1,42 +1,41 @@
 version: "v0.4"
 
 project:
-  name: "Kneser's Conjecture and Lovász's Chromatic Bound (1978)"
+  name: "Ore's and Dirac's Theorems on Hamiltonian Cycles"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Kneser graph coloring bound (Kneser's Conjecture,
-    1955; Lovász's Theorem, 1978). Formalizes the Kneser graph KG(n, k) on k-subsets of an n-element set,
-    defines the combinatorial fiber coloring based on minimal elements, proves proper coloring by fiberwise
-    pigeonhole on intervals, and establishes the chromatic bound chi(KG(n, k)) <= n - 2k + 2,
-    verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Ore's theorem (1960) and Dirac's theorem (1952)
+    on the existence of Hamiltonian cycles in simple graphs. Proves Ore's degree-sum condition via maximal
+    path cycle-closure and connectivity arguments, and derives Dirac's minimum-degree theorem as a corollary.
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05C15", "05E45", "55M20"]
+  arxiv: [math.CO]
+  msc2020: ["05C38", "05C45"]
 
 sources:
-  - title: "Kneser's conjecture, chromatic number, and homotopy"
+  - title: "Note on Hamilton circuits"
     type: paper
     authors:
-      - "László Lovász"
+      - "Øystein Ore"
     relationship: formalizes
-  - title: "Aufgabe 360"
+  - title: "Some theorems on abstract graphs"
     type: paper
     authors:
-      - "Martin Kneser"
-    relationship: background
+      - "G. A. Dirac"
+    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
