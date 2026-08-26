@@ -634,18 +634,6 @@ theorem erdos_ko_rado_uniqueness_one {n : ℕ}
 -- Section 8: EKR Uniqueness Theorem (n > 2k)
 -- ============================================================================
 
-/-- **EKR equality/uniqueness case (following from Hilton--Milner 1967):**
-    For $n > 2k$, every intersecting family of $k$-sets achieving the maximal cardinality
-    $\binom{n-1}{k-1}$ is necessarily a star family. The case `k = 1` is elementary;
-    for `k ≥ 2`, the strict gap follows from the Hilton--Milner bound. -/
-theorem erdos_ko_rado_uniqueness {n k : ℕ}
-    (hn : Fintype.card α = n) (hk : 1 ≤ k) (h2k : 2 * k < n)
-    (F : Finset (Finset α))
-    (hF_k : ∀ A ∈ F, A.card = k)
-    (h_inter : ∀ A ∈ F, ∀ B ∈ F, ¬ Disjoint A B)
-    (h_max : F.card = Nat.choose (n - 1) (k - 1)) :
-    IsStarFamily F := by
-  sorry
 
 -- ============================================================================
 -- Section 9: Hilton–Milner Bound (EKR Stability)
@@ -950,18 +938,6 @@ theorem hilton_milner_stability_two {n : ℕ}
     F hF_two h_inter h_not_star
   rw [hiltonMilnerBound_two h4n, hcard]
 
-/-- **Hilton–Milner Theorem (1967):**
-    Let $n > 2k$ and $k \ge 2$. If $\mathcal{F}$ is an intersecting family of $k$-element subsets
-    of an $n$-element universe that is NOT a star family, then
-    $|\mathcal{F}| \le \binom{n-1}{k-1} - \binom{n-k-1}{k-1} + 1$. -/
-theorem hilton_milner_stability {n k : ℕ}
-    (hn : Fintype.card α = n) (hk : 2 ≤ k) (h2k : 2 * k < n)
-    (F : Finset (Finset α))
-    (hF_k : ∀ A ∈ F, A.card = k)
-    (h_inter : ∀ A ∈ F, ∀ B ∈ F, ¬ Disjoint A B)
-    (h_not_star : ¬ IsStarFamily F) :
-    F.card ≤ hiltonMilnerBound n k := by
-  sorry
 
 end ErdosKoRado
 
