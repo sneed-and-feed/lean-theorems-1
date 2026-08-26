@@ -1,0 +1,50 @@
+version: "v0.4"
+
+project:
+  name: "The Szemerédi–Trotter Theorem on Point-Line Incidences"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete machine-checked Lean 4 formalization of the Szemerédi–Trotter theorem (1983)
+    on point-line incidences via László Székely's crossing lemma approach (1997).
+    Proves the explicit upper bound I <= 4(nm)^(2/3) + 4n + m, uniform bounds,
+    and the k-rich lines corollary.
+    To the maintainers' knowledge, the Szemerédi–Trotter theorem was verified absent
+    from core Mathlib (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO, math.MG]
+  msc2020: ["52C10", "05C10", "05C62"]
+
+sources:
+  - title: "Extremal problems in discrete geometry"
+    type: paper
+    authors:
+      - "Endre Szemerédi"
+      - "William T. Trotter"
+    relationship: formalizes
+  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
+    type: paper
+    authors:
+      - "László A. Székely"
+    relationship: adapts
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    The formalization and Challenge/Solution parity were verified through human audit by the
+    maintainers with interactive proof assistance and refactoring. Verified with 0 errors,
+    0 warnings, 0 sorries, and 0 custom axioms.

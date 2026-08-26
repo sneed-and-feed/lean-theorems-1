@@ -1,0 +1,44 @@
+version: "v0.4"
+
+project:
+  name: "3D Sperner's Lemma and Parity Invariant on Simplicial 3-Manifolds"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete machine-checked Lean 4 formalization of the three-dimensional Sperner's Lemma
+    and the parity conservation invariant on abstract simplicial 3-complexes with boundary.
+    Proves that for any 4-coloring of vertices, the number of fully colored (panchromatic)
+    tetrahedra is congruent modulo 2 to the number of 0-1-2 triangular boundary facets.
+    To the maintainers' knowledge, the 3D combinatorial parity and manifold formulation of
+    Sperner's Lemma was verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05E45", "57Q05", "52A35"]
+
+sources:
+  - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
+    type: paper
+    authors:
+      - "Emanuel Sperner"
+    relationship: formalizes
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    The formalization and Challenge/Solution parity were verified through human audit by the
+    maintainers with interactive proof assistance and refactoring. Verified with 0 errors,
+    0 warnings, 0 sorries, and 0 custom axioms.

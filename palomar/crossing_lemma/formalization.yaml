@@ -1,0 +1,51 @@
+version: "v0.4"
+
+project:
+  name: "The Crossing Lemma and Székely's Probabilistic Amplification"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A machine-checked Lean 4 formalization of the Crossing Lemma (Ajtai, Chvátal, Newborn, Szemerédi 1982;
+    Leighton 1983) and its application to the Szemerédi–Trotter point-line incidence theorem via László Székely's
+    probabilistic expectation sub-sampling amplification (1997). Proves that any planar drawing of a graph with
+    |E| >= 4|V| has crossing number cr(G) >= |E|^3 / (64 |V|^2), verified absent from core Mathlib
+    (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO, math.MG]
+  msc2020: ["05C10", "05C62", "52C10"]
+
+sources:
+  - title: "Crossing-free subgraphs"
+    type: paper
+    authors:
+      - "Miklós Ajtai"
+      - "Vašek Chvátal"
+      - "Monty M. Newborn"
+      - "Endre Szemerédi"
+    relationship: formalizes
+  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
+    type: paper
+    authors:
+      - "László A. Székely"
+    relationship: adapts
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking with Gemini models under maintainer direction.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    The formalization and Challenge/Solution parity were verified through human audit by the maintainers
+    with interactive proof assistance and refactoring. Verified with 0 errors, 0 warnings, 0 sorries,
+    and 0 custom axioms.

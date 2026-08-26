@@ -1,0 +1,55 @@
+version: "v0.4"
+
+project:
+  name: "The Erdős–Ko–Rado Theorem and Hilton–Milner Extremizer"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete, machine-checked Lean 4 formalization of the Erdős–Ko–Rado theorem (1961) on
+    intersecting families of finite sets using Katona's circle method (1972), along with the
+    construction of the classical Hilton–Milner (1967) extremal non-star intersecting family.
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO]
+  msc2020: ["05D05", "05A05"]
+
+sources:
+  - title: "Intersection theorems for systems of finite sets"
+    type: paper
+    authors:
+      - "P. Erdős"
+      - "C. Ko"
+      - "R. Rado"
+    relationship: formalizes
+  - title: "A simple proof of the Erdös-Chao Ko-Rado theorem"
+    type: paper
+    authors:
+      - "G. O. H. Katona"
+    relationship: adapts
+  - title: "Some intersection theorems for systems of finite sets"
+    type: paper
+    authors:
+      - "A. J. W. Hilton"
+      - "E. C. Milner"
+    relationship: formalizes
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    The formalization and Challenge/Solution parity were verified through human audit by the
+    maintainers with interactive proof assistance and refactoring. Verified with 0 errors,
+    0 warnings, 0 sorries, and 0 custom axioms.

@@ -1,0 +1,44 @@
+version: "v0.4"
+
+project:
+  name: "Beck's Theorem on Point Configurations and Incidence Geometry"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete machine-checked Lean 4 formalization of József Beck's theorem (1983)
+    in combinatorial incidence geometry. Proves the fundamental dichotomy that any finite set
+    of n points in the Euclidean plane either contains a line with Omega(n) points or spans
+    Omega(n^2) distinct lines, establishing the exact pairs double-counting identity and
+    parameterized bounds. To the maintainers' knowledge, Beck's theorem was verified absent
+    from core Mathlib (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO, math.MG]
+  msc2020: ["52C10", "52C30", "05B25"]
+
+sources:
+  - title: "On the lattice property of the plane and some problems of Dirac, Motzkin and Erdős in combinatorial geometry"
+    type: paper
+    authors:
+      - "József Beck"
+    relationship: formalizes
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    The formalization and Challenge/Solution parity were verified through human audit by the
+    maintainers with interactive proof assistance and refactoring. Verified with 0 errors,
+    0 warnings, 0 sorries, and 0 custom axioms.

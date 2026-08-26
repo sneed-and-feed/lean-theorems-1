@@ -1,0 +1,49 @@
+version: "v0.4"
+
+project:
+  name: "Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete, machine-checked Lean 4 formalization of Dilworth's Theorem (Robert P.
+    Dilworth, 1950) on chain decompositions of finite posets and Mirsky's Dual Theorem
+    (Leon Mirsky, 1971) on antichain covers. Proves that the maximum size of an antichain
+    equals the minimum number of chains covering the poset, and dually that the maximum
+    length of a chain equals the minimum number of antichains covering the poset. Verified
+    absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO]
+  msc2020: ["06A07", "05A18", "05D15"]
+
+sources:
+  - title: "A Decomposition Theorem for Partially Ordered Sets"
+    type: paper
+    authors:
+      - "R. P. Dilworth"
+    relationship: formalizes
+  - title: "A dual of Dilworth's decomposition theorem"
+    type: paper
+    authors:
+      - "Leon Mirsky"
+    relationship: formalizes
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    The formalization and Challenge/Solution parity were verified through human audit by the
+    maintainers with interactive proof assistance and refactoring. Verified with 0 errors,
+    0 warnings, 0 sorries, and 0 custom axioms.

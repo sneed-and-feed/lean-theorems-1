@@ -1,0 +1,42 @@
+version: "v0.4"
+
+project:
+  name: "Bollobás's Two Families Theorem"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete machine-checked Lean 4 formalization of Béla Bollobás's 1965 Two Families Theorem
+    in extremal set theory. Proves the skew LYM-type inequality for pairs of disjoint subsets (A_i, B_i)
+    with cross-intersecting properties via strong induction on the sum of set sizes.
+    Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO]
+  msc2020: ["05D05", "05C35"]
+
+sources:
+  - title: "On generalized graphs"
+    type: paper
+    authors:
+      - "Béla Bollobás"
+    relationship: formalizes
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    The formalization and Challenge/Solution parity were verified through human audit by the maintainers
+    with interactive proof assistance and refactoring. Verified with 0 errors, 0 warnings, 0 sorries,
+    and 0 custom axioms.

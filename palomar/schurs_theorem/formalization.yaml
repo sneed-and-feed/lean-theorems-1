@@ -1,0 +1,48 @@
+version: "v0.4"
+
+project:
+  name: "Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete, machine-checked Lean 4 formalization of Schur's Theorem on sum-free partitions
+    of integers (Issai Schur, 1916) and the Multicolor Triangle Ramsey Theorem. Proves that any
+    r-coloring of the integers {1, ..., N} contains a monochromatic solution to x + y = z for
+    N = ramseyTriangleBound(r), derived via edge-coloring complete graphs. Verified absent
+    from core Mathlib (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO, math.NT]
+  msc2020: ["05D10", "11B75", "05C55"]
+
+sources:
+  - title: "Über die Kongruenz x^m + y^m ≡ z^m (mod p)"
+    type: paper
+    authors:
+      - "Issai Schur"
+    relationship: formalizes
+  - title: "On a Problem in Formal Logic"
+    type: paper
+    authors:
+      - "Frank P. Ramsey"
+    relationship: background
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    The formalization and Challenge/Solution parity were verified through human audit by the
+    maintainers with interactive proof assistance and refactoring. Verified with 0 errors,
+    0 warnings, 0 sorries, and 0 custom axioms.
