@@ -1,73 +1,64 @@
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Real.Basic
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Prod
-import Mathlib.Data.Finset.Image
 
-open scoped Classical
+open scoped Real
 
-noncomputable section
+/-- Combinatorial Point-Line Incidence Configuration:
+    - `n`: number of points (|P|)
+    - `m`: number of lines (|L|)
+    - `I`: number of incidences (|{(p, ℓ) : p ∈ ℓ}|)
+    - `e`: number of consecutive segment edges on lines (e ≥ I - m)
+    - `cr`: number of edge crossings in the geometric drawing (cr ≤ m(m-1)/2 ≤ m²/2) -/
+structure PointLineIncidenceSystem where
+  /-- Number of points n = |P| -/
+  n : ℝ
+  /-- Number of lines m = |L| -/
+  m : ℝ
+  /-- Number of incidences I = |{(p, ℓ) : p ∈ ℓ}| -/
+  I : ℝ
+  /-- Number of edges in the topological incidence graph -/
+  e : ℝ
+  /-- Crossing number of the topological drawing -/
+  cr : ℝ
+  /-- Point positivity -/
+  hn : 1 ≤ n
+  /-- Line positivity -/
+  hm : 1 ≤ m
+  /-- Incidence edge lower bound: e ≥ I - m -/
+  h_edges : I - m ≤ e
+  /-- Line pair crossing bound: two lines intersect in at most 1 point, so cr ≤ m² / 2 -/
+  h_crossings : cr ≤ m^2 / 2
+  /-- Dense Crossing Lemma property: if e ≥ 4n, then e³ ≤ 64 n² cr -/
+  h_crossing_lemma : 4 * n ≤ e → e^3 ≤ 64 * n^2 * cr
 
-namespace BecksTheorem
+namespace SzemerediTrotter
 
-/-- 2D Cartesian point in the real affine plane. -/
-abbrev Point2D := ℝ × ℝ
+/-- **Szemerédi–Trotter Theorem (Explicit Form)**:
+    For any Point-Line Incidence System with $n$ points and $m$ lines,
+    the incidence count $I$ satisfies:
+    $$I \le 4 (nm)^{2/3} + 4n + m$$ -/
+theorem szemeredi_trotter_bound (sys : PointLineIncidenceSystem) :
+    sys.I ≤ 4 * (sys.n * sys.m) ^ (2 / 3 : ℝ) + 4 * sys.n + sys.m := sorry
 
-/-- 2D cross product / determinant of two displacement vectors. -/
-def cross (u v : Point2D) : ℝ :=
-  u.1 * v.2 - u.2 * v.1
+/-- **Szemerédi–Trotter Theorem (Uniform Factor Form)**:
+    $$I \le 4 \left( (nm)^{2/3} + n + m \right)$$ -/
+theorem szemeredi_trotter_uniform_bound (sys : PointLineIncidenceSystem) :
+    sys.I ≤ 4 * ((sys.n * sys.m) ^ (2 / 3 : ℝ) + sys.n + sys.m) := sorry
 
-/-- 2D cross product of triangle (p, q, r). -/
-def crossProd (p q r : Point2D) : ℝ :=
-  cross (q.1 - p.1, q.2 - p.2) (r.1 - p.1, r.2 - p.2)
+/-- **Szemerédi–Trotter Constant Exists Form**:
+    There exists an absolute constant $C > 0$ such that for every point-line system:
+    $I \le C (n^{2/3} m^{2/3} + n + m)$. -/
+theorem szemeredi_trotter_constant_exists :
+    ∃ C : ℝ, 0 < C ∧ ∀ sys : PointLineIncidenceSystem,
+      sys.I ≤ C * ((sys.n * sys.m) ^ (2 / 3 : ℝ) + sys.n + sys.m) := sorry
 
-/-- Three points p, q, r are collinear if their cross product vanishes. -/
-def Collinear (p q r : Point2D) : Prop :=
-  crossProd p q r = 0
+/-- **$k$-Rich Lines Corollary (Szemerédi–Trotter 1983)**:
+    If a configuration of $n$ points and $m$ lines has the property that every line
+    contains at least $k \ge 2$ points (so $I \ge m k$), then the number of lines
+    $m$ satisfies the explicit upper bound:
+    $$m \le \frac{512 n^2}{(k - 1)^3} + \frac{8 n}{k - 1}$$ -/
+theorem k_rich_lines_bound (sys : PointLineIncidenceSystem) (k : ℝ) (hk : 2 ≤ k)
+    (h_rich : sys.m * k ≤ sys.I) :
+    sys.m ≤ 512 * sys.n^2 / (k - 1)^3 + 8 * sys.n / (k - 1) := sorry
 
-/-- The points of P lying on the line spanned by p and q. -/
-def pointsOnLine (P : Finset Point2D) (p q : Point2D) : Finset Point2D :=
-  P.filter (fun r => Collinear p q r)
-
-/-- The set of all ordered pairs of distinct points in P. -/
-def distinctPairs (P : Finset Point2D) : Finset (Point2D × Point2D) :=
-  (P ×ˢ P).filter (fun ⟨p, q⟩ => p ≠ q)
-
-/-- The finite set of all distinct lines spanned by pairs of points in P. -/
-def spannedLines (P : Finset Point2D) : Finset (Finset Point2D) :=
-  (distinctPairs P).image (fun ⟨p, q⟩ => pointsOnLine P p q)
-
-/-- Number of distinct lines spanned by pairs of points in P. -/
-def spannedLinesCount (P : Finset Point2D) : ℕ :=
-  (spannedLines P).card
-
-/-- Maximum number of collinear points in a point configuration P. -/
-def maxCollinearPoints (P : Finset Point2D) : ℕ :=
-  Finset.sup (spannedLines P) Finset.card
-
-/-- The fundamental pairs double-counting identity:
-    ∑_{ℓ ∈ ℒ(P)} |ℓ|(|ℓ| - 1) = |P|(|P| - 1). -/
-theorem sum_card_pairs_eq (P : Finset Point2D) :
-    ∑ l ∈ spannedLines P, l.card * (l.card - 1) = P.card * (P.card - 1) := sorry
-
-/-- Fundamental Pair-Counting Inequality:
-    |P|(|P| - 1) ≤ |ℒ(P)| · k(k - 1) where k = maxCollinearPoints(P). -/
-theorem pair_counting_bound (P : Finset Point2D) :
-    P.card * (P.card - 1) ≤ (spannedLinesCount P) * (maxCollinearPoints P) * (maxCollinearPoints P - 1) := sorry
-
-/-- Beck's Theorem (József Beck, 1983):
-    For any finite point set P ⊂ ℝ² with |P| ≥ 3, there exist positive constants c₁, c₂ > 0
-    such that either some line contains at least c₁|P| points, or the points span at least c₂|P|² lines. -/
-theorem becks_theorem (P : Finset Point2D) (hn : 3 ≤ P.card) :
-    ∃ (c₁ c₂ : ℝ), 0 < c₁ ∧ 0 < c₂ ∧
-      ((maxCollinearPoints P : ℝ) ≥ c₁ * (P.card : ℝ) ∨
-       (spannedLinesCount P : ℝ) ≥ c₂ * (P.card : ℝ)^2) := sorry
-
-/-- Beck's Dichotomy with explicit threshold parameter α ∈ (0, 1):
-    Either maxCollinearPoints(P) ≥ α|P|, or |ℒ(P)| · (α|P|)² ≥ |P|(|P| - 1). -/
-theorem becks_dichotomy_parameterized (P : Finset Point2D) (hn : 3 ≤ P.card)
-    (α : ℝ) (hα_pos : 0 < α) (hα_le_one : α ≤ 1) :
-    (maxCollinearPoints P : ℝ) ≥ α * (P.card : ℝ) ∨
-    (spannedLinesCount P : ℝ) * (α * (P.card : ℝ))^2 ≥ (P.card : ℝ) * ((P.card : ℝ) - 1) := sorry
-
-end BecksTheorem
+end SzemerediTrotter

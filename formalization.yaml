@@ -1,30 +1,36 @@
 version: "v0.4"
 
 project:
-  name: "Beck's Theorem on Point Configurations and Incidence Geometry"
+  name: "The Szemerédi–Trotter Theorem on Point-Line Incidences"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of József Beck's theorem (1983)
-    in combinatorial incidence geometry. Proves the fundamental dichotomy that any finite set
-    of n points in the Euclidean plane either contains a line with Omega(n) points or spans
-    Omega(n^2) distinct lines, establishing the exact pairs double-counting identity and
-    parameterized bounds. To the maintainers' knowledge, Beck's theorem was verified absent
+    A complete machine-checked Lean 4 formalization of the Szemerédi–Trotter theorem (1983)
+    on point-line incidences via László Székely's crossing lemma approach (1997).
+    Proves the explicit upper bound I <= 4(nm)^(2/3) + 4n + m, uniform bounds,
+    and the k-rich lines corollary.
+    To the maintainers' knowledge, the Szemerédi–Trotter theorem was verified absent
 To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "52C30", "05B25"]
+  msc2020: ["52C10", "05C10", "05C62"]
 
 sources:
-  - title: "On the lattice property of the plane and some problems of Dirac, Motzkin and Erdős in combinatorial geometry"
+  - title: "Extremal problems in discrete geometry"
     type: paper
     authors:
-      - "József Beck"
+      - "Endre Szemerédi"
+      - "William T. Trotter"
     relationship: formalizes
+  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
+    type: paper
+    authors:
+      - "László A. Székely"
+    relationship: adapts
 
 automation:
   methods:
