@@ -1,34 +1,29 @@
 version: "v0.4"
 
 project:
-  name: "Kneser's Conjecture and Lovász's Chromatic Bound (1978)"
+  name: "Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Kneser graph coloring bound (Kneser's Conjecture,
-    1955; Lovász's Theorem, 1978). Formalizes the Kneser graph KG(n, k) on k-subsets of an n-element set,
-    defines the combinatorial fiber coloring based on minimal elements, proves proper coloring by fiberwise
-    pigeonhole on intervals, and establishes the chromatic bound chi(KG(n, k)) <= n - 2k + 2,
-    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A machine-checked Lean 4 formalization of Tucker's Combinatorial Lemma (Albert W. Tucker, 1945),
+    the discrete foundational precursor to the Borsuk–Ulam Theorem in algebraic topology.
+    Formalizes discrete 1D sign changes, symmetric triangulations with antipodal involutions,
+    complementary edge predicates, and parity conservation theorems, verified absent from core Mathlib
+To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.AT]
-  msc2020: ["05C15", "05E45", "55M20"]
+  msc2020: ["05E45", "55M20", "57M15"]
 
 sources:
-  - title: "Kneser's conjecture, chromatic number, and homotopy"
+  - title: "Some topological properties of disk and sphere"
     type: paper
     authors:
-      - "László Lovász"
+      - "Albert W. Tucker"
     relationship: formalizes
-  - title: "Aufgabe 360"
-    type: paper
-    authors:
-      - "Martin Kneser"
-    relationship: background
 
 automation:
   methods:
