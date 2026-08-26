@@ -1,1 +1,1 @@
-import Formalization.ErdosKoRado
+import Formalization.FriendshipTheorem

@@ -1,41 +1,37 @@
 version: "v0.4"
 
 project:
-  name: "The Erdős–Ko–Rado Theorem and Hilton–Milner Extremizer"
+  name: "The Friendship Theorem on Graphs with Unique Common Neighbors"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Erdős–Ko–Rado theorem (1961) on
-    intersecting families of finite sets using Katona's circle method (1972), along with the
-    construction of the classical Hilton–Milner (1967) extremal non-star intersecting family.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring,
-    and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Friendship Theorem (P. Erdős,
+    A. Rényi, and V. T. Sós, 1966; H. S. Wilf, 1971). Proves that any finite simple graph in
+    which every pair of distinct vertices shares exactly one common neighbor must contain a
+    universal vertex (the 'politician'), structuring the graph as a collection of triangles
+    sharing a central vertex (a windmill graph). To the maintainers' knowledge, the theorem
+    was not found in an exact declaration, docstring, and type signature search of the pinned
+    Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05D05", "05A05"]
+  msc2020: ["05C50", "05C75", "05E30"]
 
 sources:
-  - title: "Intersection theorems for systems of finite sets"
+  - title: "On a problem of graph theory"
     type: paper
     authors:
       - "P. Erdős"
-      - "C. Ko"
-      - "R. Rado"
+      - "A. Rényi"
+      - "V. T. Sós"
     relationship: formalizes
-  - title: "A simple proof of the Erdös-Chao Ko-Rado theorem"
+  - title: "The friendship theorem"
     type: paper
     authors:
-      - "G. O. H. Katona"
-    relationship: adapts
-  - title: "Some intersection theorems for systems of finite sets"
-    type: paper
-    authors:
-      - "A. J. W. Hilton"
-      - "E. C. Milner"
+      - "H. S. Wilf"
     relationship: adapts
 
 automation:
