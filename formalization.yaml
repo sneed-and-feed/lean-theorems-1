@@ -1,34 +1,41 @@
 version: "v0.4"
 
 project:
-  name: "Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey"
+  name: "The Erdős–Ko–Rado Theorem and Hilton–Milner Extremizer"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Schur's Theorem on sum-free partitions
-    of integers (Issai Schur, 1916) and the Multicolor Triangle Ramsey Theorem. Proves that any
-    r-coloring of the integers {1, ..., N} contains a monochromatic solution to x + y = z for
-    N = ramseyTriangleBound(r), derived via edge-coloring complete graphs. Verified absent
-To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Erdős–Ko–Rado theorem (1961) on
+    intersecting families of finite sets using Katona's circle method (1972), along with the
+    construction of the classical Hilton–Milner (1967) extremal non-star intersecting family.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.NT]
-  msc2020: ["05D10", "11B75", "05C55"]
+  arxiv: [math.CO]
+  msc2020: ["05D05", "05A05"]
 
 sources:
-  - title: "Über die Kongruenz x^m + y^m ≡ z^m (mod p)"
+  - title: "Intersection theorems for systems of finite sets"
     type: paper
     authors:
-      - "Issai Schur"
+      - "P. Erdős"
+      - "C. Ko"
+      - "R. Rado"
     relationship: formalizes
-  - title: "On a Problem in Formal Logic"
+  - title: "A simple proof of the Erdös-Chao Ko-Rado theorem"
     type: paper
     authors:
-      - "Frank P. Ramsey"
-    relationship: background
+      - "G. O. H. Katona"
+    relationship: adapts
+  - title: "Some intersection theorems for systems of finite sets"
+    type: paper
+    authors:
+      - "A. J. W. Hilton"
+      - "E. C. Milner"
+    relationship: formalizes
 
 automation:
   methods:

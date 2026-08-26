@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SchursTheorem.schurs_theorem",
-    "SchursTheorem.ramsey_triangle"
+    "erdos_ko_rado",
+    "exists_hiltonMilner_extremizer"
   ],
   "permitted_axioms": [
     "propext",
