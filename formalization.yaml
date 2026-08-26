@@ -1,49 +1,50 @@
 version: "v0.4"
 
 project:
-  name: "Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem"
+  name: "Euler's Polyhedron Formula"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Spencer–Szemerédi–Trotter (1984)
-    upper bound u(n) = O(n^(4/3)) on the Erdős unit distance problem in the Euclidean plane,
-    using László Székely's circle crossing lemma approach (1997). Proves explicit non-asymptotic
-    bounds u(n) <= 2 n^(4/3) + 4n, u(n) <= 4 n^(4/3) for n >= 8, and the asymptotic constant existence.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
+    (1758, Wiedijk #13) and fundamental topological graph theory bounds using Tutte-Edmonds
+    combinatorial maps (dart rotation systems). Formalizes planar combinatorial maps, concrete
+    polyhedral instances (including the regular tetrahedron map on 12 darts), classical planar
+    edge bounds E <= 3V - 6 and E <= 2V - 4, and complete non-planarity proofs for K5 and K3,3.
 
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "05C10", "05C62"]
+  arxiv: [math.CO, math.GT]
+  msc2020: ["05C10", "57M15", "52B05"]
 
 sources:
-  - title: "Unit distances in the Euclidean plane"
+  - title: "Elementa doctrinae solidorum"
     type: paper
     authors:
-      - "Joel Spencer"
-      - "Endre Szemerédi"
-      - "William T. Trotter"
-    relationship: formalizes
-  - title: "On Sets of Distances of n Points"
+      - "Leonhard Euler"
+    relationship: inspired_by
+  - title: "A Combinatorial Approach to Embeddings and Maps"
     type: paper
     authors:
-      - "Paul Erdős"
-    relationship: background
-  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
-    type: paper
-    authors:
-      - "László A. Székely"
+      - "W. T. Tutte"
+      - "Jack Edmonds"
     relationship: adapts
+  - title: "Recherches sur les polyèdres"
+    type: paper
+    authors:
+      - "A.-L. Cauchy"
+    relationship: inspired_by
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

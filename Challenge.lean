@@ -1,56 +1,32 @@
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Data.Real.Basic
+import Formalization.CombinatorialMap.Basic
 
-open scoped Real
+open CombinatorialMap
 
-namespace ErdosUnitDistances
+variable {D : Type*} [Fintype D] [DecidableEq D]
 
-/-- Combinatorial Unit Distance System representing $n$ points and their unit distance pairs:
-    - `n`: number of points (|P| ≥ 1)
-    - `u`: number of unit distance pairs u(n)
-    - `e`: number of circular arc edges in the incidence graph (e ≥ 2u - n)
-    - `cr`: number of edge crossings in the plane drawing (cr ≤ n²)
-    - `h_crossing_lemma`: dense regime Crossing Lemma relation (4n ≤ e → e³ ≤ 64 n² cr) -/
-structure UnitDistanceSystem where
-  /-- Number of points n = |P| -/
-  n : ℝ
-  /-- Number of unit distance pairs u(n) = |{{p, q} : ||p - q|| = 1}| -/
-  u : ℝ
-  /-- Number of circular arc edges in the topological drawing -/
-  e : ℝ
-  /-- Crossing number of the topological drawing -/
-  cr : ℝ
-  /-- Point count positivity: n ≥ 1 -/
-  hn : 1 ≤ n
-  /-- Incidence edge lower bound: e ≥ 2u - n (since I = 2u and e ≥ I - n) -/
-  h_edges : 2 * u - n ≤ e
-  /-- Circle crossing bound: two distinct unit circles intersect in at most 2 points, so cr ≤ n² -/
-  h_crossings : cr ≤ n^2
-  /-- Dense Crossing Lemma property: if e ≥ 4n, then e³ ≤ 64 n² cr -/
-  h_crossing_lemma : 4 * n ≤ e → e^3 ≤ 64 * n^2 * cr
+/-- **Euler's Polyhedron Formula (1758, Wiedijk #13)**:
+    For any planar combinatorial map, the Euler characteristic $V - E + F = 2$. -/
+theorem euler_polyhedron_formula (M : CombinatorialMap D) (h_planar : M.IsPlanar) :
+    M.eulerChar = 2 := sorry
 
-/-- **Erdős Unit Distances Explicit Upper Bound (Spencer-Szemerédi-Trotter 1984 / Székely 1997)**:
-    For any configuration of $n$ points in $\mathbb{R}^2$, the number of unit distance pairs satisfies:
-    $$u(n) \le 2 n^{4/3} + 4n$$ -/
-theorem erdos_unit_distances_bound (sys : UnitDistanceSystem) :
-    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + 4 * sys.n := sorry
+/-- **Planar Edge Bound (Standard)**:
+    For any connected planar map with $V \ge 3$ vertices where every face has degree \ge 3
+    (so $2E \ge 3F$), the number of edges satisfies $E \le 3V - 6$. -/
+theorem planar_edge_bound (V E F : ℕ) (h_euler : (V : ℤ) - E + F = 2)
+    (h_face_deg : 3 * F ≤ 2 * E) (hV : 3 ≤ V) : E ≤ 3 * V - 6 := sorry
 
-/-- **Erdős Unit Distances Tight Linear-Term Bound**:
-    $$u(n) \le 2 n^{4/3} + \frac{5}{2} n$$ -/
-theorem erdos_unit_distances_bound_tight (sys : UnitDistanceSystem) :
-    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + (5 / 2 : ℝ) * sys.n := sorry
+/-- **Triangle-Free Planar Edge Bound**:
+    For any connected triangle-free planar map with $V \ge 3$ vertices where every face has degree \ge 4
+    (so $2E \ge 4F$), the number of edges satisfies $E \le 2V - 4$. -/
+theorem planar_edge_bound_triangle_free (V E F : ℕ) (h_euler : (V : ℤ) - E + F = 2)
+    (h_face_deg : 4 * F ≤ 2 * E) (hV : 3 ≤ V) : E ≤ 2 * V - 4 := sorry
 
-/-- **Erdős Unit Distances Uniform Factor Bound**:
-    For all configurations with $n \ge 8$ points, the unit distance pair count satisfies:
-    $$u(n) \le 4 n^{4/3}$$ -/
-theorem erdos_unit_distances_uniform_bound (sys : UnitDistanceSystem) (hn8 : 8 ≤ sys.n) :
-    sys.u ≤ 4 * sys.n ^ (4 / 3 : ℝ) := sorry
+/-- **Non-Planarity of K₅**:
+    The complete graph $K_5$ ($V = 5, E = 10$) cannot be embedded as a planar map with face degree \ge 3. -/
+theorem non_planarity_k5 (F : ℕ) (h_euler : (5 : ℤ) - 10 + F = 2)
+    (h_face_deg : 3 * F ≤ 2 * 10) : False := sorry
 
-/-- **Erdős Unit Distances Asymptotic Existence Bound**:
-    There exists an absolute universal constant $C > 0$ such that for every point configuration,
-    the unit distance pair count satisfies $u(n) \le C n^{4/3}$. -/
-theorem erdos_unit_distances_asymptotic :
-    ∃ C : ℝ, 0 < C ∧ ∀ sys : UnitDistanceSystem,
-      sys.u ≤ C * sys.n ^ (4 / 3 : ℝ) := sorry
-
-end ErdosUnitDistances
+/-- **Non-Planarity of K₃,₃**:
+    The complete bipartite graph $K_{3,3}$ ($V = 6, E = 9$) cannot be embedded as a planar map with face degree \ge 4. -/
+theorem non_planarity_k33 (F : ℕ) (h_euler : (6 : ℤ) - 9 + F = 2)
+    (h_face_deg : 4 * F ≤ 2 * 9) : False := sorry
