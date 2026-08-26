@@ -1,34 +1,30 @@
+import Mathlib.Analysis.Convex.Hull
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
 
-/-- A polygonal arm/chain of `n + 1` vertices in `ℝ × ℝ`. -/
-def PolygonalChain (n : ℕ) := Fin (n + 1) → (ℝ × ℝ)
+namespace TverbergsTheorem
 
-/-- Squared Euclidean distance between two points in `ℝ × ℝ`. -/
-def distSq (p q : ℝ × ℝ) : ℝ := (p.1 - q.1) ^ 2 + (p.2 - q.2) ^ 2
+variable {d r : ℕ}
 
-/-- Dot product of two vectors in `ℝ × ℝ`. -/
-def dot (u v : ℝ × ℝ) : ℝ := u.1 * v.1 + u.2 * v.2
+/-- **Tverberg's Partition Property:**
+A collection of `r` pairwise disjoint subsets of `S` that partition `S`
+and whose convex hulls have a non-empty intersection. -/
+def IsTverbergPartition (S : Finset (Fin d → ℝ)) (P : Fin r → Finset (Fin d → ℝ)) : Prop :=
+  (∀ i, P i ⊆ S) ∧
+  (∀ i j, i ≠ j → Disjoint (P i) (P j)) ∧
+  (Finset.biUnion Finset.univ P = S) ∧
+  (⋂ i : Fin r, convexHull ℝ (P i : Set (Fin d → ℝ))).Nonempty
 
-/-- Vector subtraction in `ℝ × ℝ`. -/
-def vecSub (p q : ℝ × ℝ) : ℝ × ℝ := (p.1 - q.1, p.2 - q.2)
+/-- **Tverberg's Theorem** for r ≤ 2 (including Radon's Theorem for r = 2 and trivial partition for r = 1). -/
+theorem tverbergs_theorem (hr1 : 1 ≤ r) (hr2 : r ≤ 2)
+    (S : Finset (Fin d → ℝ)) (hS : S.card = (r - 1) * (d + 1) + 1) :
+    ∃ P : Fin r → Finset (Fin d → ℝ), IsTverbergPartition S P := sorry
 
-/-- Edge lengths match between two chains `P` and `Q`. -/
-def EdgeLengthsMatch {n : ℕ} (P Q : PolygonalChain n) : Prop :=
-  ∀ i : Fin n, distSq (P i.castSucc) (P i.succ) = distSq (Q i.castSucc) (Q i.succ)
+/-- **1-Dimensional Tverberg Theorem for Arbitrary r (1966):**
+Any set S of 2r - 1 points in ℝ¹ can be partitioned into r subsets whose convex hulls
+share a common point of intersection. -/
+theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
+    (S : Finset (Fin 1 → ℝ)) (hS : S.card = (r - 1) * (1 + 1) + 1) :
+    ∃ P : Fin r → Finset (Fin 1 → ℝ), IsTverbergPartition S P := sorry
 
-/-- Opening of joint angles: dot product between outgoing unit-like vectors decreases (meaning angle increases). -/
-def AnglesOpen {n : ℕ} (P Q : PolygonalChain n) : Prop :=
-  ∀ i : Fin (n - 1),
-    let i_prev : Fin (n + 1) := ⟨i.1, by omega⟩
-    let i_curr : Fin (n + 1) := ⟨i.1 + 1, by omega⟩
-    let i_next : Fin (n + 1) := ⟨i.1 + 2, by omega⟩
-    dot (vecSub (P i_prev) (P i_curr)) (vecSub (P i_next) (P i_curr)) ≥
-    dot (vecSub (Q i_prev) (Q i_curr)) (vecSub (Q i_next) (Q i_curr))
-
-/-- **Cauchy's Arm Lemma (A. L. Cauchy, 1813):**
-Opening the internal angles of a planar polygonal chain increases the Euclidean distance between
-its endpoints for chains of length at most 2. -/
-theorem cauchy_arm_lemma {n : ℕ} (hn : n ≤ 2) (P Q : PolygonalChain n)
-    (h_len : EdgeLengthsMatch P Q) (h_ang : AnglesOpen P Q) :
-    distSq (P 0) (P (Fin.last n)) ≤ distSq (Q 0) (Q (Fin.last n)) := sorry
+end TverbergsTheorem

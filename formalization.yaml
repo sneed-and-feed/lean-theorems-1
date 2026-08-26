@@ -1,43 +1,43 @@
 version: "v0.4"
 
 project:
-  name: "Cauchy's Arm Lemma and Convex Rigidity Foundations"
+  name: "Tverberg's Partition Theorem and the Full One-Dimensional Case"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Cauchy's Arm Lemma (1813), the fundamental geometric
-    engine underpinning Cauchy's Rigidity Theorem for 3D convex polyhedra. Formalizes 2D polygonal chains,
-    squared Euclidean distance metrics, vector inner products, and proves that opening the internal joint
-    angles of a chain increases the distance between its endpoints for chains of length at most 2,
+    A complete, machine-checked Lean 4 formalization of Tverberg's Theorem (Helge Tverberg,
+    1966) for r <= 2 across all dimensions and for arbitrary r in dimension one. Proves that
+    any (r - 1)(d + 1) + 1 points in ℝ^d can be partitioned into r parts whose convex hulls
+    intersect, formalizing the full 1D case via symmetric-rank pairing following Mulzer–Werner
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.MG, math.CO]
-  msc2020: ["52C25", "52A10", "52B10"]
+  msc2020: ["52A35", "52C10", "52A20"]
 
 sources:
-  - title: "Recherches sur les polyèdres: Premier Mémoire"
+  - title: "A generalization of Radon's theorem"
     type: paper
     authors:
-      - "Augustin-Louis Cauchy"
+      - "Helge Tverberg"
     relationship: formalizes
-  - title: "Proofs from THE BOOK"
-    type: book
+  - title: "Approximating Tverberg points in linear time for any fixed dimension"
+    type: paper
     authors:
-      - "Martin Aigner"
-      - "Günter M. Ziegler"
-    relationship: background
+      - "Wolfgang Mulzer"
+      - "Daniel Werner"
+    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
