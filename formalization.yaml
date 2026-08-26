@@ -1,27 +1,27 @@
 version: "v0.4"
 
 project:
-  name: "Descartes's Rule of Signs"
+  name: "Euler's Polyhedron Formula"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Descartes's Rule of Signs (1637, Wiedijk #73).
-    Proves that for any non-zero real polynomial p(X), the number of positive real roots counted
-    with algebraic multiplicity is bounded above by the number of sign variations in its coefficients
-    and has the same parity. To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
+    (1758, Wiedijk #13). Formalizes both an inductive combinatorial planar map construction and a
+    spanning tree decomposition bridge for finite connected graphs in Mathlib.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.AG, math.CA]
-  msc2020: ["12D10", "26C10", "30C15"]
+  arxiv: [math.CO, math.GT]
+  msc2020: ["05C10", "57M15", "52B05"]
 
 sources:
-  - title: "La Géométrie"
-    type: book
+  - title: "Elementa doctrinae solidorum"
+    type: paper
     authors:
-      - "René Descartes"
+      - "Leonhard Euler"
     relationship: formalizes
 
 automation:

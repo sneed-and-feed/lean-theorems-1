@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "descartes_rule_of_signs"
+    "euler_polyhedron_formula",
+    "euler_connected_graph"
   ],
   "permitted_axioms": [
     "propext",

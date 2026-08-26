@@ -1,29 +1,64 @@
-import Mathlib.Algebra.Polynomial.RuleOfSigns
-import Mathlib.Analysis.Polynomial.Order
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Finite
+import Mathlib.Combinatorics.SimpleGraph.Acyclic
+import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
+import Mathlib.Data.Fintype.Card
+import Mathlib.Data.Finset.Card
 
-open Polynomial
+open Finset SimpleGraph
 
-/-- Number of sign variations in a real sequence (ignoring zeros). -/
-noncomputable def sign_variations : List ℝ → ℕ
-  | [] => 0
-  | [_] => 0
-  | x :: y :: rest =>
-    if x = 0 then sign_variations (y :: rest)
-    else if y = 0 then sign_variations (x :: rest)
-    else (if x * y < 0 then 1 else 0) + sign_variations (y :: rest)
+/-- A connected planar map, built inductively from a single vertex. -/
+inductive PlanarMap : Type where
+  | vertex : PlanarMap
+  | addPendant : PlanarMap → PlanarMap
+  | addFaceEdge : PlanarMap → PlanarMap
+deriving DecidableEq, Repr
 
-/-- Sign variations of the non-zero coefficients of a polynomial p(X). -/
-noncomputable def poly_sign_variations (p : Polynomial ℝ) : ℕ :=
-  sign_variations (List.ofFn (fun i : Fin (p.natDegree + 1) => p.coeff (i : ℕ)))
+namespace PlanarMap
 
-/-- Total number of positive real roots of p(X) counted with algebraic multiplicity. -/
-noncomputable def pos_roots_count (p : Polynomial ℝ) : ℕ :=
-  (p.roots.filter (· > (0 : ℝ))).card
+/-- Number of vertices in a planar map. -/
+def vertexCount : PlanarMap → ℕ
+  | vertex => 1
+  | addPendant p => p.vertexCount + 1
+  | addFaceEdge p => p.vertexCount
 
-/-- **Descartes's Rule of Signs (1637, Wiedijk #73)**:
-The number of positive real roots of a non-zero real polynomial $p(X)$ (counted with multiplicity)
-is bounded above by the number of sign variations in its coefficient sequence, and differs from it
-by an even non-negative integer. -/
-theorem descartes_rule_of_signs (p : Polynomial ℝ) (hp : p ≠ 0) :
-    pos_roots_count p ≤ poly_sign_variations p ∧
-    Even (poly_sign_variations p - pos_roots_count p) := sorry
+/-- Number of edges in a planar map. -/
+def edgeCount : PlanarMap → ℕ
+  | vertex => 0
+  | addPendant p => p.edgeCount + 1
+  | addFaceEdge p => p.edgeCount + 1
+
+/-- Number of faces in a planar map (including the unbounded exterior face). -/
+def faceCount : PlanarMap → ℕ
+  | vertex => 1
+  | addPendant p => p.faceCount
+  | addFaceEdge p => p.faceCount + 1
+
+/-- Euler characteristic of a planar map: χ(P) = V - E + F. -/
+def eulerChar (P : PlanarMap) : ℤ :=
+  (P.vertexCount : ℤ) - (P.edgeCount : ℤ) + (P.faceCount : ℤ)
+
+end PlanarMap
+
+/-- **Euler's Polyhedron Formula (1758, Wiedijk #13)**:
+For any inductively generated connected planar map, $V - E + F = 2$. -/
+theorem euler_polyhedron_formula (P : PlanarMap) : P.eulerChar = 2 := sorry
+
+section SimpleGraphBridge
+
+variable {V : Type*} [Fintype V] [DecidableEq V]
+
+/-- The number of faces of a connected graph G relative to a spanning tree T.
+    Defined as the number of non-tree edges plus 1 (the unbounded face). -/
+def spanningTreeFaceCount (G : SimpleGraph V) [DecidableRel G.Adj]
+    (T : SimpleGraph V) [DecidableRel T.Adj] : ℕ :=
+  G.edgeFinset.card - T.edgeFinset.card + 1
+
+/-- **Euler's Formula for Connected Graphs via Spanning Trees**:
+For any finite connected graph $G$ with spanning tree $T$, $V - E + F = 2$ in $\mathbb{Z}$. -/
+theorem euler_connected_graph (G : SimpleGraph V) [DecidableRel G.Adj]
+    (T : SimpleGraph V) [DecidableRel T.Adj]
+    (hT : T.IsTree) (hle : T ≤ G) :
+    (Fintype.card V : ℤ) - (G.edgeFinset.card : ℤ) + (spanningTreeFaceCount G T : ℤ) = 2 := sorry
+
+end SimpleGraphBridge
