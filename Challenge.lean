@@ -1,44 +1,72 @@
 import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Fin.Basic
 
-namespace SchursTheorem
+open Finset
+
+namespace Sperner3D
 
 variable {α : Type*} [DecidableEq α]
 
-/-- Ramsey number upper bound recurrence for monochromatic triangles in `r` colors:
-    $R(0) = 2$, $R(r + 1) = (r + 1) \cdot R(r) + 1$. -/
-def ramseyTriangleBound : ℕ → ℕ
-  | 0 => 2
-  | r + 1 => (r + 1) * ramseyTriangleBound r + 1
+/-- An abstract 3-dimensional triangulation (simplicial 3-manifold with boundary).
+    `tetrahedra` is a collection of 4-element subsets of vertices `α`.
+    Every 2-face (3-element subset of a tetrahedron) belongs to either 1 or 2 tetrahedra. -/
+structure Triangulation3D (α : Type*) [DecidableEq α] where
+  tetrahedra : Finset (Finset α)
+  tetrahedron_card : ∀ t ∈ tetrahedra, t.card = 4
+  incident_card : ∀ f ∈ tetrahedra.biUnion (fun t => t.powerset.filter (fun s => s.card = 3)),
+    (tetrahedra.filter (fun t => f ⊆ t)).card = 1 ∨ (tetrahedra.filter (fun t => f ⊆ t)).card = 2
 
-/-- A triple of distinct vertices forming a monochromatic triangle of color `k`. -/
-def isMonoTriangle (c : α → α → Fin r) (S : Finset α) (u v w : α) (k : Fin r) : Prop :=
-  u ∈ S ∧ v ∈ S ∧ w ∈ S ∧ u ≠ v ∧ u ≠ w ∧ v ≠ w ∧
-  c u v = k ∧ c u w = k ∧ c v w = k
+/-- All triangular 2-faces of a 3D triangulation (3-element subsets of tetrahedra). -/
+def Triangulation3D.faces (T : Triangulation3D α) : Finset (Finset α) :=
+  T.tetrahedra.biUnion (fun t => t.powerset.filter (fun s => s.card = 3))
 
-/-- There exists a monochromatic triangle in `S` for edge-coloring `c`. -/
-def hasMonoTriangle (c : α → α → Fin r) (S : Finset α) : Prop :=
-  ∃ u v w k, isMonoTriangle c S u v w k
+/-- The tetrahedra containing a given face `f`. -/
+def Triangulation3D.incidentTetrahedra (T : Triangulation3D α) (f : Finset α) : Finset (Finset α) :=
+  T.tetrahedra.filter (fun t => f ⊆ t)
 
-/-- **Multicolor Triangle Ramsey Theorem**:
-Any symmetric edge-coloring with `r ≥ 1` colors of a complete graph with at least
-`ramseyTriangleBound r` vertices contains a monochromatic triangle. -/
-theorem ramsey_triangle :
-    ∀ (r : ℕ) (_hr : 1 ≤ r) (S : Finset α) (c : α → α → Fin r),
-      (∀ u v, c u v = c v u) →
-      ramseyTriangleBound r ≤ S.card →
-      hasMonoTriangle c S := sorry
+/-- Boundary faces: triangular 2-faces contained in exactly 1 tetrahedron. -/
+def Triangulation3D.boundaryFaces (T : Triangulation3D α) : Finset (Finset α) :=
+  T.faces.filter (fun f => (T.incidentTetrahedra f).card = 1)
 
-/-- **Schur's Theorem on Sum-Free Partitions** (Issai Schur, 1916):
-For any $r \ge 1$, every $r$-coloring $\chi$ of the integers $\{1, \dots, N\}$
-(where $N = 	ext{ramseyTriangleBound } r$) contains a monochromatic solution to $x + y = z$:
-$\exists c \in 	ext{Fin } r, \exists x, y, z \in \{1, \dots, N\}, \, \chi(x) = c \wedge \chi(y) = c \wedge \chi(z) = c \wedge x + y = z$. -/
-theorem schurs_theorem (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
-    let N := ramseyTriangleBound r
-    ∃ (c : Fin r) (x y z : ℕ),
-      1 ≤ x ∧ 1 ≤ y ∧ 1 ≤ z ∧
-      x ≤ N ∧ y ≤ N ∧ z ≤ N ∧
-      x + y = z ∧
-      χ x = c ∧ χ y = c ∧ χ z = c := sorry
+/-- Interior faces: triangular 2-faces contained in exactly 2 tetrahedra. -/
+def Triangulation3D.interiorFaces (T : Triangulation3D α) : Finset (Finset α) :=
+  T.faces.filter (fun f => (T.incidentTetrahedra f).card = 2)
 
-end SchursTheorem
+/-- A triangular face is a 0-1-2 face (door) if its vertices map onto {0, 1, 2}. -/
+def is012Face (c : α → Fin 4) (f : Finset α) : Prop :=
+  f.card = 3 ∧ f.image c = ({0, 1, 2} : Finset (Fin 4))
+
+instance (c : α → Fin 4) (f : Finset α) : Decidable (is012Face c f) :=
+  inferInstanceAs (Decidable (f.card = 3 ∧ f.image c = {0, 1, 2}))
+
+/-- A tetrahedron is panchromatic if its 4 vertices take all 4 colors {0, 1, 2, 3}. -/
+def isPanchromatic4 (c : α → Fin 4) (t : Finset α) : Prop :=
+  t.card = 4 ∧ t.image c = (Finset.univ : Finset (Fin 4))
+
+instance (c : α → Fin 4) (t : Finset α) : Decidable (isPanchromatic4 c t) :=
+  inferInstanceAs (Decidable (t.card = 4 ∧ t.image c = Finset.univ))
+
+/-- **3D Sperner Parity Theorem (Sperner 1928):**
+    The number of panchromatic tetrahedra in a 3D triangulation has the same parity
+    modulo 2 as the number of 0-1-2 triangular faces on its boundary. -/
+theorem sperner_3d_parity (T : Triangulation3D α) (c : α → Fin 4) :
+    (T.tetrahedra.filter (isPanchromatic4 c)).card % 2 =
+    (T.boundaryFaces.filter (is012Face c)).card % 2 := sorry
+
+/-- **3D Sperner's Lemma (Parity Form):**
+    If the boundary contains an odd number of 0-1-2 faces, the number of panchromatic
+    tetrahedra is odd. -/
+theorem sperner_3d_odd (T : Triangulation3D α) (c : α → Fin 4)
+    (h_bd : Odd (T.boundaryFaces.filter (is012Face c)).card) :
+    Odd (T.tetrahedra.filter (isPanchromatic4 c)).card := sorry
+
+/-- **3D Sperner Existence Theorem:**
+    Whenever the boundary of a 3D triangulation contains an odd number of 0-1-2 faces,
+    there exists at least one panchromatic tetrahedron {0, 1, 2, 3}. -/
+theorem sperner_3d_exists (T : Triangulation3D α) (c : α → Fin 4)
+    (h_bd : Odd (T.boundaryFaces.filter (is012Face c)).card) :
+    ∃ t ∈ T.tetrahedra, isPanchromatic4 c t := sorry
+
+end Sperner3D
