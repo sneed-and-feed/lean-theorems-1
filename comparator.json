@@ -2,9 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "DesarguesProjective.exists_centralPerspective_iff_exists_properAxialPerspective",
-    "DesarguesProjective.desargues_converse_projective_plane",
-    "DesarguesProjective.desargues_projective_plane_proper"
+    "descartes_rule_of_signs"
   ],
   "permitted_axioms": [
     "propext",
