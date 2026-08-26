@@ -1,42 +1,44 @@
 version: "v0.4"
 
 project:
-  name: "Pick's Theorem on Lattice Polygons (Wiedijk #92)"
+  name: "The Friendship Theorem on Graphs with Unique Common Neighbors"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Pick's Theorem (Georg Alexander Pick, 1899;
-    Freek Wiedijk 100 Theorems #92). Formalizes elementary lattice triangulations of planar polygons,
-    Euler's disk characteristic V - E + F = 1, edge-face incidence double counting 3F = 2E_int + E_bd,
-    boundary gluing valuation additivity, and proves both the real formula Area = i + b/2 - 1 and the
-    exact integer form 2*Area = 2*i + b - 2, Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of the Friendship Theorem (P. Erdős,
+    A. Rényi, and V. T. Sós, 1966; H. S. Wilf, 1971). Proves that any finite simple graph in
+    which every pair of distinct vertices shares exactly one common neighbor must contain a
+    universal vertex (the 'politician'), structuring the graph as a collection of triangles
+    sharing a central vertex (a windmill graph). Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["52C05", "05C10", "11H06"]
+  arxiv: [math.CO]
+  msc2020: ["05C50", "05C75", "05E30"]
 
 sources:
-  - title: "Geometrisches zur Zahlenlehre"
+  - title: "On a problem of graph theory"
     type: paper
     authors:
-      - "Georg Alexander Pick"
+      - "P. Erdős"
+      - "A. Rényi"
+      - "V. T. Sós"
     relationship: formalizes
-  - title: "Mathematical Snapshots"
-    type: book
+  - title: "The friendship theorem"
+    type: paper
     authors:
-      - "Hugo Steinhaus"
-    relationship: background
+      - "H. S. Wilf"
+    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking with Gemini models under maintainer direction.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking with Gemini models under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
