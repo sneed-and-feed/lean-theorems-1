@@ -1,45 +1,43 @@
 version: "v0.4"
 
 project:
-  name: "Ore's and Dirac's Theorems on Hamiltonian Cycles"
+  name: "Pick's Theorem on Lattice Polygons (Wiedijk #92)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Ore's theorem (1960) and Dirac's theorem (1952)
-    on the existence of Hamiltonian cycles in simple graphs. Proves Ore's degree-sum condition via maximal
-    path cycle-closure and connectivity arguments, and derives Dirac's minimum-degree theorem as a corollary.
-    Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Pick's Theorem (Georg Alexander Pick, 1899;
+        Freek Wiedijk 100 Theorems #92). Formalizes elementary lattice triangulations of planar polygons,
+        Euler's disk characteristic V - E + F = 1, edge-face incidence double counting 3F = 2E_int + E_bd,
+        boundary gluing valuation additivity, and proves both the real formula Area = i + b/2 - 1 and the
+        discrete formula 2*Area = 2*i + b - 2.
+        To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05C38", "05C45"]
+  arxiv: [math.CO, math.MG]
+  msc2020: ["52C05", "05C10", "11H06"]
 
 sources:
-  - title: "Note on Hamilton circuits"
+  - title: "Geometrisches zur Zahlenlehre"
     type: paper
-    year: 1960
-    venue: "American Mathematical Monthly"
     authors:
-      - "Øystein Ore"
+      - "Georg Alexander Pick"
     relationship: formalizes
-  - title: "Some theorems on abstract graphs"
-    type: paper
-    year: 1952
-    venue: "Proceedings of the London Mathematical Society"
+  - title: "Mathematical Snapshots"
+    type: book
     authors:
-      - "G. A. Dirac"
-    relationship: adapts
+      - "Hugo Steinhaus"
+    relationship: background
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
