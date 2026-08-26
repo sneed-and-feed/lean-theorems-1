@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "tuckers_lemma"
+    "TutteOneFactor.tutte_1factor_theorem",
+    "TutteOneFactor.tutte_necessity"
   ],
   "permitted_axioms": [
     "propext",

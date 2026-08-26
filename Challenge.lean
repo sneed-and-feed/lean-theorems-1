@@ -1,29 +1,35 @@
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Int.Basic
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Matching
+import Mathlib.Combinatorics.SimpleGraph.Tutte
+import Mathlib.Data.Fintype.Basic
 
-/-- Abstract 2D antipodally symmetric triangulation. -/
-structure SymmetricTriangulation2D (V : Type*) [Fintype V] [DecidableEq V] where
-  /-- Antipodal involution on vertices -/
-  antipodal : V ≃ V
-  /-- Involution property: antipodal(antipodal(v)) = v -/
-  antipodal_sq : ∀ v, antipodal (antipodal v) = v
-  /-- Edges (1-simplices) of the triangulation -/
-  edges : Finset (Finset V)
-  /-- Every edge has size 2 -/
-  h_edges_card : ∀ e ∈ edges, e.card = 2
+open SimpleGraph
+open Classical
 
-/-- An edge e = {u, v} is complementary under labeling L if L(u) = -L(v). -/
-def IsComplementaryEdge {V : Type*} (L : V → ℤ) (e : Finset V) : Prop :=
-  ∃ (u v : V), u ∈ e ∧ v ∈ e ∧ u ≠ v ∧ L u = - L v
+namespace TutteOneFactor
 
-/-- **Tucker's Lemma (Albert W. Tucker, 1945)**:
-Any antipodally symmetric labeling on a symmetric triangulation with an odd boundary
-parity cycle guarantees the existence of a complementary edge. -/
-theorem tuckers_lemma {V : Type*} [Fintype V] [DecidableEq V]
-    (T : SymmetricTriangulation2D V)
-    (L : V → ℤ)
-    (comp_count : ℕ)
-    (h_parity : comp_count % 2 = 1)
-    (h_witness : 0 < comp_count → ∃ (e : Finset V), e ∈ T.edges ∧ IsComplementaryEdge L e) :
-    ∃ (e : Finset V), e ∈ T.edges ∧ IsComplementaryEdge L e := sorry
+variable {V : Type*} [Fintype V] [DecidableEq V]
+
+/-- A 1-factor of a simple graph `G` is a 1-regular spanning subgraph, i.e., a perfect matching. -/
+def IsOneFactor {G : SimpleGraph V} (M : G.Subgraph) : Prop :=
+  M.IsPerfectMatching
+
+/-- A graph `G` has a 1-factor if there exists a spanning perfect matching. -/
+def HasOneFactor (G : SimpleGraph V) : Prop :=
+  ∃ M : G.Subgraph, M.IsPerfectMatching
+
+/-- The number of odd connected components of `G \ U`. -/
+noncomputable def q (G : SimpleGraph V) (U : Set V) : ℕ :=
+  (((⊤ : G.Subgraph).deleteVerts U).coe.oddComponents).ncard
+
+/-- **Tutte's 1-Factor Theorem (Necessity Direction):**
+If `G` has a 1-factor, then for every subset `U ⊆ V`, the number of odd components `q(G \ U) ≤ |U|`. -/
+theorem tutte_necessity (G : SimpleGraph V) (hM : HasOneFactor G) (U : Set V) :
+    q G U ≤ U.ncard := sorry
+
+/-- **Tutte's 1-Factor Theorem (Equivalence):**
+A graph `G` has a 1-factor if and only if for all subsets `U ⊆ V`, `q(G \ U) ≤ |U|`. -/
+theorem tutte_1factor_theorem (G : SimpleGraph V) :
+    HasOneFactor G ↔ ∀ U : Set V, q G U ≤ U.ncard := sorry
+
+end TutteOneFactor
