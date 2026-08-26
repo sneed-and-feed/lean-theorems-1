@@ -2,10 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "ErdosUnitDistances.erdos_unit_distances_bound",
-    "ErdosUnitDistances.erdos_unit_distances_bound_tight",
-    "ErdosUnitDistances.erdos_unit_distances_uniform_bound",
-    "ErdosUnitDistances.erdos_unit_distances_asymptotic"
+    "TutteOneFactor.tutte_1factor_theorem",
+    "TutteOneFactor.tutte_necessity"
   ],
   "permitted_axioms": [
     "propext",

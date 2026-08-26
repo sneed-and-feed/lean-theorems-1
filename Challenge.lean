@@ -1,56 +1,35 @@
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Data.Real.Basic
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Matching
+import Mathlib.Combinatorics.SimpleGraph.Tutte
+import Mathlib.Data.Fintype.Basic
 
-open scoped Real
+open SimpleGraph
+open Classical
 
-namespace ErdosUnitDistances
+namespace TutteOneFactor
 
-/-- Combinatorial Unit Distance System representing $n$ points and their unit distance pairs:
-    - `n`: number of points (|P| ≥ 1)
-    - `u`: number of unit distance pairs u(n)
-    - `e`: number of circular arc edges in the incidence graph (e ≥ 2u - n)
-    - `cr`: number of edge crossings in the plane drawing (cr ≤ n²)
-    - `h_crossing_lemma`: dense regime Crossing Lemma relation (4n ≤ e → e³ ≤ 64 n² cr) -/
-structure UnitDistanceSystem where
-  /-- Number of points n = |P| -/
-  n : ℝ
-  /-- Number of unit distance pairs u(n) = |{{p, q} : ||p - q|| = 1}| -/
-  u : ℝ
-  /-- Number of circular arc edges in the topological drawing -/
-  e : ℝ
-  /-- Crossing number of the topological drawing -/
-  cr : ℝ
-  /-- Point count positivity: n ≥ 1 -/
-  hn : 1 ≤ n
-  /-- Incidence edge lower bound: e ≥ 2u - n (since I = 2u and e ≥ I - n) -/
-  h_edges : 2 * u - n ≤ e
-  /-- Circle crossing bound: two distinct unit circles intersect in at most 2 points, so cr ≤ n² -/
-  h_crossings : cr ≤ n^2
-  /-- Dense Crossing Lemma property: if e ≥ 4n, then e³ ≤ 64 n² cr -/
-  h_crossing_lemma : 4 * n ≤ e → e^3 ≤ 64 * n^2 * cr
+variable {V : Type*} [Fintype V] [DecidableEq V]
 
-/-- **Erdős Unit Distances Explicit Upper Bound (Spencer-Szemerédi-Trotter 1984 / Székely 1997)**:
-    For any configuration of $n$ points in $\mathbb{R}^2$, the number of unit distance pairs satisfies:
-    $$u(n) \le 2 n^{4/3} + 4n$$ -/
-theorem erdos_unit_distances_bound (sys : UnitDistanceSystem) :
-    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + 4 * sys.n := sorry
+/-- A 1-factor of a simple graph `G` is a 1-regular spanning subgraph, i.e., a perfect matching. -/
+def IsOneFactor {G : SimpleGraph V} (M : G.Subgraph) : Prop :=
+  M.IsPerfectMatching
 
-/-- **Erdős Unit Distances Tight Linear-Term Bound**:
-    $$u(n) \le 2 n^{4/3} + \frac{5}{2} n$$ -/
-theorem erdos_unit_distances_bound_tight (sys : UnitDistanceSystem) :
-    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + (5 / 2 : ℝ) * sys.n := sorry
+/-- A graph `G` has a 1-factor if there exists a spanning perfect matching. -/
+def HasOneFactor (G : SimpleGraph V) : Prop :=
+  ∃ M : G.Subgraph, M.IsPerfectMatching
 
-/-- **Erdős Unit Distances Uniform Factor Bound**:
-    For all configurations with $n \ge 8$ points, the unit distance pair count satisfies:
-    $$u(n) \le 4 n^{4/3}$$ -/
-theorem erdos_unit_distances_uniform_bound (sys : UnitDistanceSystem) (hn8 : 8 ≤ sys.n) :
-    sys.u ≤ 4 * sys.n ^ (4 / 3 : ℝ) := sorry
+/-- The number of odd connected components of `G \ U`. -/
+noncomputable def q (G : SimpleGraph V) (U : Set V) : ℕ :=
+  (((⊤ : G.Subgraph).deleteVerts U).coe.oddComponents).ncard
 
-/-- **Erdős Unit Distances Asymptotic Existence Bound**:
-    There exists an absolute universal constant $C > 0$ such that for every point configuration,
-    the unit distance pair count satisfies $u(n) \le C n^{4/3}$. -/
-theorem erdos_unit_distances_asymptotic :
-    ∃ C : ℝ, 0 < C ∧ ∀ sys : UnitDistanceSystem,
-      sys.u ≤ C * sys.n ^ (4 / 3 : ℝ) := sorry
+/-- **Tutte's 1-Factor Theorem (Necessity Direction):**
+If `G` has a 1-factor, then for every subset `U ⊆ V`, the number of odd components `q(G \ U) ≤ |U|`. -/
+theorem tutte_necessity (G : SimpleGraph V) (hM : HasOneFactor G) (U : Set V) :
+    q G U ≤ U.ncard := sorry
 
-end ErdosUnitDistances
+/-- **Tutte's 1-Factor Theorem (Equivalence):**
+A graph `G` has a 1-factor if and only if for all subsets `U ⊆ V`, `q(G \ U) ≤ |U|`. -/
+theorem tutte_1factor_theorem (G : SimpleGraph V) :
+    HasOneFactor G ↔ ∀ U : Set V, q G U ≤ U.ncard := sorry
+
+end TutteOneFactor

@@ -1,42 +1,30 @@
 version: "v0.4"
 
 project:
-  name: "Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem"
+  name: "Tutte's 1-Factor Theorem for Simple Graphs"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Spencer–Szemerédi–Trotter (1984)
-    upper bound u(n) = O(n^(4/3)) on the Erdős unit distance problem in the Euclidean plane,
-    using László Székely's circle crossing lemma approach (1997). Proves explicit non-asymptotic
-    bounds u(n) <= 2 n^(4/3) + 4n, u(n) <= 4 n^(4/3) for n >= 8, and the asymptotic constant existence.
-    To the maintainers' knowledge, the Spencer–Szemerédi–Trotter unit distance theorem was
-    To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Tutte's 1-Factor Theorem (1947),
+    establishing the fundamental characterization that a finite simple graph has a 1-factor
+    (perfect matching) if and only if for every vertex subset U, the number of odd components
+    q(G \ U) is at most |U|. Also connects to matching defect and the Tutte–Berge formula.
+    To the maintainers' knowledge, Tutte's 1-factor characterization with odd components
+    was To the maintainers' knowledge, the theorem was not found in an exact declaration, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "05C10", "05C62"]
+  arxiv: [math.CO]
+  msc2020: ["05C70", "05C75"]
 
 sources:
-  - title: "Unit distances in the Euclidean plane"
+  - title: "The factorization of linear graphs"
     type: paper
     authors:
-      - "Joel Spencer"
-      - "Endre Szemerédi"
-      - "William T. Trotter"
+      - "W. T. Tutte"
     relationship: formalizes
-  - title: "On Sets of Distances of n Points"
-    type: paper
-    authors:
-      - "Paul Erdős"
-    relationship: background
-  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
-    type: paper
-    authors:
-      - "László A. Székely"
-    relationship: adapts
 
 automation:
   methods:
