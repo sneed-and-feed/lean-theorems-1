@@ -1,34 +1,37 @@
 version: "v0.4"
 
 project:
-  name: "Desargues's Theorem in Vector and Axiomatic Projective Geometry"
+  name: "Desargues's Theorem and Synthetic Projective Equivalence"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Desargues's theorem (Wiedijk #53) in both
-    module-theoretic vector geometry and synthetic axiomatic projective planes. Proves that centrally
-    perspective triangles have collinear side-intersection points in modules over commutative rings,
-    and proves the non-trivial converse theorem in Desarguesian projective planes under proper nondegeneracy
-    hypotheses. Verified absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Desargues's theorem and its converse
+    in synthetic axiomatic projective planes. Formalizes Hilbert-style incidence axioms for
+    projective planes, establishes that centrally perspective triangles induce a proper axial
+    perspective where the axis is distinct from all triangle sides, and formalizes the non-trivial
+    converse theorem showing that proper axial perspectivity with distinct corresponding vertices
+    implies central perspectivity. Unifies these results into an exact bidirectional equivalence
+    between central and proper axial perspectives in Desarguesian projective planes. Verified
+    absent from core Mathlib (checked against Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.AG, math.MG]
   msc2020: ["51A05", "51A30", "14N05"]
 
 sources:
-  - title: "Manière universelle de Mr. Girard Desargues, pour pratiquer la perspective par petit-pied, comme le geometral"
-    type: book
-    authors:
-      - "Girard Desargues"
-      - "Abraham Bosse"
-    relationship: formalizes
   - title: "Grundlagen der Geometrie"
     type: book
     authors:
       - "David Hilbert"
+    relationship: adapts
+  - title: "Manière universelle de Mr Desargues, pour pratiquer la perspective par petit-pied, comme le géométral"
+    type: book
+    authors:
+      - "Girard Desargues"
+      - "Abraham Bosse"
     relationship: background
 
 automation:
@@ -44,6 +47,4 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    The formalization and Challenge/Solution parity were verified through human audit by the maintainers
-    with interactive proof assistance and refactoring. Verified with 0 errors, 0 warnings, 0 sorries,
-    and 0 custom axioms.
+    Challenge contains deliberate statement holes. Solution verified with 0 sorries and strictly standard kernel axioms (Classical.choice).

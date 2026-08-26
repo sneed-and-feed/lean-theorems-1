@@ -1,23 +1,3 @@
-import Mathlib.Algebra.Module.Defs
-
-/-- **Desargues's Theorem (Vector Formulation)**:
-Two triangles in central perspective from O have their side-intersection points
-P, Q, R satisfying a linear dependence relation ν • P + λ • Q + μ • R = 0. -/
-theorem desargues_vector {K V : Type*} [CommRing K] [AddCommGroup V] [Module K V]
-    (O A₁ B₁ C₁ A₂ B₂ C₂ : V)
-    (a b c «λ» μ ν : K)
-    (hA₂ : A₂ = a • A₁ + «λ» • O)
-    (hB₂ : B₂ = b • B₁ + μ • O)
-    (hC₂ : C₂ = c • C₁ + ν • O)
-    (P Q R : V)
-    (hP : P = μ • A₂ - «λ» • B₂)
-    (hQ : Q = ν • B₂ - μ • C₂)
-    (hR : R = «λ» • C₂ - ν • A₂) :
-    ν • P + «λ» • Q + μ • R = 0 ∧
-    P = (μ * a) • A₁ - («λ» * b) • B₁ ∧
-    Q = (ν * b) • B₁ - (μ * c) • C₁ ∧
-    R = («λ» * c) • C₁ - (ν * a) • A₁ := sorry
-
 namespace DesarguesProjective
 
 /-- An axiomatic projective plane consists of points, lines, and an incidence relation. -/
@@ -85,7 +65,10 @@ def AxialPerspective (PPlane : ProjectivePlane) (T₁ T₂ : Triangle PPlane) (L
   let R := meetLines PPlane h_diff_CA
   PPlane.Inc P L ∧ PPlane.Inc Q L ∧ PPlane.Inc R L
 
-/-- A nondegenerate axial perspectivity. -/
+/-- A nondegenerate axial perspectivity. Besides the three corresponding side
+    intersections lying on `L`, the axis is required not to be a side of either
+    triangle. These six exclusions are dual to requiring the center of a
+    central perspectivity not to be one of its six vertices. -/
 def ProperAxialPerspective (PPlane : ProjectivePlane) (T₁ T₂ : Triangle PPlane)
     (L : PPlane.Line)
     (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
@@ -116,8 +99,23 @@ def IsDesarguesian (PPlane : ProjectivePlane) : Prop :=
       (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂),
       ∃ L : PPlane.Line, AxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA
 
-/-- **Converse Desargues Theorem in Projective Geometry**:
-In any Desarguesian projective plane, proper axial perspective implies central perspective. -/
+/-- **Strengthened forward Desargues theorem:** the axis supplied for centrally
+    perspective triangles is automatically a proper axis. -/
+theorem desargues_projective_plane_proper (PPlane : ProjectivePlane)
+    (h_des : IsDesarguesian PPlane) (T₁ T₂ : Triangle PPlane) (O : PPlane.Point)
+    (h_central : CentralPerspective PPlane T₁ T₂ O)
+    (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
+    (hBC₁ : T₁.B ≠ T₁.C) (hBC₂ : T₂.B ≠ T₂.C)
+    (hCA₁ : T₁.C ≠ T₁.A) (hCA₂ : T₂.C ≠ T₂.A)
+    (h_diff_AB : lineThrough PPlane hAB₁ ≠ lineThrough PPlane hAB₂)
+    (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
+    (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂) :
+    ∃ L : PPlane.Line,
+      ProperAxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂
+        h_diff_AB h_diff_BC h_diff_CA := sorry
+
+/-- **Converse Desargues theorem in projective geometry:**
+In any Desarguesian projective plane, proper axial perspective and distinct corresponding vertices determine a central perspective. -/
 theorem desargues_converse_projective_plane (PPlane : ProjectivePlane)
     (h_des : IsDesarguesian PPlane) (T₁ T₂ : Triangle PPlane) (L : PPlane.Line)
     (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
@@ -130,5 +128,22 @@ theorem desargues_converse_projective_plane (PPlane : ProjectivePlane)
     (h_proper : ProperAxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂
       hCA₁ hCA₂ h_diff_AB h_diff_BC h_diff_CA) :
     ∃ O : PPlane.Point, CentralPerspective PPlane T₁ T₂ O := sorry
+
+/-- In a Desarguesian plane, the nondegenerate forward and converse forms combine
+    into an exact equivalence between central perspective and proper axial perspective. -/
+theorem exists_centralPerspective_iff_exists_properAxialPerspective
+    (PPlane : ProjectivePlane) (h_des : IsDesarguesian PPlane)
+    (T₁ T₂ : Triangle PPlane)
+    (hAB₁ : T₁.A ≠ T₁.B) (hAB₂ : T₂.A ≠ T₂.B)
+    (hBC₁ : T₁.B ≠ T₁.C) (hBC₂ : T₂.B ≠ T₂.C)
+    (hCA₁ : T₁.C ≠ T₁.A) (hCA₂ : T₂.C ≠ T₂.A)
+    (h_diff_AB : lineThrough PPlane hAB₁ ≠ lineThrough PPlane hAB₂)
+    (h_diff_BC : lineThrough PPlane hBC₁ ≠ lineThrough PPlane hBC₂)
+    (h_diff_CA : lineThrough PPlane hCA₁ ≠ lineThrough PPlane hCA₂) :
+    (∃ O : PPlane.Point, CentralPerspective PPlane T₁ T₂ O) ↔
+      T₁.A ≠ T₂.A ∧ T₁.B ≠ T₂.B ∧ T₁.C ≠ T₂.C ∧
+        ∃ L : PPlane.Line,
+          ProperAxialPerspective PPlane T₁ T₂ L hAB₁ hAB₂ hBC₁ hBC₂ hCA₁ hCA₂
+            h_diff_AB h_diff_BC h_diff_CA := sorry
 
 end DesarguesProjective
