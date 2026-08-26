@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "TverbergsTheorem.tverbergs_theorem",
-    "TverbergsTheorem.tverberg_1d"
+    "tuckers_lemma"
   ],
   "permitted_axioms": [
     "propext",
