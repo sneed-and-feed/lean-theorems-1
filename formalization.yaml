@@ -1,47 +1,37 @@
 version: "v0.4"
 
 project:
-  name: "Chvátal's Art Gallery Theorem & Fisk's 3-Coloring Proof"
+  name: "Beck's Theorem on Point Configurations and Incidence Geometry"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Chvátal's Art Gallery Theorem (1975)
-        via Steve Fisk's elegant 1978 3-coloring proof on triangulated polygon graphs. Proves that for
-        any 3-colorable planar triangulation graph on n vertices, there exists a guard set of size
-        floor(n/3).
-        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of József Beck's theorem (1983)
+    in combinatorial incidence geometry. Proves the fundamental dichotomy that any finite set
+    of n points in the Euclidean plane either contains a line with Omega(n) points or spans
+    Omega(n^2) distinct lines, establishing the exact pairs double-counting identity and
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
-  msc2020: ["05C15", "05C10", "52C99"]
+  msc2020: ["52C10", "52C30", "05B25"]
 
 sources:
-  - title: "A combinatorial theorem in plane geometry"
+  - title: "On the lattice property of the plane and some problems of Dirac, Motzkin and Erdős in combinatorial geometry"
     type: paper
     authors:
-      - "Václav Chvátal"
+      - "József Beck"
     relationship: formalizes
-  - title: "A short proof of Chvátal's watchman theorem"
-    type: paper
-    authors:
-      - "Steve Fisk"
-    relationship: adapts
-  - title: "Art Gallery Theorems and Algorithms"
-    type: book
-    authors:
-      - "Joseph O'Rourke"
-    relationship: background
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
