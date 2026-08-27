@@ -22,6 +22,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **4** | **Bollobás's Two Families Theorem (Set Pairs)** | `38161dacae52fb604fb26933140dd4c3a129369d` | [PALOMAR-2026-08-26-000008](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000008) | [x] **LIVE** |
 | **11** | **Erdős–Ko–Rado & Hilton–Milner Extremizer** | `158e3dbad77b780e4e21c89072bc3b863104edd1` | [PALOMAR-2026-08-26-000009](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000009) | [x] **LIVE** |
 | **14** | **The Friendship Theorem (Unique Common Neighbors)** | `f60794e58faf3eb7032a78f7e756538cb6513da5` | [PALOMAR-2026-08-26-000011](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000011) | [x] **LIVE** |
+| **15** | **The Sylvester–Gallai Theorem (Ordinary Lines)** | `969b3d6d3e7381c9ec3003506cc7748fc0b6ba00` | [PALOMAR-2026-08-26-000013](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000013) | [x] **LIVE** |
 
 ---
 
@@ -30,13 +31,12 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | Priority # | Theorem / Package Title | Wiedijk # | Dedicated Commit SHA to Enter | Comparator Path | Status |
 | :---: | :--- | :---: | :--- | :--- | :---: |
 | | **Tier 1: Crown Jewels** | | | | |
-| **1** | **The Sylvester–Gallai Theorem (Ordinary Lines)** | #98 | `969b3d6d3e7381c9ec3003506cc7748fc0b6ba00` | `palomar/sylvester_gallai/comparator.json` | [ ] Ready |
+| **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `9ab9d153d836012ee8cc9c7123c2e6f56f307929` | `palomar/euler_polyhedron/comparator.json` | [ ] Ready |
 | **2** | **Hall's Marriage Theorem (Matching SDRs)** | #87 | `c4510ddb9a0b2763b234763d75d0c1a575c04b43` | `palomar/hall_marriage/comparator.json` | [ ] Ready |
 | **3** | **Sperner's Lemma in 1D and 2D** | #57 | `b98af1a11e35620f9b5fbe5d03789521f12cca56` | `palomar/sperners_lemma/comparator.json` | [ ] Ready |
 | **4** | **Descartes's Rule of Signs** | #73 | `f8f43442121755af91a70ad650d714dfbd326974` | `palomar/descartes_rule_of_signs/comparator.json` | [ ] Ready |
 | **5** | **Radon's Lemma & Helly's Theorem** | #99 | `8640fa71ac7d050e04a5653c8537a268abb7e7f0` | `palomar/radon_helly/comparator.json` | [ ] Ready |
 | **6** | **Pick's Theorem on Lattice Polygons** | #92 | `cac4bcf75095fde63d5cd10620c12ca663e7c0bf` | `palomar/picks_theorem/comparator.json` | [ ] Flagged for Geometry Refactor (manufactured triangulation) |
-| **7** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `9ab9d153d836012ee8cc9c7123c2e6f56f307929` | `palomar/euler_polyhedron/comparator.json` | [ ] Ready |
 | | **Tier 2: Celebrated Combinatorics** | | | | |
 | **8** | **Chvátal's Art Gallery Theorem (Fisk's 3-Coloring)** | — | `741ef84e35db054d7d903b8975467f62f334e684` | `palomar/art_gallery_theorem/comparator.json` | [ ] Ready |
 | **9** | **Erdős–Szekeres Convex Polygon (Happy Ending 1935)** | — | `81f459c3cc35e066a5113e85b47d80fdba046b97` | `palomar/erdos_szekeres_convex/comparator.json` | [ ] Ready |
