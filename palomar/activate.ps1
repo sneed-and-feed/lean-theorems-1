@@ -44,8 +44,10 @@ $sha = (git -C $root rev-parse HEAD).Trim()
 $chkPath = Join-Path $root "PALOMAR_CHECKLIST.md"
 if (Test-Path $chkPath) {
     $chk = [System.IO.File]::ReadAllText($chkPath)
-    if ($chk -match "palomar/$Slug/comparator\.json") {
-        $chk = [System.Text.RegularExpressions.Regex]::Replace($chk, "\|\s*(`?[0-9a-f]{40}`?|—)\s*\|\s*`palomar/$Slug/comparator\.json`", "| `$sha` | `palomar/$Slug/comparator.json`")
+    $pattern = '\|\s*(`?[0-9a-f]{40}`?|—)\s*\|\s*`palomar/' + $Slug + '/comparator\.json`'
+    $replacement = '| `' + $sha + '` | `palomar/' + $Slug + '/comparator.json`'
+    if ([System.Text.RegularExpressions.Regex]::IsMatch($chk, $pattern)) {
+        $chk = [System.Text.RegularExpressions.Regex]::Replace($chk, $pattern, $replacement)
         [System.IO.File]::WriteAllText($chkPath, $chk, $utf8NoBom)
         git -C $root add PALOMAR_CHECKLIST.md
         git -C $root commit --amend --no-edit
