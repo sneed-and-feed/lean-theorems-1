@@ -10,4 +10,8 @@
 *.so
 .lake.old
 /.agents
-PALOMAR_CHECKLIST.md
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+.vscode/
