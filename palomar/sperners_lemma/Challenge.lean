@@ -2,8 +2,13 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Fin.Basic
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Fin
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.Ring.Parity
 
 open Finset
+open BigOperators
 
 /-- Number of color switches between adjacent vertices in a 1D path of length `n`. -/
 def switchCount {n : ℕ} (f : Fin (n + 1) → Fin 2) : ℕ :=

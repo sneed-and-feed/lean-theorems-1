@@ -33,7 +33,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | :---: | :--- | :---: | :--- | :--- | :---: |
 | | **Tier 1: Crown Jewels** | | | | |
 | **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `213555c7fe3f85be051a784fbbb62305276d9c95` | `palomar/euler_polyhedron/comparator.json` | [ ] In Development |
-| **3** | **Sperner's Lemma in 1D and 2D** | #57 | `b98af1a11e35620f9b5fbe5d03789521f12cca56` | `palomar/sperners_lemma/comparator.json` | [ ] Ready |
+| **3** | **Sperner's Lemma in 1D and 2D** | #57 | `b4f17c9e65d41d208929ec19148972f8a826225c` | `palomar/sperners_lemma/comparator.json` | [ ] Ready |
 | **4** | **Descartes's Rule of Signs** | #73 | `f8f43442121755af91a70ad650d714dfbd326974` | `palomar/descartes_rule_of_signs/comparator.json` | [ ] Ready |
 | **5** | **Radon's Lemma & Helly's Theorem** | #99 | `8640fa71ac7d050e04a5653c8537a268abb7e7f0` | `palomar/radon_helly/comparator.json` | [ ] Ready |
 | **6** | **Pick's Theorem on Lattice Polygons** | #92 | `cac4bcf75095fde63d5cd10620c12ca663e7c0bf` | `palomar/picks_theorem/comparator.json` | [ ] Flagged for Geometry Refactor (manufactured triangulation) |

@@ -13,7 +13,7 @@ project:
     on triangulations with boundary via double-counting of panchromatic triangles and boundary doors.
 
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
   arxiv: [math.CO, math.AT]
   msc2020: ["05E45", "55M20", "57Q05"]
