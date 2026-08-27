@@ -24,6 +24,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **13** | **Hall's Marriage Theorem (Matching SDRs)** | `4aed8276b644003f18386038594b70de666938c2` | [PALOMAR-2026-08-27-000012](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000012) | [x] **LIVE** |
 | **14** | **The Friendship Theorem (Unique Common Neighbors)** | `f60794e58faf3eb7032a78f7e756538cb6513da5` | [PALOMAR-2026-08-26-000011](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000011) | [x] **LIVE** |
 | **15** | **The Sylvester–Gallai Theorem (Ordinary Lines)** | `969b3d6d3e7381c9ec3003506cc7748fc0b6ba00` | [PALOMAR-2026-08-26-000013](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000013) | [x] **LIVE** |
+| **8** | **General n-Dimensional Sperner's Lemma** | `d14072a07f6c5a4dbca1428c7d013828d7c1a9da` | [PALOMAR-2026-08-27-000014](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000014) | [x] **LIVE** |
 
 ---
 
@@ -33,8 +34,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | :---: | :--- | :---: | :--- | :--- | :---: |
 | | **Tier 1: Crown Jewels** | | | | |
 | **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `213555c7fe3f85be051a784fbbb62305276d9c95` | `palomar/euler_polyhedron/comparator.json` | [ ] In Development |
-| **2** | **General n-Dimensional Sperner's Lemma** | #57 | `36d3c729d0812fc3f6959388980320f79ebeed9e` | `palomar/sperner_nd/comparator.json` | [ ] Ready |
-| **3** | **Sperner's Lemma in 1D, 2D, and 3D** | #57 | — | `palomar/sperners_lemma/comparator.json` | [-] **Unsubmittable** (Editorial research floor: routine fixed-dimensional incidence parity identities alone do not meet the paper-worthy research floor; requires general n-dimensional simplicial topology or Brouwer fixed-point reduction) |
+| **3** | **Sperner's Lemma in 1D, 2D, and 3D** | #57 | — | `palomar/sperners_lemma/comparator.json` | [-] **Unsubmittable** (Superseded by live General n-D Sperner PALOMAR-2026-08-27-000014) |
 | **4** | **Descartes's Rule of Signs** | #73 | `f8f43442121755af91a70ad650d714dfbd326974` | `palomar/descartes_rule_of_signs/comparator.json` | [ ] Ready |
 | **5** | **Radon's Lemma & Helly's Theorem** | #99 | `8640fa71ac7d050e04a5653c8537a268abb7e7f0` | `palomar/radon_helly/comparator.json` | [ ] Ready |
 | **6** | **Pick's Theorem on Lattice Polygons** | #92 | `cac4bcf75095fde63d5cd10620c12ca663e7c0bf` | `palomar/picks_theorem/comparator.json` | [ ] Flagged for Geometry Refactor (manufactured triangulation) |
