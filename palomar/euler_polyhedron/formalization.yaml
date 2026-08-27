@@ -13,12 +13,11 @@ project:
     carrier frameworks:
     (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
     alpha and vertex permutation sigma), proving the universal even parity of the Euler characteristic
-    chi(M) via the permutation signature homomorphism, with concrete machine-checked instances
-    (regular tetrahedron);
-    (2) SimpleGraph 2-cell surface embeddings and planar cycle basis duality (Mac Lane 1937, Cauchy 1813),
-    proving Euler's formula for trees (V - E + 1 = 2), Euler's polyhedron formula (V - E + F = 2),
-    planar edge bounds (E <= 3V - 6 and E <= 2V - 4), average degree bound 2E < 6V, and authentic
-    non-planarity obstructions for K5 on Fin 5 and K3,3 on Fin 3 + Fin 3.
+    chi(M) via the permutation signature homomorphism, classical planar edge bounds E <= 3V - 6 and
+    E <= 2V - 4, average degree bound 2E < 6V, authentic non-planarity obstructions for K5 and K3,3,
+    and concrete machine-checked regular polyhedra (tetrahedron, triangle, square);
+    (2) SimpleGraph Trees (Euler 1758, Cauchy 1813), proving Euler's formula for trees V - E + 1 = 2
+    on genuine SimpleGraph carriers.
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
     docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 

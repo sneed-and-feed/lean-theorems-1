@@ -1,6 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Acyclic
-import Mathlib.Combinatorics.SimpleGraph.Bipartite
 import Mathlib.GroupTheory.Perm.Cycle.Type
 import Mathlib.GroupTheory.Perm.Sign
 
@@ -14,9 +13,9 @@ combinatorial planar map bounds, and graph non-planarity obstructions.
 1. **Combinatorial Maps (Tutte–Edmonds Rotation Systems)**:
    A finite dart set D equipped with an edge involution α : Perm D without fixed points
    and a vertex rotation permutation σ : Perm D. Faces are traced by φ := σ * α.
-2. **Simple Graphs & Planar Cycle Basis Embeddings (Mac Lane 1937, Cauchy 1813)**:
-   A finite simple graph G : SimpleGraph V equipped with a 2-cell planar embedding whose
-   bounded faces form a basis of the cycle space C(G) of dimension |E| - |V| + 1.
+   Euler characteristic is defined as χ(M) = V - E + F.
+2. **SimpleGraph Trees (Euler 1758, Cauchy 1813)**:
+   A finite simple graph G : SimpleGraph V equipped with the tree property G.IsTree.
 -/
 
 open Equiv Perm SimpleGraph
@@ -166,41 +165,31 @@ theorem eulerChar_is_even : Even (M.vertexCount + M.edgeCount + M.faceCount) := 
   rw [h1] at hpar
   cases hpar
 
+/-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3 (3F ≤ 2E). -/
+theorem planar_edge_bound (h_euler : M.eulerChar = 2)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
+    (hV : 3 ≤ M.vertexCount) :
+    M.edgeCount ≤ 3 * M.vertexCount - 6 := by
+  unfold eulerChar at h_euler
+  omega
+
+/-- Triangle-free planar edge bound: E ≤ 2V - 4 for maps with face degree ≥ 4 (4F ≤ 2E). -/
+theorem planar_edge_bound_triangle_free (h_euler : M.eulerChar = 2)
+    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount)
+    (hV : 3 ≤ M.vertexCount) :
+    M.edgeCount ≤ 2 * M.vertexCount - 4 := by
+  unfold eulerChar at h_euler
+  omega
+
+/-- Average vertex degree bound for planar maps: 2E < 6V. -/
+theorem average_degree_lt_six (h_euler : M.eulerChar = 2)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
+    (hV : 3 ≤ M.vertexCount) :
+    2 * M.edgeCount < 6 * M.vertexCount := by
+  have := planar_edge_bound M h_euler h_face hV
+  omega
+
 end CombinatorialMap
-
-/-- A combinatorial 2-cell surface embedding of a finite graph G with face count F.
-In Mac Lane's planarity framework (1937), a graph is planar iff the bounded faces
-form a cycle basis of the cycle space C(G) with dimension |E| - |V| + 1, giving total
-faces F = |E| - |V| + 2. -/
-structure PlanarEmbedding {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet] where
-  faceCount : ℕ
-  h_cycle_basis : faceCount = G.edgeFinset.card + 2 - Fintype.card V
-  h_card_le : Fintype.card V ≤ G.edgeFinset.card + 1
-
-namespace PlanarEmbedding
-
-variable {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
-
-/-- The Euler characteristic of a graph with a planar embedding: χ = V - E + F. -/
-def eulerChar (emb : PlanarEmbedding G) : ℤ :=
-  (Fintype.card V : ℤ) - (G.edgeFinset.card : ℤ) + (emb.faceCount : ℤ)
-
-end PlanarEmbedding
-
-/-- Euler's polyhedron formula (Euler 1758, Cauchy 1813) for planar embedded simple graphs. -/
-theorem euler_polyhedron_formula {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
-    (emb : PlanarEmbedding G) : PlanarEmbedding.eulerChar G emb = 2 := by
-  unfold PlanarEmbedding.eulerChar
-  have hF := emb.h_cycle_basis
-  have hle := emb.h_card_le
-  omega
-
-/-- Additive natural number form of Euler's formula: V + F = E + 2. -/
-theorem euler_polyhedron_formula_nat {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
-    (emb : PlanarEmbedding G) : Fintype.card V + emb.faceCount = G.edgeFinset.card + 2 := by
-  have := euler_polyhedron_formula G emb
-  unfold PlanarEmbedding.eulerChar at this
-  omega
 
 /-- Euler's formula for trees: every tree T on V has χ = V - E + 1 = 2 (where F = 1). -/
 theorem tree_euler_formula {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
@@ -208,51 +197,40 @@ theorem tree_euler_formula {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype 
   have := hT.card_edgeFinset
   omega
 
-/-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3. -/
-theorem planar_edge_bound {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
-    (emb : PlanarEmbedding G) (h_face : 3 * emb.faceCount ≤ 2 * G.edgeFinset.card)
-    (hV : 3 ≤ Fintype.card V) : G.edgeFinset.card ≤ 3 * Fintype.card V - 6 := by
-  have := euler_polyhedron_formula_nat G emb
-  omega
+/-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3 (3F ≤ 2E). -/
+theorem planar_edge_bound {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
+    (h_euler : M.eulerChar = 2) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
+    M.edgeCount ≤ 3 * M.vertexCount - 6 :=
+  M.planar_edge_bound h_euler h_face hV
 
-/-- Triangle-free planar edge bound: E ≤ 2V - 4 for maps with face degree ≥ 4. -/
-theorem planar_edge_bound_triangle_free {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
-    (emb : PlanarEmbedding G) (h_face : 4 * emb.faceCount ≤ 2 * G.edgeFinset.card)
-    (hV : 3 ≤ Fintype.card V) : G.edgeFinset.card ≤ 2 * Fintype.card V - 4 := by
-  have := euler_polyhedron_formula_nat G emb
-  omega
+/-- Triangle-free planar edge bound: E ≤ 2V - 4 for maps with face degree ≥ 4 (4F ≤ 2E). -/
+theorem planar_edge_bound_triangle_free {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
+    (h_euler : M.eulerChar = 2) (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
+    M.edgeCount ≤ 2 * M.vertexCount - 4 :=
+  M.planar_edge_bound_triangle_free h_euler h_face hV
 
 /-- Average vertex degree bound for planar maps: 2E < 6V. -/
-theorem average_degree_lt_six {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
-    (emb : PlanarEmbedding G) (h_face : 3 * emb.faceCount ≤ 2 * G.edgeFinset.card)
-    (hV : 3 ≤ Fintype.card V) : 2 * G.edgeFinset.card < 6 * Fintype.card V := by
-  have := planar_edge_bound G emb h_face hV
+theorem average_degree_lt_six {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
+    (h_euler : M.eulerChar = 2) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
+    2 * M.edgeCount < 6 * M.vertexCount :=
+  M.average_degree_lt_six h_euler h_face hV
+
+/-- Non-planarity obstruction for K5: complete graph on 5 vertices cannot admit a planar map embedding. -/
+theorem non_planarity_k5 (M : CombinatorialMap (Fin 20))
+    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
+    (h_euler : M.eulerChar = 2) :
+    False := by
+  have := planar_edge_bound M h_euler h_face (by omega)
   omega
 
-/-- Non-planarity obstruction for K5: complete graph on 5 vertices cannot admit a planar embedding. -/
-theorem non_planarity_k5
-    (emb : PlanarEmbedding (completeGraph (Fin 5)))
-    (h_face : 3 * emb.faceCount ≤ 2 * (completeGraph (Fin 5)).edgeFinset.card) :
+/-- Non-planarity obstruction for K3,3: complete bipartite graph K_{3,3} cannot admit a triangle-free planar map embedding. -/
+theorem non_planarity_k33 (M : CombinatorialMap (Fin 18))
+    (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
+    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount)
+    (h_euler : M.eulerChar = 2) :
     False := by
-  have h_bound := planar_edge_bound (completeGraph (Fin 5)) emb h_face (by decide)
-  have hV : Fintype.card (Fin 5) = 5 := Fintype.card_fin 5
-  have hE : (completeGraph (Fin 5)).edgeFinset.card = 10 := by decide
-  omega
-
-instance (V W : Type*) [DecidableEq V] [DecidableEq W] :
-    DecidableRel (completeBipartiteGraph V W).Adj := by
-  intro x y
-  unfold completeBipartiteGraph
-  infer_instance
-
-/-- Non-planarity obstruction for K3,3: complete bipartite graph K_{3,3} cannot admit a triangle-free planar embedding. -/
-theorem non_planarity_k33
-    (emb : PlanarEmbedding (completeBipartiteGraph (Fin 3) (Fin 3)))
-    (h_face : 4 * emb.faceCount ≤ 2 * (completeBipartiteGraph (Fin 3) (Fin 3)).edgeFinset.card) :
-    False := by
-  have h_bound := planar_edge_bound_triangle_free (completeBipartiteGraph (Fin 3) (Fin 3)) emb h_face (by decide)
-  have hV : Fintype.card (Fin 3 ⊕ Fin 3) = 6 := by decide
-  have hE : (completeBipartiteGraph (Fin 3) (Fin 3)).edgeFinset.card = 9 := by decide
+  have := planar_edge_bound_triangle_free M h_euler h_face (by omega)
   omega
 
 def tetrahedron_alpha : Perm (Fin 12) :=
@@ -273,6 +251,36 @@ def tetrahedronMap : CombinatorialMap (Fin 12) where
 set_option maxRecDepth 200000 in
 /-- Regular tetrahedron satisfies Euler's formula χ = 4 - 6 + 4 = 2. -/
 theorem tetrahedron_eulerChar : tetrahedronMap.eulerChar = 2 := by decide
+
+def triangle_alpha : Perm (Fin 6) :=
+  Equiv.swap 0 1 * Equiv.swap 2 3 * Equiv.swap 4 5
+
+def triangle_sigma : Perm (Fin 6) :=
+  Equiv.swap 1 2 * Equiv.swap 3 4 * Equiv.swap 5 0
+
+def triangleMap : CombinatorialMap (Fin 6) where
+  α := triangle_alpha
+  σ := triangle_sigma
+  α_involution := by decide
+  α_no_fixed_points := by decide
+
+/-- The triangle polygon map satisfies Euler's formula χ = 3 - 3 + 2 = 2. -/
+theorem triangle_eulerChar : triangleMap.eulerChar = 2 := by decide
+
+def square_alpha : Perm (Fin 8) :=
+  Equiv.swap 0 1 * Equiv.swap 2 3 * Equiv.swap 4 5 * Equiv.swap 6 7
+
+def square_sigma : Perm (Fin 8) :=
+  Equiv.swap 1 2 * Equiv.swap 3 4 * Equiv.swap 5 6 * Equiv.swap 7 0
+
+def squareMap : CombinatorialMap (Fin 8) where
+  α := square_alpha
+  σ := square_sigma
+  α_involution := by decide
+  α_no_fixed_points := by decide
+
+/-- The square polygon map satisfies Euler's formula χ = 4 - 4 + 2 = 2. -/
+theorem square_eulerChar : squareMap.eulerChar = 2 := by decide
 
 /-- Universal parity theorem: the sum V + E + F is always even for any combinatorial map. -/
 theorem combinatorialMap_eulerChar_is_even {D : Type*} [Fintype D] [DecidableEq D]

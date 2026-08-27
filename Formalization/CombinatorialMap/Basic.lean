@@ -81,4 +81,46 @@ theorem alpha_cycleType_card_eq_edgeCount :
   have h2 := card_darts_eq_two_mul_edgeCount M
   omega
 
+/-- Classical planar edge bound: E ≤ 3V - 6 for planar maps with face degree ≥ 3 (3F ≤ 2E). -/
+theorem planar_edge_bound (h_euler : M.eulerChar = 2)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
+    (hV : 3 ≤ M.vertexCount) :
+    M.edgeCount ≤ 3 * M.vertexCount - 6 := by
+  unfold eulerChar at h_euler
+  omega
+
+/-- Triangle-free planar edge bound: E ≤ 2V - 4 for planar maps with face degree ≥ 4 (4F ≤ 2E). -/
+theorem planar_edge_bound_triangle_free (h_euler : M.eulerChar = 2)
+    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount)
+    (hV : 3 ≤ M.vertexCount) :
+    M.edgeCount ≤ 2 * M.vertexCount - 4 := by
+  unfold eulerChar at h_euler
+  omega
+
+/-- Average vertex degree bound for planar maps: 2E < 6V. -/
+theorem average_degree_lt_six (h_euler : M.eulerChar = 2)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
+    (hV : 3 ≤ M.vertexCount) :
+    2 * M.edgeCount < 6 * M.vertexCount := by
+  have := planar_edge_bound M h_euler h_face hV
+  omega
+
+/-- Non-planarity obstruction for K5: no combinatorial map with parameters (V=5, E=10, 3F ≤ 2E) can satisfy Euler's formula χ = 2. -/
+theorem non_planarity_k5 (M : CombinatorialMap (Fin 20))
+    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
+    (h_euler : M.eulerChar = 2) :
+    False := by
+  have := planar_edge_bound M h_euler h_face (by omega)
+  omega
+
+/-- Non-planarity obstruction for K3,3: no triangle-free combinatorial map with parameters (V=6, E=9, 4F ≤ 2E) can satisfy Euler's formula χ = 2. -/
+theorem non_planarity_k33 (M : CombinatorialMap (Fin 18))
+    (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
+    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount)
+    (h_euler : M.eulerChar = 2) :
+    False := by
+  have := planar_edge_bound_triangle_free M h_euler h_face (by omega)
+  omega
+
 end CombinatorialMap

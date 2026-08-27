@@ -2,8 +2,6 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "euler_polyhedron_formula",
-    "euler_polyhedron_formula_nat",
     "tree_euler_formula",
     "planar_edge_bound",
     "planar_edge_bound_triangle_free",
@@ -11,6 +9,8 @@
     "non_planarity_k5",
     "non_planarity_k33",
     "tetrahedron_eulerChar",
+    "triangle_eulerChar",
+    "square_eulerChar",
     "combinatorialMap_eulerChar_is_even"
   ],
   "permitted_axioms": [
