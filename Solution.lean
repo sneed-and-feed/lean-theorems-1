@@ -1,1 +1,4 @@
 import Formalization.SpernersLemma
+import Formalization.Sperner3D
+
+open Sperner3D
