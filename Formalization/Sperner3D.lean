@@ -15,8 +15,6 @@ set_option linter.style.haveILetI false
 
 open Finset
 
-namespace Sperner3D
-
 variable {α : Type*} [DecidableEq α]
 
 -- ============================================================================
@@ -253,7 +251,7 @@ lemma tetrahedronDoorCount_mod_two (c : α → Fin 4) (t : Finset α) (ht : t.ca
   rw [if_congr h_pan rfl rfl]
   exact fin4_local_door_count (c u) (c v) (c w) (c z)
 
-lemma sum_mod_two_eq {β : Type*} [DecidableEq β] (s : Finset β) (f : β → ℕ) (p : β → Prop) [DecidablePred p]
+lemma sum_mod_two_eq_3d {β : Type*} [DecidableEq β] (s : Finset β) (f : β → ℕ) (p : β → Prop) [DecidablePred p]
     (h_mod : ∀ x ∈ s, f x % 2 = if p x then 1 else 0) :
     (∑ x ∈ s, f x) % 2 = (s.filter p).card % 2 := by
   induction s using Finset.induction_on with
@@ -272,7 +270,7 @@ lemma sum_mod_two_eq {β : Type*} [DecidableEq β] (s : Finset β) (f : β → �
       simp only [hp, ite_false] at ha
       rw [h_add, ha, ih_s, zero_add, Nat.mod_mod]
 
-lemma sum_boundary_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) :
+lemma sum_boundary_eq_3d (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     (∑ f ∈ T.boundaryFaces, if is012Face c f then (T.incidentTetrahedra f).card else 0) =
     (T.boundaryFaces.filter (is012Face c)).card := by
   have : (∑ f ∈ T.boundaryFaces, if is012Face c f then (T.incidentTetrahedra f).card else 0) =
@@ -283,7 +281,7 @@ lemma sum_boundary_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     rw [hf_card]
   rw [this, ← card_filter_eq_sum_ite]
 
-lemma sum_interior_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) :
+lemma sum_interior_eq_3d (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     (∑ f ∈ T.interiorFaces, if is012Face c f then (T.incidentTetrahedra f).card else 0) =
     2 * (T.interiorFaces.filter (is012Face c)).card := by
   have : (∑ f ∈ T.interiorFaces, if is012Face c f then (T.incidentTetrahedra f).card else 0) =
@@ -301,7 +299,7 @@ lemma sum_interior_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     split_ifs <;> ring
   rw [h_mul, ← card_filter_eq_sum_ite]
 
-theorem double_counting_sum_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) :
+theorem double_counting_sum_eq_3d (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     (∑ t ∈ T.tetrahedra, tetrahedronDoorCount c t) =
     (T.boundaryFaces.filter (is012Face c)).card + 2 * (T.interiorFaces.filter (is012Face c)).card := by
   have h_door_sum (t : Finset α) (ht : t ∈ T.tetrahedra) :
@@ -361,7 +359,7 @@ theorem double_counting_sum_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) 
       · right; exact ⟨hf, h2⟩
     · rintro (⟨hf, _⟩ | ⟨hf, _⟩) <;> exact hf
   rw [h_union, Finset.sum_union h_disj_bd_int]
-  rw [sum_boundary_eq, sum_interior_eq]
+  rw [sum_boundary_eq_3d, sum_interior_eq_3d]
 
 /-- **3D Sperner Parity Theorem (Sperner 1928):**
     The number of panchromatic tetrahedra in a 3D face-pseudomanifold has the same parity
@@ -371,12 +369,12 @@ theorem sperner_3d_parity (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     (T.boundaryFaces.filter (is012Face c)).card % 2 := by
   have h_left : (∑ t ∈ T.tetrahedra, tetrahedronDoorCount c t) % 2 =
       (T.tetrahedra.filter (isPanchromatic4 c)).card % 2 := by
-    apply sum_mod_two_eq
+    apply sum_mod_two_eq_3d
     intro t ht
     exact tetrahedronDoorCount_mod_two c t (T.tetrahedron_card t ht)
   have h_right : (∑ t ∈ T.tetrahedra, tetrahedronDoorCount c t) % 2 =
       (T.boundaryFaces.filter (is012Face c)).card % 2 := by
-    rw [double_counting_sum_eq]
+    rw [double_counting_sum_eq_3d]
     rw [Nat.add_mod]
     have : (2 * (T.interiorFaces.filter (is012Face c)).card) % 2 = 0 := by omega
     rw [this, add_zero, Nat.mod_mod]
@@ -403,4 +401,3 @@ theorem sperner_3d_exists (T : FacePseudomanifold3D α) (c : α → Fin 4)
   rcases Finset.filter_nonempty_iff.mp h_pos with ⟨t, ht, h_pan⟩
   exact ⟨t, ht, h_pan⟩
 
-end Sperner3D
