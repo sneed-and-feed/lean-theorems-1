@@ -33,7 +33,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | :---: | :--- | :---: | :--- | :--- | :---: |
 | | **Tier 1: Crown Jewels** | | | | |
 | **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `213555c7fe3f85be051a784fbbb62305276d9c95` | `palomar/euler_polyhedron/comparator.json` | [ ] In Development |
-| **2** | **General n-Dimensional Sperner's Lemma** | #57 | `002f9f500456584208232f0cd3c9547ac37c91bf` | `palomar/sperner_nd/comparator.json` | [ ] Ready |
+| **2** | **General n-Dimensional Sperner's Lemma** | #57 | `d967ca7062b02ff0337958f36415d9be67fae67c` | `palomar/sperner_nd/comparator.json` | [ ] Ready |
 | **3** | **Sperner's Lemma in 1D, 2D, and 3D** | #57 | — | `palomar/sperners_lemma/comparator.json` | [-] **Unsubmittable** (Editorial research floor: routine fixed-dimensional incidence parity identities alone do not meet the paper-worthy research floor; requires general n-dimensional simplicial topology or Brouwer fixed-point reduction) |
 | **4** | **Descartes's Rule of Signs** | #73 | `f8f43442121755af91a70ad650d714dfbd326974` | `palomar/descartes_rule_of_signs/comparator.json` | [ ] Ready |
 | **5** | **Radon's Lemma & Helly's Theorem** | #99 | `8640fa71ac7d050e04a5653c8537a268abb7e7f0` | `palomar/radon_helly/comparator.json` | [ ] Ready |
