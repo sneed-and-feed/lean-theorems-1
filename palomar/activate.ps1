@@ -29,13 +29,11 @@ $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::WriteAllText($p, $txt, $utf8NoBom)
 }
 
-Write-Output "==> Running local build verification (lake build Challenge Solution)..."
-& lake build Challenge Solution
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Lake build failed for $Slug!"
-    exit 1
-}
+Write-Output "==> Running local build verification (lake build Challenge, then Solution)..."
+& lake build Challenge
+if ($LASTEXITCODE -ne 0) { Write-Error "Lake build failed for Challenge in $Slug!"; exit 1 }
+& lake build Solution
+if ($LASTEXITCODE -ne 0) { Write-Error "Lake build failed for Solution in $Slug!"; exit 1 }
 
 Write-Output "==> Committing and pushing to origin main..."
 git -C $root add Challenge.lean Solution.lean comparator.json formalization.yaml

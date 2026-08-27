@@ -2,6 +2,11 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Fin.Basic
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Fin
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.Ring.Parity
 import Mathlib.Tactic
 
 open Finset
@@ -88,31 +93,33 @@ theorem sperner_1d_exists {n : ℕ} (f : Fin (n + 1) → Fin 2) (h_ends : f 0 �
 
 variable {α : Type*} [DecidableEq α]
 
-/-- An abstract 2-dimensional triangulation (simplicial surface with boundary).
+/-- An abstract 2-dimensional edge-pseudomanifold with boundary.
     `triangles` is a collection of 3-element subsets of vertices `α`.
     Every edge (2-element subset of a triangle) belongs to either:
     - Exactly 1 triangle (boundary edge), or
-    - Exactly 2 triangles (interior edge). -/
-structure Triangulation2D (α : Type*) [DecidableEq α] where
+    - Exactly 2 triangles (interior edge).
+    Note: Sperner's combinatorial parity identity holds intrinsically for all finite edge-pseudomanifolds
+    with boundary, without requiring full topological 2-manifold link conditions. -/
+structure EdgePseudomanifold2D (α : Type*) [DecidableEq α] where
   triangles : Finset (Finset α)
   triangle_card : ∀ t ∈ triangles, t.card = 3
   incident_card : ∀ e ∈ triangles.biUnion (fun t => t.powerset.filter (fun s => s.card = 2)),
     (triangles.filter (fun t => e ⊆ t)).card = 1 ∨ (triangles.filter (fun t => e ⊆ t)).card = 2
 
-/-- All edges of a triangulation (2-element subsets of triangles). -/
-def Triangulation2D.edges (T : Triangulation2D α) : Finset (Finset α) :=
+/-- All edges of a 2D edge-pseudomanifold (2-element subsets of triangles). -/
+def EdgePseudomanifold2D.edges (T : EdgePseudomanifold2D α) : Finset (Finset α) :=
   T.triangles.biUnion (fun t => t.powerset.filter (fun s => s.card = 2))
 
 /-- The triangles in `T` containing edge `e`. -/
-def Triangulation2D.incidentTriangles (T : Triangulation2D α) (e : Finset α) : Finset (Finset α) :=
+def EdgePseudomanifold2D.incidentTriangles (T : EdgePseudomanifold2D α) (e : Finset α) : Finset (Finset α) :=
   T.triangles.filter (fun t => e ⊆ t)
 
 /-- Boundary edges: edges contained in exactly 1 triangle. -/
-def Triangulation2D.boundaryEdges (T : Triangulation2D α) : Finset (Finset α) :=
+def EdgePseudomanifold2D.boundaryEdges (T : EdgePseudomanifold2D α) : Finset (Finset α) :=
   T.edges.filter (fun e => (T.incidentTriangles e).card = 1)
 
 /-- Interior edges: edges contained in exactly 2 triangles. -/
-def Triangulation2D.interiorEdges (T : Triangulation2D α) : Finset (Finset α) :=
+def EdgePseudomanifold2D.interiorEdges (T : EdgePseudomanifold2D α) : Finset (Finset α) :=
   T.edges.filter (fun e => (T.incidentTriangles e).card = 2)
 
 /-- An edge `e` (2-element set) is a 0-1 edge (or door) if its vertices map to {0, 1}. -/
@@ -225,7 +232,7 @@ lemma sum_mod_two_eq (s : Finset (Finset α)) (f : Finset α → ℕ) (p : Finse
     have h2 := ih fun t ht => h_mod t (Finset.mem_insert_of_mem ht)
     omega
 
-lemma sum_boundary_eq (T : Triangulation2D α) (c : α → Fin 3) :
+lemma sum_boundary_eq (T : EdgePseudomanifold2D α) (c : α → Fin 3) :
     (∑ e ∈ T.boundaryEdges, if is01Edge c e then (T.incidentTriangles e).card else 0) =
     (T.boundaryEdges.filter (is01Edge c)).card := by
   rw [Finset.card_filter]
@@ -233,7 +240,7 @@ lemma sum_boundary_eq (T : Triangulation2D α) (c : α → Fin 3) :
   have : (T.incidentTriangles e).card = 1 := (Finset.mem_filter.mp he).2
   split_ifs <;> omega
 
-lemma sum_interior_eq (T : Triangulation2D α) (c : α → Fin 3) :
+lemma sum_interior_eq (T : EdgePseudomanifold2D α) (c : α → Fin 3) :
     (∑ e ∈ T.interiorEdges, if is01Edge c e then (T.incidentTriangles e).card else 0) =
     2 * (T.interiorEdges.filter (is01Edge c)).card := by
   rw [Finset.card_filter, Finset.mul_sum]
@@ -242,7 +249,7 @@ lemma sum_interior_eq (T : Triangulation2D α) (c : α → Fin 3) :
   split_ifs <;> omega
 
 /-- The total door count across all triangles equals boundary doors plus twice interior doors. -/
-theorem double_counting_sum_eq (T : Triangulation2D α) (c : α → Fin 3) :
+theorem double_counting_sum_eq (T : EdgePseudomanifold2D α) (c : α → Fin 3) :
     (∑ t ∈ T.triangles, triangleDoorCount c t) =
     (T.boundaryEdges.filter (is01Edge c)).card + 2 * (T.interiorEdges.filter (is01Edge c)).card := by
   have h_door_sum (t : Finset α) (ht : t ∈ T.triangles) :
@@ -255,7 +262,7 @@ theorem double_counting_sum_eq (T : Triangulation2D α) (c : α → Fin 3) :
       constructor
       · rintro ⟨he_sub, he_card, he_im⟩
         have he_edges : e ∈ T.edges := by
-          dsimp [Triangulation2D.edges]
+          dsimp [EdgePseudomanifold2D.edges]
           rw [mem_biUnion]
           exact ⟨t, ht, by simp [mem_filter, mem_powerset, he_sub, he_card]⟩
         exact ⟨he_edges, he_sub, he_card, he_im⟩
@@ -270,7 +277,7 @@ theorem double_counting_sum_eq (T : Triangulation2D α) (c : α → Fin 3) :
   have h_edge_term (e : Finset α) (he : e ∈ T.edges) :
       (∑ t ∈ T.triangles, if e ⊆ t ∧ is01Edge c e then 1 else 0) =
       if is01Edge c e then (T.incidentTriangles e).card else 0 := by
-    dsimp [Triangulation2D.incidentTriangles]
+    dsimp [EdgePseudomanifold2D.incidentTriangles]
     split_ifs with h_01
     · rw [Finset.card_filter]
       apply Finset.sum_congr rfl
@@ -284,12 +291,12 @@ theorem double_counting_sum_eq (T : Triangulation2D α) (c : α → Fin 3) :
     apply Finset.sum_congr rfl h_edge_term
   rw [h_sum_edges]
   have h_disj_bd_int : Disjoint T.boundaryEdges T.interiorEdges := by
-    dsimp [Triangulation2D.boundaryEdges, Triangulation2D.interiorEdges]
+    dsimp [EdgePseudomanifold2D.boundaryEdges, EdgePseudomanifold2D.interiorEdges]
     rw [disjoint_filter]
     intro x _ h1 h2
     omega
   have h_union : T.edges = T.boundaryEdges ∪ T.interiorEdges := by
-    dsimp [Triangulation2D.boundaryEdges, Triangulation2D.interiorEdges, Triangulation2D.edges]
+    dsimp [EdgePseudomanifold2D.boundaryEdges, EdgePseudomanifold2D.interiorEdges, EdgePseudomanifold2D.edges]
     ext e
     simp only [mem_union, mem_filter]
     constructor
@@ -307,9 +314,9 @@ theorem double_counting_sum_eq (T : Triangulation2D α) (c : α → Fin 3) :
 -/
 
 /-- **2D Sperner Parity Theorem (Sperner, 1928):**
-    The number of panchromatic (fully labeled) triangles in any 2D triangulation
+    The number of panchromatic (fully labeled) triangles in any 2D edge-pseudomanifold
     has the same parity modulo 2 as the number of 0-1 edges on its boundary. -/
-theorem sperner_2d_parity (T : Triangulation2D α) (c : α → Fin 3) :
+theorem sperner_2d_parity (T : EdgePseudomanifold2D α) (c : α → Fin 3) :
     (T.triangles.filter (isPanchromatic c)).card % 2 =
     (T.boundaryEdges.filter (is01Edge c)).card % 2 := by
   have h_left : (∑ t ∈ T.triangles, triangleDoorCount c t) % 2 =
@@ -327,16 +334,16 @@ theorem sperner_2d_parity (T : Triangulation2D α) (c : α → Fin 3) :
 /-- **2D Sperner's Lemma (Parity Form):**
     If the boundary contains an odd number of 0-1 edges, the number of panchromatic
     triangles is odd. -/
-theorem sperner_2d_odd (T : Triangulation2D α) (c : α → Fin 3)
+theorem sperner_2d_odd (T : EdgePseudomanifold2D α) (c : α → Fin 3)
     (h_bd : Odd (T.boundaryEdges.filter (is01Edge c)).card) :
     Odd (T.triangles.filter (isPanchromatic c)).card := by
   rw [Nat.odd_iff] at h_bd ⊢
   rw [sperner_2d_parity, h_bd]
 
 /-- **2D Sperner's Lemma (Existence Theorem):**
-    If the boundary of a 2D triangulation contains an odd number of 0-1 edges,
+    If the boundary of a 2D edge-pseudomanifold contains an odd number of 0-1 edges,
     there exists at least one panchromatic (trichromatic {0, 1, 2}) triangle. -/
-theorem sperner_2d_exists (T : Triangulation2D α) (c : α → Fin 3)
+theorem sperner_2d_exists (T : EdgePseudomanifold2D α) (c : α → Fin 3)
     (h_bd : Odd (T.boundaryEdges.filter (is01Edge c)).card) :
     ∃ t ∈ T.triangles, isPanchromatic c t := by
   have h_pos : 0 < (T.triangles.filter (isPanchromatic c)).card := Odd.pos (sperner_2d_odd T c h_bd)

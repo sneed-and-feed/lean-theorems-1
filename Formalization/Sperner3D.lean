@@ -2,6 +2,11 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Fin.Basic
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Fin
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.Ring.Parity
 import Mathlib.Tactic
 
 set_option linter.unusedSectionVars false
@@ -18,29 +23,33 @@ variable {α : Type*} [DecidableEq α]
 -- Section 1: Abstract 3D Triangulations
 -- ============================================================================
 
-/-- An abstract 3-dimensional triangulation (simplicial 3-manifold with boundary).
+/-- An abstract 3-dimensional face-pseudomanifold with boundary.
     `tetrahedra` is a collection of 4-element subsets of vertices `α`.
-    Every 2-face (3-element subset of a tetrahedron) belongs to either 1 or 2 tetrahedra. -/
-structure Triangulation3D (α : Type*) [DecidableEq α] where
+    Every 2-face (3-element subset of a tetrahedron) belongs to either:
+    - Exactly 1 tetrahedron (boundary face), or
+    - Exactly 2 tetrahedra (interior face).
+    Note: Sperner's 3D combinatorial parity identity holds intrinsically for all finite face-pseudomanifolds
+    with boundary, without requiring full 3-manifold vertex link conditions. -/
+structure FacePseudomanifold3D (α : Type*) [DecidableEq α] where
   tetrahedra : Finset (Finset α)
   tetrahedron_card : ∀ t ∈ tetrahedra, t.card = 4
   incident_card : ∀ f ∈ tetrahedra.biUnion (fun t => t.powerset.filter (fun s => s.card = 3)),
     (tetrahedra.filter (fun t => f ⊆ t)).card = 1 ∨ (tetrahedra.filter (fun t => f ⊆ t)).card = 2
 
-/-- All triangular 2-faces of a 3D triangulation (3-element subsets of tetrahedra). -/
-def Triangulation3D.faces (T : Triangulation3D α) : Finset (Finset α) :=
+/-- All triangular 2-faces of a 3D face-pseudomanifold (3-element subsets of tetrahedra). -/
+def FacePseudomanifold3D.faces (T : FacePseudomanifold3D α) : Finset (Finset α) :=
   T.tetrahedra.biUnion (fun t => t.powerset.filter (fun s => s.card = 3))
 
 /-- The tetrahedra containing a given face `f`. -/
-def Triangulation3D.incidentTetrahedra (T : Triangulation3D α) (f : Finset α) : Finset (Finset α) :=
+def FacePseudomanifold3D.incidentTetrahedra (T : FacePseudomanifold3D α) (f : Finset α) : Finset (Finset α) :=
   T.tetrahedra.filter (fun t => f ⊆ t)
 
 /-- Boundary faces: triangular 2-faces contained in exactly 1 tetrahedron. -/
-def Triangulation3D.boundaryFaces (T : Triangulation3D α) : Finset (Finset α) :=
+def FacePseudomanifold3D.boundaryFaces (T : FacePseudomanifold3D α) : Finset (Finset α) :=
   T.faces.filter (fun f => (T.incidentTetrahedra f).card = 1)
 
 /-- Interior faces: triangular 2-faces contained in exactly 2 tetrahedra. -/
-def Triangulation3D.interiorFaces (T : Triangulation3D α) : Finset (Finset α) :=
+def FacePseudomanifold3D.interiorFaces (T : FacePseudomanifold3D α) : Finset (Finset α) :=
   T.faces.filter (fun f => (T.incidentTetrahedra f).card = 2)
 
 -- ============================================================================
@@ -263,7 +272,7 @@ lemma sum_mod_two_eq {β : Type*} [DecidableEq β] (s : Finset β) (f : β → �
       simp only [hp, ite_false] at ha
       rw [h_add, ha, ih_s, zero_add, Nat.mod_mod]
 
-lemma sum_boundary_eq (T : Triangulation3D α) (c : α → Fin 4) :
+lemma sum_boundary_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     (∑ f ∈ T.boundaryFaces, if is012Face c f then (T.incidentTetrahedra f).card else 0) =
     (T.boundaryFaces.filter (is012Face c)).card := by
   have : (∑ f ∈ T.boundaryFaces, if is012Face c f then (T.incidentTetrahedra f).card else 0) =
@@ -274,7 +283,7 @@ lemma sum_boundary_eq (T : Triangulation3D α) (c : α → Fin 4) :
     rw [hf_card]
   rw [this, ← card_filter_eq_sum_ite]
 
-lemma sum_interior_eq (T : Triangulation3D α) (c : α → Fin 4) :
+lemma sum_interior_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     (∑ f ∈ T.interiorFaces, if is012Face c f then (T.incidentTetrahedra f).card else 0) =
     2 * (T.interiorFaces.filter (is012Face c)).card := by
   have : (∑ f ∈ T.interiorFaces, if is012Face c f then (T.incidentTetrahedra f).card else 0) =
@@ -292,7 +301,7 @@ lemma sum_interior_eq (T : Triangulation3D α) (c : α → Fin 4) :
     split_ifs <;> ring
   rw [h_mul, ← card_filter_eq_sum_ite]
 
-theorem double_counting_sum_eq (T : Triangulation3D α) (c : α → Fin 4) :
+theorem double_counting_sum_eq (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     (∑ t ∈ T.tetrahedra, tetrahedronDoorCount c t) =
     (T.boundaryFaces.filter (is012Face c)).card + 2 * (T.interiorFaces.filter (is012Face c)).card := by
   have h_door_sum (t : Finset α) (ht : t ∈ T.tetrahedra) :
@@ -305,7 +314,7 @@ theorem double_counting_sum_eq (T : Triangulation3D α) (c : α → Fin 4) :
       constructor
       · rintro ⟨hf_sub, hf_card, hf_im⟩
         have hf_faces : f ∈ T.faces := by
-          dsimp [Triangulation3D.faces]
+          dsimp [FacePseudomanifold3D.faces]
           rw [mem_biUnion]
           exact ⟨t, ht, by simp [mem_filter, mem_powerset, hf_sub, hf_card]⟩
         exact ⟨hf_faces, hf_sub, hf_card, hf_im⟩
@@ -320,7 +329,7 @@ theorem double_counting_sum_eq (T : Triangulation3D α) (c : α → Fin 4) :
   have h_face_term (f : Finset α) (hf : f ∈ T.faces) :
       (∑ t ∈ T.tetrahedra, if f ⊆ t ∧ is012Face c f then 1 else 0) =
       if is012Face c f then (T.incidentTetrahedra f).card else 0 := by
-    dsimp [Triangulation3D.incidentTetrahedra]
+    dsimp [FacePseudomanifold3D.incidentTetrahedra]
     split_ifs with h_012
     · have : (∑ t ∈ T.tetrahedra, if f ⊆ t ∧ is012Face c f then 1 else 0) =
           ∑ t ∈ T.tetrahedra, if f ⊆ t then 1 else 0 := by
@@ -336,12 +345,12 @@ theorem double_counting_sum_eq (T : Triangulation3D α) (c : α → Fin 4) :
     apply Finset.sum_congr rfl h_face_term
   rw [h_sum_faces]
   have h_disj_bd_int : Disjoint T.boundaryFaces T.interiorFaces := by
-    dsimp [Triangulation3D.boundaryFaces, Triangulation3D.interiorFaces]
+    dsimp [FacePseudomanifold3D.boundaryFaces, FacePseudomanifold3D.interiorFaces]
     rw [disjoint_filter]
     intro x _ h1 h2
     omega
   have h_union : T.faces = T.boundaryFaces ∪ T.interiorFaces := by
-    dsimp [Triangulation3D.boundaryFaces, Triangulation3D.interiorFaces, Triangulation3D.faces]
+    dsimp [FacePseudomanifold3D.boundaryFaces, FacePseudomanifold3D.interiorFaces, FacePseudomanifold3D.faces]
     ext f
     simp only [mem_union, mem_filter]
     constructor
@@ -355,9 +364,9 @@ theorem double_counting_sum_eq (T : Triangulation3D α) (c : α → Fin 4) :
   rw [sum_boundary_eq, sum_interior_eq]
 
 /-- **3D Sperner Parity Theorem (Sperner 1928):**
-    The number of panchromatic tetrahedra in a 3D triangulation has the same parity
+    The number of panchromatic tetrahedra in a 3D face-pseudomanifold has the same parity
     modulo 2 as the number of 0-1-2 triangular faces on its boundary. -/
-theorem sperner_3d_parity (T : Triangulation3D α) (c : α → Fin 4) :
+theorem sperner_3d_parity (T : FacePseudomanifold3D α) (c : α → Fin 4) :
     (T.tetrahedra.filter (isPanchromatic4 c)).card % 2 =
     (T.boundaryFaces.filter (is012Face c)).card % 2 := by
   have h_left : (∑ t ∈ T.tetrahedra, tetrahedronDoorCount c t) % 2 =
@@ -376,16 +385,16 @@ theorem sperner_3d_parity (T : Triangulation3D α) (c : α → Fin 4) :
 /-- **3D Sperner's Lemma (Parity Form):**
     If the boundary contains an odd number of 0-1-2 faces, the number of panchromatic
     tetrahedra is odd. -/
-theorem sperner_3d_odd (T : Triangulation3D α) (c : α → Fin 4)
+theorem sperner_3d_odd (T : FacePseudomanifold3D α) (c : α → Fin 4)
     (h_bd : Odd (T.boundaryFaces.filter (is012Face c)).card) :
     Odd (T.tetrahedra.filter (isPanchromatic4 c)).card := by
   rw [Nat.odd_iff] at h_bd ⊢
   rw [sperner_3d_parity, h_bd]
 
 /-- **3D Sperner Existence Theorem:**
-    Whenever the boundary of a 3D triangulation contains an odd number of 0-1-2 faces,
+    Whenever the boundary of a 3D face-pseudomanifold contains an odd number of 0-1-2 faces,
     there exists at least one panchromatic tetrahedron {0, 1, 2, 3}. -/
-theorem sperner_3d_exists (T : Triangulation3D α) (c : α → Fin 4)
+theorem sperner_3d_exists (T : FacePseudomanifold3D α) (c : α → Fin 4)
     (h_bd : Odd (T.boundaryFaces.filter (is012Face c)).card) :
     ∃ t ∈ T.tetrahedra, isPanchromatic4 c t := by
   have h_odd : Odd (T.tetrahedra.filter (isPanchromatic4 c)).card := sperner_3d_odd T c h_bd
