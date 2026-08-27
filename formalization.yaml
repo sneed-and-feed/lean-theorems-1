@@ -1,51 +1,34 @@
-version: "v0.4"
+﻿version: "v0.4"
 
 project:
-  name: "Euler's Polyhedron Formula & Planar Map Invariants"
+  name: "Hall's Marriage Theorem on Systems of Distinct Representatives"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
-    (1758, Wiedijk #13) and fundamental planar map invariants across two rigorous mathematical
-    carrier frameworks:
-    (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
-    alpha and vertex permutation sigma), proving the universal even parity of the Euler characteristic
-    chi(M) via the permutation signature homomorphism, with concrete machine-checked instances
-    (regular tetrahedron);
-    (2) SimpleGraph 2-cell surface embeddings and planar cycle basis duality (Mac Lane 1937, Cauchy 1813),
-    proving Euler's formula for trees (V - E + 1 = 2), Euler's polyhedron formula (V - E + F = 2),
-    planar edge bounds (E <= 3V - 6 and E <= 2V - 4), average degree bound 2E < 6V, and authentic
-    non-planarity obstructions for K5 on Fin 5 and K3,3 on Fin 3 + Fin 3.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Hall's Marriage Theorem (Philip Hall
+    1935, Halmos–Vaughan 1950; Freek Wiedijk #87). Proves that an indexed family of finite sets
+    admits a system of distinct representatives (SDR) if and only if Hall's marriage condition holds.
 
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
   arxiv: [math.CO]
-  msc2020: ["05C10", "52B05", "05C38"]
+  msc2020: ["05A05", "05C70", "05D15"]
 
 sources:
-  - title: "Elementa doctrinae solidorum"
+  - title: "On Representatives of Subsets"
     type: paper
     authors:
-      - "Leonhard Euler"
-    relationship: inspired_by
-  - title: "Recherches sur les polyedres"
-    type: paper
-    authors:
-      - "A.-L. Cauchy"
+      - "P. Hall"
     relationship: formalizes
-  - title: "A combinatorial condition for planar graphs"
+  - title: "The Marriage Problem"
     type: paper
     authors:
-      - "Saunders Mac Lane"
-    relationship: adapts
-  - title: "A census of planar maps"
-    type: paper
-    authors:
-      - "W. T. Tutte"
+      - "P. R. Halmos"
+      - "H. E. Vaughan"
     relationship: adapts
 
 automation:
@@ -53,8 +36,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
