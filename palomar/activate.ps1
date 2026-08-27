@@ -55,7 +55,7 @@ if (Test-Path $chkPath) {
     }
 }
 
-git -C $root push origin main
+git -C $root push origin main --force-with-lease
 
 Write-Output ""
 Write-Output "=================================================================="
