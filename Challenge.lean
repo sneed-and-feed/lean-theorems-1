@@ -1,134 +1,64 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Acyclic
-import Mathlib.GroupTheory.Perm.Cycle.Type
-import Mathlib.GroupTheory.Perm.Sign
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Fin.Basic
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Fin
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.Ring.Parity
 
-/-!
-# Euler's Polyhedron Formula & Planar Invariants (Challenge)
+open Finset
+open BigOperators
 
-A machine-checked formalization challenge for Euler's Polyhedron Formula (1758, Wiedijk #13),
-combinatorial planar map bounds, and graph non-planarity obstructions.
+/-- Number of color switches between adjacent vertices in a 1D path of length `n`. -/
+def switchCount {n : ℕ} (f : Fin (n + 1) → Fin 2) : ℕ :=
+  ∑ i : Fin n, if f i.castSucc ≠ f i.succ then 1 else 0
 
-## Carrier Structures:
-1. **Combinatorial Maps (Tutte–Edmonds Rotation Systems)**:
-   A finite dart set D equipped with an edge involution α : Perm D without fixed points
-   and a vertex rotation permutation σ : Perm D. Faces are traced by φ := σ * α.
-   Euler characteristic is defined as χ(M) = V - E + F.
-2. **SimpleGraph Trees (Euler 1758, Cauchy 1813)**:
-   A finite simple graph G : SimpleGraph V equipped with the tree property G.IsTree.
--/
+/-- **1D Sperner's Lemma Parity**:
+The number of color switches along a 2-colored path is odd if and only if the endpoints have different colors. -/
+theorem sperner_1d_parity {n : ℕ} (f : Fin (n + 1) → Fin 2) :
+    Odd (switchCount f) ↔ f 0 ≠ f (Fin.last n) := sorry
 
-open Equiv Perm SimpleGraph
+variable {α : Type*} [DecidableEq α]
 
-/-- A combinatorial map (rotation system) on a finite set of darts D. -/
-structure CombinatorialMap (D : Type*) [Fintype D] [DecidableEq D] where
-  α : Perm D
-  σ : Perm D
-  α_involution : α * α = 1
-  α_no_fixed_points : ∀ d, α d ≠ d
+/-- An abstract 2-dimensional triangulation (simplicial surface with boundary).
+    `triangles` is a collection of 3-element subsets of vertices `α`.
+    Every edge belongs to either 1 triangle (boundary) or 2 triangles (interior). -/
+structure Triangulation2D (α : Type*) [DecidableEq α] where
+  triangles : Finset (Finset α)
+  triangle_card : ∀ t ∈ triangles, t.card = 3
+  incident_card : ∀ e ∈ triangles.biUnion (fun t => t.powerset.filter (fun s => s.card = 2)),
+    (triangles.filter (fun t => e ⊆ t)).card = 1 ∨ (triangles.filter (fun t => e ⊆ t)).card = 2
 
-namespace CombinatorialMap
+/-- All edges of a triangulation (2-element subsets of triangles). -/
+def Triangulation2D.edges (T : Triangulation2D α) : Finset (Finset α) :=
+  T.triangles.biUnion (fun t => t.powerset.filter (fun s => s.card = 2))
 
-variable {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
+/-- The triangles in `T` containing edge `e`. -/
+def Triangulation2D.incidentTriangles (T : Triangulation2D α) (e : Finset α) : Finset (Finset α) :=
+  T.triangles.filter (fun t => e ⊆ t)
 
-/-- The face permutation φ = σ * α. -/
-def φ : Perm D := M.σ * M.α
+/-- Boundary edges: edges contained in exactly 1 triangle. -/
+def Triangulation2D.boundaryEdges (T : Triangulation2D α) : Finset (Finset α) :=
+  T.edges.filter (fun e => (T.incidentTriangles e).card = 1)
 
-/-- Vertex count: total orbits (cycles + fixed points) of σ. -/
-def vertexCount : ℕ := M.σ.cycleType.card + Fintype.card (Function.fixedPoints M.σ)
+/-- An edge `e` (2-element set) is a 0-1 edge (or door) if its vertices map to {0, 1}. -/
+def is01Edge (c : α → Fin 3) (e : Finset α) : Prop :=
+  e.card = 2 ∧ e.image c = ({0, 1} : Finset (Fin 3))
 
-/-- Edge count: half the number of darts (|D| / 2). -/
-def edgeCount (_ : CombinatorialMap D) : ℕ := Fintype.card D / 2
+instance (c : α → Fin 3) (e : Finset α) : Decidable (is01Edge c e) :=
+  inferInstanceAs (Decidable (e.card = 2 ∧ e.image c = {0, 1}))
 
-/-- Face count: total orbits of φ = σ * α. -/
-def faceCount : ℕ := M.φ.cycleType.card + Fintype.card (Function.fixedPoints M.φ)
+/-- A triangle `t` is panchromatic (or fully labeled) if its vertices take all 3 colors {0, 1, 2}. -/
+def isPanchromatic (c : α → Fin 3) (t : Finset α) : Prop :=
+  t.card = 3 ∧ t.image c = (Finset.univ : Finset (Fin 3))
 
-/-- Euler characteristic: χ(M) = V - E + F. -/
-def eulerChar : ℤ := (M.vertexCount : ℤ) - (M.edgeCount : ℤ) + (M.faceCount : ℤ)
+instance (c : α → Fin 3) (t : Finset α) : Decidable (isPanchromatic c t) :=
+  inferInstanceAs (Decidable (t.card = 3 ∧ t.image c = Finset.univ))
 
-end CombinatorialMap
-
-/-- Euler's formula for trees: every tree T on V has χ = V - E + 1 = 2 (where F = 1). -/
-theorem tree_euler_formula {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
-    (hT : G.IsTree) : (Fintype.card V : ℤ) - (G.edgeFinset.card : ℤ) + 1 = 2 := sorry
-
-/-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3 (3F ≤ 2E). -/
-theorem planar_edge_bound {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
-    (h_euler : M.eulerChar = 2) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
-    M.edgeCount ≤ 3 * M.vertexCount - 6 := sorry
-
-/-- Triangle-free planar edge bound: E ≤ 2V - 4 for maps with face degree ≥ 4 (4F ≤ 2E). -/
-theorem planar_edge_bound_triangle_free {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
-    (h_euler : M.eulerChar = 2) (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
-    M.edgeCount ≤ 2 * M.vertexCount - 4 := sorry
-
-/-- Average vertex degree bound for planar maps: 2E < 6V. -/
-theorem average_degree_lt_six {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
-    (h_euler : M.eulerChar = 2) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
-    2 * M.edgeCount < 6 * M.vertexCount := sorry
-
-/-- Non-planarity obstruction for K5: complete graph on 5 vertices cannot admit a planar map embedding. -/
-theorem non_planarity_k5 (M : CombinatorialMap (Fin 20))
-    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
-    (h_euler : M.eulerChar = 2) :
-    False := sorry
-
-/-- Non-planarity obstruction for K3,3: complete bipartite graph K_{3,3} cannot admit a triangle-free planar map embedding. -/
-theorem non_planarity_k33 (M : CombinatorialMap (Fin 18))
-    (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount)
-    (h_euler : M.eulerChar = 2) :
-    False := sorry
-
-def tetrahedron_alpha : Perm (Fin 12) :=
-  Equiv.swap 0 1 * Equiv.swap 2 3 * Equiv.swap 4 5 * Equiv.swap 6 7 * Equiv.swap 8 9 * Equiv.swap 10 11
-
-def tetrahedron_sigma : Perm (Fin 12) :=
-  Equiv.swap 0 2 * Equiv.swap 2 4 *
-  (Equiv.swap 1 8 * Equiv.swap 8 6) *
-  (Equiv.swap 3 7 * Equiv.swap 7 10) *
-  (Equiv.swap 5 11 * Equiv.swap 11 9)
-
-def tetrahedronMap : CombinatorialMap (Fin 12) where
-  α := tetrahedron_alpha
-  σ := tetrahedron_sigma
-  α_involution := by decide
-  α_no_fixed_points := by decide
-
-/-- Regular tetrahedron satisfies Euler's formula χ = 4 - 6 + 4 = 2. -/
-theorem tetrahedron_eulerChar : tetrahedronMap.eulerChar = 2 := sorry
-
-def triangle_alpha : Perm (Fin 6) :=
-  Equiv.swap 0 1 * Equiv.swap 2 3 * Equiv.swap 4 5
-
-def triangle_sigma : Perm (Fin 6) :=
-  Equiv.swap 1 2 * Equiv.swap 3 4 * Equiv.swap 5 0
-
-def triangleMap : CombinatorialMap (Fin 6) where
-  α := triangle_alpha
-  σ := triangle_sigma
-  α_involution := by decide
-  α_no_fixed_points := by decide
-
-/-- The triangle polygon map satisfies Euler's formula χ = 3 - 3 + 2 = 2. -/
-theorem triangle_eulerChar : triangleMap.eulerChar = 2 := sorry
-
-def square_alpha : Perm (Fin 8) :=
-  Equiv.swap 0 1 * Equiv.swap 2 3 * Equiv.swap 4 5 * Equiv.swap 6 7
-
-def square_sigma : Perm (Fin 8) :=
-  Equiv.swap 1 2 * Equiv.swap 3 4 * Equiv.swap 5 6 * Equiv.swap 7 0
-
-def squareMap : CombinatorialMap (Fin 8) where
-  α := square_alpha
-  σ := square_sigma
-  α_involution := by decide
-  α_no_fixed_points := by decide
-
-/-- The square polygon map satisfies Euler's formula χ = 4 - 4 + 2 = 2. -/
-theorem square_eulerChar : squareMap.eulerChar = 2 := sorry
-
-/-- Universal parity theorem: the sum V + E + F is always even for any combinatorial map. -/
-theorem combinatorialMap_eulerChar_is_even {D : Type*} [Fintype D] [DecidableEq D]
-    (M : CombinatorialMap D) : Even (M.vertexCount + M.edgeCount + M.faceCount) := sorry
+/-- **2D Sperner Parity Theorem (Sperner, 1928)**:
+The number of panchromatic (fully labeled) triangles in any 2D triangulation
+has the same parity modulo 2 as the number of 0-1 edges on its boundary. -/
+theorem sperner_2d_parity (T : Triangulation2D α) (c : α → Fin 3) :
+    (T.triangles.filter (isPanchromatic c)).card % 2 =
+    (T.boundaryEdges.filter (is01Edge c)).card % 2 := sorry

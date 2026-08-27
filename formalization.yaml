@@ -1,59 +1,37 @@
 version: "v0.4"
 
 project:
-  name: "Euler's Polyhedron Formula & Planar Map Invariants"
+  name: "Sperner's Lemma in 1D and 2D"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
-    (1758, Wiedijk #13) and fundamental planar map invariants across two rigorous mathematical
-    carrier frameworks:
-    (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
-    alpha and vertex permutation sigma), proving the universal even parity of the Euler characteristic
-    chi(M) via the permutation signature homomorphism, classical planar edge bounds E <= 3V - 6 and
-    E <= 2V - 4, average degree bound 2E < 6V, authentic non-planarity obstructions for K5 and K3,3,
-    and concrete machine-checked regular polyhedra (tetrahedron, triangle, square);
-    (2) SimpleGraph Trees (Euler 1758, Cauchy 1813), proving Euler's formula for trees V - E + 1 = 2
-    on genuine SimpleGraph carriers.
+    A complete machine-checked Lean 4 formalization of Sperner's Lemma (1928) in 1D and 2D.
+    Proves the 1D color-switch parity theorem along paths and the 2D simplicial parity theorem
+    on triangulations with boundary via double-counting of panchromatic triangles and boundary doors.
+
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
     docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
-
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05C10", "52B05", "05C38"]
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05E45", "55M20", "57Q05"]
 
 sources:
-  - title: "Elementa doctrinae solidorum"
+  - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
     type: paper
     authors:
-      - "Leonhard Euler"
-    relationship: inspired_by
-  - title: "Recherches sur les polyedres"
-    type: paper
-    authors:
-      - "A.-L. Cauchy"
+      - "Emanuel Sperner"
     relationship: formalizes
-  - title: "A combinatorial condition for planar graphs"
-    type: paper
-    authors:
-      - "Saunders Mac Lane"
-    relationship: adapts
-  - title: "A census of planar maps"
-    type: paper
-    authors:
-      - "W. T. Tutte"
-    relationship: adapts
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
