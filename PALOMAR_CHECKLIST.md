@@ -21,6 +21,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **3** | **Bondy's Theorem on Induced Subsets** | `0e0b6bd4466f81c26df99f38eb43ae26dc080f00` | [PALOMAR-2026-08-26-000007](https://palomar-registry.org/entry?id=PALOMAR-2026-08-26-000007) | [x] **LIVE** |
 | **4** | **Bollobás's Two Families Theorem (Set Pairs)** | `38161dacae52fb604fb26933140dd4c3a129369d` | [PALOMAR-2026-08-26-000008](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000008) | [x] **LIVE** |
 | **11** | **Erdős–Ko–Rado & Hilton–Milner Extremizer** | `158e3dbad77b780e4e21c89072bc3b863104edd1` | [PALOMAR-2026-08-26-000009](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000009) | [x] **LIVE** |
+| **13** | **Hall's Marriage Theorem (Matching SDRs)** | `4aed8276b644003f18386038594b70de666938c2` | [PALOMAR-2026-08-27-000012](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000012) | [x] **LIVE** |
 | **14** | **The Friendship Theorem (Unique Common Neighbors)** | `f60794e58faf3eb7032a78f7e756538cb6513da5` | [PALOMAR-2026-08-26-000011](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000011) | [x] **LIVE** |
 | **15** | **The Sylvester–Gallai Theorem (Ordinary Lines)** | `969b3d6d3e7381c9ec3003506cc7748fc0b6ba00` | [PALOMAR-2026-08-26-000013](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000013) | [x] **LIVE** |
 
@@ -31,8 +32,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | Priority # | Theorem / Package Title | Wiedijk # | Dedicated Commit SHA to Enter | Comparator Path | Status |
 | :---: | :--- | :---: | :--- | :--- | :---: |
 | | **Tier 1: Crown Jewels** | | | | |
-| **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `3ba97c966d32e2f287dcdb3690ba042e9eeed282` | `palomar/euler_polyhedron/comparator.json` | [ ] Ready |
-| **2** | **Hall's Marriage Theorem (Matching SDRs)** | #87 | `05eed38ab57fde5541da94c9b3778e4289060a60` | `palomar/hall_marriage/comparator.json` | [ ] Ready |
+| **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `213555c7fe3f85be051a784fbbb62305276d9c95` | `palomar/euler_polyhedron/comparator.json` | [ ] In Development |
 | **3** | **Sperner's Lemma in 1D and 2D** | #57 | `b98af1a11e35620f9b5fbe5d03789521f12cca56` | `palomar/sperners_lemma/comparator.json` | [ ] Ready |
 | **4** | **Descartes's Rule of Signs** | #73 | `f8f43442121755af91a70ad650d714dfbd326974` | `palomar/descartes_rule_of_signs/comparator.json` | [ ] Ready |
 | **5** | **Radon's Lemma & Helly's Theorem** | #99 | `8640fa71ac7d050e04a5653c8537a268abb7e7f0` | `palomar/radon_helly/comparator.json` | [ ] Ready |
