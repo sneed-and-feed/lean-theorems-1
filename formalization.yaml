@@ -1,50 +1,42 @@
 version: "v0.4"
 
 project:
-  name: "General n-Dimensional Sperner's Lemma and Fixed-Point Combinatorics"
+  name: "Descartes's Rule of Signs"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of the general n-dimensional combinatorial Sperner parity theorem
-    on abstract n-dimensional pseudomanifolds with boundary for arbitrary dimension n : ℕ. Proves the local
-    door-counting parity invariant on (n+1)-simplices, the global double-counting identity on door-facet
-    incidences, and the master parity congruence modulo 2 relating panchromatic (n+1)-simplices to boundary
-    doors. The theorem is conditional on an odd number of boundary (n-1)-doors; obtaining the classical
-    geometric Sperner lemma for simplicial subdivisions of geometric simplices with boundary-preserving colorings
-    is a specialization requiring an additional geometric boundary induction argument not contained in these
-    abstract combinatorial declarations. This n-dimensional development (SpernerND.lean) generalizes and
-    supersedes the fixed-dimensional combinatorial parity identities in the repository's lower-dimensional
-    modules (SpernersLemma.lean and Sperner3D.lean) into a single unified parameterized architecture. To the
-    maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type
-    signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Descartes's Rule of Signs (1637, Wiedijk #73).
+    Proves that for any non-zero real polynomial p(X) over ℝ, the number of positive real roots counted
+    with algebraic multiplicity is bounded above by the number of sign variations in its coefficient
+    sequence (ignoring zero coefficients), and their difference is an even non-negative integer.
+    Also formalizes the sign-variation parity correspondence relating sign changes to the sign of the
+    product of the leading and trailing non-zero coefficients. To the maintainers' knowledge, the theorem
+    was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib
+    revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "57Q05", "52A35", "55M20"]
+  arxiv: [math.AG, math.CA, math.HO]
+  msc2020: ["12D10", "26C10", "30C15", "01A45", "01A55"]
 
 sources:
-  - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
+  - title: "La Géométrie"
+    type: book
+    authors:
+      - "René Descartes"
+    year: 1637
+    venue: "Leiden: Jan Maire"
+    relationship: formalizes
+  - title: "Beweis eines algebraischen Lehrsatzes"
     type: paper
     authors:
-      - "Emanuel Sperner"
-    year: 1928
-    venue: "Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg"
-    volume: "6"
-    issue: "1"
-    pages: "265-272"
-    relationship: adapts
-  - title: "Simplicial Approximation of Fixed Points"
-    type: paper
-    authors:
-      - "Harold W. Kuhn"
-    year: 1968
-    venue: "Proceedings of the National Academy of Sciences"
-    volume: "61"
-    issue: "4"
-    pages: "1238-1242"
+      - "Carl Friedrich Gauss"
+    year: 1828
+    venue: "Journal für die reine und angewandte Mathematik (Crelle's Journal)"
+    volume: "3"
+    pages: "5-8"
     relationship: adapts
 
 automation:
@@ -52,8 +44,8 @@ automation:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
@@ -61,6 +53,5 @@ review:
     - "sneed-and-feed maintainers"
   notes: >-
     Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms. This module generalizes
-    and supersedes the fixed 2D edge-pseudomanifold and 3D face-pseudomanifold parity formalizations
-    in SpernersLemma.lean and Sperner3D.lean.
+    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+

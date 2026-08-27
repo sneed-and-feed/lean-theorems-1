@@ -2,9 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SpernerND.sperner_nd_parity",
-    "SpernerND.sperner_nd_odd",
-    "SpernerND.sperner_nd_exists"
+    "descartes_rule_of_signs"
   ],
   "permitted_axioms": [
     "propext",

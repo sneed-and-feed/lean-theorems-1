@@ -1,1 +1,1 @@
-import Formalization.SpernerND
+import Formalization.DescartesSigns
