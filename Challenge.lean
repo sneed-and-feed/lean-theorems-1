@@ -8,6 +8,19 @@ import Mathlib.Algebra.Ring.Parity
 
 open Finset
 
+/-!
+# General n-Dimensional Sperner's Lemma & Fixed-Point Combinatorics
+
+This challenge module formalizes the general combinatorial Sperner parity theorem
+on abstract finite $n$-dimensional pseudomanifolds with boundary (`PseudomanifoldND α n`)
+for arbitrary dimension $n : \mathbb{N}$.
+
+The theorems establish the parity congruence $|T_{\text{pan}}| \equiv |F_{\text{bd}}^{\text{doors}}| \pmod 2$
+conditional on an odd number of boundary $(n-1)$-doors. The classical geometric Sperner's lemma
+on subdivisions of geometric simplices with boundary-preserving colorings is a specialization
+requiring an additional geometric boundary induction argument.
+-/
+
 namespace SpernerND
 
 variable {α : Type*} [DecidableEq α] {n : ℕ}
