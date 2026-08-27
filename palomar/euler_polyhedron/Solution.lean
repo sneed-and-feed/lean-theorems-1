@@ -1,1 +1,3 @@
-import Formalization.CombinatorialMap.EulerFormula
+import Formalization.EulerPolyhedron
+
+open CombinatorialMap

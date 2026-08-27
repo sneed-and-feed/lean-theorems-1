@@ -3,6 +3,8 @@ import Mathlib.GroupTheory.Perm.Cycle.Basic
 import Mathlib.GroupTheory.Perm.Cycle.Type
 import Mathlib.Algebra.Ring.Parity
 
+set_option linter.unusedSectionVars false
+
 variable {D : Type*} [Fintype D] [DecidableEq D]
 
 lemma sign_eq_neg_one_pow_card_sub_orbitCount (σ : Equiv.Perm D) :
@@ -54,6 +56,7 @@ lemma sameCycle_swap_mul_of_not_sameCycle_both (σ : Equiv.Perm D) {a b x y : D}
     exact hx_b ⟨n, by rwa [pow_swap_mul_apply_eq_of_not_sameCycle σ hx_a hx_b n] at hn⟩
   exact h_inv ▸ h_forward (Equiv.swap a b * σ) h_not_a h_not_b h
 
+/-
 /-- When `a` and `b` are in the same cycle, multiplying by `swap a b` splits the cycle into two,
 increasing the total orbit count by 1. -/
 lemma orbitCount_swap_mul_eq_add_one_of_sameCycle (σ : Equiv.Perm D) {a b : D}
@@ -67,3 +70,4 @@ lemma orbitCount_swap_mul_eq_sub_one_of_not_sameCycle (σ : Equiv.Perm D) {a b :
     (hab : a ≠ b) (h : ¬σ.SameCycle a b) :
     (Equiv.swap a b * σ).orbitCount = σ.orbitCount - 1 := by
   sorry
+-/

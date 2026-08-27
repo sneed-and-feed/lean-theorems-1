@@ -33,10 +33,6 @@ noncomputable def faceCount : ℕ := M.facePerm.orbitCount
 
 noncomputable def eulerChar : ℤ := (vertexCount M : ℤ) - (edgeCount M : ℤ) + (faceCount M : ℤ)
 
-/-- A combinatorial map is planar (spherical / genus 0) if its Euler characteristic is 2. -/
-def IsPlanar : Prop :=
-  M.eulerChar = 2
-
 lemma α_sq : M.α ^ 2 = 1 := by
   rw [sq, M.α_inv]
 

@@ -11,18 +11,18 @@ A complete formalization of Euler's Polyhedron Formula $V - E + F = 2$ for plana
 using the Tutte-Edmonds rotation system / combinatorial map framework.
 
 ## Theorems Formalized
-- `euler_polyhedron_formula`: $V - E + F = 2$ for any planar combinatorial map.
-- `euler_polyhedron_formula_nat`: $V + F = E + 2$ in \mathbb{N}.
-- `tetrahedron`: Concrete regular tetrahedron map with \chi = 2.
-- `planar_edge_bound`: $E \le 3V - 6$ for maps with face degrees \ge 3.
-- `planar_edge_bound_triangle_free`: $E \le 2V - 4$ for triangle-free planar maps.
-- `non_planarity_k5`: Complete non-planarity obstruction for $K_5$.
-- `non_planarity_k33`: Complete non-planarity obstruction for $K_{3,3}$.
-- `average_degree_lt_six`: Average degree bound in planar maps.
+- `CombinatorialMap.euler_polyhedron_formula`: $V - E + F = 2$ for any connected planar combinatorial map.
+- `CombinatorialMap.euler_polyhedron_formula_nat`: $V + F = E + 2$ in \mathbb{N}.
+- `CombinatorialMap.tetrahedron`: Concrete regular tetrahedron map with \chi = 2.
+- `CombinatorialMap.planar_edge_bound`: $E \le 3V - 6$ for maps with face degrees \ge 3.
+- `CombinatorialMap.planar_edge_bound_triangle_free`: $E \le 2V - 4$ for triangle-free planar maps.
+- `CombinatorialMap.non_planarity_k5`: Complete non-planarity obstruction for $K_5$.
+- `CombinatorialMap.non_planarity_k33`: Complete non-planarity obstruction for $K_{3,3}$.
+- `CombinatorialMap.average_degree_lt_six`: Average degree bound in planar maps.
 -/
 
-#print axioms euler_polyhedron_formula
-#print axioms planar_edge_bound
-#print axioms planar_edge_bound_triangle_free
-#print axioms non_planarity_k5
-#print axioms non_planarity_k33
+#print axioms CombinatorialMap.euler_polyhedron_formula
+#print axioms CombinatorialMap.planar_edge_bound
+#print axioms CombinatorialMap.planar_edge_bound_triangle_free
+#print axioms CombinatorialMap.non_planarity_k5
+#print axioms CombinatorialMap.non_planarity_k33
