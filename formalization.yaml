@@ -8,13 +8,14 @@ project:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
-    (1758, Wiedijk #13) and fundamental topological graph theory bounds using Tutte-Edmonds
-    combinatorial maps (dart rotation systems). Formalizes connected planar combinatorial maps
-    (requiring reachability connectedness and Euler characteristic 2), concrete polyhedral instances
-    (including the regular tetrahedron map on 12 darts), classical planar edge bounds E <= 3V - 6
-    and E <= 2V - 4 directly on combinatorial map structures, and complete non-planarity proofs
-    demonstrating the non-existence of planar combinatorial map embeddings for K5 and K3,3.
+    A complete machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
+    (1758, Wiedijk #13) and fundamental topological planar graph bounds using Cauchy's 1813
+    inductive planar map reduction (Recherches sur les polyedres). Proves the Euler characteristic
+    identity chi(M) = 2 by structural induction over planar network operations (base polygon,
+    single vertex, pendant leaf addition, and face-splitting chords). Formally derives the classical
+    planar edge bounds E <= 3V - 6 and E <= 2V - 4 (triangle-free), average vertex degree bound
+    2E < 6V, and complete non-planarity proofs establishing the non-existence of planar map embeddings
+    for K5 and K3,3.
 
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
     docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
@@ -28,17 +29,11 @@ sources:
     authors:
       - "Leonhard Euler"
     relationship: inspired_by
-  - title: "A Combinatorial Approach to Embeddings and Maps"
-    type: paper
-    authors:
-      - "W. T. Tutte"
-      - "Jack Edmonds"
-    relationship: adapts
-  - title: "Recherches sur les polyèdres"
+  - title: "Recherches sur les polyedres"
     type: paper
     authors:
       - "A.-L. Cauchy"
-    relationship: inspired_by
+    relationship: formalizes
 
 automation:
   methods:
