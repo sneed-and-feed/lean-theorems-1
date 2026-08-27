@@ -38,9 +38,22 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Lake build failed for Solution in $Slug!
 Write-Output "==> Committing and pushing to origin main..."
 git -C $root add Challenge.lean Solution.lean comparator.json formalization.yaml
 git -C $root commit -m "feat(palomar): activate $Slug for Palomar submission"
-git -C $root push origin main
 
 $sha = (git -C $root rev-parse HEAD).Trim()
+
+$chkPath = Join-Path $root "PALOMAR_CHECKLIST.md"
+if (Test-Path $chkPath) {
+    $chk = [System.IO.File]::ReadAllText($chkPath)
+    if ($chk -match "palomar/$Slug/comparator\.json") {
+        $chk = [System.Text.RegularExpressions.Regex]::Replace($chk, "\|\s*(`?[0-9a-f]{40}`?|—)\s*\|\s*`palomar/$Slug/comparator\.json`", "| `$sha` | `palomar/$Slug/comparator.json`")
+        [System.IO.File]::WriteAllText($chkPath, $chk, $utf8NoBom)
+        git -C $root add PALOMAR_CHECKLIST.md
+        git -C $root commit --amend --no-edit
+        $sha = (git -C $root rev-parse HEAD).Trim()
+    }
+}
+
+git -C $root push origin main
 
 Write-Output ""
 Write-Output "=================================================================="

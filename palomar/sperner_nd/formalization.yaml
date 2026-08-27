@@ -1,0 +1,48 @@
+version: "v0.4"
+
+project:
+  name: "General n-Dimensional Sperner's Lemma and Fixed-Point Combinatorics"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete machine-checked Lean 4 formalization of the general n-dimensional Sperner's Lemma
+    (1928) on abstract n-dimensional pseudomanifolds with boundary. Proves the local door-counting
+    parity invariant, the double-counting identity on door-facet incidences, and the global parity
+    congruence modulo 2 between panchromatic (n+1)-simplices and boundary doors. To the maintainers'
+    knowledge, the theorem was not found in an exact declaration name, docstring, and type signature
+    search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05E45", "57Q05", "52A35", "55M20"]
+
+sources:
+  - title: "Neuer Beweis für die Invarianz der Dimensionszahl und des Gebietes"
+    type: paper
+    authors:
+      - "Emanuel Sperner"
+    relationship: formalizes
+  - title: "Simplicial Approximation of Fixed Points"
+    type: paper
+    authors:
+      - "Harold W. Kuhn"
+    relationship: adapts
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking under maintainer direction. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    Challenge contains deliberate statement holes. Solution verified through human audit by the
+    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
