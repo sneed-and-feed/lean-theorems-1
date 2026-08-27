@@ -20,7 +20,7 @@ construction with its exact cardinality are fully proved.
 | 4 | **Bollobás's Two Families Theorem** | [`bollobas_two_families`](Formalization/BollobasTwoFamilies.lean) | Extremal Combinatorics | Bollobás (1965) |
 | 5 | **Ore's & Dirac's Theorems** | [`ore_hamiltonian`](Formalization/OreHamiltonian.lean), [`dirac_hamiltonian`](Formalization/OreHamiltonian.lean) | Structural Graph Theory | Ore (1960), Dirac (1952) |
 | 6 | **Descartes's Rule of Signs** | [`descartes_rule_of_signs`](Formalization/DescartesSigns.lean) | Real Algebraic Geometry & Polynomials | Descartes (1637), Wiedijk #73 |
-| 7 | **Euler's Polyhedron Formula** | [`euler_polyhedron_formula`](Formalization/EulerPolyhedron.lean), [`euler_connected_graph`](Formalization/EulerPolyhedron.lean) | Topological Graph Theory & Topology | Euler (1758), Cauchy (1813), Wiedijk #13 |
+| 7 | **Euler's Polyhedron Formula** | [`euler_polyhedron_formula`](Formalization/EulerPolyhedron.lean), [`planar_edge_bound`](Formalization/EulerPolyhedron.lean), [`non_planarity_k5`](Formalization/EulerPolyhedron.lean), [`non_planarity_k33`](Formalization/EulerPolyhedron.lean) | Topological Graph Theory & Topology | Euler (1758), Tutte & Edmonds (1960/1979), Wiedijk #13 |
 | 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
@@ -119,10 +119,12 @@ construction with its exact cardinality are fully proved.
 ---
 
 ### 7. Euler's Polyhedron Formula (Freek Wiedijk #13)
-* **Module:** [`Formalization/EulerPolyhedron.lean`](Formalization/EulerPolyhedron.lean)
-* **Theorems:** `euler_polyhedron_formula`, `euler_connected_graph`
-* **Mathematical Statement:** For any connected planar graph (or convex polyhedron boundary) with $V$ vertices, $E$ edges, and $F$ faces:
-  $$V - E + F = 2$$
+* **Module:** [`Formalization/EulerPolyhedron.lean`](Formalization/EulerPolyhedron.lean), [`Formalization/CombinatorialMap/`](Formalization/CombinatorialMap/)
+* **Theorems:** `CombinatorialMap.euler_polyhedron_formula`, `CombinatorialMap.euler_polyhedron_formula_nat`, `planar_edge_bound`, `planar_edge_bound_triangle_free`, `average_degree_lt_six`, `non_planarity_k5`, `non_planarity_k33`
+* **Mathematical Statement:** For any connected planar combinatorial map $M = (D, \alpha, \sigma)$ with fixed-point-free edge involution $\alpha$ ($\alpha^2 = 1$), vertex rotation $\sigma$, and face boundary permutation $\phi = \sigma \alpha$:
+  $$V - E + F = 2 \quad \text{and} \quad V + F = E + 2$$
+  where $V = \operatorname{orbitCount}(\sigma)$, $E = |D| / 2 = \operatorname{orbitCount}(\alpha)$, and $F = \operatorname{orbitCount}(\sigma \alpha)$.
+* **Polyhedral Instances & Obstructions:** Formalizes a concrete 4-vertex, 6-edge, 4-face regular tetrahedron map on 12 darts (`CombinatorialMap.tetrahedron`), the classical planar edge bounds $E \le 3V - 6$ and $E \le 2V - 4$ (triangle-free), average vertex degree bound $2E < 6V$, and complete non-planarity proofs for $K_5$ and $K_{3,3}$.
 
 ---
 
@@ -345,7 +347,13 @@ construction with its exact cardinality are fully proved.
 │   ├── BollobasTwoFamilies.lean          # 4. Bollobás's Two Families Theorem
 │   ├── OreHamiltonian.lean               # 5. Ore's & Dirac's Theorems on Hamiltonian Graphs
 │   ├── DescartesSigns.lean               # 6. Descartes's Rule of Signs (Freek Wiedijk #73)
-│   ├── EulerPolyhedron.lean              # 7. Euler's Polyhedron Formula (Freek Wiedijk #13)
+│   ├── EulerPolyhedron.lean              # 7. Euler's Polyhedron Formula (Freek Wiedijk #13 - Master Interface)
+│   ├── CombinatorialMap.lean             # 7. Combinatorial Map Library Root
+│   ├── CombinatorialMap/                 # 7. Modular Combinatorial Map Package
+│   │   ├── Basic.lean                    #     - Darts, involutions, vertex rotations, & orbit counting
+│   │   ├── Connectivity.lean             #     - Reachability equivalence relation & map connectedness
+│   │   ├── CycleSurgery.lean             #     - Transposition-orbit parity & cycle surgery lemmas
+│   │   └── EulerFormula.lean             #     - Euler identity, polyhedral instances, & non-planarity bounds
 │   ├── SpernersLemma.lean                # 8. Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
 │   ├── DeBruijnErdos.lean                # 9. De Bruijn–Erdős Theorem on Incidence Geometry
 │   ├── SchursTheorem.lean                # 10. Schur's Theorem on Sum-Free Partitions
