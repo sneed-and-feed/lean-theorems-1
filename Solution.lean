@@ -1,2 +1,1 @@
-import Formalization.SpernersLemma
-import Formalization.Sperner3D
+import Formalization.SpernerND
