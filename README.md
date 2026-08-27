@@ -131,9 +131,12 @@ construction with its exact cardinality are fully proved.
 ### 8. Sperner's Lemma in 1D and 2D (Freek Wiedijk #57)
 * **Module:** [`Formalization/SpernersLemma.lean`](Formalization/SpernersLemma.lean)
 * **Theorems:** `sperner_1d_parity`, `sperner_1d_exists`, `sperner_2d_parity`, `sperner_2d_odd`, `sperner_2d_exists`
-* **Mathematical Statement:**
-  - **1D Sperner:** For any coloring $f : \{0, \dots, n\} \to \{0, 1\}$, the number of color-switching steps has the same parity as $[f(0) \ne f(n)]$.
-  - **2D Sperner:** For any 2D triangulation $T$ with vertex coloring $c : V \to \{0, 1, 2\}$, the number of panchromatic triangles and boundary $0$-$1$ edges share the same parity modulo 2.
+* **Mathematical Statement & Scope:**
+  - **1D Discrete Paths:** For any coloring $f : \{0, \dots, n\} \to \{0, 1\}$, the number of color-switching steps has the same parity as $[f(0) \ne f(n)]$. If endpoints differ, at least one bicolored switch exists.
+  - **2D Edge-Pseudomanifolds:** For any abstract 2D edge-pseudomanifold with boundary $T$ (where each edge is in 1 or 2 triangles) with coloring $c : V \to \{0, 1, 2\}$, the number of panchromatic $\{0, 1, 2\}$ triangles shares the same parity modulo 2 as the number of $0$-$1$ boundary edges:
+    $$|T_{\text{pan}}| \equiv |E_{\text{bd}}^{01}| \pmod 2$$
+    Consequently, whenever the boundary contains an odd number of $0$-$1$ edges (`h_bd : Odd (T.boundaryEdges.filter (is01Edge c)).card`), there exists at least one panchromatic triangle.
+  - **Scope Distinction:** The formalized theorem operates on general abstract edge-pseudomanifolds with an explicit boundary-oddness premise. The classical geometric Sperner's lemma on triangulations of a 2-simplex with proper boundary coloring is a geometric specialization requiring an additional boundary induction step.
 
 ---
 
@@ -292,9 +295,11 @@ construction with its exact cardinality are fully proved.
 ### 26. Sperner's Lemma in 3D (Tetrahedral Parity & Invariance) (Batch-5)
 * **Module:** [`Formalization/Sperner3D.lean`](Formalization/Sperner3D.lean)
 * **Theorems:** `sperner_3d_parity`, `sperner_3d_odd`, `sperner_3d_exists`
-* **Mathematical Statement:** For any 3D tetrahedral triangulation of a 3-simplex with proper Sperner coloring $c : V \to \{0, 1, 2, 3\}$, the number of completely colored (panchromatic) tetrahedra shares the same parity modulo 2 as the number of 2D panchromatic boundary faces:
-  $$|\{t \in T \mid c(t) = \{0, 1, 2, 3\}\}| \equiv |F_{\text{bd}}^{012}| \pmod 2$$
-  and is strictly odd ($\ge 1$).
+* **Mathematical Statement & Scope:**
+  - **3D Face-Pseudomanifolds:** For any abstract 3D face-pseudomanifold with boundary $T$ (where each triangular 2-face is in 1 or 2 tetrahedra) with coloring $c : V \to \{0, 1, 2, 3\}$, the number of panchromatic $\{0, 1, 2, 3\}$ tetrahedra shares the same parity modulo 2 as the number of $0$-$1$-$2$ boundary faces:
+    $$|T_{\text{pan}}| \equiv |F_{\text{bd}}^{012}| \pmod 2$$
+    Consequently, whenever the boundary contains an odd number of $0$-$1$-$2$ faces (`h_bd : Odd (T.boundaryFaces.filter (is012Face c)).card`), there exists at least one panchromatic tetrahedron.
+  - **Scope Distinction:** The theorem holds for general finite tetrahedral complexes with the boundary-oddness condition. The classical geometric 3-simplex specialization requires an independent 2D boundary argument.
 
 ---
 
