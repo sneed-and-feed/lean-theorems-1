@@ -31,7 +31,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | Priority # | Theorem / Package Title | Wiedijk # | Dedicated Commit SHA to Enter | Comparator Path | Status |
 | :---: | :--- | :---: | :--- | :--- | :---: |
 | | **Tier 1: Crown Jewels** | | | | |
-| **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `174369f053e8784ec4b577199bd87521a8b66e31` | `palomar/euler_polyhedron/comparator.json` | [ ] Ready |
+| **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `dd6ef3caec476389fc727ac62b70f949427259aa` | `palomar/euler_polyhedron/comparator.json` | [ ] Ready |
 | **2** | **Hall's Marriage Theorem (Matching SDRs)** | #87 | `c4510ddb9a0b2763b234763d75d0c1a575c04b43` | `palomar/hall_marriage/comparator.json` | [ ] Ready |
 | **3** | **Sperner's Lemma in 1D and 2D** | #57 | `b98af1a11e35620f9b5fbe5d03789521f12cca56` | `palomar/sperners_lemma/comparator.json` | [ ] Ready |
 | **4** | **Descartes's Rule of Signs** | #73 | `f8f43442121755af91a70ad650d714dfbd326974` | `palomar/descartes_rule_of_signs/comparator.json` | [ ] Ready |
