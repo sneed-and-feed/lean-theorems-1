@@ -15,8 +15,11 @@ project:
     doors. The theorem is conditional on an odd number of boundary (n-1)-doors; obtaining the classical
     geometric Sperner lemma for simplicial subdivisions of geometric simplices with boundary-preserving colorings
     is a specialization requiring an additional geometric boundary induction argument not contained in these
-    abstract combinatorial declarations. To the maintainers' knowledge, the theorem was not found in an exact
-    declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    abstract combinatorial declarations. This n-dimensional development (SpernerND.lean) generalizes and
+    supersedes the fixed-dimensional combinatorial parity identities in the repository's lower-dimensional
+    modules (SpernersLemma.lean and Sperner3D.lean) into a single unified parameterized architecture. To the
+    maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type
+    signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.AT]
@@ -33,11 +36,6 @@ sources:
     issue: "1"
     pages: "265-272"
     relationship: adapts
-    notes: >-
-      Adapts Emanuel Sperner's classical combinatorial parity argument to abstract finite n-dimensional
-      pseudomanifolds with boundary (PseudomanifoldND α n) for arbitrary n : ℕ. Formalizes the general
-      combinatorial double-counting relation while omitting the geometric boundary-coloring induction step
-      for geometric simplices.
   - title: "Simplicial Approximation of Fixed Points"
     type: paper
     authors:
@@ -48,21 +46,6 @@ sources:
     issue: "4"
     pages: "1238-1242"
     relationship: adapts
-    notes: >-
-      Adapts Kuhn's combinatorial door-labeling framework for simplicial fixed-point algorithms to abstract
-      (n+1)-uniform hypergraph complexes.
-
-related_formalizations:
-  - path: "Formalization/SpernersLemma.lean"
-    relationship: generalizes
-    notes: >-
-      Generalizes the fixed 2D edge-pseudomanifold parity theorem to arbitrary dimension n : ℕ. The 1D path
-      switching formalization remains an independent discrete model.
-  - path: "Formalization/Sperner3D.lean"
-    relationship: supersedes
-    notes: >-
-      Supersedes the 3D tetrahedral face-pseudomanifold parity identities by subsuming them into the unified
-      parameterized n-dimensional pseudomanifold architecture (PseudomanifoldND α 3).
 
 automation:
   methods:
@@ -78,4 +61,6 @@ review:
     - "sneed-and-feed maintainers"
   notes: >-
     Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms. This module generalizes
+    and supersedes the fixed 2D edge-pseudomanifold and 3D face-pseudomanifold parity formalizations
+    in SpernersLemma.lean and Sperner3D.lean.
