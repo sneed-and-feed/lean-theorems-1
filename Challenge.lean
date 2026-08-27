@@ -1,10 +1,20 @@
 import Mathlib.Data.Fintype.Card
 
-/-- A connected planar map constructed inductively via Cauchy's 1813 geometric network operations:
-    1. A base polygon with n ≥ 3 sides (n vertices, n edges, 2 faces).
-    2. A single vertex (1 vertex, 0 edges, 1 face).
-    3. Adding a pendant edge/leaf (attaching a new vertex and edge).
-    4. Adding a face-splitting chord (connecting two existing vertices along a face boundary, splitting the face).
+/--
+A connected planar map constructed inductively via Cauchy's 1813 geometric network operations
+(as detailed in *Recherches sur les polyèdres*).
+
+**Academic Scope & Disclosure**:
+This formalization models connected planar graphs and polyhedral nets syntactically through
+inductive graph constructions:
+  1. A base polygon with n ≥ 3 sides.
+  2. A single vertex.
+  3. Adding a pendant edge/leaf.
+  4. Adding a face-splitting chord.
+
+This is a combinatorial model of planar maps. It explicitly does NOT formally define or
+depend on continuous 2-manifold embeddings, general Jordan curve topology, or geometric
+embeddings in ℝ².
 -/
 inductive PlanarMap : Type where
   | singleVertex : PlanarMap
@@ -42,32 +52,23 @@ def eulerChar (M : PlanarMap) : ℤ :=
 
 end PlanarMap
 
-/-- **Euler's Polyhedron Formula (1758, Wiedijk #13)**:
-    For any inductively generated connected planar map, $V - E + F = 2$. -/
+/-- Euler's polyhedron formula (Euler 1758, proven by Cauchy 1813) for planar maps. -/
 theorem euler_polyhedron_formula (M : PlanarMap) : M.eulerChar = 2 := sorry
 
-/-- **Planar Edge Bound (Standard)**:
-    For any connected planar map with $V \ge 3$ vertices where every face has degree \ge 3
-    (so $3F \le 2E$), the number of edges satisfies $E \le 3V - 6$. -/
-theorem planar_edge_bound (M : PlanarMap)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
-    M.edgeCount ≤ 3 * M.vertexCount - 6 := sorry
+/-- The natural number version of Euler's formula: V + F = E + 2. -/
+theorem euler_polyhedron_formula_nat (M : PlanarMap) : M.vertexCount + M.faceCount = M.edgeCount + 2 := sorry
 
-/-- **Triangle-Free Planar Edge Bound**:
-    For any connected triangle-free planar map with $V \ge 3$ vertices where every face has degree \ge 4
-    (so $4F \le 2E$), the number of edges satisfies $E \le 2V - 4$. -/
-theorem planar_edge_bound_triangle_free (M : PlanarMap)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
-    M.edgeCount ≤ 2 * M.vertexCount - 4 := sorry
+/-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3. -/
+theorem planar_edge_bound (M : PlanarMap) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) : M.edgeCount ≤ 3 * M.vertexCount - 6 := sorry
 
-/-- **Non-Planarity of K₅ on Planar Maps**:
-    There is no connected planar map with 5 vertices, 10 edges, and face degree \ge 3. -/
-theorem non_planarity_k5 (M : PlanarMap)
-    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) : False := sorry
+/-- Triangle-free planar edge bound: E ≤ 2V - 4 for maps with face degree ≥ 4. -/
+theorem planar_edge_bound_triangle_free (M : PlanarMap) (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) : M.edgeCount ≤ 2 * M.vertexCount - 4 := sorry
 
-/-- **Non-Planarity of K₃,₃ on Planar Maps**:
-    There is no connected planar map with 6 vertices, 9 edges, and face degree \ge 4. -/
-theorem non_planarity_k33 (M : PlanarMap)
-    (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) : False := sorry
+/-- Average vertex degree bound for planar maps: 2E < 6V. -/
+theorem average_degree_lt_six (M : PlanarMap) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) : 2 * M.edgeCount < 6 * M.vertexCount := sorry
+
+/-- Non-planarity obstruction for K5. -/
+theorem non_planarity_k5 (M : PlanarMap) (hV : M.vertexCount = 5) (hE : M.edgeCount = 10) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) : False := sorry
+
+/-- Non-planarity obstruction for K3,3. -/
+theorem non_planarity_k33 (M : PlanarMap) (hV : M.vertexCount = 6) (hE : M.edgeCount = 9) (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) : False := sorry

@@ -1,10 +1,20 @@
 import Mathlib.Data.Fintype.Card
 
-/-- A connected planar map constructed inductively via Cauchy's 1813 geometric network operations:
-    1. A base polygon with n ≥ 3 sides (n vertices, n edges, 2 faces).
-    2. A single vertex (1 vertex, 0 edges, 1 face).
-    3. Adding a pendant edge/leaf (attaching a new vertex and edge).
-    4. Adding a face-splitting chord (connecting two existing vertices along a face boundary, splitting the face).
+/--
+A connected planar map constructed inductively via Cauchy's 1813 geometric network operations
+(as detailed in *Recherches sur les polyèdres*).
+
+**Academic Scope & Disclosure**:
+This formalization models connected planar graphs and polyhedral nets syntactically through
+inductive graph constructions:
+  1. A base polygon with n ≥ 3 sides.
+  2. A single vertex.
+  3. Adding a pendant edge/leaf.
+  4. Adding a face-splitting chord.
+
+This is a combinatorial model of planar maps. It explicitly does NOT formally define or
+depend on continuous 2-manifold embeddings, general Jordan curve topology, or geometric
+embeddings in ℝ².
 -/
 inductive PlanarMap : Type where
   | singleVertex : PlanarMap
@@ -42,36 +52,39 @@ def eulerChar (M : PlanarMap) : ℤ :=
 
 end PlanarMap
 
+/-- Euler's polyhedron formula (Euler 1758, proven by Cauchy 1813) for planar maps. -/
 theorem euler_polyhedron_formula (M : PlanarMap) : M.eulerChar = 2 := by
-  induction M with
-  | singleVertex => rfl
-  | polygon n hn => simp only [PlanarMap.eulerChar, PlanarMap.vertexCount, PlanarMap.edgeCount, PlanarMap.faceCount]; omega
-  | addPendant M ih => simp only [PlanarMap.eulerChar, PlanarMap.vertexCount, PlanarMap.edgeCount, PlanarMap.faceCount] at *; omega
-  | addFaceChord M ih => simp only [PlanarMap.eulerChar, PlanarMap.vertexCount, PlanarMap.edgeCount, PlanarMap.faceCount] at *; omega
+  induction M <;> simp only [PlanarMap.eulerChar, PlanarMap.vertexCount, PlanarMap.edgeCount, PlanarMap.faceCount] at * <;> omega
 
+/-- The natural number version of Euler's formula: V + F = E + 2. -/
 theorem euler_polyhedron_formula_nat (M : PlanarMap) : M.vertexCount + M.faceCount = M.edgeCount + 2 := by
-  have h := euler_polyhedron_formula M
-  unfold PlanarMap.eulerChar at h
+  have := euler_polyhedron_formula M
+  unfold PlanarMap.eulerChar at this
   omega
 
+/-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3. -/
 theorem planar_edge_bound (M : PlanarMap) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) : M.edgeCount ≤ 3 * M.vertexCount - 6 := by
-  have h := euler_polyhedron_formula_nat M
+  have := euler_polyhedron_formula_nat M
   omega
 
+/-- Triangle-free planar edge bound: E ≤ 2V - 4 for maps with face degree ≥ 4. -/
 theorem planar_edge_bound_triangle_free (M : PlanarMap) (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) : M.edgeCount ≤ 2 * M.vertexCount - 4 := by
-  have h := euler_polyhedron_formula_nat M
+  have := euler_polyhedron_formula_nat M
   omega
 
+/-- Average vertex degree bound for planar maps: 2E < 6V. -/
 theorem average_degree_lt_six (M : PlanarMap) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) : 2 * M.edgeCount < 6 * M.vertexCount := by
-  have h := planar_edge_bound M h_face hV
+  have := planar_edge_bound M h_face hV
   omega
 
+/-- Non-planarity obstruction for K5. -/
 theorem non_planarity_k5 (M : PlanarMap) (hV : M.vertexCount = 5) (hE : M.edgeCount = 10) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) : False := by
-  have h := planar_edge_bound M h_face
+  have := planar_edge_bound M h_face
   omega
 
+/-- Non-planarity obstruction for K3,3. -/
 theorem non_planarity_k33 (M : PlanarMap) (hV : M.vertexCount = 6) (hE : M.edgeCount = 9) (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) : False := by
-  have h := planar_edge_bound_triangle_free M h_face
+  have := planar_edge_bound_triangle_free M h_face
   omega
 
 #print axioms euler_polyhedron_formula
