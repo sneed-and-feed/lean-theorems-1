@@ -1,4 +1,4 @@
-﻿version: "v0.4"
+version: "v0.4"
 
 project:
   name: "Descartes's Rule of Signs"
@@ -9,21 +9,35 @@ project:
   license: "CC0-1.0"
   description: >-
     A complete machine-checked Lean 4 formalization of Descartes's Rule of Signs (1637, Wiedijk #73).
-    Proves that for any non-zero real polynomial p(X), the number of positive real roots counted
-    with algebraic multiplicity is bounded above by the number of sign variations in its coefficients, and their difference is an even integer.
+    Proves that for any non-zero real polynomial p(X) over ℝ, the number of positive real roots counted
+    with algebraic multiplicity is bounded above by the number of sign variations in its coefficient
+    sequence (ignoring zero coefficients), and their difference is an even non-negative integer.
+    Also formalizes the sign-variation parity correspondence relating sign changes to the sign of the
+    product of the leading and trailing non-zero coefficients. To the maintainers' knowledge, the theorem
+    was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib
+    revision (Mathlib v4.34.0-rc1).
 
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-        docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 classification:
-  arxiv: [math.AG, math.CA]
-  msc2020: ["12D10", "26C10", "30C15"]
+  arxiv: [math.AG, math.CA, math.HO]
+  msc2020: ["12D10", "26C10", "30C15", "01A45", "01A55"]
 
 sources:
   - title: "La Géométrie"
     type: book
     authors:
       - "René Descartes"
+    year: 1637
+    venue: "Leiden: Jan Maire"
     relationship: formalizes
+  - title: "Beweis eines algebraischen Lehrsatzes"
+    type: paper
+    authors:
+      - "Carl Friedrich Gauss"
+    year: 1828
+    venue: "Journal für die reine und angewandte Mathematik (Crelle's Journal)"
+    volume: "3"
+    pages: "5-8"
+    relationship: adapts
 
 automation:
   methods:
@@ -40,3 +54,4 @@ review:
   notes: >-
     Challenge contains deliberate statement holes. Solution verified through human audit by the
     maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+
