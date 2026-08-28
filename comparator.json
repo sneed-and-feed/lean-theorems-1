@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SchursTheorem.schurs_theorem",
-    "SchursTheorem.ramsey_triangle"
+    "frankl_wilson_uniform",
+    "frankl_wilson_general"
   ],
   "permitted_axioms": [
     "propext",

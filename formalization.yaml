@@ -1,47 +1,40 @@
 version: "v0.4"
 
 project:
-  name: "Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey"
+  name: "The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Schur's Theorem on sum-free partitions
-    of integers (Issai Schur, 1916) and the Multicolor Triangle Ramsey Theorem. Proves that any
-    r-coloring of the integers {1, ..., N} (where N is the Ramsey bound R(r; 3)) contains a
-    monochromatic solution to x + y = z, reducing arithmetic sum-free partitions to monochromatic
-    triangles in edge-colored complete graphs via difference colorings c(u, v) = χ(|u - v|).
+    A complete machine-checked Lean 4 formalization of the Frankl–Wilson theorem (1981)
+    for modulo-p intersecting set families. Uses the polynomial linear algebra method
+    over ZMod p to prove both the general non-uniform bound |F| <= sum_{i=0}^s choose(n, i)
+    and the uniform cardinality bound |F| <= choose(n, s).
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
     docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.NT]
-  msc2020: ["05D10", "11B75", "05C55"]
+  arxiv: [math.CO]
+  msc2020: ["05D05", "11B75", "15A03"]
 
 sources:
-  - title: "Über die Kongruenz x^m + y^m ≡ z^m (mod p)"
+  - title: "Intersection theorems with geometric consequences"
     type: paper
-    year: 1916
-    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
+    year: 1981
+    venue: "Combinatorica"
     authors:
-      - "Issai Schur"
+      - "P. Frankl"
+      - "R. M. Wilson"
     relationship: formalizes
-  - title: "On a Problem in Formal Logic"
-    type: paper
-    year: 1930
-    venue: "Proceedings of the London Mathematical Society"
-    authors:
-      - "Frank P. Ramsey"
-    relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/ZMod/Basic.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's finite set cardinality, finset pigeonhole, and Fin type
-      infrastructure to prove the inductive multicolor Ramsey bound and deduce Schur's theorem.
+      Formalization builds on Mathlib's `ZMod p` modular arithmetic and finite field linear algebra
+      to formalize the linear-algebraic polynomial method for modulo-p intersecting set systems.
 
 automation:
   methods:
