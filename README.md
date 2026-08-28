@@ -39,13 +39,14 @@ construction with its exact cardinality are fully proved.
 | 23 | **Kneser's Conjecture / Lovász's Theorem** | [`kneser_lovasz_chromatic_number`](Formalization/KneserLovasz.lean) | Topological Combinatorics & Graph Coloring | Kneser (1955), Lovász (1978), Bárány (1978) |
 | 24 | **Tucker's Combinatorial Lemma** | [`tuckers_lemma`](Formalization/TuckersLemma.lean) | Topological Combinatorics | Tucker (1945), Lefschetz (1949), Freund & Todd (1981) |
 | 25 | **The Friendship Windmill Structure Theorem** | [`friendship_windmill`](Formalization/FriendshipWindmill.lean), [`friendship_matching_on_punctured`](Formalization/FriendshipWindmill.lean), [`friendship_windmill_edge_count`](Formalization/FriendshipWindmill.lean) | Extremal & Structural Graph Theory | Erdős, Rényi, & Sós (1966) |
-| 26 | **Sperner's Lemma in 3D (Tetrahedral Parity)** | [`sperner_3d_parity`](Formalization/Sperner3D.lean), [`sperner_3d_odd`](Formalization/Sperner3D.lean), [`sperner_3d_exists`](Formalization/Sperner3D.lean) | Topological Combinatorics & Simplicial Topology | Sperner (1928) |
+| 26 | **General $n$-Dimensional Sperner's Lemma & Specializations** | [`sperner_nd_parity`](Formalization/SpernerND.lean), [`sperner_nd_odd`](Formalization/SpernerND.lean), [`sperner_nd_exists`](Formalization/SpernerND.lean), [`sperner_3d_parity`](Formalization/Sperner3D.lean) | Topological Combinatorics & Simplicial Topology | Sperner (1928), Kuhn (1968) |
 | 27 | **Frankl–Wilson Theorem on Restricted Intersections** | [`frankl_wilson_uniform`](Formalization/FranklWilson.lean), [`frankl_wilson_general`](Formalization/FranklWilson.lean) | Extremal Combinatorics & Polynomial Method | Frankl & Wilson (1981) |
 | 28 | **Beck's Theorem on Incidence Geometry** | [`becks_theorem`](Formalization/BecksTheorem.lean), [`sum_card_pairs_eq`](Formalization/BecksTheorem.lean), [`pair_counting_bound`](Formalization/BecksTheorem.lean) | Combinatorial & Incidence Geometry | Beck (1983) |
 | 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) |
 | 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) |
 | 31 | **Tutte's 1-Factor Theorem & Petersen's Theorems** | [`tutte_1factor_theorem`](Formalization/TutteOneFactor.lean), [`tutte_berge_min_eq_card_sub_defect`](Formalization/TutteOneFactor.lean), [`petersen_bridgeless_cubic_1factor`](Formalization/TutteOneFactor.lean), [`petersen_2factor_theorem`](Formalization/TutteOneFactor.lean) | Structural Graph Theory & Factorizations | Tutte (1947), Petersen (1891), Berge (1958) |
 | 32 | **Lovász's Colorful Helly Theorem** | [`colorful_helly_all_dimensions`](Formalization/ColorfulHelly.lean), [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Lovász (1974), first published proof: Bárány (1982) |
+| 33 | **Elekes's Sum-Product Inequality** | [`elekes_product_sum_bound`](Formalization/ElekesSumProduct.lean), [`elekes_max_sum_product_bound`](Formalization/ElekesSumProduct.lean), [`elekes_productset_growth_of_small_sumset`](Formalization/ElekesSumProduct.lean) | Additive Combinatorics & Incidence Geometry | Elekes (1997), Erdős & Szemerédi (1983) |
 
 ---
 
@@ -292,14 +293,14 @@ construction with its exact cardinality are fully proved.
 
 ---
 
-### 26. Sperner's Lemma in 3D (Tetrahedral Parity & Invariance) (Batch-5)
-* **Module:** [`Formalization/Sperner3D.lean`](Formalization/Sperner3D.lean)
-* **Theorems:** `sperner_3d_parity`, `sperner_3d_odd`, `sperner_3d_exists`
+### 26. General $n$-Dimensional Sperner's Lemma & Specializations
+* **Modules:** [`Formalization/SpernerND.lean`](Formalization/SpernerND.lean), [`Formalization/Sperner3D.lean`](Formalization/Sperner3D.lean)
+* **Theorems:** `sperner_nd_parity`, `sperner_nd_odd`, `sperner_nd_exists`, `sperner_1d_parity_nd`, `sperner_2d_parity_nd`, `sperner_3d_parity_nd`, `sperner_3d_parity`, `sperner_3d_odd`, `sperner_3d_exists`
 * **Mathematical Statement & Scope:**
-  - **3D Face-Pseudomanifolds:** For any abstract 3D face-pseudomanifold with boundary $T$ (where each triangular 2-face is in 1 or 2 tetrahedra) with coloring $c : V \to \{0, 1, 2, 3\}$, the number of panchromatic $\{0, 1, 2, 3\}$ tetrahedra shares the same parity modulo 2 as the number of $0$-$1$-$2$ boundary faces:
-    $$|T_{\text{pan}}| \equiv |F_{\text{bd}}^{012}| \pmod 2$$
-    Consequently, whenever the boundary contains an odd number of $0$-$1$-$2$ faces (`h_bd : Odd (T.boundaryFaces.filter (is012Face c)).card`), there exists at least one panchromatic tetrahedron.
-  - **Scope Distinction:** The theorem holds for general finite tetrahedral complexes with the boundary-oddness condition. The classical geometric 3-simplex specialization requires an independent 2D boundary argument.
+  - **General $n$-Dimensional Pseudomanifolds:** For any abstract $n$-dimensional pseudomanifold with boundary $M$ (where every $n$-element facet is contained in either 1 or 2 $(n+1)$-element top simplices) with vertex coloring $c : V \to \{0, \dots, n\}$, the number of panchromatic $(n+1)$-simplices shares the same parity modulo 2 as the number of $(n-1)$-doors on its boundary:
+    $$|M_{\text{pan}}| \equiv |F_{\text{bd}}^{\text{door}}| \pmod 2$$
+    Consequently, whenever the boundary contains an odd number of doors (`h_bd : Odd (M.boundaryFacets.filter (isDoor c)).card`), there exists at least one panchromatic $(n+1)$-simplex taking all $n+1$ colors.
+  - **Dimensional Specializations & 3D Parity:** Specializes directly to 1D paths, 2D triangulations, and 3D tetrahedral complexes in `SpernerND.lean`, matching the explicit 3D face-pseudomanifold parity and existence theorems in `Sperner3D.lean`.
 
 ---
 
@@ -322,6 +323,31 @@ construction with its exact cardinality are fully proved.
 
 ---
 
+### 29. Szemerédi–Trotter Theorem on Point-Line Incidences
+* **Module:** [`Formalization/SzemerediTrotter.lean`](Formalization/SzemerediTrotter.lean)
+* **Theorems:** `szemeredi_trotter_bound`, `k_rich_lines_bound`, `szemeredi_trotter_uniform_bound`
+* **Mathematical Statement:** For any configuration of $n$ points and $m$ lines in $\mathbb{R}^2$, the total number of point-line incidences satisfies:
+  $$I(P, L) \le 4 \left( (nm)^{2/3} + n + m \right)$$
+  Formalized using Székely's Crossing Lemma method, with corollaries for $k$-rich lines $O(n^2/k^3 + n/k)$.
+
+---
+
+### 30. Erdős Unit Distances Bound via Circle Crossing
+* **Module:** [`Formalization/ErdosUnitDistances.lean`](Formalization/ErdosUnitDistances.lean)
+* **Theorems:** `erdos_unit_distances_bound`, `erdos_unit_distances_edge_bound`, `erdos_unit_distances_uniform_bound`
+* **Mathematical Statement:** For any finite set of $n$ points in $\mathbb{R}^2$, the number of unit distance pairs $u(n)$ satisfies:
+  $$u(n) \le 2 n^{4/3} + 4n \le 4 n^{4/3} \quad (n \ge 8)$$
+  proved via unit circle incidence systems and planar graph crossing bounds.
+
+---
+
+### 31. Tutte's 1-Factor Theorem & Petersen's Theorems
+* **Module:** [`Formalization/TutteOneFactor.lean`](Formalization/TutteOneFactor.lean)
+* **Theorems:** `tutte_1factor_theorem`, `tutte_berge_min_eq_card_sub_defect`, `petersen_bridgeless_cubic_1factor`, `petersen_2factor_theorem`
+* **Mathematical Statement:** A finite graph $G = (V, E)$ has a 1-factor (spanning perfect matching) if and only if $q(G \setminus U) \le |U|$ for every vertex subset $U \subseteq V$. Formalizes the Tutte–Berge matching defect formula, Petersen's theorem for bridgeless 3-regular graphs, and 2-factor decompositions for $2r$-regular graphs.
+
+---
+
 ### 32. Lovász's Colorful Helly Theorem (1974; first published proof 1982)
 * **Module:** [`Formalization/ColorfulHelly.lean`](Formalization/ColorfulHelly.lean)
 * **Theorems:** `colorful_helly_all_dimensions`, `colorful_helly`, `colorful_helly_inductive`
@@ -340,53 +366,75 @@ construction with its exact cardinality are fully proved.
 
 ---
 
+### 33. Elekes's Sum-Product Inequality (1997)
+* **Module:** [`Formalization/ElekesSumProduct.lean`](Formalization/ElekesSumProduct.lean)
+* **Theorems:** `elekes_product_sum_bound`, `elekes_max_sum_product_bound`, `elekes_productset_growth_of_small_sumset`, `elekes_sumset_growth_of_small_productset`
+* **Mathematical Statement:** For any finite set $A \subset \mathbb{R}$, the sumset and productset satisfy:
+  $$|A + A| \cdot |A \cdot A| \ge \frac{1}{16} |A|^{5/2} \quad \text{and} \quad \max(|A + A|, |A \cdot A|) \ge \frac{1}{4} |A|^{5/4}$$
+  establishing the Erdős–Szemerédi sum-product expansion bound via point-line incidences and Szemerédi–Trotter.
+
+---
+
 ## Repository Structure
 
 ```text
 .
 ├── Formalization.lean                    # Root library module importing all verified theorems
 ├── Formalization/
-│   ├── DesarguesVector.lean              # 1. Desargues's Theorem (Vector Formulation)
-│   ├── GrahamPollak.lean                 # 2. Graham–Pollak Theorem
-│   ├── BondyInducedSubsets.lean          # 3. Bondy's Theorem on Induced Subsets
+│   ├── ArtGalleryTheorem.lean            # 18. Chvátal's Art Gallery Theorem
+│   ├── BecksTheorem.lean                 # 28. Beck's Theorem on Incidence Geometry
 │   ├── BollobasTwoFamilies.lean          # 4. Bollobás's Two Families Theorem
-│   ├── OreHamiltonian.lean               # 5. Ore's & Dirac's Theorems on Hamiltonian Graphs
-│   ├── DescartesSigns.lean               # 6. Descartes's Rule of Signs (Freek Wiedijk #73)
-│   ├── EulerPolyhedron.lean              # 7. Euler's Polyhedron Formula (Freek Wiedijk #13 - Cauchy Reduction)
-│   ├── SpernersLemma.lean                # 8. Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
+│   ├── BondyInducedSubsets.lean          # 3. Bondy's Theorem on Induced Subsets
+│   ├── CauchyArmLemma.lean               # 19. Cauchy's Arm Lemma & Convex Rigidity
+│   ├── ColorfulHelly.lean                # 32. Lovász's Colorful Helly Theorem
+│   ├── CombinatorialMap/                 # 7. Combinatorial Maps (Tutte–Edmonds Rotation Systems)
+│   │   ├── Basic.lean                    #     - Darts, edge involution α, vertex permutation σ, & faces φ
+│   │   ├── Concrete.lean                 #     - Concrete polyhedra (tetrahedron, triangle, square maps)
+│   │   └── Parity.lean                   #     - Permutation sign parity theorem: (-1)^(V+E+F) = 1
+│   ├── CrossingLemma.lean                # 22. The Crossing Lemma
 │   ├── DeBruijnErdos.lean                # 9. De Bruijn–Erdős Theorem on Incidence Geometry
-│   ├── SchursTheorem.lean                # 10. Schur's Theorem on Sum-Free Partitions
-│   ├── ErdosKoRado.lean                  # 11. Erdős–Ko–Rado Theorem
-│   ├── SylvesterGallai.lean              # 12. Sylvester–Gallai Theorem (Freek Wiedijk #98)
-│   ├── HallMarriage.lean                 # 13. Hall's Marriage Theorem (Freek Wiedijk #87)
+│   ├── DesarguesVector.lean              # 1. Desargues's Theorem (Vector & Projective Forms)
+│   ├── DescartesSigns.lean               # 6. Descartes's Rule of Signs (Freek Wiedijk #73)
+│   ├── DilworthTheorem.lean              # 17. Dilworth's & Mirsky's Decomposition Theorems
+│   ├── ElekesSumProduct.lean             # 33. Elekes's Sum-Product Inequality
+│   ├── ErdosKoRado.lean                  # 11. Erdős–Ko–Rado Theorem & Hilton–Milner Sharpness
+│   ├── ErdosSzekeresConvex.lean          # 21. Erdős–Szekeres Convex Polygon Theorem (Master Interface)
+│   ├── ErdosSzekeresConvex/              # 21. Modular Erdős–Szekeres Package
+│   │   ├── ConvexPolygon.lean            #     - Extreme point separation & convex k-gons
+│   │   ├── CupCap.lean                   #     - Cups, caps, & induction theorem
+│   │   ├── Orientation.lean              #     - Planar points, determinants, & halfspaces
+│   │   └── Sorting.lean                  #     - Planar rotations & x-coordinate sorting
+│   ├── ErdosUnitDistances.lean           # 30. Erdős Unit Distances Bound (Circle Crossing)
+│   ├── EulerPolyhedron.lean              # 7. Euler's Polyhedron Formula (Freek Wiedijk #13)
+│   ├── FranklWilson.lean                 # 27. Frankl–Wilson Theorem on Restricted Intersections
 │   ├── FriendshipTheorem.lean            # 14. The Friendship Theorem (Master Interface)
 │   ├── FriendshipTheorem/                # 14. Modular Friendship Package
 │   │   ├── Basic.lean                    #     - Algebraic uniqueness & symmetry
 │   │   ├── Politician.lean               #     - Degree equality, parity, & order formula
 │   │   ├── Walks.lean                    #     - Walk counting mod p & group actions
 │   │   └── Windmill.lean                 #     - 2-regular base case
-│   ├── RadonHelly.lean                   # 15. Radon's Lemma & Helly's Theorem (Freek Wiedijk #99)
-│   ├── TverbergsTheorem.lean             # 16. Tverberg's Theorem
-│   ├── DilworthTheorem.lean              # 17. Dilworth's Decomposition Theorem for Posets
-│   ├── ArtGalleryTheorem.lean            # 18. Chvátal's Art Gallery Theorem
-│   ├── CauchyArmLemma.lean               # 19. Cauchy's Arm Lemma & Convex Rigidity
-│   ├── PicksTheorem.lean                 # 20. Pick's Theorem on Lattice Polygons (Freek Wiedijk #92)
-│   ├── ErdosSzekeresConvex.lean          # 21. Erdős–Szekeres Convex Polygon Theorem (Master Interface)
-│   ├── ErdosSzekeresConvex/              # 21. Modular Erdős–Szekeres Package
-│   │   ├── Orientation.lean              #     - Planar points, determinants, & halfspaces
-│   │   ├── Sorting.lean                  #     - Planar rotations & x-coordinate sorting
-│   │   ├── CupCap.lean                   #     - Cups, caps, & induction theorem
-│   │   └── ConvexPolygon.lean            #     - Extreme point separation & convex k-gons
-│   ├── CrossingLemma.lean                # 22. The Crossing Lemma
-│   ├── KneserLovasz.lean                 # 23. Kneser's Conjecture / Lovász's Theorem
-│   ├── TuckersLemma.lean                 # 24. Tucker's Combinatorial Lemma
 │   ├── FriendshipWindmill.lean           # 25. Friendship Windmill Structure Theorem
-│   ├── Sperner3D.lean                    # 26. Sperner's Lemma in 3D
-│   ├── FranklWilson.lean                 # 27. Frankl–Wilson Theorem
-│   ├── BecksTheorem.lean                 # 28. Beck's Theorem on Incidence Geometry
-│   └── ColorfulHelly.lean                # 32. Lovász's Colorful Helly Theorem
+│   ├── GrahamPollak.lean                 # 2. Graham–Pollak Theorem
+│   ├── HallMarriage.lean                 # 13. Hall's Marriage Theorem (Freek Wiedijk #87)
+│   ├── KneserLovasz.lean                 # 23. Kneser's Conjecture / Lovász's Theorem
+│   ├── OreHamiltonian.lean               # 5. Ore's & Dirac's Theorems on Hamiltonian Graphs
+│   ├── PicksTheorem.lean                 # 20. Pick's Theorem on Lattice Polygons (Freek Wiedijk #92)
+│   ├── RadonHelly.lean                   # 15. Radon's Lemma & Helly's Theorem (Freek Wiedijk #99)
+│   ├── SchursTheorem.lean                # 10. Schur's Theorem on Sum-Free Partitions
+│   ├── Sperner3D.lean                    # 26. Sperner's Lemma in 3D (Tetrahedral Parity)
+│   ├── SpernerND.lean                    # 26. General n-Dimensional Sperner's Lemma & Pseudomanifolds
+│   ├── SpernersLemma.lean                # 8. Sperner's Lemma (1D & 2D) (Freek Wiedijk #57)
+│   ├── SylvesterGallai.lean              # 12. Sylvester–Gallai Theorem (Freek Wiedijk #98)
+│   ├── SzemerediTrotter.lean             # 29. Szemerédi–Trotter Theorem on Point-Line Incidences
+│   ├── TuckersLemma.lean                 # 24. Tucker's Combinatorial Lemma
+│   ├── TutteOneFactor.lean               # 31. Tutte's 1-Factor Theorem & Petersen's Theorems
+│   └── TverbergsTheorem.lean             # 16. Tverberg's Theorem & Reductions
+├── formalization.yaml                    # Palomar metadata & formalization manifest
+├── lake-manifest.json                    # Pinned Lake package dependencies
 ├── lakefile.toml                         # Lake build system manifest
 ├── lean-toolchain                        # Pinned Lean 4 toolchain (leanprover/lean4:v4.34.0-rc1)
+├── LICENSE                               # CC0 1.0 Universal Public Domain Dedication
+├── PALOMAR_CHECKLIST.md                  # Palomar pre-flight submission audit checklist
 └── README.md
 ```
 
@@ -409,8 +457,13 @@ lake build
 Individual modules can be compiled independently:
 
 ```bash
-lake build Formalization.FriendshipWindmill
+lake build Formalization.SpernerND
 lake build Formalization.Sperner3D
+lake build Formalization.ElekesSumProduct
+lake build Formalization.SzemerediTrotter
+lake build Formalization.ErdosUnitDistances
+lake build Formalization.TutteOneFactor
+lake build Formalization.FriendshipWindmill
 lake build Formalization.FranklWilson
 lake build Formalization.BecksTheorem
 lake build Formalization

@@ -63,9 +63,11 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms. Imports and connects
-    to Mathlib.Algebra.Polynomial.RuleOfSigns for the upper bound, while formalizing the complete
-    sign-variation parity theorem and list-based interface.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    maintainer audit with 0 errors, 0 warnings, 0 sorries, and strictly standard kernel axioms.
+    Imports and connects to Mathlib.Algebra.Polynomial.RuleOfSigns for the upper bound, while
+    formalizing the complete sign-variation parity theorem and list-based interface.
+
 
 
