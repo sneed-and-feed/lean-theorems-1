@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "DeBruijnErdos.de_bruijn_erdos"
+    "DilworthTheorem.dilworth_theorem",
+    "DilworthTheorem.mirsky_theorem"
   ],
   "permitted_axioms": [
     "propext",

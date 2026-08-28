@@ -1,30 +1,47 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Union
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Card
+import Mathlib.Data.Fintype.Fin
+import Mathlib.Order.Antichain
 
-open Finset
+namespace DilworthTheorem
 
-namespace DeBruijnErdos
+variable {α : Type*} [DecidableEq α] [PartialOrder α]
 
-variable {α : Type*} [DecidableEq α]
+/-- A subset of `α` is a chain if every two elements are comparable. -/
+def IsChain (s : Set α) : Prop :=
+  ∀ x y, x ∈ s → y ∈ s → x ≤ y ∨ y ≤ x
 
-/-- A finite linear space consists of a set of points `P : Finset α` and a set of lines
-`L : Finset (Finset α)` satisfying:
-1. Every line is a subset of `P`.
-2. Every line contains at least 2 points.
-3. Any two distinct points lie on a unique line.
-4. Non-collinearity: no single line contains all points `P`.
-5. Non-degeneracy: there are at least 3 points. -/
-structure LinearSpace (P : Finset α) (L : Finset (Finset α)) : Prop where
-  line_subset : ∀ l ∈ L, l ⊆ P
-  line_card_ge_two : ∀ l ∈ L, 2 ≤ l.card
-  unique_line : ∀ u ∈ P, ∀ v ∈ P, u ≠ v → ∃! l ∈ L, u ∈ l ∧ v ∈ l
-  non_collinear : ∀ l ∈ L, ¬ P ⊆ l
-  three_le_card : 3 ≤ P.card
+/-- A subset of `α` is an antichain if no two distinct elements are comparable. -/
+def IsAntichain (s : Set α) : Prop :=
+  ∀ x y, x ∈ s → y ∈ s → x ≠ y → ¬(x ≤ y) ∧ ¬(y ≤ x)
 
-/-- **The De Bruijn–Erdős Theorem on Incidence Geometry (1948)**:
-In any finite non-collinear linear space with at least 3 points, the number of lines
-is at least the number of points: `|P| ≤ |L|`. -/
-theorem de_bruijn_erdos {P : Finset α} {L : Finset (Finset α)}
-    (h : LinearSpace P L) : P.card ≤ L.card := sorry
+/-- A chain partition / cover of a finset `S` into `k` chains. -/
+def IsChainCover (S : Finset α) {k : ℕ} (C : Fin k → Finset α) : Prop :=
+  (∀ i, IsChain (C i : Set α)) ∧
+  (Finset.biUnion Finset.univ C = S) ∧
+  (∀ i j, i ≠ j → Disjoint (C i) (C j))
 
-end DeBruijnErdos
+/-- An antichain partition / cover of a finset `S` into `k` antichains. -/
+def IsAntichainCover (S : Finset α) {k : ℕ} (A : Fin k → Finset α) : Prop :=
+  (∀ i, IsAntichain (A i : Set α)) ∧
+  (Finset.biUnion Finset.univ A = S) ∧
+  (∀ i j, i ≠ j → Disjoint (A i) (A j))
+
+/-- **Dilworth's Theorem (R. P. Dilworth, 1950):**
+If every antichain in a finite poset `S` has size at most `k`, then `S` can be partitioned
+into `k` chains. -/
+theorem dilworth_theorem (S : Finset α) (k : ℕ)
+    (h_anti : ∀ A ⊆ S, IsAntichain (A : Set α) → A.card ≤ k) :
+    ∃ C : Fin k → Finset α, IsChainCover S C := sorry
+
+/-- **Mirsky's Theorem (Dual Dilworth Theorem, L. Mirsky, 1971):**
+If every chain in a finite poset `S` has size at most `m`, then `S` can be partitioned
+into `m` antichains. -/
+theorem mirsky_theorem (S : Finset α) (m : ℕ)
+    (h_chain : ∀ C ⊆ S, IsChain (C : Set α) → C.card ≤ m) :
+    ∃ A : Fin m → Finset α, IsAntichainCover S A := sorry
+
+end DilworthTheorem
