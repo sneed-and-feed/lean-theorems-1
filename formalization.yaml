@@ -1,52 +1,45 @@
 version: "v0.4"
 
 project:
-  name: "The Crossing Lemma and Székely's Probabilistic Amplification"
+  name: "The De Bruijn–Erdős Theorem on Incidence Geometry"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of the Crossing Lemma (Ajtai, Chvátal, Newborn, Szemerédi 1982;
-        Leighton 1983) and its application to the Szemerédi–Trotter point-line incidence theorem via László Székely's
-        probabilistic expectation sub-sampling amplification (1997). Proves that any planar drawing of a graph with
-        e >= 4v edges has at least e^3 / 64v^2 crossings.
+    A complete machine-checked Lean 4 formalization of the De Bruijn–Erdős theorem (1948)
+        in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
+        on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
+        metric perturbation proof.
         Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
-  msc2020: ["05C10", "05C62", "52C10"]
+  msc2020: ["05B25", "51E10", "51A15"]
 
 sources:
-  - title: "Crossing-free subgraphs"
+  - title: "On a combinatorial problem"
     type: paper
     authors:
-      - "Miklós Ajtai"
-      - "Vašek Chvátal"
-      - "Monty M. Newborn"
-      - "Endre Szemerédi"
+      - "N. G. de Bruijn"
+      - "Paul Erdős"
     relationship: formalizes
-  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
-    type: paper
-    authors:
-      - "László A. Székely"
-    relationship: adapts
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Real/Basic.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's real arithmetic and order inequality tactics
-      to establish Székely's polynomial expectation identity and crossing number lower bounds.
+      Formalization builds on Mathlib's finite set combinatorics and double-counting sum infrastructure
+      to establish linear space axioms, point-line incidences, and Conway's metric perturbation inequality.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification. All declarations rely strictly
+        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

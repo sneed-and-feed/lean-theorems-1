@@ -1,9 +1,30 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
 
-/-- **The Crossing Lemma (Ajtai et al. 1982 / Leighton 1983 / Székely 1997)**:
-For any graph with |E| ≥ 4|V| satisfying the sub-sampling expectation inequality,
-the crossing number satisfies cr(G) ≥ |E|³ / (64 |V|²). -/
-theorem crossing_lemma (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
-    (h_dense : 4 * v ≤ e)
-    (h_expect : (4 * v / e)^2 * e - 3 * (4 * v / e) * v ≤ (4 * v / e)^4 * cr) :
-    e^3 / (64 * v^2) ≤ cr := sorry
+open Finset
+
+namespace DeBruijnErdos
+
+variable {α : Type*} [DecidableEq α]
+
+/-- A finite linear space consists of a set of points `P : Finset α` and a set of lines
+`L : Finset (Finset α)` satisfying:
+1. Every line is a subset of `P`.
+2. Every line contains at least 2 points.
+3. Any two distinct points lie on a unique line.
+4. Non-collinearity: no single line contains all points `P`.
+5. Non-degeneracy: there are at least 3 points. -/
+structure LinearSpace (P : Finset α) (L : Finset (Finset α)) : Prop where
+  line_subset : ∀ l ∈ L, l ⊆ P
+  line_card_ge_two : ∀ l ∈ L, 2 ≤ l.card
+  unique_line : ∀ u ∈ P, ∀ v ∈ P, u ≠ v → ∃! l ∈ L, u ∈ l ∧ v ∈ l
+  non_collinear : ∀ l ∈ L, ¬ P ⊆ l
+  three_le_card : 3 ≤ P.card
+
+/-- **The De Bruijn–Erdős Theorem on Incidence Geometry (1948)**:
+In any finite non-collinear linear space with at least 3 points, the number of lines
+is at least the number of points: `|P| ≤ |L|`. -/
+theorem de_bruijn_erdos {P : Finset α} {L : Finset (Finset α)}
+    (h : LinearSpace P L) : P.card ≤ L.card := sorry
+
+end DeBruijnErdos
