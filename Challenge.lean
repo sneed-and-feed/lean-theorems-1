@@ -1,32 +1,9 @@
-import Mathlib.Analysis.Convex.Basic
-import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
 
-open BigOperators
-
-/-- A Colorful Convex System in ℝ^d consisting of d + 1 finite families of convex sets. -/
-structure ColorfulConvexSystem (d : ℕ) where
-  families : Fin (d + 1) → Finset (Set (Fin d → ℝ))
-  h_convex : ∀ (c : Fin (d + 1)) (S : Set (Fin d → ℝ)), S ∈ families c → Convex ℝ S
-
-namespace ColorfulHelly
-
-/-- Main Theorem: Lovász's Colorful Helly theorem (1974; first published proof, Bárány 1982).
-    If all colorful selections of `d + 1` sets intersect in positive dimension, then at least
-    one family has a non-empty global intersection. -/
-theorem colorful_helly (d : ℕ) (hd : 1 ≤ d) (sys : ColorfulConvexSystem d)
-    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
-      (∀ c, choice c ∈ sys.families c) →
-      (⋂ c : Fin (d + 1), choice c).Nonempty) :
-    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := sorry
-
-/-- Lovász's Colorful Helly theorem in every dimension `d`, including `d = 0`: if all colorful
-    selections of `d + 1` sets intersect, then at least one family has a non-empty global
-    intersection. -/
-theorem colorful_helly_all_dimensions (d : ℕ) (sys : ColorfulConvexSystem d)
-    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
-      (∀ c, choice c ∈ sys.families c) →
-      (⋂ c : Fin (d + 1), choice c).Nonempty) :
-    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := sorry
-
-end ColorfulHelly
+/-- **The Crossing Lemma (Ajtai et al. 1982 / Leighton 1983 / Székely 1997)**:
+For any graph with |E| ≥ 4|V| satisfying the sub-sampling expectation inequality,
+the crossing number satisfies cr(G) ≥ |E|³ / (64 |V|²). -/
+theorem crossing_lemma (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
+    (h_dense : 4 * v ≤ e)
+    (h_expect : (4 * v / e)^2 * e - 3 * (4 * v / e) * v ≤ (4 * v / e)^4 * cr) :
+    e^3 / (64 * v^2) ≤ cr := sorry

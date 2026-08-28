@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "ColorfulHelly.colorful_helly",
-    "ColorfulHelly.colorful_helly_all_dimensions"
+    "crossing_lemma"
   ],
   "permitted_axioms": [
     "propext",
