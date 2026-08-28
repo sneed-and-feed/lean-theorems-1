@@ -1,51 +1,48 @@
 version: "v0.4"
 
 project:
-  name: "Cauchy's Arm Lemma and Convex Rigidity Foundations"
+  name: "Lovász's Colorful Helly Theorem for Convex Sets"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Cauchy's Arm Lemma (1813), the fundamental geometric
-    engine underpinning Cauchy's Rigidity Theorem for 3D convex polyhedra. Formalizes 2D polygonal chains,
-    squared Euclidean distance metrics, vector inner products, and proves that opening the internal joint
-    angles of a chain increases the distance between its endpoints for chains of length at most 2.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and
-    type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Lovász's Colorful Helly Theorem (1974 / Bárány 1982).
+    Proves that for any d + 1 finite families of convex sets in R^d such that every colorful transversal
+    has a non-empty intersection, at least one entire family has a non-empty intersection.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.MG, math.CO]
-  msc2020: ["52C25", "52A10", "52B10"]
+  msc2020: ["52A35", "52A20", "05D15"]
 
 sources:
-  - title: "Recherches sur les polyèdres: Premier Mémoire"
+  - title: "A generalization of Carathéodory's theorem"
     type: paper
     authors:
-      - "Augustin-Louis Cauchy"
+      - "Imre Bárány"
     relationship: formalizes
-  - title: "Proofs from THE BOOK"
-    type: book
+  - title: "Problem 206"
+    type: paper
     authors:
-      - "Martin Aigner"
-      - "Günter M. Ziegler"
+      - "László Lovász"
     relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Real/Basic.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Basic.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's real arithmetic and finite vector infrastructure
-      to establish polygonal chain geometry, metric dot product comparisons, and distance bounds.
+      Formalization builds on Mathlib's convex analysis infrastructure (Convex ℝ) to establish
+      colorful convex systems, transversal intersections, and family-wide Helly intersections.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
