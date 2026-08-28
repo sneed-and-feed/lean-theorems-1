@@ -1,47 +1,63 @@
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Union
-import Mathlib.Data.Fintype.Basic
-import Mathlib.Data.Fintype.Card
-import Mathlib.Data.Fintype.Fin
-import Mathlib.Order.Antichain
+import Mathlib.Data.Real.Basic
 
-namespace DilworthTheorem
+open scoped Real
 
-variable {α : Type*} [DecidableEq α] [PartialOrder α]
+namespace ElekesSumProduct
 
-/-- A subset of `α` is a chain if every two elements are comparable. -/
-def IsChain (s : Set α) : Prop :=
-  ∀ x y, x ∈ s → y ∈ s → x ≤ y ∨ y ≤ x
+/-- Combinatorial Elekes Configuration representing a finite set $A \subset \mathbb{R}$
+    of size $N$, its sumset $A+A$, its productset $A\cdot A$, and the associated
+    point-line incidence system. -/
+structure ElekesConfiguration where
+  N : ℝ
+  sum_card : ℝ
+  prod_card : ℝ
+  P_card : ℝ
+  L_card : ℝ
+  I : ℝ
+  e : ℝ
+  cr : ℝ
+  hN : 1 ≤ N
+  hP : 1 ≤ P_card
+  h_sum_pos : 1 ≤ sum_card
+  h_prod_pos : 1 ≤ prod_card
+  h_prod_bound : P_card ≤ sum_card * prod_card
+  h_L : L_card = N^2
+  h_inc : N^3 ≤ I
+  h_edges : I - L_card ≤ e
+  h_crossings : cr ≤ L_card^2 / 2
+  h_crossing_lemma : 4 * P_card ≤ e → e^3 ≤ 64 * P_card^2 * cr
 
-/-- A subset of `α` is an antichain if no two distinct elements are comparable. -/
-def IsAntichain (s : Set α) : Prop :=
-  ∀ x y, x ∈ s → y ∈ s → x ≠ y → ¬(x ≤ y) ∧ ¬(y ≤ x)
+/-- **Elekes's Product-Sum Theorem (Explicit Constant $c = 1/16$)**:
+    For any finite set $A \subset \mathbb{R}$ of size $N \ge 1$:
+    $$|A + A| \cdot |A \cdot A| \ge \frac{1}{16} |A|^{5/2}$$ -/
+theorem elekes_product_sum_bound (conf : ElekesConfiguration) :
+    (1 / 16 : ℝ) * conf.N ^ (5 / 2 : ℝ) ≤ conf.sum_card * conf.prod_card := sorry
 
-/-- A chain partition / cover of a finset `S` into `k` chains. -/
-def IsChainCover (S : Finset α) {k : ℕ} (C : Fin k → Finset α) : Prop :=
-  (∀ i, IsChain (C i : Set α)) ∧
-  (Finset.biUnion Finset.univ C = S) ∧
-  (∀ i j, i ≠ j → Disjoint (C i) (C j))
+/-- **Elekes's Maximum Sum-Product Theorem (Explicit Constant $c = 1/4$)**:
+    For any finite set $A \subset \mathbb{R}$ of size $N \ge 1$:
+    $$\max(|A + A|, |A \cdot A|) \ge \frac{1}{4} |A|^{5/4}$$ -/
+theorem elekes_max_sum_product_bound (conf : ElekesConfiguration) :
+    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ max conf.sum_card conf.prod_card := sorry
 
-/-- An antichain partition / cover of a finset `S` into `k` antichains. -/
-def IsAntichainCover (S : Finset α) {k : ℕ} (A : Fin k → Finset α) : Prop :=
-  (∀ i, IsAntichain (A i : Set α)) ∧
-  (Finset.biUnion Finset.univ A = S) ∧
-  (∀ i j, i ≠ j → Disjoint (A i) (A j))
+/-- **Elekes Sum-Product Constant Existence Theorem (Max Form)**:
+    There exists an absolute universal constant $c > 0$ such that for every
+    Elekes configuration, $\max(|A + A|, |A \cdot A|) \ge c |A|^{5/4}$. -/
+theorem elekes_sum_product_constant_exists :
+    ∃ c : ℝ, 0 < c ∧ ∀ conf : ElekesConfiguration,
+      c * conf.N ^ (5 / 4 : ℝ) ≤ max conf.sum_card conf.prod_card := sorry
 
-/-- **Dilworth's Theorem (R. P. Dilworth, 1950):**
-If every antichain in a finite poset `S` has size at most `k`, then `S` can be partitioned
-into `k` chains. -/
-theorem dilworth_theorem (S : Finset α) (k : ℕ)
-    (h_anti : ∀ A ⊆ S, IsAntichain (A : Set α) → A.card ≤ k) :
-    ∃ C : Fin k → Finset α, IsChainCover S C := sorry
+/-- **Elekes Product-Sum Constant Existence Theorem (Product Form)**:
+    There exists an absolute universal constant $c > 0$ such that for every
+    Elekes configuration, $|A + A| \cdot |A \cdot A| \ge c |A|^{5/2}$. -/
+theorem elekes_product_constant_exists :
+    ∃ c : ℝ, 0 < c ∧ ∀ conf : ElekesConfiguration,
+      c * conf.N ^ (5 / 2 : ℝ) ≤ conf.sum_card * conf.prod_card := sorry
 
-/-- **Mirsky's Theorem (Dual Dilworth Theorem, L. Mirsky, 1971):**
-If every chain in a finite poset `S` has size at most `m`, then `S` can be partitioned
-into `m` antichains. -/
-theorem mirsky_theorem (S : Finset α) (m : ℕ)
-    (h_chain : ∀ C ⊆ S, IsChain (C : Set α) → C.card ≤ m) :
-    ∃ A : Fin m → Finset α, IsAntichainCover S A := sorry
+/-- Corollary: Either $|A + A| \ge \frac{1}{4} |A|^{5/4}$ or $|A \cdot A| \ge \frac{1}{4} |A|^{5/4}$. -/
+theorem elekes_sum_or_product (conf : ElekesConfiguration) :
+    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.sum_card ∨
+    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.prod_card := sorry
 
-end DilworthTheorem
+end ElekesSumProduct
