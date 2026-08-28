@@ -2,8 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "RadonHelly.radons_theorem",
-    "RadonHelly.hellys_theorem"
+    "SchursTheorem.schurs_theorem",
+    "SchursTheorem.ramsey_triangle"
   ],
   "permitted_axioms": [
     "propext",
