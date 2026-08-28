@@ -1,67 +1,46 @@
 version: "v0.4"
 
 project:
-  name: "Euler's Polyhedron Formula & Planar Map Invariants"
+  name: "Tutte's 1-Factor Theorem for Simple Graphs"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
-    (1758, Wiedijk #13) and fundamental planar map invariants across two rigorous mathematical
-    carrier frameworks:
-    (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
-    alpha and vertex permutation sigma), proving the universal even parity of the Euler characteristic
-    chi(M) via the permutation signature homomorphism, classical planar edge bounds E <= 3V - 6 and
-    E <= 2V - 4, average degree bound 2E < 6V, authentic non-planarity obstructions for K5 and K3,3,
-    and concrete machine-checked regular polyhedra (tetrahedron, triangle, square);
-    (2) SimpleGraph Trees (Euler 1758, Cauchy 1813), proving Euler's formula for trees V - E + 1 = 2
-    on genuine SimpleGraph carriers.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Tutte's 1-Factor Theorem (1947),
+    establishing the fundamental characterization that a finite simple graph has a 1-factor
+    (perfect matching) if and only if for every vertex subset U, the number of odd components
+    q(G \ U) is at most |U|. While Mathlib provides the core SimpleGraph.tutte theorem via IsTutteViolator,
+    this formalization builds the complete structural theory: the idiomatic 1-factor predicate HasOneFactor,
+    the odd connected component counter q(G \ U), the Tutte–Berge matching defect min-max formula,
+    and Petersen's factor theorems.
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05C10", "52B05", "05C38"]
+  msc2020: ["05C70", "05C75"]
 
 sources:
-  - title: "Elementa doctrinae solidorum"
-    type: paper
-    authors:
-      - "Leonhard Euler"
-    relationship: inspired_by
-  - title: "Recherches sur les polyedres"
-    type: paper
-    authors:
-      - "A.-L. Cauchy"
-    relationship: formalizes
-  - title: "A combinatorial condition for planar graphs"
-    type: paper
-    authors:
-      - "Saunders Mac Lane"
-    relationship: adapts
-  - title: "A census of planar maps"
+  - title: "The factorization of linear graphs"
     type: paper
     authors:
       - "W. T. Tutte"
-    relationship: adapts
+    relationship: formalizes
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Acyclic.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Tutte.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's graph theory and permutation cycle type libraries
-      (SimpleGraph.IsTree, Equiv.Perm.cycleType, Equiv.Perm.sign) to establish combinatorial map
-      Euler characteristics, signature parity invariants, and tree Euler formulas.
+      Formalization builds on Mathlib's SimpleGraph.tutte and IsTutteViolator infrastructure to establish
+      the 1-factor characterization, explicit odd-component counting, and the Tutte-Berge defect duality.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
