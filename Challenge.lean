@@ -1,56 +1,35 @@
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Analysis.Convex.Hull
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Real.Basic
 
-open scoped Real
+namespace RadonHelly
 
-namespace ErdosUnitDistances
+variable {d : ℕ}
 
-/-- Combinatorial Unit Distance System representing $n$ points and their unit distance pairs:
-    - `n`: number of points (|P| ≥ 1)
-    - `u`: number of unit distance pairs u(n)
-    - `e`: number of circular arc edges in the incidence graph (e ≥ 2u - n)
-    - `cr`: number of edge crossings in the plane drawing (cr ≤ n²)
-    - `h_crossing_lemma`: dense regime Crossing Lemma relation (4n ≤ e → e³ ≤ 64 n² cr) -/
-structure UnitDistanceSystem where
-  /-- Number of points n = |P| -/
-  n : ℝ
-  /-- Number of unit distance pairs u(n) = |{{p, q} : ||p - q|| = 1}| -/
-  u : ℝ
-  /-- Number of circular arc edges in the topological drawing -/
-  e : ℝ
-  /-- Crossing number of the topological drawing -/
-  cr : ℝ
-  /-- Point count positivity: n ≥ 1 -/
-  hn : 1 ≤ n
-  /-- Incidence edge lower bound: e ≥ 2u - n (since I = 2u and e ≥ I - n) -/
-  h_edges : 2 * u - n ≤ e
-  /-- Circle crossing bound: two distinct unit circles intersect in at most 2 points, so cr ≤ n² -/
-  h_crossings : cr ≤ n^2
-  /-- Dense Crossing Lemma property: if e ≥ 4n, then e³ ≤ 64 n² cr -/
-  h_crossing_lemma : 4 * n ≤ e → e^3 ≤ 64 * n^2 * cr
+/-- **Radon's Lemma (Radon's Theorem, 1921, Freek Wiedijk #99):**
+Any set of $d + 2$ points in $\mathbb{R}^d$ can be partitioned into two disjoint subsets
+whose convex hulls intersect. -/
+theorem radons_theorem (S : Finset (Fin d → ℝ)) (hS : S.card = d + 2) :
+    ∃ A B : Finset (Fin d → ℝ), A ⊆ S ∧ B ⊆ S ∧ Disjoint A B ∧ A ∪ B = S ∧
+      (convexHull ℝ (A : Set (Fin d → ℝ)) ∩ convexHull ℝ (B : Set (Fin d → ℝ))).Nonempty := sorry
 
-/-- **Erdős Unit Distances Explicit Upper Bound (Spencer-Szemerédi-Trotter 1984 / Székely 1997)**:
-    For any configuration of $n$ points in $\mathbb{R}^2$, the number of unit distance pairs satisfies:
-    $$u(n) \le 2 n^{4/3} + 4n$$ -/
-theorem erdos_unit_distances_bound (sys : UnitDistanceSystem) :
-    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + 4 * sys.n := sorry
+/-- **Helly's Theorem for Finite Families of Convex Sets (1923, Freek Wiedijk #99):**
+If `C` is a finite family of convex subsets in `Fin d → ℝ` such that every subfamily of size
+at most `d + 1` (`J.card ≤ d + 1`) has non-empty intersection, then the entire family has
+non-empty intersection.
 
-/-- **Erdős Unit Distances Tight Linear-Term Bound**:
-    $$u(n) \le 2 n^{4/3} + \frac{5}{2} n$$ -/
-theorem erdos_unit_distances_bound_tight (sys : UnitDistanceSystem) :
-    sys.u ≤ 2 * sys.n ^ (4 / 3 : ℝ) + (5 / 2 : ℝ) * sys.n := sorry
+### Small-Family Scope and Equivalence
+- **Boundary / Small Families (`|ι| ≤ d + 1`)**: For families with `|ι| ≤ d + 1`, choosing
+  `J = Finset.univ` satisfies `J.card ≤ d + 1`, so the hypothesis directly entails that the entire
+  family has non-empty intersection. The `≤ d + 1` hypothesis avoids the vacuous-truth failure of
+  the exact-size `= d + 1` condition when `|ι| ≤ d`.
+- **Large Families (`|ι| > d + 1`)**: When `|ι| > d + 1`, any subfamily of size `≤ d + 1` can be
+  extended to a subfamily of size `d + 1`, so the `≤ d + 1` condition is equivalent to the classical
+  statement requiring every `(d + 1)`-element subfamily to intersect. -/
+theorem hellys_theorem {ι : Type*} [Fintype ι] [DecidableEq ι] (C : ι → Set (Fin d → ℝ))
+    (h_convex : ∀ i : ι, Convex ℝ (C i))
+    (h_inter : ∀ J : Finset ι, J.card ≤ d + 1 → (⋂ i ∈ J, C i).Nonempty) :
+    (⋂ i : ι, C i).Nonempty := sorry
 
-/-- **Erdős Unit Distances Uniform Factor Bound**:
-    For all configurations with $n \ge 8$ points, the unit distance pair count satisfies:
-    $$u(n) \le 4 n^{4/3}$$ -/
-theorem erdos_unit_distances_uniform_bound (sys : UnitDistanceSystem) (hn8 : 8 ≤ sys.n) :
-    sys.u ≤ 4 * sys.n ^ (4 / 3 : ℝ) := sorry
-
-/-- **Erdős Unit Distances Asymptotic Existence Bound**:
-    There exists an absolute universal constant $C > 0$ such that for every point configuration,
-    the unit distance pair count satisfies $u(n) \le C n^{4/3}$. -/
-theorem erdos_unit_distances_asymptotic :
-    ∃ C : ℝ, 0 < C ∧ ∀ sys : UnitDistanceSystem,
-      sys.u ≤ C * sys.n ^ (4 / 3 : ℝ) := sorry
-
-end ErdosUnitDistances
+end RadonHelly

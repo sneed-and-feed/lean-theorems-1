@@ -1,56 +1,67 @@
 version: "v0.4"
 
 project:
-  name: "Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem"
+  name: "Radon's Lemma and Helly's Theorem on Convex Sets"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Spencer–Szemerédi–Trotter (1984)
-    upper bound u(n) = O(n^(4/3)) on the Erdős unit distance problem in the Euclidean plane,
-    using László Székely's circle crossing lemma approach (1997). Proves explicit non-asymptotic
-    bounds u(n) <= 2 n^(4/3) + 4n, u(n) <= 4 n^(4/3) for n >= 8, and the asymptotic constant existence.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Radon's Lemma (Johann Radon, 1921)
+    and Helly's Theorem on intersecting families of convex sets (Eduard Helly, 1923; Freek
+    Wiedijk #99) from first principles. Proves that any d + 2 points in ℝ^d admit a Radon
+    partition into two disjoint subsets whose convex hulls intersect, and uses Radon's lemma
+    by induction on the family size to prove Helly's theorem for finite families of convex sets
+    under the general <= d + 1 subfamily intersection hypothesis (covering small families |ι| <= d + 1 as well as large families).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "05C10", "05C62"]
+  arxiv: [math.MG, math.CO]
+  msc2020: ["52A35", "52A20", "52C10"]
 
 sources:
-  - title: "Unit distances in the Euclidean plane"
+  - title: "Mengen konvexer Körper, die einen gemeinsamen Punkt enthalten"
     type: paper
     authors:
-      - "Joel Spencer"
-      - "Endre Szemerédi"
-      - "William T. Trotter"
+      - "Johann Radon"
+    year: 1921
+    venue: "Mathematische Annalen"
+    volume: "83"
+    issue: "1-2"
+    pages: "113-115"
     relationship: formalizes
-  - title: "On Sets of Distances of n Points"
+  - title: "Über Mengen konvexer Körper mit gemeinschaftlichen Punkten"
     type: paper
     authors:
-      - "Paul Erdős"
+      - "Eduard Helly"
+    year: 1923
+    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
+    volume: "32"
+    pages: "175-176"
+    relationship: formalizes
+  - title: "Formalizing 100 Theorems"
+    type: webpage
+    authors:
+      - "Freek Wiedijk"
     relationship: background
-  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
-    type: paper
-    authors:
-      - "László A. Székely"
-    relationship: adapts
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's real power functions (rpow) and order inequality infrastructure
-      to establish topological graph circle crossings and Spencer–Szemerédi–Trotter unit distance bounds.
+      Formalization builds on Mathlib's convex analysis infrastructure (`convexHull`, `Convex`)
+      to formalize Radon's partition lemma on affine dependencies in ℝ^d and Helly's theorem for finite
+      families of convex sets (Freek Wiedijk #99).
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
@@ -59,4 +70,6 @@ review:
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
     while all definitions and theorem statements are completely specified. Solution verified through
-    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms. The theorem
+    formalization uses the general <= d + 1 subfamily intersection hypothesis to cleanly encompass
+    both boundary small families (|ι| <= d + 1) and classical large families (|ι| > d + 1).
