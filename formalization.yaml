@@ -1,51 +1,56 @@
 version: "v0.4"
 
 project:
-  name: "The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)"
+  name: "Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A comprehensive, machine-checked Lean 4 formalization of the Erdős–Szekeres Convex Polygon Theorem (1935).
-        Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
-        Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
-        of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
-        verifying the Happy Ending Problem.
-        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of the Spencer–Szemerédi–Trotter (1984)
+    upper bound u(n) = O(n^(4/3)) on the Erdős unit distance problem in the Euclidean plane,
+    using László Székely's circle crossing lemma approach (1997). Proves explicit non-asymptotic
+    bounds u(n) <= 2 n^(4/3) + 4n, u(n) <= 4 n^(4/3) for n >= 8, and the asymptotic constant existence.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "05D10", "52A10"]
+  msc2020: ["52C10", "05C10", "05C62"]
 
 sources:
-  - title: "A combinatorial problem in geometry"
+  - title: "Unit distances in the Euclidean plane"
+    type: paper
+    authors:
+      - "Joel Spencer"
+      - "Endre Szemerédi"
+      - "William T. Trotter"
+    relationship: formalizes
+  - title: "On Sets of Distances of n Points"
     type: paper
     authors:
       - "Paul Erdős"
-      - "George Szekeres"
-    relationship: formalizes
-  - title: "Problem 1835"
+    relationship: background
+  - title: "Crossing numbers and hard Erdős problems in discrete geometry"
     type: paper
     authors:
-      - "Esther Klein"
-    relationship: background
+      - "László A. Székely"
+    relationship: adapts
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's convex geometry and finite set infrastructure (convexHull ℝ)
-      to formalize extreme points of convex polygons, orientation determinants, and cup-cap Ramsey duality.
+      Formalization builds on Mathlib's real power functions (rpow) and order inequality infrastructure
+      to establish topological graph circle crossings and Spencer–Szemerédi–Trotter unit distance bounds.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
