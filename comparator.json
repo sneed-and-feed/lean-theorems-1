@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "ore_hamiltonian",
-    "dirac_hamiltonian"
+    "friendship_windmill"
   ],
   "permitted_axioms": [
     "propext",
