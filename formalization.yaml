@@ -1,46 +1,54 @@
 version: "v0.4"
 
 project:
-  name: "Tutte's 1-Factor Theorem for Simple Graphs"
+  name: "Chvátal's Art Gallery Theorem & Fisk's 3-Coloring Proof"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Tutte's 1-Factor Theorem (1947),
-    establishing the fundamental characterization that a finite simple graph has a 1-factor
-    (perfect matching) if and only if for every vertex subset U, the number of odd components
-    q(G \ U) is at most |U|. While Mathlib provides the core SimpleGraph.tutte theorem via IsTutteViolator,
-    this formalization builds the complete structural theory: the idiomatic 1-factor predicate HasOneFactor,
-    the odd connected component counter q(G \ U), the Tutte–Berge matching defect min-max formula,
-    and Petersen's factor theorems.
+    A complete, machine-checked Lean 4 formalization of Chvátal's Art Gallery Theorem (1975)
+        via Steve Fisk's elegant 1978 3-coloring proof on triangulated polygon graphs. Proves that for
+        any 3-colorable planar triangulation graph on n vertices, there exists a guard set of size
+        floor(n/3).
+        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05C70", "05C75"]
+  arxiv: [math.CO, math.MG]
+  msc2020: ["05C15", "05C10", "52C99"]
 
 sources:
-  - title: "The factorization of linear graphs"
+  - title: "A combinatorial theorem in plane geometry"
     type: paper
     authors:
-      - "W. T. Tutte"
+      - "Václav Chvátal"
     relationship: formalizes
+  - title: "A short proof of Chvátal's watchman theorem"
+    type: paper
+    authors:
+      - "Steve Fisk"
+    relationship: adapts
+  - title: "Art Gallery Theorems and Algorithms"
+    type: book
+    authors:
+      - "Joseph O'Rourke"
+    relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Tutte.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Basic.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's SimpleGraph.tutte and IsTutteViolator infrastructure to establish
-      the 1-factor characterization, explicit odd-component counting, and the Tutte-Berge defect duality.
+      Formalization builds on Mathlib's SimpleGraph and finite set cardinality infrastructure to construct
+      proper vertex 3-colorings, minimum pigeonhole color classes, and triangle guard set covers.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
