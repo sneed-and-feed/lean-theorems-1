@@ -6,7 +6,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 ### Submission Settings for submit.palomar-registry.org:
 - **Repository**: `sneed-and-feed/lean-theorems-1`
-- **Comparator Path**: `palomar/<slug>/comparator.json` *(or `comparator.json`)*
+- **Comparator Path**: `comparator.json` *(or `palomar/<slug>/comparator.json`)*
 - **Existing Palomar ID**: *(leave blank)*
 - **Relationship**: `Maintainer` / `Author`
 
@@ -29,35 +29,37 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 ---
 
-## 🚀 Priority Submission Queue (Audited Unsubmitted Theorems)
+## 🚀 Verified Submission Queue (Audited & Packaged with Dedicated Commit SHAs)
 
-| Priority # | Theorem / Package Title | Wiedijk # | Dedicated Commit SHA to Enter | Comparator Path | Status |
-| :---: | :--- | :---: | :--- | :--- | :---: |
-| | **Tier 1: Crown Jewels** | | | | |
-| **1** | **Euler's Polyhedron Formula (V - E + F = 2)** | #13 | `213555c7fe3f85be051a784fbbb62305276d9c95` | `palomar/euler_polyhedron/comparator.json` | [ ] In Development |
-| **3** | **Sperner's Lemma in 1D, 2D, and 3D** | #57 | — | `palomar/sperners_lemma/comparator.json` | [-] **Unsubmittable** (Superseded by live General n-D Sperner PALOMAR-2026-08-27-000014) |
-| **5** | **Radon's Lemma & Helly's Theorem** | #99 | `8640fa71ac7d050e04a5653c8537a268abb7e7f0` | `palomar/radon_helly/comparator.json` | [ ] Ready |
+| # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Status |
+| :---: | :--- | :--- | :--- | :--- | :---: |
+| **1** | **Radon's Lemma and Helly's Theorem on Convex Sets** | `radon_helly` | `2485a6eb14bf5acaf8c83b4f6e6c992edae9aecd` | `palomar/radon_helly/comparator.json` | [ ] **Ready to Submit** |
+| **2** | **Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey** | `schurs_theorem` | `ea9cbd3282d1492b7798bea890f52e8b6d0f2d58` | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit** |
+| **3** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `frankl_wilson` | `a3047d6bc04685572164ac141822aea8d3ad60e4` | `palomar/frankl_wilson/comparator.json` | [ ] **Ready to Submit** |
+| **4** | **Kneser's Conjecture and Lovász's Chromatic Bound (1978)** | `kneser_lovasz` | `a1b19ef1479c60afc12d154206cc4cc7c3993f18` | `palomar/kneser_lovasz/comparator.json` | [ ] **Ready to Submit** |
+| **5** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | [ ] **Ready to Submit** |
+| **6** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `friendship_windmill` | `999125cd5629665ef15b11b97b7bb817f702816c` | `palomar/friendship_windmill/comparator.json` | [ ] **Ready to Submit** |
+| **7** | **Tverberg's Partition Theorem and the Full One-Dimensional Case** | `tverbergs_theorem` | `cf3d32b2ab60dae7467e347fe2a2b2db861f408f` | `palomar/tverbergs_theorem/comparator.json` | [ ] **Ready to Submit** |
+| **8** | **Euler's Polyhedron Formula & Planar Map Invariants** | `euler_polyhedron` | `1dba453288851d88d59062ea55748381acd6d157` | `palomar/euler_polyhedron/comparator.json` | [ ] **Ready to Submit** |
+| **9** | **Tutte's 1-Factor Theorem for Simple Graphs** | `tutte_one_factor` | `7f829467825b9c502d2009ab767063ff726306e4` | `palomar/tutte_one_factor/comparator.json` | [ ] **Ready to Submit** |
+| **10** | **Chvátal's Art Gallery Theorem & Fisk's 3-Coloring Proof** | `art_gallery_theorem` | `fffd5edde433f21cea002e776d1994044070fcfa` | `palomar/art_gallery_theorem/comparator.json` | [ ] **Ready to Submit** |
+| **11** | **Beck's Theorem on Point Configurations and Incidence Geometry** | `becks_theorem` | `6946089c22933b939e37740b020317ef6792ee40` | `palomar/becks_theorem/comparator.json` | [ ] **Ready to Submit** |
+| **12** | **Cauchy's Arm Lemma and Convex Rigidity Foundations** | `cauchy_arm_lemma` | `c7cc6ddeca7dc5e84eaa9a7f05265070be05a064` | `palomar/cauchy_arm_lemma/comparator.json` | [ ] **Ready to Submit** |
+| **13** | **Lovász's Colorful Helly Theorem for Convex Sets** | `colorful_helly` | `306308a0f8d627f63cacab04b7d5ee5c5d1a02b5` | `palomar/colorful_helly/comparator.json` | [ ] **Ready to Submit** |
+| **14** | **The Crossing Lemma and Székely's Probabilistic Amplification** | `crossing_lemma` | `df3121fd436f14de57601aa1d611162a933d1a1b` | `palomar/crossing_lemma/comparator.json` | [ ] **Ready to Submit** |
+| **15** | **The De Bruijn–Erdős Theorem on Incidence Geometry** | `de_bruijn_erdos` | `5584ebaada8ef2e2490ab35ed79e6a7436aa6c2a` | `palomar/de_bruijn_erdos/comparator.json` | [ ] **Ready to Submit** |
+| **16** | **Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem** | `dilworth_mirsky` | `becacae53c6b6de3322707e130b5829dbbce0ed4` | `palomar/dilworth_mirsky/comparator.json` | [ ] **Ready to Submit** |
+| **17** | **Elekes's Sum-Product Inequality in Additive Combinatorics** | `elekes_sum_product` | `3d3f43f9228cd11c52e09d608d8df230fee72e98` | `palomar/elekes_sum_product/comparator.json` | [ ] **Ready to Submit** |
+| **18** | **The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)** | `erdos_szekeres_convex` | `b86c46d3a58a28ce8eb65269b6c033ea106e7a20` | `palomar/erdos_szekeres_convex/comparator.json` | [ ] **Ready to Submit** |
+| **19** | **Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem** | `erdos_unit_distances` | `6295c3b7930996140608e638f544a4c361a5863d` | `palomar/erdos_unit_distances/comparator.json` | [ ] **Ready to Submit** |
 
-| **6** | **Pick's Theorem on Lattice Polygons** | #92 | `cac4bcf75095fde63d5cd10620c12ca663e7c0bf` | `palomar/picks_theorem/comparator.json` | [ ] Flagged for Geometry Refactor (manufactured triangulation) |
-| | **Tier 2: Celebrated Combinatorics** | | | | |
-| **8** | **Chvátal's Art Gallery Theorem (Fisk's 3-Coloring)** | — | `741ef84e35db054d7d903b8975467f62f334e684` | `palomar/art_gallery_theorem/comparator.json` | [ ] Ready |
-| **9** | **Erdős–Szekeres Convex Polygon (Happy Ending 1935)** | — | `81f459c3cc35e066a5113e85b47d80fdba046b97` | `palomar/erdos_szekeres_convex/comparator.json` | [ ] Ready |
-| **10** | **The Crossing Lemma (Ajtai et al. / Leighton 1982)** | — | `3fcfccd21e552d1641259f499fd40f4ae31e3a82` | `palomar/crossing_lemma/comparator.json` | [ ] Ready |
-| **11** | **De Bruijn–Erdős Theorem on Incidence Geometry** | — | `9a62da97ff7d0ff237fd1ac8ff51737cf0463489` | `palomar/de_bruijn_erdos/comparator.json` | [ ] Ready |
-| **12** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | — | `7c1b919f8017a0cfef4bd07c0df8a3853aea587c` | `palomar/ore_dirac_hamiltonian/comparator.json` | [ ] Ready |
-| **13** | **Schur's Theorem on Sum-Free Partitions** | — | `a08b3b872d508d9adda0854e1e3baf73eefcde9c` | `palomar/schurs_theorem/comparator.json` | [ ] Ready |
-| **14** | **Dilworth's & Mirsky's Poset Theorems** | — | `a2b95440872a366305d49f984d6bc9968ce5bd35` | `palomar/dilworth_mirsky/comparator.json` | [ ] Ready |
-| | **Tier 3: Modern Extremal & Algebraic Methods** | | | | |
-| **15** | **Kneser's Conjecture / Lovász's Bound (1978)** | — | `874272fd11bb1514ae15cb38ea6efe0a0963b2a1` | `palomar/kneser_lovasz/comparator.json` | [ ] Ready |
-| **16** | **Frankl–Wilson Theorem (Restricted Intersections)** | — | `9790013fdb7353974e9bb47631171f61921d1c52` | `palomar/frankl_wilson/comparator.json` | [ ] Ready |
-| **17** | **Szemerédi–Trotter Point-Line Incidences** | — | `ba3aea3b9f60bbbec74d239aeafedfa79dc92811` | `palomar/szemeredi_trotter/comparator.json` | [ ] Ready |
-| **18** | **Spencer–Szemerédi–Trotter Erdős Unit Distances** | — | `17f17ac808b093912d04f832560278ef3a65e70b` | `palomar/erdos_unit_distances/comparator.json` | [ ] Ready |
-| **19** | **Lovász's Colorful Helly Theorem (Bárány 1982)** | — | `b91a873395573a3544b16f331e715ad072f91ec9` | `palomar/colorful_helly/comparator.json` | [ ] Ready |
-| **20** | **Tutte's 1-Factor Theorem for Simple Graphs** | — | `e426f5f98c1a1b0d776253616ef467e97e432bc6` | `palomar/tutte_one_factor/comparator.json` | [ ] Ready |
-| **21** | **Elekes's Sum-Product Inequality** | — | `e8088ea4b6f71dbb3c5d7686e6b17f1cbe25d59e` | `palomar/elekes_sum_product/comparator.json` | [ ] Ready |
-| **22** | **Cauchy's Arm Lemma & Convex Rigidity** | — | `4a89edf7f294d5887feb14a7bc0d1785b8529cd4` | `palomar/cauchy_arm_lemma/comparator.json` | [ ] Ready |
-| **23** | **Tverberg's Theorem (1D & r ≤ 2)** | — | `ff3e3f62adc9955b3e52b47170185b1bdc5d6d2a` | `palomar/tverbergs_theorem/comparator.json` | [ ] Ready |
-| **24** | **Tucker's Combinatorial Lemma** | — | `07d4f2fd09bf0b2122ad51c326bcfe268e1578b4` | `palomar/tuckers_lemma/comparator.json` | [ ] Ready |
-| **25** | **3D Sperner's Lemma (Tetrahedral Parity)** | — | `48efc1a86911cdcc0a3678894f0f86fcb2bf8d87` | `palomar/sperner_3d/comparator.json` | [ ] Ready |
-| **26** | **Beck's Theorem on Incidence Geometry** | — | `798fa332e18584c863a862b22935392d5f1cb3f3` | `palomar/becks_theorem/comparator.json` | [ ] Ready |
-| **27** | **Friendship Windmill Structure Theorem** | — | `dbde6effd08ff1530828428f2b45c0b4dc58aeb4` | `palomar/friendship_windmill/comparator.json` | [ ] Ready |
+---
+
+## ⏸️ Flagged for Geometry Refactoring or Superseded
+
+| Slug | Issue / Refactoring Requirement | Status |
+| :--- | :--- | :---: |
+| `picks_theorem` | Elementary triangulation carrier bakes Euler formula equation ( - E + F = 1$); needs intrinsic polygon carrier | [ ] Refactor Needed |
+| `szemeredi_trotter` | Carrier bakes Crossing Lemma inequality directly; needs point-line arrangement carrier in $\mathbb{R}^2$ | [ ] Refactor Needed |
+| `tuckers_lemma` | Premise `h_witness` directly supplies existential conclusion; needs combinatorial parity lemma | [ ] Refactor Needed |
+| `sperners_lemma` / `sperner_3d` | Concrete 1D/2D/3D instances superseded by live General $-D Sperner (PALOMAR-2026-08-27-000014) | [-] Superseded |
