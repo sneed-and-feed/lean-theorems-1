@@ -60,4 +60,20 @@ theorem elekes_sum_or_product (conf : ElekesConfiguration) :
     (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.sum_card ∨
     (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.prod_card := sorry
 
+/-- **Additive to Multiplicative Expansion (Elekes 1997 / Freiman–Ruzsa Connection)**:
+    If a set $A \subset \mathbb{R}$ has small sumset doubling $|A + A| \le K |A|$ (additive structure),
+    then its productset must have large expansion:
+    $$|A \cdot A| \ge \frac{1}{16 K} |A|^{3/2}$$ -/
+theorem elekes_productset_growth_of_small_sumset (conf : ElekesConfiguration)
+    (K : ℝ) (hK : 0 < K) (h_sum_small : conf.sum_card ≤ K * conf.N) :
+    (1 / (16 * K) : ℝ) * conf.N ^ (3 / 2 : ℝ) ≤ conf.prod_card := sorry
+
+/-- **Multiplicative to Additive Expansion (Elekes 1997 / Freiman–Ruzsa Connection)**:
+    If a set $A \subset \mathbb{R}$ has small productset doubling $|A \cdot A| \le K |A|$ (multiplicative structure),
+    then its sumset must have large expansion:
+    $$|A + A| \ge \frac{1}{16 K} |A|^{3/2}$$ -/
+theorem elekes_sumset_growth_of_small_productset (conf : ElekesConfiguration)
+    (K : ℝ) (hK : 0 < K) (h_prod_small : conf.prod_card ≤ K * conf.N) :
+    (1 / (16 * K) : ℝ) * conf.N ^ (3 / 2 : ℝ) ≤ conf.sum_card := sorry
+
 end ElekesSumProduct

@@ -1,38 +1,39 @@
 version: "v0.4"
 
 project:
-  name: "Kneser's Conjecture and Lovász's Chromatic Bound (1978)"
+  name: "Kneser's Graph Coloring Upper Bound"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of the Kneser graph coloring bound (Kneser's Conjecture,
-    1955; Lovász's Theorem, 1978). Formalizes the Kneser graph KG(n, k) on k-subsets of an n-element set,
-    defines the combinatorial fiber coloring based on minimal elements, proves proper coloring by fiberwise
-    pigeonhole on intervals, and establishes the chromatic bound chi(KG(n, k)) <= n - 2k + 2.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Kneser's explicit graph coloring upper bound
+    (Kneser, 1955). Formalizes the Kneser graph KG(n, k) on k-subsets of an n-element set, defines
+    Kneser's combinatorial fiber coloring based on minimal elements, proves proper vertex coloring via
+    fiberwise pigeonhole on intervals, and establishes that chi(KG(n, k)) <= n - 2k + 2. Distinguishes
+    Kneser's constructive coloring upper bound from Lovász's (1978) topological lower bound based on
+    Borsuk-Ulam / homotopy theory. To the maintainers' knowledge, the theorem was not found in an exact
+    declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.AT]
-  msc2020: ["05C15", "05E45", "55M20"]
+  arxiv: [math.CO]
+  msc2020: ["05C15", "05D05"]
 
 sources:
-  - title: "Kneser's conjecture, chromatic number, and homotopy"
-    type: paper
-    year: 1978
-    venue: "Journal of Combinatorial Theory, Series A"
-    authors:
-      - "László Lovász"
-    relationship: formalizes
   - title: "Aufgabe 360"
     type: paper
     year: 1955
     venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
     authors:
       - "Martin Kneser"
+    relationship: formalizes
+  - title: "Kneser's conjecture, chromatic number, and homotopy"
+    type: paper
+    year: 1978
+    venue: "Journal of Combinatorial Theory, Series A"
+    authors:
+      - "László Lovász"
     relationship: background
 
 related_formalizations:

@@ -15,7 +15,7 @@ namespace TutteOneFactor
 variable {V : Type*} [Fintype V] [DecidableEq V]
 
 /-!
-# Tutte's 1-Factor Theorem, Tutte–Berge Formula, and Petersen's Theorems
+# Tutte's 1-Factor Theorem, Tutte–Berge Formula, and Matching Defect
 
 This module formalizes:
 1. **1-Factors and Perfect Matchings** in simple graphs.
@@ -24,8 +24,8 @@ This module formalizes:
 4. **Tutte–Berge Formula & Matching Defect**:
    $$\nu(G) = \frac{1}{2} \min_{U \subseteq V} (|V| + |U| - q(G \setminus U))$$
    $$\operatorname{matchingDefect}(G) = \max_{U \subseteq V} (q(G \setminus U) - |U|)$$
-5. **Petersen's Bridgeless Cubic Theorem**: Every 3-regular bridgeless graph has a 1-factor.
-6. **Petersen's 2-Factor Theorem**: Every $2r$-regular graph decomposes into 2-factors.
+5. **Cubic Bridgeless Cut Parity**: Degree sum and cut counting in regular graphs.
+6. **2-Factors in Regular Graphs**: Base case decomposition for 2-regular graphs.
 7. **Hall's Marriage Theorem from Tutte's Theorem**: Bipartite specialization.
 
 ## References
@@ -241,14 +241,7 @@ lemma even_card_of_cubic (G : SimpleGraph V) (hcubic : IsCubic G) :
   have h_even : Even (3 * Fintype.card V) := ⟨G.edgeFinset.card, by omega⟩
   exact (Nat.even_mul.mp h_even).resolve_left (by decide)
 
-/-- **Petersen's Theorem (1891):**
-Every bridgeless cubic graph satisfies Tutte's condition and therefore possesses a 1-factor. -/
-theorem petersen_bridgeless_cubic_1factor (G : SimpleGraph V) (hcubic : IsCubic G)
-    (hbridge : IsBridgeless G) (h_tutte : ∀ U : Set V, q G U ≤ U.ncard) :
-    HasOneFactor G :=
-  tutte_1factor_theorem G |>.mpr h_tutte
-
-/-! ## 6. Petersen's 2-Factor Theorem -/
+/-! ## 6. 2-Factors in Regular Graphs -/
 
 /-- A 2-factor of a simple graph `G` is a 2-regular spanning subgraph. -/
 def IsTwoFactor {G : SimpleGraph V} (H : G.Subgraph) : Prop :=
@@ -272,13 +265,6 @@ theorem petersen_2factor_theorem_one (G : SimpleGraph V) (h2 : IsKRegular G 2) :
     ∃ factors : Fin 1 → G.Subgraph, IsTwoFactorDecomposition G 1 factors := by
   refine ⟨fun _ => ⊤, fun _ => two_regular_is_two_factor G h2, fun i j hij => (hij (Subsingleton.elim i j)).elim, ?_⟩
   simp only [Subgraph.edgeSet_top, Set.iUnion_const]
-
-/-- **Petersen's 2-Factor Theorem (General Formulation):**
-Every $2r$-regular graph decomposes into $r$ 2-factors. -/
-theorem petersen_2factor_theorem (G : SimpleGraph V) (r : ℕ) (hr : IsKRegular G (2 * r))
-    (h_decomp : ∃ factors : Fin r → G.Subgraph, IsTwoFactorDecomposition G r factors) :
-    ∃ factors : Fin r → G.Subgraph, IsTwoFactorDecomposition G r factors :=
-  h_decomp
 
 /-! ## 7. Hall's Marriage Theorem from Tutte's Theorem -/
 

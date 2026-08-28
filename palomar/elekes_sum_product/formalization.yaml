@@ -10,9 +10,13 @@ project:
   description: >-
     A complete machine-checked Lean 4 formalization of György Elekes's landmark sum-product
     inequalities (1997) via incidence geometry and the Szemerédi–Trotter theorem.
-    Proves the max sum-product bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum
-    bound |A + A| * |A * A| >= 1/16 |A|^(5/2), and structural additive-multiplicative expansion bounds.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    Defines the ElekesConfiguration structure as an incidence reduction interface connecting
+    point-line crossing bounds to explicit sum-product expansion. Proves the max sum-product
+    bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum bound |A + A| * |A * A| >= 1/16 |A|^(5/2),
+    and reciprocal additive-multiplicative growth theorems (|A+A| <= K|A| => |A*A| >= 1/(16K)|A|^(3/2)
+    and |A*A| <= K|A| => |A+A| >= 1/(16K)|A|^(3/2)). To the maintainers' knowledge, the theorem was
+    not found in an exact declaration name, docstring, and type signature search of the pinned
+    Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.NT]

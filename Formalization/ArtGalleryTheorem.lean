@@ -6,22 +6,24 @@ import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic
 
 /-!
-# Chvátal's Art Gallery Theorem (1975) & Fisk's Triangulation 3-Coloring (1978)
+# Fisk's Triangulation Guard Partition Lemma from 3-Colorings (1978)
 
-This module formalizes **Chvátal's Art Gallery Theorem** (V. Chvátal, 1975)
-and **Fisk's 3-Coloring Proof** (S. Fisk, 1978).
+This module formalizes **Fisk's Triangulation Guard Partition Lemma** (S. Fisk, 1978),
+the combinatorial partition and pigeonhole core of Steve Fisk's proof of Chvátal's
+Art Gallery Theorem (V. Chvátal, 1975).
 
-## Mathematical Statement
+## Mathematical Overview
 
-Let $P$ be a simple polygon with $n \ge 3$ vertices. Then $\lfloor n/3 \rfloor$ guards placed
-at vertices are always sufficient to oversee/guard the entire polygon:
-$$\operatorname{guards}(P) \le \lfloor n / 3 \rfloor$$
+Given a simple polygon with $n \ge 3$ vertices:
+1. Every polygon admits a triangulation whose dual tree structure implies the graph is 3-colorable.
+2. Given any proper 3-coloring $c : V \to \{0, 1, 2\}$, the Pigeonhole Principle guarantees
+   at least one color class $V_k = c^{-1}(k)$ has size:
+   $$|V_k| \le \lfloor n / 3 \rfloor$$
+3. Since every facial triangle (3-clique) receives 3 distinct colors, $V_k$ intersects every triangle,
+   forming a valid guard set of size $\le \lfloor n / 3 \rfloor$.
 
-## Fisk's Graph-Theoretic Proof:
-1. Every simple polygon can be triangulated into $n - 2$ triangles by non-crossing diagonals.
-2. The dual graph of the triangulation is a tree, so the triangulation graph $G$ is 3-colorable.
-3. By the Pigeonhole Principle, the smallest color class among $\{0, 1, 2\}$ contains at most $\lfloor n / 3 \rfloor$ vertices.
-4. Every triangle in the triangulation has vertices of all 3 distinct colors, so placing guards at the vertices of the smallest color class ensures every triangle has at least one guard.
+This module formalizes step 2–3 as the Guard Partition Lemma from a 3-coloring, treating triangulation
+and 3-colorability as external preconditions.
 
 ## References
 * V. Chvátal (1975), *A combinatorial theorem in plane geometry*, J. Combin. Theory Ser. B, 18(1):39–41.
@@ -65,9 +67,9 @@ lemma min_color_class_le_k {k : ℕ} (hk : 0 < k) (c : V → Fin k) :
   have h3 := Nat.lt_mul_div_succ (Fintype.card V) hk
   omega
 
-/-- **Fisk's Art Gallery Theorem (1978):**
-Given a 3-colorable maximal outerplanar / triangulation graph `G` on `n` vertices,
-there exists a guard set `S` of size at most `n / 3` covering all triangles. -/
+/-- **Fisk's Triangulation Guard Partition Lemma (1978):**
+Given a graph `G` on `n` vertices equipped with a valid proper 3-coloring `c` (such as a 3-colored
+polygon triangulation), there exists a guard set `S` of size at most `n / 3` covering all triangles (3-cliques). -/
 theorem art_gallery_theorem (G : SimpleGraph V) (c : V → Fin 3) (hc : IsThreeColoring G c) :
     ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S := by
   classical
@@ -76,7 +78,7 @@ theorem art_gallery_theorem (G : SimpleGraph V) (c : V → Fin 3) (hc : IsThreeC
   intro u v w huv hvw hwu
   rcases fin3_cases_of_pairwise_ne (c u) (c v) (c w) (hc u v huv) (hc v w hvw) (hc w u hwu) k with rfl | rfl | rfl <;> simp
 
-/-- Art Gallery Theorem formulated using Mathlib's native `SimpleGraph.Coloring` type. -/
+/-- Fisk's Guard Partition Lemma formulated using Mathlib's native `SimpleGraph.Coloring` type. -/
 theorem art_gallery_theorem_coloring (G : SimpleGraph V) (c : G.Coloring (Fin 3)) :
     ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S :=
   art_gallery_theorem G c (fun _ _ huv ↦ c.valid huv)

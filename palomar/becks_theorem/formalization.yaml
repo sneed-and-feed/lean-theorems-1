@@ -8,13 +8,13 @@ project:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of József Beck's theorem (1983)
-    in combinatorial incidence geometry. Proves the fundamental dichotomy that any finite set
-    of n points in the Euclidean plane either contains a line with Omega(n) points or spans
-    Omega(n^2) distinct lines, establishing the exact pairs double-counting identity and
-    parameterized algebraic dichotomy. To the maintainers' knowledge, the theorem was not
-    found in an exact declaration name, docstring, and type signature search of the pinned
-    Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of fundamental incidence geometry results on point
+    configurations in the Euclidean plane R^2 from József Beck's work (1983). Establishes the exact
+    pairs double-counting identity sum_{l in L(P)} |l|(|l| - 1) = |P|(|P| - 1), deduces the fundamental
+    pair-counting bound |P|(|P| - 1) <= |L(P)| * k(k - 1) (where k is the maximum number of collinear points),
+    and proves the parameterized algebraic dichotomy for any threshold parameter alpha in (0, 1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring,
+    and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
@@ -23,6 +23,8 @@ classification:
 sources:
   - title: "On the lattice property of the plane and some problems of Dirac, Motzkin and Erdős in combinatorial geometry"
     type: paper
+    year: 1983
+    venue: "Combinatorica"
     authors:
       - "József Beck"
     relationship: formalizes

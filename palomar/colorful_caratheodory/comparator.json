@@ -1,0 +1,19 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ColorfulCaratheodory.colorful_caratheodory_point",
+    "ColorfulCaratheodory.colorful_caratheodory_origin",
+    "ColorfulCaratheodory.caratheodory_classical_deduction",
+    "ColorfulCaratheodory.colorful_caratheodory_dim1",
+    "ColorfulCaratheodory.colorful_caratheodory_dim2",
+    "ColorfulCaratheodory.centerpoint_1d",
+    "ColorfulCaratheodory.first_selection_lemma_1d",
+    "ColorfulCaratheodory.colorful_selection_lemma_1d"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}

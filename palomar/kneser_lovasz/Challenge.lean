@@ -21,7 +21,8 @@ instance (k : ℕ) : Std.Irrefl (kneserRel α k) where
 def kneserGraph (k : ℕ) : SimpleGraph {s : Finset α // s.card = k} :=
   SimpleGraph.fromRel (kneserRel α k)
 
-/-- **Kneser's Conjecture / Lovász's Theorem (1978):**
+/-- **Kneser's Graph Coloring Upper Bound (Martin Kneser, 1955):**
 The Kneser graph $KG(n, k)$ on subsets of `Fin n` is $(n - 2k + 2)$-colorable. -/
-theorem kneser_lovasz_chromatic_number (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
+theorem kneser_graph_colorable (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
     (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) := sorry
+

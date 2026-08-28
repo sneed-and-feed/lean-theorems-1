@@ -3,7 +3,8 @@
   "solution_module": "Solution",
   "theorem_names": [
     "TverbergsTheorem.tverbergs_theorem",
-    "TverbergsTheorem.tverberg_1d"
+    "TverbergsTheorem.tverberg_1d",
+    "TverbergsTheorem.colorful_tverberg_1d"
   ],
   "permitted_axioms": [
     "propext",

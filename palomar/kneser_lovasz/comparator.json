@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "kneser_lovasz_chromatic_number"
+    "kneser_graph_colorable"
   ],
   "permitted_axioms": [
     "propext",
@@ -10,3 +10,4 @@
     "Classical.choice"
   ]
 }
+

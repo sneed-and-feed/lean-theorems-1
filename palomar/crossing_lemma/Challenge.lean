@@ -1,8 +1,9 @@
 import Mathlib.Data.Real.Basic
 
-/-- **The Crossing Lemma (Ajtai et al. 1982 / Leighton 1983 / Székely 1997)**:
-For any graph with |E| ≥ 4|V| satisfying the sub-sampling expectation inequality,
-the crossing number satisfies cr(G) ≥ |E|³ / (64 |V|²). -/
+/-- **Székely's Algebraic Expectation Amplification Lemma for Graph Crossings (1997)**:
+For any graph parameters with $e \ge 4v$ satisfying the random sub-sampling expectation
+inequality $p^2 e - 3 p v \le p^4 \text{cr}$ for $p = 4v / e$ (derived from the planar Euler base condition),
+the crossing bound $\text{cr} \ge e^3 / (64 v^2)$ holds. -/
 theorem crossing_lemma (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
     (h_dense : 4 * v ≤ e)
     (h_expect : (4 * v / e)^2 * e - 3 * (4 * v / e) * v ≤ (4 * v / e)^4 * cr) :

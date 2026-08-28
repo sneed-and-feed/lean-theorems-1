@@ -1,7 +1,7 @@
 version: "v0.4"
 
 project:
-  name: "The De Bruijn–Erdős Theorem on Incidence Geometry"
+  name: "The De Bruijn–Erdős Theorem on Incidence Geometry and Near-Pencil Tightness"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
@@ -9,10 +9,14 @@ project:
   license: "CC0-1.0"
   description: >-
     A complete machine-checked Lean 4 formalization of the De Bruijn–Erdős theorem (1948)
-        in incidence geometry and pairwise balanced block designs. Proves that any finite linear space
-        on n ≥ 3 non-collinear points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's
-        metric perturbation proof.
-        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    in incidence geometry and pairwise balanced block designs, together with its constructive
+    near-pencil tightness proof. Proves that any finite linear space on n ≥ 3 non-collinear
+    points determines at least n lines (|P| ≤ |L|), adapting J. H. Conway's metric perturbation
+    double-counting proof. Furthermore, explicitly constructs the near-pencil configuration
+    (consisting of one line of n - 1 points and n - 1 lines of 2 points) and proves that it
+    forms a valid linear space achieving exact equality |L| = |P|.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
@@ -31,7 +35,8 @@ related_formalizations:
     relationship: builds-on
     note: >-
       Formalization builds on Mathlib's finite set combinatorics and double-counting sum infrastructure
-      to establish linear space axioms, point-line incidences, and Conway's metric perturbation inequality.
+      to establish linear space axioms, point-line incidences, Conway's metric perturbation inequality,
+      and near-pencil tightness.
 
 automation:
   methods:

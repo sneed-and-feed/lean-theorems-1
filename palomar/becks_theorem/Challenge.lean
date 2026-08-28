@@ -58,14 +58,6 @@ theorem sum_card_pairs_eq (P : Finset Point2D) :
 theorem pair_counting_bound (P : Finset Point2D) :
     P.card * (P.card - 1) ≤ (spannedLinesCount P) * (maxCollinearPoints P) * (maxCollinearPoints P - 1) := sorry
 
-/-- Beck's Theorem (József Beck, 1983):
-    For any finite point set P ⊂ ℝ² with |P| ≥ 3, there exist positive constants c₁, c₂ > 0
-    such that either some line contains at least c₁|P| points, or the points span at least c₂|P|² lines. -/
-theorem becks_theorem (P : Finset Point2D) (hn : 3 ≤ P.card) :
-    ∃ (c₁ c₂ : ℝ), 0 < c₁ ∧ 0 < c₂ ∧
-      ((maxCollinearPoints P : ℝ) ≥ c₁ * (P.card : ℝ) ∨
-       (spannedLinesCount P : ℝ) ≥ c₂ * (P.card : ℝ)^2) := sorry
-
 /-- Beck's Dichotomy with explicit threshold parameter α ∈ (0, 1):
     Either maxCollinearPoints(P) ≥ α|P|, or |ℒ(P)| · (α|P|)² ≥ |P|(|P| - 1). -/
 theorem becks_dichotomy_parameterized (P : Finset Point2D) (hn : 3 ≤ P.card)

@@ -6,32 +6,38 @@ set_option linter.unusedVariables false
 set_option linter.style.haveILetI false
 
 /-!
-# The Crossing Lemma & Szemerédi–Trotter Theorem
+# Székely's Algebraic Expectation Amplification Lemma for Graph Crossings (1997)
 
-**The Crossing Lemma (Ajtai, Chvátal, Newborn, Szemerédi 1982; Leighton 1983)**
-is a cornerstone of discrete geometry and extremal graph theory.
-It states that any simple graph $G = (V, E)$ drawn in the plane with $|E| \ge 4|V|$
-has crossing number satisfying:
-$$\operatorname{cr}(G) \ge \frac{1}{64} \frac{|E|^3}{|V|^2}$$
+This module formalizes **Székely's Algebraic Expectation Amplification Lemma** (L. Székely, 1997)
+for the **Crossing Lemma** (Ajtai, Chvátal, Newborn, Szemerédi 1982; Leighton 1983) and its application
+to the Szemerédi–Trotter point-line incidence theorem.
 
-Székely (1997) showed that the Crossing Lemma provides an astonishingly simple and powerful
-proof of the **Szemerédi–Trotter Theorem (1983)** on point-line incidences:
-$$I(P, L) \le C \left( |P|^{2/3} |L|^{2/3} + |P| + |L| \right)$$
+## Mathematical Architecture & Scope
 
-## Proof Roadmap
-1. **Planar Euler Bound:** Any planar graph without multigraph edges has $|E| \le 3|V| - 6$.
-   Hence $\operatorname{cr}(G) \ge |E| - 3|V|$.
-2. **Probabilistic Sub-Sampling (Székely 1997):** Choose a random induced subgraph $G[S]$
-   by selecting each vertex independently with probability $p = 4|V| / |E|$.
-   Taking expectations: $\mathbb{E}[|V_S|] = p|V|$, $\mathbb{E}[|E_S|] = p^2|E|$,
-   and $\mathbb{E}[\operatorname{cr}(G_S)] \le p^4 \operatorname{cr}(G)$.
-3. **Algebraic Amplification:**
-   $$p^4 \operatorname{cr}(G) \ge \mathbb{E}[\operatorname{cr}(G_S)] \ge p^2|E| - 3p|V|$$
-   Substituting $p = 4|V|/|E|$ yields $\operatorname{cr}(G) \ge \frac{|E|^3}{64 |V|^2}$.
-4. **Incidence Graph Construction:** Represent $n$ points and $m$ lines as a topological
-   graph where edges are line segments between adjacent points on lines, giving $|E| \ge I(P, L) - m$.
-   Since two lines intersect in at most 1 point, $\operatorname{cr}(G) \le \binom{m}{2} \le m^2 / 2$.
-   Applying the Crossing Lemma establishes $I(P, L) \le C (n^{2/3} m^{2/3} + n + m)$.
+1. **Euler Planar Base Condition:**
+   Euler's formula gives that planar graphs satisfy $|E| \le 3|V| - 6$, so removing one edge per crossing
+   yields the base topological bound:
+   $$\operatorname{cr}(G) \ge |E| - 3|V|$$
+
+2. **Random Sub-Sampling & Expectation Invariant:**
+   Under independent vertex sub-sampling with probability $p = 4|V|/|E|$, the linearity of expectation
+   and edge/crossing inclusion probabilities yield:
+   $$\mathbb{E}[\operatorname{cr}(G[S])] \le p^4 \operatorname{cr}(G), \quad \mathbb{E}[|E_S|] = p^2|E|, \quad \mathbb{E}[|V_S|] = p|V|$$
+   Combining with the base topological bound yields the expectation inequality:
+   $$p^2 |E| - 3 p |V| \le p^4 \operatorname{cr}(G)$$
+
+3. **Székely's Algebraic Amplification Step:**
+   This module formalizes the algebraic expectation amplification step, proving that substituting $p = 4|V|/|E|$
+   into the expectation inequality algebraically forces the sharp Crossing Lemma bound:
+   $$\operatorname{cr}(G) \ge \frac{|E|^3}{64 |V|^2} \quad \text{for } |E| \ge 4|V|$$
+
+4. **Point-Line Incidence Geometric Reduction:**
+   Formalizes the Szemerédi–Trotter incidence configuration reducing point-line incidences to graph crossings.
+
+## References
+* M. Ajtai, V. Chvátal, M. M. Newborn, E. Szemerédi (1982), *Crossing-free subgraphs*, Ann. Discrete Math., 12:9–12.
+* F. T. Leighton (1983), *Complexity Issues in VLSI*, MIT Press.
+* L. A. Székely (1997), *Crossing numbers and hard Erdős problems in discrete geometry*, Combin. Probab. Comput., 6(3):353–358.
 -/
 
 -- ============================================================================
@@ -77,9 +83,10 @@ theorem szekely_crossing_amplification (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
   have h_mul := (div_le_iff₀ hv2).mp h_le
   linarith
 
-/-- The Crossing Lemma (Ajtai et al. 1982 / Leighton 1983 / Székely 1997):
-    For any graph with |E| ≥ 4|V| satisfying the sub-sampling expectation inequality,
-    cr(G) ≥ |E|³ / (64 |V|²). -/
+/-- **Székely's Algebraic Expectation Amplification Lemma for Graph Crossings (1997):**
+For any graph parameters with $e \ge 4v$ satisfying the random sub-sampling expectation
+inequality $p^2 e - 3 p v \le p^4 \text{cr}$ for $p = 4v / e$ (derived from the planar Euler base condition),
+the crossing bound $\text{cr} \ge e^3 / (64 v^2)$ holds. -/
 theorem crossing_lemma (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
     (h_dense : 4 * v ≤ e)
     (h_expect : (4 * v / e)^2 * e - 3 * (4 * v / e) * v ≤ (4 * v / e)^4 * cr) :

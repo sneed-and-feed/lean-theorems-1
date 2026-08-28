@@ -26,9 +26,9 @@ def AnglesOpen {n : ℕ} (P Q : PolygonalChain n) : Prop :=
     dot (vecSub (P i_prev) (P i_curr)) (vecSub (P i_next) (P i_curr)) ≥
     dot (vecSub (Q i_prev) (Q i_curr)) (vecSub (Q i_next) (Q i_curr))
 
-/-- **Cauchy's Arm Lemma (A. L. Cauchy, 1813):**
-Opening the internal angles of a planar polygonal chain increases the Euclidean distance between
-its endpoints for chains of length at most 2. -/
+/-- **Cauchy's Arm Base Lemma (A. L. Cauchy, 1813 / Hinge Theorem):**
+Opening the internal joint angle of a planar polygonal chain increases the Euclidean distance between
+its endpoints for chains of length at most 2 (the Law of Cosines / Hinge inequality base step). -/
 theorem cauchy_arm_lemma {n : ℕ} (hn : n ≤ 2) (P Q : PolygonalChain n)
     (h_len : EdgeLengthsMatch P Q) (h_ang : AnglesOpen P Q) :
     distSq (P 0) (P (Fin.last n)) ≤ distSq (Q 0) (Q (Fin.last n)) := sorry

@@ -5,21 +5,22 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Tactic
 
 /-!
-# Cauchy's Arm Lemma and Convex Rigidity (1813)
+# Cauchy's Arm Base Lemma: The Hinge Theorem and Cosine Inequality (1813)
 
-This module formalizes **Cauchy's Arm Lemma** (A. L. Cauchy, 1813),
-the geometric engine behind Cauchy's Rigidity Theorem for 3D convex polyhedra.
+This module formalizes **Cauchy's Arm Base Lemma** (A. L. Cauchy, 1813), the 2-chain hinge
+inequality / Law of Cosines base engine underpinning Cauchy's Rigidity Theorem for 3D convex polyhedra.
 
 ## Mathematical Statement
 
-Let $P = (p_0, p_1, \dots, p_n)$ and $Q = (q_0, q_1, \dots, q_n)$ be two planar polygonal chains
+Let $P = (p_0, p_1, p_2)$ and $Q = (q_0, q_1, q_2)$ be two planar polygonal 2-chains
 (arms) in $\mathbb{R}^2$ with identical edge lengths:
-$$\|p_i - p_{i-1}\| = \|q_i - q_{i-1}\| \quad \text{for } 1 \le i \le n$$
-If $P$ is convex and the internal joint angles of $Q$ are all greater than or equal to
-the corresponding angles of $P$:
-$$\angle(p_{i-1}, p_i, p_{i+1}) \le \angle(q_{i-1}, q_i, q_{i+1}) \quad \text{for } 1 \le i \le n - 1$$
-then the distance between the chain endpoints increases:
-$$\|p_n - p_0\| \le \|q_n - q_0\|$$
+$$\|p_1 - p_0\| = \|q_1 - q_0\|, \quad \|p_2 - p_1\| = \|q_2 - q_1\|$$
+If the internal joint angle of $Q$ is greater than or equal to the corresponding angle of $P$:
+$$\angle(p_0, p_1, p_2) \le \angle(q_0, q_1, q_2)$$
+then the distance between the chain endpoints increases (the Hinge Theorem / Law of Cosines inequality):
+$$\|p_2 - p_0\| \le \|q_2 - q_0\|$$
+
+The general $n$-chain Cauchy Arm Lemma reduces inductively to this 2-chain base engine and planar convexity.
 
 ## References
 * A. L. Cauchy (1813), *Recherches sur les polyèdres: Premier Mémoire*, J. de l'École Polytechnique, 9:68–86.
@@ -88,8 +89,9 @@ theorem cauchy_arm_lemma_two (P Q : PolygonalChain 2)
   rw [show (Fin.last 2 : Fin 3) = 2 from rfl, distSq_three (P 0) (P 1) (P 2), distSq_three (Q 0) (Q 1) (Q 2), e0, e1]
   linarith
 
-/-- **Cauchy's Arm Lemma (A. L. Cauchy, 1813):**
-Opening the angles of a polygonal chain increases the distance between its endpoints for chains of length at most 2. -/
+/-- **Cauchy's Arm Base Lemma (A. L. Cauchy, 1813 / Hinge Theorem):**
+Opening the internal joint angle of a planar polygonal chain increases the Euclidean distance between
+its endpoints for chains of length at most 2 (the Law of Cosines / Hinge inequality base step). -/
 theorem cauchy_arm_lemma (hn : n ≤ 2) (P Q : PolygonalChain n)
     (h_len : EdgeLengthsMatch P Q) (h_ang : AnglesOpen P Q) :
     distSq (P 0) (P (Fin.last n)) ≤ distSq (Q 0) (Q (Fin.last n)) := by

@@ -5,6 +5,7 @@
     "ErdosUnitDistances.erdos_unit_distances_bound",
     "ErdosUnitDistances.erdos_unit_distances_bound_tight",
     "ErdosUnitDistances.erdos_unit_distances_uniform_bound",
+    "ErdosUnitDistances.erdos_unit_distances_global_bound",
     "ErdosUnitDistances.erdos_unit_distances_asymptotic"
   ],
   "permitted_axioms": [

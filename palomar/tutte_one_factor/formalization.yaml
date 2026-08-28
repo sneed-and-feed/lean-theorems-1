@@ -1,20 +1,23 @@
 version: "v0.4"
 
 project:
-  name: "Tutte's 1-Factor Theorem for Simple Graphs"
+  name: "Tutte's 1-Factor Theorem and Tutte–Berge Defect Duality for Simple Graphs"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Tutte's 1-Factor Theorem (1947),
-    establishing the fundamental characterization that a finite simple graph has a 1-factor
-    (perfect matching) if and only if for every vertex subset U, the number of odd components
-    q(G \ U) is at most |U|. While Mathlib provides the core SimpleGraph.tutte theorem via IsTutteViolator,
-    this formalization builds the complete structural theory: the idiomatic 1-factor predicate HasOneFactor,
-    the odd connected component counter q(G \ U), the Tutte–Berge matching defect min-max formula,
-    and Petersen's factor theorems.
+    A complete machine-checked Lean 4 formalization of Tutte's 1-Factor Theorem (1947)
+    and Tutte–Berge defect duality in finite simple graphs. Proves the fundamental characterization
+    that a finite simple graph G has a 1-factor (perfect matching) if and only if for every vertex subset U,
+    the number of odd components q(G \ U) is at most |U|. While Mathlib provides the core SimpleGraph.tutte
+    theorem via IsTutteViolator, this formalization builds the complete structural theory: the idiomatic
+    1-factor predicate HasOneFactor, the odd connected component counter q(G \ U), the Tutte–Berge
+    matching defect min-max formula, characterization via maximum matching size nu(G) = |V| / 2, and the
+    derivation of Hall's Marriage Theorem condition from Tutte's condition in bipartite graphs.
+    To the maintainers' knowledge, the 1-factor and Tutte-Berge defect API formulation was not found in an exact
+    declaration name search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
@@ -26,13 +29,18 @@ sources:
     authors:
       - "W. T. Tutte"
     relationship: formalizes
+  - title: "Sur le couplage maximum d'un graphe"
+    type: paper
+    authors:
+      - "C. Berge"
+    relationship: adapts
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Tutte.lean"
     relationship: builds-on
     note: >-
       Formalization builds on Mathlib's SimpleGraph.tutte and IsTutteViolator infrastructure to establish
-      the 1-factor characterization, explicit odd-component counting, and the Tutte-Berge defect duality.
+      the idiomatic 1-factor characterization, explicit odd-component counting, and the Tutte-Berge defect duality.
 
 automation:
   methods:

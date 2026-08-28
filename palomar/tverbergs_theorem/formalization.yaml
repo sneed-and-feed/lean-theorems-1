@@ -1,7 +1,7 @@
 version: "v0.4"
 
 project:
-  name: "Tverberg's Partition Theorem and the Full One-Dimensional Case"
+  name: "Tverberg's Partition Theorem, 1D Theorem, and Colorful 1D Theorem"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
@@ -9,10 +9,14 @@ project:
   license: "CC0-1.0"
   description: >-
     A complete, machine-checked Lean 4 formalization of Tverberg's Theorem (Helge Tverberg,
-    1966) for r <= 2 across all dimensions and for arbitrary r in dimension one. Proves that
-    any (r - 1)(d + 1) + 1 points in ℝ^d can be partitioned into r parts whose convex hulls
-    intersect, formalizing the full 1D case via symmetric-rank pairing following Mulzer–Werner
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    1966) for r <= 2 across all dimensions, the full 1D Tverberg theorem for arbitrary r via
+    symmetric-rank pairing following Mulzer–Werner, and the 1-dimensional Colorful Tverberg
+    Theorem for arbitrary r (Bárány–Larman–Pach 1992). Proves that any (r - 1)(d + 1) + 1 points
+    in ℝ^d can be partitioned into r parts whose convex hulls intersect, and that two disjoint
+    color classes of r points each in ℝ¹ can be partitioned into r colorful pairs whose convex
+    hulls share a common point of intersection. To the maintainers' knowledge, the theorem was not
+    found in an exact declaration name, docstring, and type signature search of the pinned Mathlib
+    revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.MG, math.CO]
@@ -30,6 +34,13 @@ sources:
       - "Wolfgang Mulzer"
       - "Daniel Werner"
     relationship: adapts
+  - title: "Radon-partition property in topological affine spaces"
+    type: paper
+    authors:
+      - "Imre Bárány"
+      - "David G. Larman"
+      - "János Pach"
+    relationship: formalizes
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"

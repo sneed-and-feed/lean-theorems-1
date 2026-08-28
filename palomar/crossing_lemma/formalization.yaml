@@ -1,18 +1,21 @@
 version: "v0.4"
 
 project:
-  name: "The Crossing Lemma and Székely's Probabilistic Amplification"
+  name: "Székely's Algebraic Expectation Amplification Lemma for Graph Crossings"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of the Crossing Lemma (Ajtai, Chvátal, Newborn, Szemerédi 1982;
-        Leighton 1983) and its application to the Szemerédi–Trotter point-line incidence theorem via László Székely's
-        probabilistic expectation sub-sampling amplification (1997). Proves that any planar drawing of a graph with
-        e >= 4v edges has at least e^3 / 64v^2 crossings.
-        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A machine-checked Lean 4 formalization of Székely's Algebraic Expectation Amplification Lemma
+    (László Székely, 1997) for the Crossing Lemma (Ajtai, Chvátal, Newborn, Szemerédi 1982; Leighton 1983)
+    and its application to the Szemerédi–Trotter point-line incidence theorem. Formalizes the algebraic
+    probability expectation inequality step that amplifies the planar Euler base condition (cr >= e - 3v)
+    under independent vertex sub-sampling to deduce the tight crossing lower bound cr >= e^3 / (64 v^2)
+    for dense graphs (e >= 4v). To the maintainers' knowledge, the theorem was not found in an exact
+    declaration name, docstring, and type signature search of the pinned Mathlib revision
+    (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]

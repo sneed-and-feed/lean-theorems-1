@@ -46,6 +46,12 @@ theorem erdos_unit_distances_bound_tight (sys : UnitDistanceSystem) :
 theorem erdos_unit_distances_uniform_bound (sys : UnitDistanceSystem) (hn8 : 8 ≤ sys.n) :
     sys.u ≤ 4 * sys.n ^ (4 / 3 : ℝ) := sorry
 
+/-- **Erdős Unit Distances Global Uniform Bound**:
+    For all configurations with $n \ge 1$, the unit distance pair count satisfies:
+    $$u(n) \le 6 n^{4/3}$$ -/
+theorem erdos_unit_distances_global_bound (sys : UnitDistanceSystem) :
+    sys.u ≤ 6 * sys.n ^ (4 / 3 : ℝ) := sorry
+
 /-- **Erdős Unit Distances Asymptotic Existence Bound**:
     There exists an absolute universal constant $C > 0$ such that for every point configuration,
     the unit distance pair count satisfies $u(n) \le C n^{4/3}$. -/

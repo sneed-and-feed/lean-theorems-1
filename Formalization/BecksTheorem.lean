@@ -18,35 +18,21 @@ open scoped Classical
 noncomputable section
 
 /-!
-# Beck's Theorem on Incidence Geometry (1983)
+# Beck's Theorem & Exact Incidence Bounds on Point Configurations (1983)
 
-**Beck's Theorem (József Beck, 1983)** is a fundamental dichotomy in combinatorial geometry.
-It states that any finite set of $n$ points in the Euclidean plane $\mathbb{R}^2$
-falls into one of two extreme regimes:
-1. **Collinear Dominance:** A single line contains a positive fraction $c_1 \cdot n$ of all points.
-2. **Quadratic Line Generation:** The points span $\Omega(n^2)$ distinct lines.
-
-## Mathematical Statement
-There exist absolute positive constants $c_1, c_2 > 0$ such that for any finite set $P \subset \mathbb{R}^2$
-of $n$ points:
-- Either some line contains at least $c_1 n$ points of $P$,
-- Or the set of lines spanned by pairs in $P$ satisfies $|\mathcal{L}(P)| \ge c_2 n^2$.
-
-## Structure of the Formalization
+**József Beck (1983)** established fundamental dichotomy results in combinatorial incidence geometry.
+This module formalizes:
 1. **Geometric Lines & Collinearity in $\mathbb{R}^2$:**
-   Concrete definitions of 2D cross product, collinearity predicate, lines through pairs,
-   and parameterization of lines.
-2. **Line Uniqueness:**
-   Proof that two distinct points uniquely identify an affine line in $\mathbb{R}^2$.
-3. **Point Configurations & Spanned Lines:**
-   Computable `Finset` definitions of points on lines, distinct pairs, spanned lines $\mathcal{L}(P)$,
-   `spannedLinesCount`, and `maxCollinearPoints`.
-4. **Pairs Partition & Double-Counting Identity:**
-   Proof that the set of distinct pairs in $P$ is partitioned by the lines in $\mathcal{L}(P)$,
-   yielding the fundamental exact identity:
+   Affine line representations via 2D cross products, parameterization, and line uniqueness.
+2. **Pairs Partition & Exact Double-Counting Identity:**
+   Proof that the set of ordered pairs of distinct points in $P \subset \mathbb{R}^2$ is partitioned
+   by the spanned lines $\mathcal{L}(P)$, yielding the exact identity:
    $$\sum_{\ell \in \mathcal{L}(P)} |\ell|(|\ell| - 1) = |P|(|P| - 1)$$
-5. **Incidence Bounds & Beck's Dichotomy Theorem:**
-   Deduction of the lower bound on $|\mathcal{L}(P)|$ and Beck's dichotomy.
+3. **Fundamental Pair-Counting Inequality:**
+   Proof that $|P|(|P| - 1) \le |\mathcal{L}(P)| \cdot k(k - 1)$, where $k = \text{maxCollinearPoints}(P)$.
+4. **Parameterized Algebraic Dichotomy:**
+   For any threshold parameter $\alpha \in (0, 1)$, either at least $\alpha |P|$ points are collinear,
+   or $|\mathcal{L}(P)| \cdot (\alpha |P|)^2 \ge |P|(|P| - 1)$.
 -/
 
 namespace BecksTheorem
@@ -490,42 +476,6 @@ theorem spanned_lines_bound_of_max_collinear (P : Finset Point2D) (hn : 2 ≤ P.
     mul_pos hk_pos_k hk_pos
   exact (div_le_iff₀ h_denom_pos).mpr (by linarith [h_bound])
 
-/-- Beck's Theorem (József Beck, 1983):
-    For any finite point set P ⊂ ℝ² with |P| ≥ 3, there exist positive constants c₁, c₂ > 0
-    such that either some line contains at least c₁|P| points, or the points span at least c₂|P|² lines. -/
-theorem becks_theorem (P : Finset Point2D) (hn : 3 ≤ P.card) :
-    ∃ (c₁ c₂ : ℝ), 0 < c₁ ∧ 0 < c₂ ∧
-      ((maxCollinearPoints P : ℝ) ≥ c₁ * (P.card : ℝ) ∨
-       (spannedLinesCount P : ℝ) ≥ c₂ * (P.card : ℝ)^2) := by
-  have hn_pos : 0 < (P.card : ℝ) := by
-    have : 0 < P.card := by omega
-    exact Nat.cast_pos.mpr this
-  have h_card_ge_2 : 2 ≤ P.card := by omega
-  have h_card_dp : (distinctPairs P).card = P.card * (P.card - 1) := card_offDiag P
-  have h_pos_prod : 0 < P.card * (P.card - 1) := by
-    have h1 : 0 < P.card := by omega
-    have h2 : 0 < P.card - 1 := by omega
-    exact mul_pos h1 h2
-  have h_pos_pairs : 0 < (distinctPairs P).card := by rw [h_card_dp]; exact h_pos_prod
-  obtain ⟨⟨p, q⟩, hpq⟩ := Finset.card_pos.mp h_pos_pairs
-  rw [distinctPairs, Finset.mem_filter, Finset.mem_product] at hpq
-  have hl_in : pointsOnLine P p q ∈ spannedLines P :=
-    pointsOnLine_mem_spannedLines P hpq.1.1 hpq.1.2 hpq.2
-  have hk_ge_2 : 2 ≤ maxCollinearPoints P := by
-    have h2 := two_le_card_pointsOnLine P hpq.1.1 hpq.1.2 hpq.2
-    have h_le := card_le_maxCollinearPoints P hl_in
-    exact h2.trans h_le
-  have hk_pos_r : 0 < (maxCollinearPoints P : ℝ) := by
-    have : 0 < maxCollinearPoints P := by omega
-    exact Nat.cast_pos.mpr this
-  let c₁ : ℝ := (maxCollinearPoints P : ℝ) / (P.card : ℝ)
-  let c₂ : ℝ := 1 / (P.card : ℝ)^2
-  have hc₁_pos : 0 < c₁ := div_pos hk_pos_r hn_pos
-  have hc₂_pos : 0 < c₂ := by positivity
-  refine ⟨c₁, c₂, hc₁_pos, hc₂_pos, Or.inl ?_⟩
-  dsimp [c₁]
-  rw [div_mul_cancel₀ (maxCollinearPoints P : ℝ) (ne_of_gt hn_pos)]
-
 /-- Beck's Dichotomy with explicit threshold parameter α ∈ (0, 1):
     Either maxCollinearPoints(P) ≥ α|P|, or |ℒ(P)| · (α|P|)² ≥ |P|(|P| - 1). -/
 theorem becks_dichotomy_parameterized (P : Finset Point2D) (hn : 3 ≤ P.card)
@@ -554,8 +504,8 @@ theorem becks_dichotomy_parameterized (P : Finset Point2D) (hn : 3 ≤ P.card)
         have hm_nonneg : 0 ≤ (spannedLinesCount P : ℝ) := by positivity
         nlinarith
 
-#print axioms becks_theorem
 #print axioms sum_card_pairs_eq
 #print axioms pair_counting_bound
+#print axioms becks_dichotomy_parameterized
 
 end BecksTheorem

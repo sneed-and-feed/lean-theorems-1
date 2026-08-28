@@ -7,7 +7,21 @@ import Mathlib.Data.Fintype.Card
 import Mathlib.Tactic
 
 /-!
-# Kneser's Conjecture / Lovász's Theorem (1978)
+# Kneser's Graph Coloring Upper Bound (Martin Kneser, 1955)
+
+In 1955, Martin Kneser conjectured that the chromatic number of the Kneser graph $KG(n, k)$
+equals $n - 2k + 2$ and constructed an explicit proper vertex $(n - 2k + 2)$-coloring.
+László Lovász (1978) proved the matching lower bound $\chi(KG(n, k)) \ge n - 2k + 2$ using
+topological methods (Borsuk–Ulam theorem / homotopy theory).
+
+This module formalizes Kneser's explicit combinatorial upper-bound coloring construction:
+1. `kneserRel` & `kneserGraph`: Definition of the Kneser graph $KG(\alpha, k)$ on $k$-element subsets.
+2. `kneserColor`: The explicit coloring function mapping each $k$-subset $A \subseteq \{0, \dots, n-1\}$
+   to its minimum element $\min(A)$ if $\min(A) \le n - 2k$, and to $n - 2k + 1$ otherwise.
+3. `kneserColor_proper`: Proof that two disjoint $k$-subsets never receive the same color,
+   using the pigeonhole principle on the residual interval $\{n - 2k + 1, \dots, n - 1\}$.
+4. `kneser_graph_colorable`: The main theorem establishing that $KG(\text{Fin } n, k)$ is
+   $(n - 2k + 2)$-colorable whenever $1 \le k$ and $2k \le n$.
 -/
 
 variable (α : Type*) [DecidableEq α] [Fintype α]
@@ -69,18 +83,6 @@ theorem kneser_upper_bound (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
       ∀ A B, Disjoint A.val B.val → c A ≠ c B :=
   ⟨kneserColor n k hk hn, fun A B hdisj h_same => kneserColor_proper n k hk hn A B h_same hdisj⟩
 
-theorem kneser_k_one_chromatic (n : ℕ) (_hn : 2 ≤ n) :
-    n - 2 * 1 + 2 = n := by omega
-
-theorem kneser_two_k_chromatic (k : ℕ) (_hk : 1 ≤ k) :
-    2 * k - 2 * k + 2 = 2 := by omega
-
-theorem kneser_lovasz_chromatic_bound (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
-    ∃ (c : {s : Finset ℕ // s.card = k ∧ ∀ x ∈ s, x < n} → Fin (n - 2 * k + 2)),
-      (∀ A B, Disjoint A.val B.val → c A ≠ c B) ∧
-      (n - 2 * k + 2 = n - 2 * k + 2) :=
-  ⟨kneserColor n k hk hn, fun A B hdisj h_same => kneserColor_proper n k hk hn A B h_same hdisj, rfl⟩
-
 def finsetToNatSubtype {n k : ℕ} (A : {s : Finset (Fin n) // s.card = k}) :
     {s : Finset ℕ // s.card = k ∧ ∀ x ∈ s, x < n} :=
   ⟨A.val.map Fin.valEmbedding, by
@@ -101,12 +103,8 @@ def kneserColoring (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
       · exact kneserColor_proper n k hk hn _ _ h_eq (finsetToNatSubtype_disjoint A B h.1)
       · exact kneserColor_proper n k hk hn _ _ h_eq (finsetToNatSubtype_disjoint A B h.1.symm))
 
-theorem kneser_colorable (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
+/-- **Kneser's Graph Coloring Upper Bound (Martin Kneser, 1955):**
+The Kneser graph $KG(n, k)$ on subsets of `Fin n` is $(n - 2k + 2)$-colorable. -/
+theorem kneser_graph_colorable (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
     (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) :=
   ⟨kneserColoring n k hk hn⟩
-
-/-- **Kneser's Conjecture / Lovász's Theorem (1978):**
-The Kneser graph $KG(n, k)$ on subsets of `Fin n` is $(n - 2k + 2)$-colorable. -/
-theorem kneser_lovasz_chromatic_number (n k : ℕ) (hk : 1 ≤ k) (hn : 2 * k ≤ n) :
-    (kneserGraph (Fin n) k).Colorable (n - 2 * k + 2) :=
-  kneser_colorable n k hk hn

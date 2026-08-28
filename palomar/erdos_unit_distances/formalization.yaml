@@ -10,8 +10,11 @@ project:
   description: >-
     A complete machine-checked Lean 4 formalization of the Spencer–Szemerédi–Trotter (1984)
     upper bound u(n) = O(n^(4/3)) on the Erdős unit distance problem in the Euclidean plane,
-    using László Székely's circle crossing lemma approach (1997). Proves explicit non-asymptotic
-    bounds u(n) <= 2 n^(4/3) + 4n, u(n) <= 4 n^(4/3) for n >= 8, and the asymptotic constant existence.
+    using László Székely's circle crossing lemma approach (1997). Defines the UnitDistanceSystem
+    reduction carrier interface linking point-circle incidences to topological circular arc
+    crossings in the plane. Proves explicit non-asymptotic bounds u(n) <= 2 n^(4/3) + 4n,
+    the tight linear bound u(n) <= 2 n^(4/3) + 5/2 n, the uniform bound u(n) <= 4 n^(4/3) for n >= 8,
+    the global bound u(n) <= 6 n^(4/3) for all n >= 1, and the asymptotic constant existence.
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:

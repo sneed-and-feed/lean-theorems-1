@@ -1,18 +1,22 @@
 version: "v0.4"
 
 project:
-  name: "Chvátal's Art Gallery Theorem & Fisk's 3-Coloring Proof"
+  name: "Fisk's Triangulation Guard Partition Lemma from 3-Colorings"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Chvátal's Art Gallery Theorem (1975)
-        via Steve Fisk's elegant 1978 3-coloring proof on triangulated polygon graphs. Proves that for
-        any 3-colorable planar triangulation graph on n vertices, there exists a guard set of size
-        floor(n/3).
-        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Fisk's Triangulation Guard Partition Lemma
+    (Steve Fisk, 1978), the combinatorial partition and pigeonhole core of Fisk's proof of Chvátal's
+    Art Gallery Theorem (1975). Proves that for any graph on n vertices equipped with a valid proper
+    3-coloring (such as a 3-colored planar polygon triangulation), selecting the minimal color class yields
+    a guard set of size at most floor(n / 3) covering all 3-cliques / facial triangles. The existence of a
+    polygon triangulation and its 3-colorability serve as external preconditions, isolating the exact
+    discrete guard partition mechanism. To the maintainers' knowledge, the theorem was not found in an
+    exact declaration name, docstring, and type signature search of the pinned Mathlib revision
+    (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]

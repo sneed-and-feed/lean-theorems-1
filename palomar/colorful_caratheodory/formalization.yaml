@@ -1,0 +1,55 @@
+version: "v0.4"
+
+project:
+  name: "Bárány's Colorful Carathéodory Theorem, Selection Lemmas, and Centerpoint Theorem"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete, machine-checked Lean 4 formalization of Bárány's Colorful Carathéodory Theorem (1982),
+    Bárány's First Selection Lemma (1982), the 1D Centerpoint Theorem, and geometric deductions from first
+    principles. Proves that for any d + 1 sets of points S_0, ..., S_d in R^d whose convex hulls all
+    contain a common target point p, there exists a colorful transversal f (selecting f(i) in S_i for each
+    color class i) whose convex hull conv({f(0), ..., f(d)}) contains p. Formulated over arbitrary dimension d,
+    with specializations to the origin and low dimensions (d = 0, 1, 2), a formal deduction of the classical
+    Carathéodory theorem bound, the 1D Centerpoint Theorem (median contains >= (|P|+1)/2 points in each half-line),
+    Bárány's 1982 First Selection Lemma (>= (|P|/2)(|P|-|P|/2) pairs containing the centerpoint), and the 1D Colorful
+    Selection Lemma (at least one colorful pair covering p). To the maintainers' knowledge, the theorem was not found
+    in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.MG, math.CO]
+  msc2020: ["52A35", "52A20", "05D15"]
+
+sources:
+  - title: "A generalization of Carathéodory's theorem"
+    type: paper
+    authors:
+      - "Imre Bárány"
+    relationship: formalizes
+
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Caratheodory.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds upon Mathlib's classical Carathéodory theorem infrastructure (Caratheodory.minCardFinsetOfMemConvexHull)
+      and affine independence to establish the general colorful selection theorem and its deduction back to classical bounds.
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

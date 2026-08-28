@@ -204,4 +204,10 @@ theorem erdos_unit_distances_asymptotic :
       sys.u ≤ C * sys.n ^ (4 / 3 : ℝ) :=
   ⟨6, by norm_num, erdos_unit_distances_global_bound⟩
 
+#print axioms erdos_unit_distances_bound
+#print axioms erdos_unit_distances_bound_tight
+#print axioms erdos_unit_distances_uniform_bound
+#print axioms erdos_unit_distances_global_bound
+#print axioms erdos_unit_distances_asymptotic
+
 end ErdosUnitDistances

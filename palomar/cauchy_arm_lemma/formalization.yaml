@@ -1,19 +1,21 @@
 version: "v0.4"
 
 project:
-  name: "Cauchy's Arm Lemma and Convex Rigidity Foundations"
+  name: "Cauchy's Arm Base Lemma: The Hinge Theorem and Cosine Inequality"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Cauchy's Arm Lemma (1813), the fundamental geometric
-    engine underpinning Cauchy's Rigidity Theorem for 3D convex polyhedra. Formalizes 2D polygonal chains,
-    squared Euclidean distance metrics, vector inner products, and proves that opening the internal joint
-    angles of a chain increases the distance between its endpoints for chains of length at most 2.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and
-    type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A machine-checked Lean 4 formalization of Cauchy's Arm Base Lemma (the Hinge Theorem / Law of Cosines
+    base engine for Cauchy's Arm Lemma, 1813). Formalizes planar polygonal chains, squared Euclidean
+    distance metrics, vector inner products, and proves that opening the internal joint angle between two
+    adjacent segments increases the distance between the endpoints for chains of length at most 2 (the
+    2-chain hinge inequality). This establishes the foundational base case and algebraic engine underpinning
+    Cauchy's Rigidity Theorem for 3D convex polyhedra. To the maintainers' knowledge, the theorem was not
+    found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision
+    (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.MG, math.CO]

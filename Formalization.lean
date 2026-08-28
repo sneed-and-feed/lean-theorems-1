@@ -32,3 +32,4 @@ import Formalization.TutteOneFactor
 import Formalization.ElekesSumProduct
 import Formalization.ColorfulHelly
 import Formalization.SpernerND
+import Formalization.ColorfulCaratheodory
