@@ -33,7 +33,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Status |
 | :---: | :--- | :--- | :--- | :--- | :---: |
-| **1** | **Radon's Lemma and Helly's Theorem on Convex Sets** | `radon_helly` | `2485a6eb14bf5acaf8c83b4f6e6c992edae9aecd` | `palomar/radon_helly/comparator.json` | [ ] **Ready to Submit** |
+| **1** | **Radon's Lemma and Helly's Theorem on Convex Sets** | `radon_helly` | `ab63e28a6ca4082ddb2191c9cb676622c90f3797` | `palomar/radon_helly/comparator.json` | [ ] **Ready to Submit** |
 | **2** | **Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey** | `schurs_theorem` | `ea9cbd3282d1492b7798bea890f52e8b6d0f2d58` | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit** |
 | **3** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `frankl_wilson` | `a3047d6bc04685572164ac141822aea8d3ad60e4` | `palomar/frankl_wilson/comparator.json` | [ ] **Ready to Submit** |
 | **4** | **Kneser's Conjecture and Lovász's Chromatic Bound (1978)** | `kneser_lovasz` | `a1b19ef1479c60afc12d154206cc4cc7c3993f18` | `palomar/kneser_lovasz/comparator.json` | [ ] **Ready to Submit** |
