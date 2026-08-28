@@ -1,34 +1,30 @@
-import Mathlib.Data.Fintype.Card
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Finite
+import Mathlib.Analysis.Convex.Hull
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Real.Basic
 
-open Finset SimpleGraph
+namespace TverbergsTheorem
 
-variable {V : Type*} [Fintype V] [DecidableEq V] [Nonempty V]
+variable {d r : ℕ}
 
-/-- The friendship property: every pair of distinct vertices has exactly one common neighbor. -/
-def HasFriendshipProperty (G : SimpleGraph V) [DecidableRel G.Adj] : Prop :=
-  ∀ u v : V, u ≠ v → (G.neighborFinset u ∩ G.neighborFinset v).card = 1
+/-- **Tverberg's Partition Property:**
+A collection of `r` pairwise disjoint subsets of `S` that partition `S`
+and whose convex hulls have a non-empty intersection. -/
+def IsTverbergPartition (S : Finset (Fin d → ℝ)) (P : Fin r → Finset (Fin d → ℝ)) : Prop :=
+  (∀ i, P i ⊆ S) ∧
+  (∀ i j, i ≠ j → Disjoint (P i) (P j)) ∧
+  (Finset.biUnion Finset.univ P = S) ∧
+  (⋂ i : Fin r, convexHull ℝ (P i : Set (Fin d → ℝ))).Nonempty
 
-/-- A universal vertex (politician) in `G` that is adjacent to all other vertices. -/
-def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
-  ∀ v : V, v ≠ w → G.Adj w v
+/-- **Tverberg's Theorem** for r ≤ 2 (including Radon's Theorem for r = 2 and trivial partition for r = 1). -/
+theorem tverbergs_theorem (hr1 : 1 ≤ r) (hr2 : r ≤ 2)
+    (S : Finset (Fin d → ℝ)) (hS : S.card = (r - 1) * (d + 1) + 1) :
+    ∃ P : Fin r → Finset (Fin d → ℝ), IsTverbergPartition S P := sorry
 
-/-- Predicate defining a windmill graph $Wd(k, 2)$: a central vertex `w` connected to
-    `k` vertex-disjoint triangles. -/
-def IsWindmillGraph (G : SimpleGraph V) (w : V) (k : ℕ) : Prop :=
-  IsUniversalVertex G w ∧
-  Fintype.card V = 2 * k + 1 ∧
-  ∃ (matching : Finset (Finset V)),
-    matching.card = k ∧
-    (∀ e ∈ matching, e.card = 2 ∧ w ∉ e) ∧
-    (∀ e₁ ∈ matching, ∀ e₂ ∈ matching, e₁ ≠ e₂ → Disjoint e₁ e₂) ∧
-    (∀ u v, u ≠ w → v ≠ w → (G.Adj u v ↔ {u, v} ∈ matching))
+/-- **1-Dimensional Tverberg Theorem for Arbitrary r (1966):**
+Any set S of 2r - 1 points in ℝ¹ can be partitioned into r subsets whose convex hulls
+share a common point of intersection. -/
+theorem tverberg_1d (r : ℕ) (hr : 1 ≤ r)
+    (S : Finset (Fin 1 → ℝ)) (hS : S.card = (r - 1) * (1 + 1) + 1) :
+    ∃ P : Fin r → Finset (Fin 1 → ℝ), IsTverbergPartition S P := sorry
 
-/-- **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)**:
-Every finite graph satisfying the friendship property is a windmill graph $Wd(k, 2)$ consisting of $k$ triangles sharing a universal vertex. -/
-theorem friendship_windmill (G : SimpleGraph V) [DecidableRel G.Adj]
-    (h_friend : HasFriendshipProperty G) : ∃ (w : V) (k : ℕ), IsWindmillGraph G w k := sorry
+end TverbergsTheorem
