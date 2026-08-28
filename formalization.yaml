@@ -1,62 +1,66 @@
 version: "v0.4"
 
 project:
-  name: "Descartes's Rule of Signs"
+  name: "Radon's Lemma and Helly's Theorem on Convex Sets"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Descartes's Rule of Signs (1637, Wiedijk #73).
-    Proves that for any non-zero real polynomial p(X) over ℝ, the number of positive real roots counted
-    with algebraic multiplicity is bounded above by the number of sign variations in its coefficient
-    sequence (ignoring zero coefficients), and their difference is an even non-negative integer.
-    While the pinned Mathlib revision (Mathlib v4.34.0-rc1) contains the upper-bound inequality
-    in `Mathlib.Algebra.Polynomial.RuleOfSigns` (`Polynomial.roots_countP_pos_le_signVariations`),
-    this development formalizes the complete two-part theorem by proving the even-parity conclusion
-    (Gauss 1828), establishing the sign-variation parity correspondence with leading and trailing
-    coefficients, and providing a direct list-based coefficient sequence interface.
+    A complete, machine-checked Lean 4 formalization of Radon's Lemma (Johann Radon, 1921)
+    and Helly's Theorem on intersecting families of convex sets (Eduard Helly, 1923; Freek
+    Wiedijk #99) from first principles. Proves that any d + 2 points in ℝ^d admit a Radon
+    partition into two disjoint subsets whose convex hulls intersect, and uses Radon's lemma
+    by induction on the family size to prove Helly's theorem for finite families of convex sets.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.AG, math.CA, math.HO]
-  msc2020: ["12D10", "26C10", "30C15", "01A45", "01A55"]
+  arxiv: [math.MG, math.CO]
+  msc2020: ["52A35", "52A20", "52C10"]
 
 sources:
-  - title: "La Géométrie"
-    type: book
-    authors:
-      - "René Descartes"
-    year: 1637
-    venue: "Leiden: Jan Maire"
-    relationship: formalizes
-  - title: "Beweis eines algebraischen Lehrsatzes"
+  - title: "Mengen konvexer Körper, die einen gemeinsamen Punkt enthalten"
     type: paper
     authors:
-      - "Carl Friedrich Gauss"
-    year: 1828
-    venue: "Journal für die reine und angewandte Mathematik (Crelle's Journal)"
-    volume: "3"
-    pages: "5-8"
-    relationship: adapts
+      - "Johann Radon"
+    year: 1921
+    venue: "Mathematische Annalen"
+    volume: "83"
+    issue: "1-2"
+    pages: "113-115"
+    relationship: formalizes
+  - title: "Über Mengen konvexer Körper mit gemeinschaftlichen Punkten"
+    type: paper
+    authors:
+      - "Eduard Helly"
+    year: 1923
+    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
+    volume: "32"
+    pages: "175-176"
+    relationship: formalizes
+  - title: "Formalizing 100 Theorems"
+    type: webpage
+    authors:
+      - "Freek Wiedijk"
+    relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Algebra/Polynomial/RuleOfSigns.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
     relationship: builds-on
     note: >-
-      Mathlib's `Mathlib.Algebra.Polynomial.RuleOfSigns` proves the upper-bound inequality
-      `Polynomial.roots_countP_pos_le_signVariations` using an `eraseLead` formulation. The
-      present work builds on this bound by formalizing the even-parity conclusion (Gauss 1828),
-      proving equivalence between recursive and list-based sign variations, and packaging the
-      full Descartes's Rule of Signs (Wiedijk #73).
+      Formalization builds on Mathlib's convex analysis infrastructure (`convexHull`, `Convex`)
+      to formalize Radon's partition lemma on affine dependencies in ℝ^d and Helly's theorem for finite
+      families of convex sets (Freek Wiedijk #99).
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
@@ -65,9 +69,4 @@ review:
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
     while all definitions and theorem statements are completely specified. Solution verified through
-    maintainer audit with 0 errors, 0 warnings, 0 sorries, and strictly standard kernel axioms.
-    Imports and connects to Mathlib.Algebra.Polynomial.RuleOfSigns for the upper bound, while
-    formalizing the complete sign-variation parity theorem and list-based interface.
-
-
-
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.
