@@ -14,4 +14,10 @@
 Thumbs.db
 *.tmp
 *.bak
+*.swp
+*.swo
 .vscode/
+.idea/
+tmp/
+tmp_*/
+
