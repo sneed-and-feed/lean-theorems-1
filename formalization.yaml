@@ -1,50 +1,51 @@
 version: "v0.4"
 
 project:
-  name: "Elekes's Sum-Product Inequality in Additive Combinatorics"
+  name: "The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of György Elekes's landmark sum-product
-    inequalities (1997) via incidence geometry and the Szemerédi–Trotter theorem.
-    Proves the max sum-product bound max(|A + A|, |A * A|) >= 1/4 |A|^(5/4), the product-sum
-    bound |A + A| * |A * A| >= 1/16 |A|^(5/2), and structural additive-multiplicative expansion bounds.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A comprehensive, machine-checked Lean 4 formalization of the Erdős–Szekeres Convex Polygon Theorem (1935).
+        Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
+        Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
+        of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
+        verifying the Happy Ending Problem.
+        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.NT]
-  msc2020: ["11B75", "05D99", "52C10"]
+  arxiv: [math.CO, math.MG]
+  msc2020: ["52C10", "05D10", "52A10"]
 
 sources:
-  - title: "On the number of sums and products"
-    type: paper
-    authors:
-      - "György Elekes"
-    relationship: formalizes
-  - title: "On sums and products of integers"
+  - title: "A combinatorial problem in geometry"
     type: paper
     authors:
       - "Paul Erdős"
-      - "Endre Szemerédi"
+      - "George Szekeres"
+    relationship: formalizes
+  - title: "Problem 1835"
+    type: paper
+    authors:
+      - "Esther Klein"
     relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's real power functions (rpow) and order tactics
-      to establish Elekes's algebraic point-line incidence reductions and sum-product exponent bounds.
+      Formalization builds on Mathlib's convex geometry and finite set infrastructure (convexHull ℝ)
+      to formalize extreme points of convex polygons, orientation determinants, and cup-cap Ramsey duality.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

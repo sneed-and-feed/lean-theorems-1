@@ -1,63 +1,41 @@
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Analysis.Convex.Hull
 
-open scoped Real
+open Finset
 
-namespace ElekesSumProduct
+/-- A point in the 2D Euclidean plane. -/
+abbrev Point2D := ℝ × ℝ
 
-/-- Combinatorial Elekes Configuration representing a finite set $A \subset \mathbb{R}$
-    of size $N$, its sumset $A+A$, its productset $A\cdot A$, and the associated
-    point-line incidence system. -/
-structure ElekesConfiguration where
-  N : ℝ
-  sum_card : ℝ
-  prod_card : ℝ
-  P_card : ℝ
-  L_card : ℝ
-  I : ℝ
-  e : ℝ
-  cr : ℝ
-  hN : 1 ≤ N
-  hP : 1 ≤ P_card
-  h_sum_pos : 1 ≤ sum_card
-  h_prod_pos : 1 ≤ prod_card
-  h_prod_bound : P_card ≤ sum_card * prod_card
-  h_L : L_card = N^2
-  h_inc : N^3 ≤ I
-  h_edges : I - L_card ≤ e
-  h_crossings : cr ≤ L_card^2 / 2
-  h_crossing_lemma : 4 * P_card ≤ e → e^3 ≤ 64 * P_card^2 * cr
+/-- Signed area / orientation determinant of three points `p, q, r`. -/
+def orientationDet (p q r : Point2D) : ℝ :=
+  (q.1 - p.1) * (r.2 - p.2) - (q.2 - p.2) * (r.1 - p.1)
 
-/-- **Elekes's Product-Sum Theorem (Explicit Constant $c = 1/16$)**:
-    For any finite set $A \subset \mathbb{R}$ of size $N \ge 1$:
-    $$|A + A| \cdot |A \cdot A| \ge \frac{1}{16} |A|^{5/2}$$ -/
-theorem elekes_product_sum_bound (conf : ElekesConfiguration) :
-    (1 / 16 : ℝ) * conf.N ^ (5 / 2 : ℝ) ≤ conf.sum_card * conf.prod_card := sorry
+/-- Predicate asserting that a set of points is in general position (no three points collinear). -/
+def InGeneralPosition (S : Finset Point2D) : Prop :=
+  ∀ p q r, p ∈ S → q ∈ S → r ∈ S → p ≠ q → q ≠ r → p ≠ r →
+    orientationDet p q r ≠ 0
 
-/-- **Elekes's Maximum Sum-Product Theorem (Explicit Constant $c = 1/4$)**:
-    For any finite set $A \subset \mathbb{R}$ of size $N \ge 1$:
-    $$\max(|A + A|, |A \cdot A|) \ge \frac{1}{4} |A|^{5/4}$$ -/
-theorem elekes_max_sum_product_bound (conf : ElekesConfiguration) :
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ max conf.sum_card conf.prod_card := sorry
+/-- Predicate asserting that a set of points has mutually distinct x-coordinates. -/
+def HasDistinctX (S : Finset Point2D) : Prop :=
+  ∀ p q, p ∈ S → q ∈ S → p ≠ q → p.1 ≠ q.1
 
-/-- **Elekes Sum-Product Constant Existence Theorem (Max Form)**:
-    There exists an absolute universal constant $c > 0$ such that for every
-    Elekes configuration, $\max(|A + A|, |A \cdot A|) \ge c |A|^{5/4}$. -/
-theorem elekes_sum_product_constant_exists :
-    ∃ c : ℝ, 0 < c ∧ ∀ conf : ElekesConfiguration,
-      c * conf.N ^ (5 / 4 : ℝ) ≤ max conf.sum_card conf.prod_card := sorry
+/-- Predicate asserting that a subset of k points forms the vertex set of a strictly convex k-gon. -/
+def FormsConvexPolygon (S : Finset Point2D) (k : ℕ) : Prop :=
+  ∃ (poly : Finset Point2D), poly ⊆ S ∧ poly.card = k ∧
+    ∀ p ∈ poly, p ∉ convexHull ℝ (poly \ {p} : Set Point2D)
 
-/-- **Elekes Product-Sum Constant Existence Theorem (Product Form)**:
-    There exists an absolute universal constant $c > 0$ such that for every
-    Elekes configuration, $|A + A| \cdot |A \cdot A| \ge c |A|^{5/2}$. -/
-theorem elekes_product_constant_exists :
-    ∃ c : ℝ, 0 < c ∧ ∀ conf : ElekesConfiguration,
-      c * conf.N ^ (5 / 2 : ℝ) ≤ conf.sum_card * conf.prod_card := sorry
+/-- The Erdős–Szekeres upper bound: ES(k) ≤ Nat.choose (2*k - 4) (k - 2) + 1. -/
+def erdosSzekeresBound (k : ℕ) : ℕ :=
+  Nat.choose (2 * k - 4) (k - 2) + 1
 
-/-- Corollary: Either $|A + A| \ge \frac{1}{4} |A|^{5/4}$ or $|A \cdot A| \ge \frac{1}{4} |A|^{5/4}$. -/
-theorem elekes_sum_or_product (conf : ElekesConfiguration) :
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.sum_card ∨
-    (1 / 4 : ℝ) * conf.N ^ (5 / 4 : ℝ) ≤ conf.prod_card := sorry
-
-end ElekesSumProduct
+/-- **The Erdős–Szekeres Convex Polygon Theorem / Happy Ending Theorem (1935)**:
+Every set of at least `erdosSzekeresBound k` points in general position in ℝ² with distinct x-coordinates
+contains the vertices of a strictly convex k-gon. -/
+theorem erdos_szekeres_convex_polygon (k : ℕ) (hk : 3 ≤ k)
+    (S : Finset Point2D)
+    (h_dist : HasDistinctX S)
+    (h_card : erdosSzekeresBound k ≤ S.card)
+    (h_gen : InGeneralPosition S) :
+    FormsConvexPolygon S k := sorry
