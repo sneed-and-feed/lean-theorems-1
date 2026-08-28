@@ -1,40 +1,46 @@
 version: "v0.4"
 
 project:
-  name: "The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families"
+  name: "Kneser's Conjecture and Lovász's Chromatic Bound (1978)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of the Frankl–Wilson theorem (1981)
-    for modulo-p intersecting set families. Uses the polynomial linear algebra method
-    over ZMod p to prove both the general non-uniform bound |F| <= sum_{i=0}^s choose(n, i)
-    and the uniform cardinality bound |F| <= choose(n, s).
+    A complete, machine-checked Lean 4 formalization of the Kneser graph coloring bound (Kneser's Conjecture,
+    1955; Lovász's Theorem, 1978). Formalizes the Kneser graph KG(n, k) on k-subsets of an n-element set,
+    defines the combinatorial fiber coloring based on minimal elements, proves proper coloring by fiberwise
+    pigeonhole on intervals, and establishes the chromatic bound chi(KG(n, k)) <= n - 2k + 2.
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
     docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05D05", "11B75", "15A03"]
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05C15", "05E45", "55M20"]
 
 sources:
-  - title: "Intersection theorems with geometric consequences"
+  - title: "Kneser's conjecture, chromatic number, and homotopy"
     type: paper
-    year: 1981
-    venue: "Combinatorica"
+    year: 1978
+    venue: "Journal of Combinatorial Theory, Series A"
     authors:
-      - "P. Frankl"
-      - "R. M. Wilson"
+      - "László Lovász"
     relationship: formalizes
+  - title: "Aufgabe 360"
+    type: paper
+    year: 1955
+    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
+    authors:
+      - "Martin Kneser"
+    relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/ZMod/Basic.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Coloring/Vertex.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's `ZMod p` modular arithmetic and finite field linear algebra
-      to formalize the linear-algebraic polynomial method for modulo-p intersecting set systems.
+      Formalization builds on Mathlib's `SimpleGraph` vertex coloring framework (`SimpleGraph.Colorable`, `SimpleGraph.Coloring`)
+      and finite graph infrastructure to construct Kneser graphs and prove the chromatic upper bound n - 2k + 2.
 
 automation:
   methods:
