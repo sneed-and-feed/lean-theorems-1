@@ -37,12 +37,19 @@ sources:
       - "László A. Székely"
     relationship: adapts
 
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's real power functions (rpow) and order inequality infrastructure
+      to establish topological graph circle crossings and Spencer–Szemerédi–Trotter unit distance bounds.
+
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
         strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
@@ -50,5 +57,6 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

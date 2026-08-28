@@ -47,6 +47,14 @@ sources:
       - "W. T. Tutte"
     relationship: adapts
 
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Acyclic.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's graph theory and permutation cycle type libraries
+      (SimpleGraph.IsTree, Equiv.Perm.cycleType, Equiv.Perm.sign) to establish combinatorial map
+      Euler characteristics, signature parity invariants, and tree Euler formulas.
+
 automation:
   methods:
     - method: agent
@@ -60,5 +68,6 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

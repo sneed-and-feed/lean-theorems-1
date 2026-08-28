@@ -12,8 +12,9 @@ project:
     Dilworth, 1950) on chain decompositions of finite posets and Mirsky's Dual Theorem
     (Leon Mirsky, 1971) on antichain covers. Proves that the maximum size of an antichain
     equals the minimum number of chains covering the poset, and dually that the maximum
-    length of a chain equals the minimum number of antichains covering the poset. Verified
-    Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    length of a chain equals the minimum number of antichains covering the poset.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
@@ -35,12 +36,19 @@ sources:
       - "Leon Mirsky"
     relationship: formalizes
 
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Order/Antichain.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's order and antichain infrastructure (IsAntichain, PartialOrder)
+      to construct chain/antichain covers and prove Dilworth's and Mirsky's partition theorems.
+
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
         strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
@@ -48,5 +56,6 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

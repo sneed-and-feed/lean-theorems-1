@@ -12,7 +12,9 @@ project:
     in combinatorial incidence geometry. Proves the fundamental dichotomy that any finite set
     of n points in the Euclidean plane either contains a line with Omega(n) points or spans
     Omega(n^2) distinct lines, establishing the exact pairs double-counting identity and
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    parameterized algebraic dichotomy. To the maintainers' knowledge, the theorem was not
+    found in an exact declaration name, docstring, and type signature search of the pinned
+    Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
@@ -25,12 +27,19 @@ sources:
       - "József Beck"
     relationship: formalizes
 
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Prod.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's finite set product and image counting infrastructure
+      to formulate 2D point configurations, spanned lines, and double-counting sum identities.
+
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
         strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
@@ -38,5 +47,6 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

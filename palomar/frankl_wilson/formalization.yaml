@@ -12,7 +12,8 @@ project:
     for modulo-p intersecting set families. Uses the polynomial linear algebra method
     over ZMod p to prove both the general non-uniform bound |F| <= sum_{i=0}^s choose(n, i)
     and the uniform cardinality bound |F| <= choose(n, s).
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
@@ -28,18 +29,26 @@ sources:
       - "R. M. Wilson"
     relationship: formalizes
 
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/ZMod/Basic.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's `ZMod p` modular arithmetic and finite field linear algebra
+      to formalize the linear-algebraic polynomial method for modulo-p intersecting set systems.
+
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.

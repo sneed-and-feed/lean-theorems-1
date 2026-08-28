@@ -1,5 +1,9 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Union
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Card
+import Mathlib.Data.Fintype.Fin
 import Mathlib.Order.Antichain
 
 namespace DilworthTheorem

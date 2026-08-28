@@ -11,8 +11,10 @@ project:
     A complete machine-checked Lean 4 formalization of Tutte's 1-Factor Theorem (1947),
     establishing the fundamental characterization that a finite simple graph has a 1-factor
     (perfect matching) if and only if for every vertex subset U, the number of odd components
-    q(G \ U) is at most |U|. Also connects to matching defect and the Tutte–Berge formula.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    q(G \ U) is at most |U|. While Mathlib provides the core SimpleGraph.tutte theorem via IsTutteViolator,
+    this formalization builds the complete structural theory: the idiomatic 1-factor predicate HasOneFactor,
+    the odd connected component counter q(G \ U), the Tutte–Berge matching defect min-max formula,
+    and Petersen's factor theorems.
 
 classification:
   arxiv: [math.CO]
@@ -25,12 +27,19 @@ sources:
       - "W. T. Tutte"
     relationship: formalizes
 
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Tutte.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's SimpleGraph.tutte and IsTutteViolator infrastructure to establish
+      the 1-factor characterization, explicit odd-component counting, and the Tutte-Berge defect duality.
+
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
         strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
@@ -38,5 +47,6 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

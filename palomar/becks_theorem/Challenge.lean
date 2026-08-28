@@ -3,8 +3,11 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Prod
 import Mathlib.Data.Finset.Image
+import Mathlib.Data.Finset.Lattice.Fold
+import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
-open scoped Classical
+open scoped Classical BigOperators
 
 noncomputable section
 

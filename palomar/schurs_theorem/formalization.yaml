@@ -10,8 +10,11 @@ project:
   description: >-
     A complete, machine-checked Lean 4 formalization of Schur's Theorem on sum-free partitions
     of integers (Issai Schur, 1916) and the Multicolor Triangle Ramsey Theorem. Proves that any
-    r-coloring of the integers {1, ..., N} contains a monochromatic solution to x + y = z for
-    Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    r-coloring of the integers {1, ..., N} (where N is the Ramsey bound R(r; 3)) contains a
+    monochromatic solution to x + y = z, reducing arithmetic sum-free partitions to monochromatic
+    triangles in edge-colored complete graphs via difference colorings c(u, v) = χ(|u - v|).
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.NT]
@@ -27,22 +30,32 @@ sources:
     relationship: formalizes
   - title: "On a Problem in Formal Logic"
     type: paper
+    year: 1930
+    venue: "Proceedings of the London Mathematical Society"
     authors:
       - "Frank P. Ramsey"
     relationship: background
+
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's finite set cardinality, finset pigeonhole, and Fin type
+      infrastructure to prove the inductive multicolor Ramsey bound and deduce Schur's theorem.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.
