@@ -34,11 +34,17 @@ sources:
     authors:
       - "Constantin Carathéodory"
     relationship: adapts
+    note: >-
+      Formalization formalizes the constructive deduction of Carathéodory's classical bound (|T| <= d + 1)
+      from Bárány's general colorful transversal selection theorem.
   - title: "A Theorem on General Measure"
     type: paper
     authors:
       - "Richard Rado"
-    relationship: background
+    relationship: adapts
+    note: >-
+      Formalization adapts Rado's centerpoint theorem to the 1-dimensional discrete setting via median and
+      halfspace depth bounds.
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Caratheodory.lean"

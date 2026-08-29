@@ -47,7 +47,7 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Lake build failed for Challenge in $Slug
 if ($LASTEXITCODE -ne 0) { Write-Error "Lake build failed for Solution in $Slug!"; exit 1 }
 
 Write-Output "==> Committing and pushing to origin main..."
-git -C $root add Challenge.lean Solution.lean comparator.json formalization.yaml
+git -C $root add Challenge.lean Solution.lean comparator.json formalization.yaml Formalization/ palomar/
 git -C $root commit -m "feat(palomar): activate $Slug for Palomar submission"
 
 $sha = (git -C $root rev-parse HEAD).Trim()

@@ -9,11 +9,13 @@ project:
   license: "CC0-1.0"
   description: >-
     A comprehensive, machine-checked Lean 4 formalization of the Erdős–Szekeres Convex Polygon Theorem (1935).
-        Formalizes orientation determinants, general position, x-coordinate sorting, cup-cap sequences with
-        Pascal-type binomial split recurrences, halfspace separation for convex hulls, and proves that any set
-        of at least choose(2k - 4, k - 2) + 1 points in general position contains a convex k-gon,
-        verifying the Happy Ending Problem.
-        Scope limitations: The formalizations focus strictly on the core theorems and may not encompass all side corollaries. To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    Formalizes orientation determinants, general position, 2D rotation transformations with finite slope avoidance
+    (rotating any finite set to have mutually distinct x-coordinates), x-coordinate sorting, cup-cap sequences with
+    Pascal-type binomial split recurrences, halfspace separation for convex hulls, and rotation invariance of convex
+    polygons. Proves that any finite set of at least choose(2k - 4, k - 2) + 1 points in general position in ℝ²
+    contains the vertices of a strictly convex k-gon, verifying the Happy Ending Theorem under pure general position
+    with no distinct-x-coordinate restriction. To the maintainers' knowledge, the theorem was not found in an exact
+    declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.MG]
@@ -25,11 +27,15 @@ sources:
     authors:
       - "Paul Erdős"
       - "George Szekeres"
+    year: 1935
+    venue: "Compositio Mathematica, Vol. 2, pp. 463-470"
     relationship: formalizes
   - title: "Problem 1835"
     type: paper
     authors:
       - "Esther Klein"
+    year: 1935
+    venue: "Középiskolai Matematikai Lapok"
     relationship: background
 
 related_formalizations:

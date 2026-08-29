@@ -26,6 +26,8 @@ This module formalizes:
 4. **Convex Polygon Embedding:**
    - `formsConvexPolygon_of_isCup`: every $k$-cup ($k \ge 3$) forms the vertex set of a strictly convex $k$-gon.
    - `formsConvexPolygon_of_isCap`: every $k$-cap ($k \ge 3$) forms the vertex set of a strictly convex $k$-gon.
+5. **Rotation Invariance:**
+   - `formsConvexPolygon_of_rotate2D`: rotation preserves strictly convex $k$-gons.
 -/
 
 lemma orientationDet_four_p_r_s (p q r s : Point2D) :
@@ -285,3 +287,67 @@ lemma formsConvexPolygon_of_isCap (S : Finset Point2D) (cap : List Point2D) (k :
           · have hj_gt_next : m + 1 < j := by omega
             have hj_neg_det := isCap_orientationDet_neg cap k hcap (m - 1) (m + 1) j hm_prev_lt hm_next_lt hj (by omega) hj_gt_next
             linarith [hj_neg_det]
+
+/-- 2D rotation as a linear map ℝ² →ₗ[ℝ] ℝ². -/
+def rotate2D_lm (c s : ℝ) : Point2D →ₗ[ℝ] Point2D where
+  toFun := rotate2D c s
+  map_add' p q := by dsimp [rotate2D]; ext <;> ring
+  map_smul' r p := by dsimp [rotate2D]; ext <;> ring
+
+/-- Linear rotation preserves convex hulls of point sets. -/
+lemma image_rotate2D_convexHull (c s : ℝ) (T : Set Point2D) :
+    rotate2D c s '' (convexHull ℝ T) = convexHull ℝ (rotate2D c s '' T) :=
+  (rotate2D_lm c s).image_convexHull T
+
+/-- Inverse formula for 2D plane rotations. -/
+lemma rotate2D_inv (c s : ℝ) (h_unit : c^2 + s^2 = 1) (p : Point2D) :
+    rotate2D c (-s) (rotate2D c s p) = p := by
+  dsimp [rotate2D]; ext
+  · linear_combination p.1 * h_unit
+  · linear_combination p.2 * h_unit
+
+/-- Unit circle property for inverse rotation direction vector `(c, -s)`. -/
+lemma rotate2D_inv_unit (c s : ℝ) (h_unit : c^2 + s^2 = 1) :
+    c^2 + (-s)^2 = 1 := by
+  linear_combination h_unit
+
+/-- Inverse application formula for 2D plane rotations. -/
+lemma rotate2D_inv' (c s : ℝ) (h_unit : c^2 + s^2 = 1) (p : Point2D) :
+    rotate2D c s (rotate2D c (-s) p) = p := by
+  have := rotate2D_inv c (-s) (rotate2D_inv_unit c s h_unit) p
+  simpa using this
+
+/-- Function composition of rotation and its inverse is the identity. -/
+lemma rotate2D_comp_inv (c s : ℝ) (h_unit : c^2 + s^2 = 1) :
+    rotate2D c s ∘ rotate2D c (-s) = id :=
+  funext (rotate2D_inv' c s h_unit)
+
+/-- **Rotation Invariance of Convex Polygons:**
+    If a rotated point set contains the vertices of a strictly convex $k$-gon,
+    then the original point set also contains the vertices of a strictly convex $k$-gon. -/
+theorem formsConvexPolygon_of_rotate2D (S : Finset Point2D) (k : ℕ) (c s : ℝ) (h_unit : c^2 + s^2 = 1)
+    (h_poly : FormsConvexPolygon (S.image (rotate2D c s)) k) :
+    FormsConvexPolygon S k := by
+  rcases h_poly with ⟨poly', h_sub', h_card', h_ext'⟩
+  let poly := poly'.image (rotate2D c (-s))
+  have h_inj_inv := rotate2D_injective c (-s) (rotate2D_inv_unit c s h_unit)
+  have h_inj := rotate2D_injective c s h_unit
+  refine ⟨poly, ?_, ?_, ?_⟩
+  · rintro p hp
+    obtain ⟨p', hp', rfl⟩ := Finset.mem_image.mp hp
+    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp (h_sub' hp')
+    rwa [rotate2D_inv c s h_unit]
+  · rw [Finset.card_image_of_injective poly' h_inj_inv, h_card']
+  · intro p hp
+    obtain ⟨p', hp', rfl⟩ := Finset.mem_image.mp hp
+    intro h_in
+    have h_im_eq : rotate2D c s '' ((poly : Set Point2D) \ {rotate2D c (-s) p'}) =
+        (poly' : Set Point2D) \ {p'} := by
+      rw [Finset.coe_image, Set.image_sdiff h_inj, ← Set.image_comp, rotate2D_comp_inv c s h_unit,
+          Set.image_id, Set.image_singleton, rotate2D_inv' c s h_unit]
+    have h_im_mem : p' ∈ rotate2D c s '' (convexHull ℝ ((poly : Set Point2D) \ {rotate2D c (-s) p'})) :=
+      ⟨rotate2D c (-s) p', h_in, rotate2D_inv' c s h_unit p'⟩
+    rw [image_rotate2D_convexHull, h_im_eq] at h_im_mem
+    exact h_ext' p' hp' h_im_mem
+
+

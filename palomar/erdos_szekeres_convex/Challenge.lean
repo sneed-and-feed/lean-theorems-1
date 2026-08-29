@@ -31,11 +31,10 @@ def erdosSzekeresBound (k : ℕ) : ℕ :=
   Nat.choose (2 * k - 4) (k - 2) + 1
 
 /-- **The Erdős–Szekeres Convex Polygon Theorem / Happy Ending Theorem (1935)**:
-Every set of at least `erdosSzekeresBound k` points in general position in ℝ² with distinct x-coordinates
+Every set of at least `erdosSzekeresBound k` points in general position in ℝ²
 contains the vertices of a strictly convex k-gon. -/
 theorem erdos_szekeres_convex_polygon (k : ℕ) (hk : 3 ≤ k)
     (S : Finset Point2D)
-    (h_dist : HasDistinctX S)
     (h_card : erdosSzekeresBound k ≤ S.card)
     (h_gen : InGeneralPosition S) :
     FormsConvexPolygon S k := sorry
