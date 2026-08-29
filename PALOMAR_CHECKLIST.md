@@ -26,7 +26,9 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **15** | **The Sylvester–Gallai Theorem (Ordinary Lines)** | `969b3d6d3e7381c9ec3003506cc7748fc0b6ba00` | [PALOMAR-2026-08-26-000013](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000013) | [x] **LIVE** |
 | **8** | **General n-Dimensional Sperner's Lemma** | `d14072a07f6c5a4dbca1428c7d013828d7c1a9da` | [PALOMAR-2026-08-27-000014](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000014) | [x] **LIVE** |
 | **6** | **Descartes's Rule of Signs (Wiedijk #73)** | `262be20ccc67d4a9e1beb939d3842bff730d7fd8` | [PALOMAR-2026-08-27-000016](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000016) | [x] **LIVE** |
-| **99** | **Radon's Lemma and Helly's Theorem on Convex Sets (Wiedijk #99)** | `ab63e28a6ca4082ddb2191c9cb676622c90f3797` | [PALOMAR-2026-08-29-000007](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000007) | [x] **LIVE** |
+| **29** | **Radon's Lemma and Helly's Theorem on Convex Sets (Wiedijk #99)** | `ab63e28a6ca4082ddb2191c9cb676622c90f3797` | [PALOMAR-2026-08-29-000007](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000007) | [x] **LIVE** |
+| **20** | **Bárány's Colorful Carathéodory Theorem, Selection Lemmas, and Centerpoint Theorem** | `737f479090feab036d6f83b069e23a9e523daf33` | [PALOMAR-2026-08-29-000012](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000012) | [x] **LIVE** |
+| **18** | **The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)** | `f72d0d60a7ba8c8a4789e03bb6be0f9d007bea64` | [PALOMAR-2026-08-29-000013](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000013) | [x] **LIVE** |
 
 ---
 
@@ -50,9 +52,8 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **15** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `5584ebaada8ef2e2490ab35ed79e6a7436aa6c2a` | `palomar/de_bruijn_erdos/comparator.json` | [ ] **Ready to Submit** |
 | **16** | **Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem** | `dilworth_mirsky` | `becacae53c6b6de3322707e130b5829dbbce0ed4` | `palomar/dilworth_mirsky/comparator.json` | [ ] **Ready to Submit** |
 | **17** | **Elekes's Sum-Product Inequality and Set Growth in Additive Combinatorics** | `elekes_sum_product` | `3d3f43f9228cd11c52e09d608d8df230fee72e98` | `palomar/elekes_sum_product/comparator.json` | [ ] **Ready to Submit** |
-| **18** | **The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)** | `erdos_szekeres_convex` | `63ed5cf4b18a234982db00e281e19cbb14a3ba70` | `palomar/erdos_szekeres_convex/comparator.json` | [ ] **Ready to Submit** |
 | **19** | **Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem** | `erdos_unit_distances` | `6295c3b7930996140608e638f544a4c361a5863d` | `palomar/erdos_unit_distances/comparator.json` | [ ] **Ready to Submit** |
-| **20** | **Bárány's Colorful Carathéodory Theorem, Selection Lemmas, and Centerpoint Theorem** | `colorful_caratheodory` | `737f479090feab036d6f83b069e23a9e523daf33` | `palomar/colorful_caratheodory/comparator.json` | [x] **PALOMAR-2026-08-29-000012** |
+
 | **21** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `—` | `palomar/konig_matching/comparator.json` | [ ] **Ready to Submit** |
 | **22** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & GAP Algebra** | `ruzsa_freiman` | `—` | `palomar/ruzsa_freiman/comparator.json` | [ ] **Ready to Submit** |
 | **23** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `—` | `palomar/gilmer_union_closed/comparator.json` | [ ] **Ready to Submit** |
