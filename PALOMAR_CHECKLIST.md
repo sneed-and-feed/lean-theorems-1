@@ -26,6 +26,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **15** | **The Sylvester–Gallai Theorem (Ordinary Lines)** | `969b3d6d3e7381c9ec3003506cc7748fc0b6ba00` | [PALOMAR-2026-08-26-000013](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-26-000013) | [x] **LIVE** |
 | **8** | **General n-Dimensional Sperner's Lemma** | `d14072a07f6c5a4dbca1428c7d013828d7c1a9da` | [PALOMAR-2026-08-27-000014](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000014) | [x] **LIVE** |
 | **6** | **Descartes's Rule of Signs (Wiedijk #73)** | `262be20ccc67d4a9e1beb939d3842bff730d7fd8` | [PALOMAR-2026-08-27-000016](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000016) | [x] **LIVE** |
+| **99** | **Radon's Lemma and Helly's Theorem on Convex Sets (Wiedijk #99)** | `ab63e28a6ca4082ddb2191c9cb676622c90f3797` | [PALOMAR-2026-08-29-000007](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000007) | [x] **LIVE** |
 
 ---
 
@@ -33,8 +34,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Status |
 | :---: | :--- | :--- | :--- | :--- | :---: |
-| **1** | **Radon's Lemma and Helly's Theorem on Convex Sets** | `radon_helly` | `ab63e28a6ca4082ddb2191c9cb676622c90f3797` | `palomar/radon_helly/comparator.json` | [ ] **Ready to Submit** |
-| **2** | **Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey** | `schurs_theorem` | `ea9cbd3282d1492b7798bea890f52e8b6d0f2d58` | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit** |
+| **1** | **Schur's Theorem on Sum-Free Partitions and Multicolor Triangle Ramsey** | `schurs_theorem` | `ea9cbd3282d1492b7798bea890f52e8b6d0f2d58` | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit** |
 | **3** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `frankl_wilson` | `a3047d6bc04685572164ac141822aea8d3ad60e4` | `palomar/frankl_wilson/comparator.json` | [ ] **Ready to Submit** |
 | **4** | **Kneser's Graph Coloring Upper Bound (1955)** | `kneser_lovasz` | `a1b19ef1479c60afc12d154206cc4cc7c3993f18` | `palomar/kneser_lovasz/comparator.json` | [ ] **Ready to Submit** |
 | **5** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | [ ] **Ready to Submit** |
@@ -53,6 +53,9 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **18** | **The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)** | `erdos_szekeres_convex` | `b86c46d3a58a28ce8eb65269b6c033ea106e7a20` | `palomar/erdos_szekeres_convex/comparator.json` | [ ] **Ready to Submit** |
 | **19** | **Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem** | `erdos_unit_distances` | `6295c3b7930996140608e638f544a4c361a5863d` | `palomar/erdos_unit_distances/comparator.json` | [ ] **Ready to Submit** |
 | **20** | **Bárány's Colorful Carathéodory Theorem, Selection Lemmas, and Centerpoint Theorem** | `colorful_caratheodory` | `c2e1713d7890aef9447472093556ee0ebf6d9a01` | `palomar/colorful_caratheodory/comparator.json` | [ ] **Ready to Submit** |
+| **21** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `—` | `palomar/konig_matching/comparator.json` | [ ] **Ready to Submit** |
+| **22** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & GAP Algebra** | `ruzsa_freiman` | `—` | `palomar/ruzsa_freiman/comparator.json` | [ ] **Ready to Submit** |
+| **23** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `—` | `palomar/gilmer_union_closed/comparator.json` | [ ] **Ready to Submit** |
 
 ---
 
