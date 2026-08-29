@@ -42,7 +42,8 @@ lemma get_lt_get_of_sorted (P : Finset (Fin 1 → ℝ)) (i j : ℕ)
 
 /-- **Centerpoint Theorem in Dimension 1**:
 For any finite nonempty set $P \subset \mathbb{R}^1$, there exists a centerpoint $p \in \mathbb{R}^1$
-(the median) such that every closed half-line containing $p$ contains at least $(|P| + 1) / 2$ points of $P$. -/
+(the median) such that every closed half-line containing $p$ contains at least
+$\lfloor (|P| + 1) / 2 \rfloor = \lceil |P| / 2 \rceil$ points of $P$. -/
 theorem centerpoint_1d (P : Finset (Fin 1 → ℝ)) (hP : P.Nonempty) :
     ∃ p : Fin 1 → ℝ,
       (P.card + 1) / 2 ≤ (P.filter (fun x ↦ x 0 ≤ p 0)).card ∧
@@ -83,9 +84,12 @@ theorem centerpoint_1d (P : Finset (Fin 1 → ℝ)) (hP : P.Nonempty) :
 
 /-- **Bárány's First Selection Lemma in Dimension 1**:
 For any finite set $P \subset \mathbb{R}^1$ with $|P| \ge 2$, there exists a point $p \in \mathbb{R}^1$
-contained in at least $(|P| / 2) \cdot (|P| - |P| / 2)$ pairs $\{a, b\} \subseteq P$ whose convex hull contains $p$. -/
+(the median) with halfspace depth at least $\lfloor (|P| + 1) / 2 \rfloor = \lceil |P| / 2 \rceil$
+and contained in at least $(|P| / 2) \cdot (|P| - |P| / 2)$ pairs $\{a, b\} \subseteq P$ whose convex hull contains $p$. -/
 theorem first_selection_lemma_1d (P : Finset (Fin 1 → ℝ)) (hP : 2 ≤ P.card) :
     ∃ p : Fin 1 → ℝ,
+      (P.card + 1) / 2 ≤ (P.filter (fun x ↦ x 0 ≤ p 0)).card ∧
+      (P.card + 1) / 2 ≤ (P.filter (fun x ↦ p 0 ≤ x 0)).card ∧
       (P.card / 2) * (P.card - P.card / 2) ≤
         ((P.powersetCard 2).filter (fun (s : Finset (Fin 1 → ℝ)) ↦ p ∈ convexHull ℝ (s : Set (Fin 1 → ℝ)))).card := by
   let L := P.sort pointLE
@@ -94,8 +98,33 @@ theorem first_selection_lemma_1d (P : Finset (Fin 1 → ℝ)) (hP : 2 ≤ P.card
   let m := P.card / 2
   have hm_len : m < L.length := by rw [hL_len]; exact Nat.div_lt_self (by omega) (by omega)
   let p := L[m]
+  have hs1_le : (P.card + 1) / 2 ≤ (P.filter (fun x ↦ x 0 ≤ p 0)).card := by
+    let s1 : Finset (Fin 1 → ℝ) := (Finset.univ : Finset (Fin (m + 1))).image (fun i ↦ L[i.1])
+    have hs1_sub : s1 ⊆ P.filter (fun x ↦ x 0 ≤ p 0) := by
+      rintro x hx
+      obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hx
+      have hi_len : i.1 < L.length := by omega
+      exact Finset.mem_filter.mpr ⟨(Finset.mem_sort pointLE).mp (List.getElem_mem hi_len),
+        get_le_get_of_sorted P i.1 m hi_len hm_len (by omega)⟩
+    have hs1_card : s1.card = m + 1 := by
+      rw [Finset.card_image_of_injective _ (fun i j h ↦ Fin.ext ((List.Nodup.getElem_inj_iff hL_nodup).mp h)),
+          Finset.card_univ, Fintype.card_fin]
+    have := Finset.card_le_card hs1_sub
+    omega
+  have hs2_le : (P.card + 1) / 2 ≤ (P.filter (fun x ↦ p 0 ≤ x 0)).card := by
+    let s2 : Finset (Fin 1 → ℝ) := (Finset.univ : Finset (Fin (P.card - m))).image (fun i ↦ L[m + i.1])
+    have hs2_sub : s2 ⊆ P.filter (fun x ↦ p 0 ≤ x 0) := by
+      rintro x hx
+      obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hx
+      have hi_len : m + i.1 < L.length := by omega
+      exact Finset.mem_filter.mpr ⟨(Finset.mem_sort pointLE).mp (List.getElem_mem hi_len),
+        get_le_get_of_sorted P m (m + i.1) hm_len hi_len (by omega)⟩
+    have hs2_card : s2.card = P.card - m := by
+      rw [Finset.card_image_of_injective _ (fun i j h ↦ Fin.ext (by have := (List.Nodup.getElem_inj_iff hL_nodup).mp h; omega)),
+          Finset.card_univ, Fintype.card_fin]
+    have := Finset.card_le_card hs2_sub
+    omega
   let g (ij : Fin m × Fin (P.card - m)) : Finset (Fin 1 → ℝ) := {L[ij.1.1], L[m + ij.2.1]}
-  refine ⟨p, ?_⟩
   have hg_sub : (Finset.univ : Finset (Fin m × Fin (P.card - m))).image g ⊆
       (P.powersetCard 2).filter (fun (s : Finset (Fin 1 → ℝ)) ↦ p ∈ convexHull ℝ (s : Set (Fin 1 → ℝ))) := by
     rintro s hs
@@ -142,7 +171,7 @@ theorem first_selection_lemma_1d (P : Finset (Fin 1 → ℝ)) (hP : 2 ≤ P.card
       linarith
   have h_le := Finset.card_le_card hg_sub
   rw [Finset.card_image_of_injective _ hg_inj, Finset.card_univ, Fintype.card_prod, Fintype.card_fin, Fintype.card_fin] at h_le
-  exact h_le
+  refine ⟨p, hs1_le, hs2_le, h_le⟩
 
 /-- Combinatorial cross-product lower bound for colorful selection in dimension 1. -/
 theorem colorful_selection_lemma_1d_product (S : Fin 2 → Finset (Fin 1 → ℝ)) (p : Fin 1 → ℝ) :

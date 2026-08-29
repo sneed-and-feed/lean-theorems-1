@@ -1,0 +1,60 @@
+version: "v0.4"
+
+project:
+  name: "The Kőnig–Egerváry Theorem on Matchings and Vertex Covers in Bipartite Graphs"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete machine-checked Lean 4 formalization of the Kőnig–Egerváry Theorem (1931) and Gallai identities (1959).
+    Proves strong min-max duality matchingNumber(G) = vertexCoverNumber(G) for 2-colorable graphs G via Hall's
+    defect matching theorem, and formalizes Gallai's identity independenceNumber(G) + vertexCoverNumber(G) = |V(G)|.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type
+    signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO]
+  msc2020: ["05C70", "05C69", "90C27"]
+
+sources:
+  - title: "Gráfok és mátrixok"
+    type: paper
+    authors:
+      - "Dénes Kőnig"
+    relationship: formalizes
+  - title: "Matrixok kombinatorius tulajdonságairól"
+    type: paper
+    authors:
+      - "Jenő Egerváry"
+    relationship: formalizes
+  - title: "Über extreme Punkt- und Kantenmengen"
+    type: paper
+    authors:
+      - "Tibor Gallai"
+    relationship: adapts
+
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/Hall/Basic.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's Hall marriage condition (all_card_le_biUnion_card_iff_exists_injective)
+      to establish the defect matching reduction in bipartite graphs.
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

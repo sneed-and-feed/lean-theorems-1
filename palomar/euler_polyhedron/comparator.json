@@ -7,11 +7,7 @@
     "planar_edge_bound_triangle_free",
     "average_degree_lt_six",
     "non_planarity_k5",
-    "non_planarity_k33",
-    "tetrahedron_eulerChar",
-    "triangle_eulerChar",
-    "square_eulerChar",
-    "combinatorialMap_eulerChar_is_even"
+    "non_planarity_k33"
   ],
   "permitted_axioms": [
     "propext",

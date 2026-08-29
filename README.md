@@ -48,6 +48,9 @@ construction with its exact cardinality are fully proved.
 | 32 | **Lovász's Colorful Helly Theorem (Bárány 1982 Primal-Dual Framework)** | [`colorful_helly_all_dimensions`](Formalization/ColorfulHelly.lean), [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Lovász (1974), first published proof: Bárány (1982) |
 | 33 | **Elekes's Sum-Product Inequality** | [`elekes_product_sum_bound`](Formalization/ElekesSumProduct.lean), [`elekes_max_sum_product_bound`](Formalization/ElekesSumProduct.lean), [`elekes_productset_growth_of_small_sumset`](Formalization/ElekesSumProduct.lean) | Additive Combinatorics & Incidence Geometry | Elekes (1997), Erdős & Szemerédi (1983) |
 | 34 | **Bárány's Colorful Carathéodory Theorem, Selection Lemmas, & Centerpoints** | [`colorful_caratheodory_point`](Formalization/ColorfulCaratheodory.lean), [`colorful_caratheodory_origin`](Formalization/ColorfulCaratheodory.lean), [`caratheodory_classical`](Formalization/ColorfulCaratheodory.lean), [`first_selection_lemma_1d`](Formalization/ColorfulCaratheodory.lean), [`centerpoint_1d`](Formalization/ColorfulCaratheodory.lean), [`colorful_selection_lemma_1d`](Formalization/ColorfulCaratheodory.lean) | Convex & Discrete Geometry | Bárány (1982), Carathéodory (1907), Rado (1946) |
+| 35 | **Kőnig–Egerváry Duality Theorem & Gallai Identities** | [`konig_duality`](Formalization/KonigMatching.lean), [`konig_duality_le`](Formalization/KonigMatching.lean), [`weak_duality`](Formalization/KonigMatching.lean), [`gallai_independence_vertex_cover`](Formalization/KonigMatching.lean), [`konig_independence_matching`](Formalization/KonigMatching.lean) | Structural Graph Theory & Combinatorial Optimization | Kőnig (1931), Egerváry (1931), Gallai (1959) |
+| 36 | **Plünnecke–Ruzsa Inequality & Ruzsa Additive Calculus** | [`plunnecke_ruzsa_inequality`](Formalization/RuzsaFreiman.lean), [`plunnecke_ruzsa_self`](Formalization/RuzsaFreiman.lean), [`plunnecke_petridis_lemma`](Formalization/RuzsaFreiman.lean), [`ruzsa_triangle_inequality`](Formalization/RuzsaFreiman.lean), [`ruzsa_triangle_cardinality`](Formalization/RuzsaFreiman.lean), [`plunnecke_tripling`](Formalization/RuzsaFreiman.lean), [`gapElements_card_le`](Formalization/RuzsaFreiman.lean) | Additive Combinatorics & Sumset Calculus | Plünnecke (1970), Ruzsa (1989/1996), Petridis (2012) |
+| 37 | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Conjecture** | [`binaryEntropy_gilmer_fixed_point`](Formalization/GilmerUnionClosed.lean), [`naturalEntropy_gilmer_fixed_point`](Formalization/GilmerUnionClosed.lean), [`union_prob_gilmer`](Formalization/GilmerUnionClosed.lean), [`powerset_satisfies_gilmer`](Formalization/GilmerUnionClosed.lean), [`powerset_freq`](Formalization/GilmerUnionClosed.lean), [`frankl_implies_gilmer`](Formalization/GilmerUnionClosed.lean) | Extremal Set Theory & Information Theory | Frankl (1979), Gilmer (2022), Chase & Lovett (2022) |
 
 ---
 
@@ -320,8 +323,53 @@ construction with its exact cardinality are fully proved.
 * **Theorems:** `colorful_caratheodory_point`, `colorful_caratheodory_origin`, `colorful_caratheodory_dim1`, `colorful_caratheodory_dim2`, `caratheodory_classical`, `caratheodory_classical_deduction`, `centerpoint_1d`, `first_selection_lemma_1d`, `colorful_selection_lemma_1d`
 * **Mathematical Statement:**
   - **Colorful Carathéodory (Bárány 1982):** For any $d+1$ color classes $S_0, \dots, S_d \subset \mathbb{R}^d$ whose convex hulls all contain $p$, there exists a colorful transversal $f$ ($f(i) \in S_i$) such that $p \in \operatorname{conv}(\operatorname{range} f)$.
-  - **1D First Selection Lemma (Bárány 1982):** Any finite set of $n \ge 2$ points in $\mathbb{R}^1$ has a median point contained in at least $\lfloor n/2 \rfloor \cdot \lceil n/2 \rceil \ge \frac{n^2 - 1}{4}$ spanned intervals ($c_1 = 1/2$).
-  - **1D Centerpoint Theorem (Rado 1946):** The median point of any finite point set in $\mathbb{R}^1$ has halfspace depth $\ge \lceil (n+1)/2 \rceil$.
+  - **1D First Selection Lemma (Bárány 1982):** Any finite set of $n \ge 2$ points in $\mathbb{R}^1$ has a median point with halfspace depth $\ge \lfloor (n+1)/2 \rfloor = \lceil n/2 \rceil$ contained in at least $\lfloor n/2 \rfloor \cdot \lceil n/2 \rceil \ge \frac{n^2 - 1}{4}$ spanned intervals ($c_1 = 1/2$).
+  - **1D Centerpoint Theorem (Rado 1946):** The median point of any finite point set in $\mathbb{R}^1$ has halfspace depth $\ge \lfloor (n+1)/2 \rfloor = \lceil n/2 \rceil$.
+
+---
+
+### 35. Kőnig–Egerváry Duality Theorem & Gallai Identities
+* **Module:** [`Formalization/KonigMatching.lean`](Formalization/KonigMatching.lean)
+* **Submodules:**
+  - `Basic.lean`: Matching, vertex cover, independent set predicates, invariants ($\nu, \tau, \alpha$), and Weak Duality ($\nu(G) \le \tau(G)$).
+  - `Defect.lean`: Maximal defect subsets, augmented neighborhood family, Hall's defect condition, and matching extraction.
+  - `Duality.lean`: Strong Duality ($\nu(G) = \tau(G)$), Gallai's identity ($\alpha(G) + \tau(G) = |V|$), and Kőnig independence formula ($\alpha(G) + \nu(G) = |V|$).
+* **Theorems:** `konig_duality`, `konig_duality_le`, `weak_duality`, `matching_card_le_vertexCover_card`, `gallai_independence_vertex_cover`, `konig_independence_matching`
+* **Mathematical Statement:**
+  - **Weak Duality:** For any finite simple graph $G$, the matching number is bounded by the vertex cover number: $\nu(G) \le \tau(G)$.
+  - **Kőnig–Egerváry Theorem (1931):** In every bipartite ($2$-colorable) graph $G$, the maximum size of a matching equals the minimum size of a vertex cover: $\nu(G) = \tau(G)$.
+  - **Gallai's Identity (1959):** For any finite simple graph $G$, $\alpha(G) + \tau(G) = |V(G)|$.
+  - **Kőnig's Formula:** In bipartite graphs, $\alpha(G) + \nu(G) = |V(G)|$.
+
+---
+
+### 36. Plünnecke–Ruzsa Inequality & Ruzsa Additive Calculus
+* **Module:** [`Formalization/RuzsaFreiman.lean`](Formalization/RuzsaFreiman.lean)
+* **Submodules:**
+  - `Basic.lean`: Sumsets, difference sets, doubling constants $\sigma(A)$, difference constants $\delta(A)$, and translation invariance.
+  - `RuzsaDistance.lean`: Ruzsa multiplicative ratio $\rho_R(A, B)$, Ruzsa log-metric distance $d_R(A, B)$, cardinality triangle inequality $|B| |A - C| \le |A - B| |B - C|$, and logarithmic metric triangle inequality $d_R(A, C) \le d_R(A, B) + d_R(B, C)$.
+  - `PlunneckeRuzsa.lean`: Petridis minimal magnification lemma, two-set Plünnecke–Ruzsa inequality $|k B - \ell B| \le K^{k+\ell} |A|$, automorphic bound $|k A - \ell A| \le K^{k+\ell} |A|$, cubic tripling bound $|A+A+A| \le K^3 |A|$, and 4-term difference bound $|2A - 2A| \le K^4 |A|$.
+  - `GAP.lean`: Multi-dimensional Generalized Arithmetic Progressions (`GAP`), volume bound $|P| \le \prod N_i$, and order-$k$ Freiman homomorphisms/isomorphisms.
+* **Theorems:** `plunnecke_ruzsa_inequality`, `plunnecke_ruzsa_self`, `plunnecke_petridis_lemma`, `ruzsa_triangle_inequality`, `ruzsa_triangle_cardinality`, `plunnecke_tripling`, `plunnecke_two_sub_two`, `diffset_bound_of_doubling`, `gapElements_card_le`, `freimanHomomorphism_id`
+* **Mathematical Statement:**
+  - **Ruzsa Triangle Inequality (1996):** For all finite subsets $A, B, C$ of an abelian group $G$, $|B| \cdot |A - C| \le |A - B| \cdot |B - C|$, inducing a pseudometric $d_R(A, C) \le d_R(A, B) + d_R(B, C)$.
+  - **Plünnecke–Ruzsa Inequality (1970/1989/2012):** If $A, B \subseteq G$ satisfy $|A + B| \le K |A|$, then for all $k, \ell \ge 0$, $|k B - \ell B| \le K^{k+\ell} |A|$.
+  - **GAP Volume Bound:** For any $d$-dimensional Generalized Arithmetic Progression $P$, $|P| \le \prod_{i=1}^d N_i$.
+
+---
+
+### 37. Gilmer's Golden-Ratio Entropy Bound on Frankl's Conjecture
+* **Module:** [`Formalization/GilmerUnionClosed.lean`](Formalization/GilmerUnionClosed.lean)
+* **Submodules:**
+  - `Basic.lean`: `IsUnionClosed`, `familyUnion`, element frequency $\mathrm{freq}(F, u)$, and nonnegativity/support properties.
+  - `GoldenRatio.lean`: Golden ratio constant $c_0 = \frac{3-\sqrt{5}}{2} \approx 0.381966$, union probability $q(p) = 2p - p^2$, quadratic fixed point $2c_0 - c_0^2 = 1 - c_0$, and Shannon/natural binary entropy fixed point $H(2c_0 - c_0^2) = H(c_0)$.
+  - `Families.lean`: Concrete certified families (pairs $\{\emptyset, \{a\}\}$, singletons, chains, powersets $\mathcal{P}(S)$), fiber bijections, powerset subset frequencies ($1/2$), and Frankl/Gilmer certificates.
+  - `Theorem.lean`: Formal conjecture and theorem specifications (`FranklConjectureStatement`, `GilmerTheoremStatement`), deduction `frankl_implies_gilmer`, and certified family theorems.
+* **Theorems:** `binaryEntropy_gilmer_fixed_point`, `naturalEntropy_gilmer_fixed_point`, `union_prob_gilmer`, `gilmerConstant_quad`, `powerset_freq`, `powerset_satisfies_frankl`, `powerset_satisfies_gilmer`, `frankl_implies_gilmer`, `gilmer_two_element_family`, `gilmer_powerset_family`
+* **Mathematical Statement:**
+  - **Gilmer's Constant Bound (2022):** For every finite union-closed family $\mathcal{F}$ with $|\mathcal{F}| \ge 2$, there exists $u \in \bigcup \mathcal{F}$ with frequency $\ge c_0 = \frac{3-\sqrt{5}}{2} \approx 0.381966$.
+  - **Entropy Fixed Point:** At $p = c_0$, the entropy of the union coordinate equals the single-variable marginal entropy: $H(2c_0 - c_0^2) = H(c_0)$.
+  - **Powerset Certification:** For all non-empty finite sets $S$, the powerset $\mathcal{P}(S)$ is union-closed and every element $u \in S$ has exact marginal frequency $1/2 \ge c_0$.
 
 ---
 
@@ -352,6 +400,7 @@ graph TD
     end
 
     subgraph GraphTheory ["Structural & Extremal Graph Theory"]
+        KM["KonigMatching/ (3 Submodules)"]
         FT["FriendshipTheorem/ (4 Submodules)"]
         FW["FriendshipWindmill.lean"]
         TO["TutteOneFactor.lean (Tutte-Berge)"]
@@ -361,7 +410,9 @@ graph TD
         CL["CrossingLemma.lean"]
     end
 
-    subgraph IncidenceAndAdditive ["Incidence Geometry & Additive Combinatorics"]
+    subgraph IncidenceAndAdditive ["Incidence Geometry, Extremal Sets, & Additive Combinatorics"]
+        RF["RuzsaFreiman/ (4 Submodules)"]
+        GUC["GilmerUnionClosed/ (4 Submodules)"]
         BE["BecksTheorem.lean"]
         ST["SzemerediTrotter.lean"]
         UD["ErdosUnitDistances.lean"]
@@ -389,7 +440,7 @@ graph TD
 
 ```text
 .
-├── Formalization.lean                            # Root master module importing all 34 verified theorem suites
+├── Formalization.lean                            # Root master module importing all 37 verified theorem suites
 ├── Formalization/
 │   ├── ArtGalleryTheorem.lean                    # 18. Chvátal's Art Gallery Theorem (Fisk 3-coloring)
 │   ├── BecksTheorem.lean                         # 28. Beck's Theorem on Incidence Geometry
@@ -432,12 +483,29 @@ graph TD
 │   │   ├── Walks.lean                            #     - Walk counting mod p & group actions
 │   │   └── Windmill.lean                         #     - 2-regular base case
 │   ├── FriendshipWindmill.lean                   # 25. Friendship Windmill Structure Theorem
+│   ├── GilmerUnionClosed.lean                    # 37. Gilmer's Golden-Ratio Entropy Bound (Master Interface)
+│   ├── GilmerUnionClosed/                        # 37. Modular Gilmer Package
+│   │   ├── Basic.lean                            #     - Union-closed families & element frequencies
+│   │   ├── GoldenRatio.lean                      #     - Golden ratio constant c₀ & binary entropy fixed points
+│   │   ├── Families.lean                         #     - Certified families (pairs, singletons, chains, powersets)
+│   │   └── Theorem.lean                          #     - Frankl & Gilmer theorem statements & implications
 │   ├── GrahamPollak.lean                         # 2. Graham–Pollak Theorem
 │   ├── HallMarriage.lean                         # 13. Hall's Marriage Theorem (Freek Wiedijk #87)
 │   ├── KneserLovasz.lean                         # 23. Kneser's Graph Coloring Upper Bound
+│   ├── KonigMatching.lean                        # 35. Kőnig–Egerváry Duality Theorem (Master Interface)
+│   ├── KonigMatching/                            # 35. Modular Kőnig Matching Package
+│   │   ├── Basic.lean                            #     - Matchings, vertex covers, invariants, & weak duality
+│   │   ├── Defect.lean                           #     - Maximal defect subsets & augmented Hall injection
+│   │   └── Duality.lean                          #     - Strong duality ν = τ & Gallai identities
 │   ├── OreHamiltonian.lean                       # 5. Ore's & Dirac's Theorems on Hamiltonian Graphs
 │   ├── PicksTheorem.lean                         # 20. Pick's Theorem on Lattice Polygons (Freek Wiedijk #92)
 │   ├── RadonHelly.lean                           # 15. Radon's Lemma & Helly's Theorem (Freek Wiedijk #99)
+│   ├── RuzsaFreiman.lean                         # 36. Plünnecke–Ruzsa & Ruzsa Calculus (Master Interface)
+│   ├── RuzsaFreiman/                             # 36. Modular Ruzsa–Freiman Package
+│   │   ├── Basic.lean                            #     - Sumsets, difference sets, doubling & diff constants
+│   │   ├── RuzsaDistance.lean                    #     - Ruzsa ratio, log-metric distance, & triangle ineq
+│   │   ├── PlunneckeRuzsa.lean                   #     - Petridis minimizer, Plünnecke bounds, & tripling
+│   │   └── GAP.lean                              #     - Generalized Arithmetic Progressions & homomorphisms
 │   ├── SchursTheorem.lean                        # 10. Schur's Theorem on Sum-Free Partitions
 │   ├── Sperner3D.lean                            # 26. Sperner's Lemma in 3D (Tetrahedral Parity)
 │   ├── SpernerND.lean                            # 26. General n-Dimensional Sperner's Lemma & Pseudomanifolds
@@ -476,12 +544,15 @@ graph TD
 │   ├── frankl_wilson/
 │   ├── friendship_theorem/
 │   ├── friendship_windmill/
+│   ├── gilmer_union_closed/                      # Verified suite: Gilmer Golden Ratio, Entropy Fixed Point
 │   ├── graham_pollak/
 │   ├── hall_marriage/
 │   ├── kneser_lovasz/
+│   ├── konig_matching/                           # Verified suite: Kőnig Duality, Gallai Invariant Identities
 │   ├── ore_dirac_hamiltonian/
 │   ├── picks_theorem/
 │   ├── radon_helly/
+│   ├── ruzsa_freiman/                            # Verified suite: Plünnecke–Ruzsa, Ruzsa Distance, GAP Volume
 │   ├── schurs_theorem/
 │   ├── sperner_3d/
 │   ├── sperner_nd/
@@ -519,6 +590,9 @@ lake build
 Individual modules and packages can be compiled independently:
 
 ```bash
+lake build Formalization.KonigMatching
+lake build Formalization.RuzsaFreiman
+lake build Formalization.GilmerUnionClosed
 lake build Formalization.ColorfulCaratheodory
 lake build Formalization.TverbergsTheorem
 lake build Formalization.ColorfulHelly

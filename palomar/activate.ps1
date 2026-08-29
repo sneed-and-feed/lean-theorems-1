@@ -29,6 +29,17 @@ $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::WriteAllText($p, $txt, $utf8NoBom)
 }
 
+# Memory & Process Sanitation for Windows Lean 4 / Lake
+$env:LEAN_MEMORY = $null
+if (-not $env:LEAN_NUM_THREADS) {
+    $env:LEAN_NUM_THREADS = "4"
+}
+try {
+    Get-CimInstance Win32_Process -Filter "Name = 'lean.exe'" -ErrorAction SilentlyContinue | 
+        Where-Object { $_.CommandLine -match "--worker" } | 
+        ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
+} catch { }
+
 Write-Output "==> Running local build verification (lake build Challenge, then Solution)..."
 & lake build Challenge
 if ($LASTEXITCODE -ne 0) { Write-Error "Lake build failed for Challenge in $Slug!"; exit 1 }

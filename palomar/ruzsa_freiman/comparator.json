@@ -1,0 +1,19 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "RuzsaFreiman.ruzsa_triangle_cardinality",
+    "RuzsaFreiman.ruzsa_triangle_inequality",
+    "RuzsaFreiman.diffset_bound_of_doubling",
+    "RuzsaFreiman.plunnecke_petridis_lemma",
+    "RuzsaFreiman.plunnecke_ruzsa_inequality",
+    "RuzsaFreiman.plunnecke_tripling",
+    "RuzsaFreiman.plunnecke_two_sub_two",
+    "RuzsaFreiman.gapElements_card_le"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}

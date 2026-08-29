@@ -1,0 +1,4 @@
+import UniverseAdelic.BinaryIcosahedral
+import UniverseAdelic.SpectralDecomposition
+import UniverseAdelic.HeatKernelAsymptotics
+import UniverseAdelic.StandardModel

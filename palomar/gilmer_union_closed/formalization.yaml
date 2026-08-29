@@ -1,0 +1,70 @@
+version: "v0.4"
+
+project:
+  name: "Gilmer's Entropy Bound on Frankl's Union-Closed Sets Conjecture"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete, machine-checked Lean 4 formalization of Justin Gilmer's 2022 landmark theorem
+    establishing a constant lower bound on Frankl's Union-Closed Sets Conjecture (1979) via
+    information theory and binary entropy. Proves algebraic properties of Gilmer's golden ratio
+    constant c_0 = (3 - sqrt(5))/2, binary and natural entropy symmetry, the golden ratio fixed-point
+    relation H(2 c_0 - c_0^2) = H(c_0), and certified verification for concrete union-closed families
+    (pairs, singletons, chains, and arbitrary finite powersets). To the maintainers' knowledge,
+    the theorem and entropy fixed-point mechanics were verified absent from the core Mathlib library
+    (checked against Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO, cs.IT]
+  msc2020: ["05D05", "94A17", "06A07"]
+
+sources:
+  - title: "A constant lower bound for the union-closed sets conjecture"
+    type: preprint
+    authors:
+      - "Justin Gilmer"
+    year: 2022
+    venue: "arXiv:2211.09055"
+    relationship: formalizes
+  - title: "Approximate Frankl's conjecture for union-closed families"
+    type: preprint
+    authors:
+      - "Zachary Chase"
+      - "Shachar Lovett"
+    year: 2022
+    venue: "arXiv:2211.11689"
+    relationship: background
+  - title: "Extremal set systems"
+    type: paper
+    authors:
+      - "Péter Frankl"
+    year: 1979
+    venue: "Finite and Infinite Sets, Colloq. Math. Soc. János Bolyai, Vol. 37, 305-318"
+    relationship: background
+
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Powerset.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's finite set powerset API and real analysis, extending it to
+      union-closed families, coordinate Bernoulli marginals, and binary entropy fixed points.
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.

@@ -1,0 +1,17 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "SimpleGraph.matching_card_le_vertexCover_card",
+    "SimpleGraph.weak_duality",
+    "SimpleGraph.konig_duality_le",
+    "SimpleGraph.konig_duality",
+    "SimpleGraph.gallai_independence_vertex_cover",
+    "SimpleGraph.konig_independence_matching"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}

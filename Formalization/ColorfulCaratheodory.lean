@@ -31,8 +31,8 @@ Let $d \ge 0$.
 7. `colorful_caratheodory_origin`: Colorful Carathéodory Theorem centered at origin for general dimension $d$.
 8. `caratheodory_classical`: Classical Carathéodory Theorem bound ($|T| \le d + 1$).
 9. `caratheodory_classical_deduction`: Deduction of classical Carathéodory from colorful selection.
-10. `centerpoint_1d`: 1D Centerpoint Theorem (median contains $\ge (|P|+1)/2$ points in each half-line).
-11. `first_selection_lemma_1d`: Bárány's First Selection Lemma in dimension 1 ($\ge (|P|/2)(|P|-|P|/2)$ pairs).
+10. `centerpoint_1d`: 1D Centerpoint Theorem (median contains $\ge \lfloor (|P|+1)/2 \rfloor = \lceil |P|/2 \rceil$ points in each half-line).
+11. `first_selection_lemma_1d`: Bárány's First Selection Lemma in dimension 1 (depth bound $\ge \lfloor (|P|+1)/2 \rfloor$ and $\ge (|P|/2)(|P|-|P|/2)$ pairs).
 12. `colorful_selection_lemma_1d`: Colorful Selection Lemma in dimension 1 (cross-product bounds & $\ge 1$ colorful pair).
 
 ## Reference

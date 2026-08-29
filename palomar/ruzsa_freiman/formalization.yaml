@@ -1,0 +1,70 @@
+version: "v0.4"
+
+project:
+  name: "Ruzsa Distance, Plünnecke–Ruzsa Inequalities, and Freiman Homomorphisms"
+  authors:
+    - "Sneed & Feed Formalization Team"
+  responsible_maintainers:
+    - "sneed-and-feed"
+  license: "CC0-1.0"
+  description: >-
+    A complete machine-checked Lean 4 formalization of Ruzsa distance, sumset difference inequalities,
+    Plünnecke–Ruzsa bounds, Petridis' minimizer lemma, and Generalized Arithmetic Progressions (GAP).
+    Includes the fundamental Ruzsa triangle inequality in both cardinality and log-metric forms,
+    the Plünnecke–Ruzsa iterated sumset bounds |k B - \ell B| <= K^{k+\ell} |A|, cubic tripling
+    |A + A + A| <= K^3 |A|, four-fold difference set bounds |2A - 2A| <= K^4 |A|, and Freiman
+    homomorphism composition properties. To the maintainers' knowledge, the theorem was not found
+    in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision
+    (Mathlib v4.34.0-rc1).
+
+classification:
+  arxiv: [math.CO, math.NT]
+  msc2020: ["11B30", "11P70", "05B10", "20K99"]
+
+sources:
+  - title: "Sums of finite sets"
+    type: paper
+    authors:
+      - "Imre Z. Ruzsa"
+    venue: "Number Theory: New York Seminar, Springer"
+    year: 1996
+    relationship: formalizes
+  - title: "New proofs of Plünnecke-type estimates for sumsets"
+    type: paper
+    authors:
+      - "Giorgis Petridis"
+    venue: "Combinatorics, Probability and Computing"
+    year: 2012
+    relationship: adapts
+  - title: "Additive Combinatorics"
+    type: book
+    authors:
+      - "Terence Tao"
+      - "Van H. Vu"
+    publisher: "Cambridge University Press"
+    year: 2006
+    relationship: background
+
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/Additive/PluenneckeRuzsa.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's Plünnecke-Ruzsa sumset primitives, extending them with
+      the Ruzsa log-metric distance, Petridis minimizer analysis, and GAP volume bounds.
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: >-
+        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+
+review:
+  status: self-assessed
+  reviewers:
+    - "sneed-and-feed maintainers"
+  notes: >-
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified. Solution verified through
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
