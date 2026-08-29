@@ -2,11 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "ColorfulCaratheodory.colorful_caratheodory_point",
-    "ColorfulCaratheodory.colorful_caratheodory_origin",
-    "ColorfulCaratheodory.caratheodory_classical_deduction",
-    "ColorfulCaratheodory.colorful_caratheodory_dim1",
-    "ColorfulCaratheodory.colorful_caratheodory_dim2"
+    "erdos_szekeres_convex_polygon"
   ],
   "permitted_axioms": [
     "propext",
