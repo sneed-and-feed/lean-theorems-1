@@ -1,67 +1,49 @@
 version: "v0.4"
 
 project:
-  name: "Radon's Lemma and Helly's Theorem on Convex Sets"
+  name: "Bárány's Colorful Carathéodory Theorem, Selection Lemmas, and Centerpoint Theorem"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Radon's Lemma (Johann Radon, 1921)
-    and Helly's Theorem on intersecting families of convex sets (Eduard Helly, 1923; Freek
-    Wiedijk #99) from first principles. Proves that any d + 2 points in ℝ^d admit a Radon
-    partition into two disjoint subsets whose convex hulls intersect, and uses Radon's lemma
-    by induction on the family size to prove Helly's theorem for finite families of convex sets
-    under the general <= d + 1 subfamily intersection hypothesis (covering small families |ι| <= d + 1 as well as large families).
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete, machine-checked Lean 4 formalization of Bárány's Colorful Carathéodory Theorem (1982),
+    Bárány's First Selection Lemma (1982), the 1D Centerpoint Theorem, and geometric deductions from first
+    principles. Proves that for any d + 1 sets of points S_0, ..., S_d in R^d whose convex hulls all
+    contain a common target point p, there exists a colorful transversal f (selecting f(i) in S_i for each
+    color class i) whose convex hull conv({f(0), ..., f(d)}) contains p. Formulated over arbitrary dimension d,
+    with specializations to the origin and low dimensions (d = 0, 1, 2), a formal deduction of the classical
+    Carathéodory theorem bound, the 1D Centerpoint Theorem (median contains >= (|P|+1)/2 points in each half-line),
+    Bárány's 1982 First Selection Lemma (>= (|P|/2)(|P|-|P|/2) pairs containing the centerpoint), and the 1D Colorful
+    Selection Lemma (at least one colorful pair covering p). To the maintainers' knowledge, the theorem was not found
+    in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.MG, math.CO]
-  msc2020: ["52A35", "52A20", "52C10"]
+  msc2020: ["52A35", "52A20", "05D15"]
 
 sources:
-  - title: "Mengen konvexer Körper, die einen gemeinsamen Punkt enthalten"
+  - title: "A generalization of Carathéodory's theorem"
     type: paper
     authors:
-      - "Johann Radon"
-    year: 1921
-    venue: "Mathematische Annalen"
-    volume: "83"
-    issue: "1-2"
-    pages: "113-115"
+      - "Imre Bárány"
     relationship: formalizes
-  - title: "Über Mengen konvexer Körper mit gemeinschaftlichen Punkten"
-    type: paper
-    authors:
-      - "Eduard Helly"
-    year: 1923
-    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
-    volume: "32"
-    pages: "175-176"
-    relationship: formalizes
-  - title: "Formalizing 100 Theorems"
-    type: webpage
-    authors:
-      - "Freek Wiedijk"
-    relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Caratheodory.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's convex analysis infrastructure (`convexHull`, `Convex`)
-      to formalize Radon's partition lemma on affine dependencies in ℝ^d and Helly's theorem for finite
-      families of convex sets (Freek Wiedijk #99).
+      Formalization builds upon Mathlib's classical Carathéodory theorem infrastructure (Caratheodory.minCardFinsetOfMemConvexHull)
+      and affine independence to establish the general colorful selection theorem and its deduction back to classical bounds.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
-        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification. All declarations rely
+        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
@@ -70,6 +52,4 @@ review:
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
     while all definitions and theorem statements are completely specified. Solution verified through
-    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms. The theorem
-    formalization uses the general <= d + 1 subfamily intersection hypothesis to cleanly encompass
-    both boundary small families (|ι| <= d + 1) and classical large families (|ι| > d + 1).
+    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
