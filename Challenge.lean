@@ -70,7 +70,8 @@ theorem colorful_caratheodory_origin (S : Fin (d + 1) → Set (Fin d → ℝ))
 
 /-- **Centerpoint Theorem in Dimension 1**:
 For any finite nonempty set $P \subset \mathbb{R}^1$, there exists a centerpoint $p \in \mathbb{R}^1$
-(the median) such that every closed half-line containing $p$ contains at least $(|P| + 1) / 2$ points of $P$. -/
+(the median) such that every closed half-line containing $p$ contains at least
+$\lfloor (|P| + 1) / 2 \rfloor = \lceil |P| / 2 \rceil$ points of $P$. -/
 theorem centerpoint_1d (P : Finset (Fin 1 → ℝ)) (hP : P.Nonempty) :
     ∃ p : Fin 1 → ℝ,
       (P.card + 1) / 2 ≤ (P.filter (fun x ↦ x 0 ≤ p 0)).card ∧
@@ -78,9 +79,12 @@ theorem centerpoint_1d (P : Finset (Fin 1 → ℝ)) (hP : P.Nonempty) :
 
 /-- **Bárány's First Selection Lemma in Dimension 1**:
 For any finite set $P \subset \mathbb{R}^1$ with $|P| \ge 2$, there exists a point $p \in \mathbb{R}^1$
-contained in at least $(|P| / 2) \cdot (|P| - |P| / 2)$ pairs $\{a, b\} \subseteq P$ whose convex hull contains $p$. -/
+(the median) with halfspace depth at least $\lfloor (|P| + 1) / 2 \rfloor = \lceil |P| / 2 \rceil$
+and contained in at least $(|P| / 2) \cdot (|P| - |P| / 2)$ pairs $\{a, b\} \subseteq P$ whose convex hull contains $p$. -/
 theorem first_selection_lemma_1d (P : Finset (Fin 1 → ℝ)) (hP : 2 ≤ P.card) :
     ∃ p : Fin 1 → ℝ,
+      (P.card + 1) / 2 ≤ (P.filter (fun x ↦ x 0 ≤ p 0)).card ∧
+      (P.card + 1) / 2 ≤ (P.filter (fun x ↦ p 0 ≤ x 0)).card ∧
       (P.card / 2) * (P.card - P.card / 2) ≤
         ((P.powersetCard 2).filter (fun (s : Finset (Fin 1 → ℝ)) ↦ p ∈ convexHull ℝ (s : Set (Fin 1 → ℝ)))).card := sorry
 

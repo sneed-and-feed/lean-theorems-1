@@ -14,7 +14,7 @@ project:
     contain a common target point p, there exists a colorful transversal f (selecting f(i) in S_i for each
     color class i) whose convex hull conv({f(0), ..., f(d)}) contains p. Formulated over arbitrary dimension d,
     with specializations to the origin and low dimensions (d = 0, 1, 2), a formal deduction of the classical
-    Carathéodory theorem bound, the 1D Centerpoint Theorem (median contains >= (|P|+1)/2 points in each half-line),
+    Carathéodory theorem bound, the 1D Centerpoint Theorem (median contains >= floor((n+1)/2) = ceil(n/2) points in each half-line),
     Bárány's 1982 First Selection Lemma (>= (|P|/2)(|P|-|P|/2) pairs containing the centerpoint), and the 1D Colorful
     Selection Lemma (at least one colorful pair covering p). To the maintainers' knowledge, the theorem was not found
     in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
@@ -29,6 +29,16 @@ sources:
     authors:
       - "Imre Bárány"
     relationship: formalizes
+  - title: "Über den Variabilitätsbereich der Koeffizienten von Potenzreihen, die gegebene Werte nicht annehmen"
+    type: paper
+    authors:
+      - "Constantin Carathéodory"
+    relationship: adapts
+  - title: "A Theorem on General Measure"
+    type: paper
+    authors:
+      - "Richard Rado"
+    relationship: background
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Caratheodory.lean"
