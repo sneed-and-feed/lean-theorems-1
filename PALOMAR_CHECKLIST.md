@@ -58,7 +58,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **21** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `—` | `palomar/konig_matching/comparator.json` | [ ] **Ready to Submit** |
 | **22** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & GAP Algebra** | `ruzsa_freiman` | `e22a65743cd2d6b209bfcf9c7b346fb5bac5e1d0` | `palomar/ruzsa_freiman/comparator.json` | [ ] **Ready to Submit** |
 | **23** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `—` | `palomar/gilmer_union_closed/comparator.json` | [ ] **Ready to Submit** |
-| **24** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `e42ad68e63a5588bd6da8f64f1d6bee75ff1e222` | `palomar/tuckers_lemma/comparator.json` | [ ] **Ready to Submit** |
+| **24** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | [ ] **Ready to Submit** |
 
 ---
 
