@@ -56,7 +56,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **19** | **Spencer–Szemerédi–Trotter Bound on the Erdős Unit Distance Problem** | `erdos_unit_distances` | `6295c3b7930996140608e638f544a4c361a5863d` | `palomar/erdos_unit_distances/comparator.json` | [ ] **Ready to Submit** |
 
 | **21** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `—` | `palomar/konig_matching/comparator.json` | [ ] **Ready to Submit** |
-| **22** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & GAP Algebra** | `ruzsa_freiman` | `dc5277c3b380f90d0414d1385cc23b90057d987e` | `palomar/ruzsa_freiman/comparator.json` | [ ] **Ready to Submit** |
+| **22** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & GAP Algebra** | `ruzsa_freiman` | `c4b8f7f08e98c3ce103f80154ad94b80c5a3e7bb` | `palomar/ruzsa_freiman/comparator.json` | [ ] **Ready to Submit** |
 | **23** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `—` | `palomar/gilmer_union_closed/comparator.json` | [ ] **Ready to Submit** |
 
 ---
