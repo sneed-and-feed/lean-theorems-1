@@ -4,23 +4,12 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 - **Live / Processed Entries**: Historical registered commit SHAs and live Palomar registry URLs are permanently preserved.
 - **Unsubmitted Queue**: Each theorem has its own dedicated, immutable 40-character Git commit SHA with its specific package active at root.
 
-### Submission Settings for submit.palomar-registry.org:
+### Submission Settings (`submit.palomar-registry.org`):
 - **Repository**: `sneed-and-feed/lean-theorems-1`
-- **Comparator Path**: `comparator.json` *(or `palomar/<slug>/comparator.json`)*
-- **Existing Palomar ID**: *(leave blank for new submissions)*
+- **Git Commit SHA**: `git rev-parse HEAD` (run `git push origin main` first)
+- **Comparator Path**: `palomar/<slug>/comparator.json` *(or `comparator.json`)*
+- **Existing Palomar ID**: *(leave blank)*
 - **Relationship**: `Maintainer` / `Author`
-
-### 🔑 How to Obtain the Exact Commit SHA to Enter on the Palomar Form:
-1. **Terminal Command**: Run the following in PowerShell / terminal from the repository root:
-   ```powershell
-   git rev-parse HEAD
-   ```
-2. **Copy & Paste**: Copy the exact 40-character hexadecimal output (e.g. `c088600d832865582f3ef8411d33190df031a0e1`) into the **Git Commit SHA** field on `submit.palomar-registry.org`.
-3. **Push to Remote First**: Before submitting, ensure your branch is pushed so Palomar's build servers can fetch the commit:
-   ```powershell
-   git push origin main
-   ```
-4. **Note on Self-Referential SHAs**: Any subsequent commit modifies the repository tree and generates a new commit hash. Therefore, always use the dynamic output of `git rev-parse HEAD` as the ground truth SHA at the exact moment of submission.
 
 ---
 
@@ -48,7 +37,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Status |
 | :---: | :--- | :--- | :--- | :--- | :---: |
-| **1** | **Schur's Theorem: Algebraic, Quantitative & Linear Systems Suite** | `schurs_theorem` | `4db514fc629a13e1ade6b85c8cf84e02d9559eb4` | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit (Research-Grade Upgrade)** |
+| **1** | **Schur's Theorem: Algebraic, Quantitative & Linear Systems Suite** | `schurs_theorem` | `18fe31225846e0a5c99e12dd941a2316942d3df6` | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit (Research-Grade Upgrade)** |
 | **3** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `frankl_wilson` | `a3047d6bc04685572164ac141822aea8d3ad60e4` | `palomar/frankl_wilson/comparator.json` | [ ] **Ready to Submit** |
 | **4** | **Kneser's Graph Coloring Upper Bound (1955)** | `kneser_lovasz` | `a1b19ef1479c60afc12d154206cc4cc7c3993f18` | `palomar/kneser_lovasz/comparator.json` | [ ] **Ready to Submit** |
 | **5** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | [ ] **Ready to Submit** |
