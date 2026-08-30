@@ -23,7 +23,7 @@ construction with its exact cardinality are fully proved.
 | 7 | **Euler's Polyhedron Formula** | [`euler_polyhedron_formula`](Formalization/EulerPolyhedron.lean), [`planar_edge_bound`](Formalization/EulerPolyhedron.lean), [`non_planarity_k5`](Formalization/EulerPolyhedron.lean), [`non_planarity_k33`](Formalization/EulerPolyhedron.lean) | Combinatorial Graph Theory & Discrete Geometry | Euler (1758), Cauchy (1813), Wiedijk #13 |
 | 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry & Near-Pencil Tightness** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean), [`de_bruijn_erdos_tight`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
-| 10 | **Schur's Theorem on Sum-Free Partitions** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory & Additive Combinatorics | Schur (1916) |
+| 10 | **Schur's Theorem: Algebraic, Quantitative & Linear Systems Suite** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`group_schurs_theorem`](Formalization/SchursTheorem.lean), [`addCommGroup_schurs_theorem`](Formalization/SchursTheorem.lean), [`card_monoSchurTriples_one`](Formalization/SchursTheorem.lean), [`supersaturation_bound`](Formalization/SchursTheorem.lean), [`rado_zero_sum_partition_regular_of_le`](Formalization/SchursTheorem.lean), [`schur_is_rado_regular`](Formalization/SchursTheorem.lean) | Ramsey Theory, Additive Combinatorics & Abstract Group Theory | Schur (1916), Ramsey (1930), Rado (1933), Graham-Rothschild-Spencer (1990) |
 | 11 | **Erdős–Ko–Rado, Small-Parameter Stability, and Hilton–Milner Sharpness** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_uniqueness_one`](Formalization/ErdosKoRado.lean), [`hilton_milner_stability_two`](Formalization/ErdosKoRado.lean), [`exists_hiltonMilner_extremizer`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Hilton & Milner (1967), Katona (1972) |
 | 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
 | 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
@@ -129,10 +129,29 @@ construction with its exact cardinality are fully proved.
 
 ---
 
-### 10. Schur's Theorem on Sum-Free Partitions
-* **Module:** [`Formalization/SchursTheorem.lean`](Formalization/SchursTheorem.lean)
-* **Theorems:** `schurs_theorem`, `ramsey_triangle`, `schurs_partition_theorem`
-* **Mathematical Statement:** Every finite coloring of the integers $\{1, \dots, R_r(3)\}$ contains a monochromatic solution to $x + y = z$.
+### 10. Schur's Theorem: Algebraic, Quantitative & Linear Systems Suite
+* **Root Module:** [`Formalization/SchursTheorem.lean`](Formalization/SchursTheorem.lean)
+* **Submodules:**
+  - **Foundational & Integer Formulations:** [`Formalization/SchursTheorem/Basic.lean`](Formalization/SchursTheorem/Basic.lean)
+    - `ramsey_triangle`: Multicolor triangle Ramsey theorem on complete graph edge-colorings.
+    - `schurs_theorem`: Monochromatic solutions to $x + y = z$ in $\{1, \dots, B_r\}$ where $B_r = \text{ramseyTriangleBound } r$.
+    - `schurs_theorem_color_classes`: Any finite integer coloring contains a non-sum-free color class.
+    - `schurs_theorem_partition`: Partition regularity under finite coverings.
+  - **Group-Theoretic & Algebraic Extensions:** [`Formalization/SchursTheorem/Group.lean`](Formalization/SchursTheorem/Group.lean)
+    - `group_schurs_theorem`: Multiplicative Schur theorem in arbitrary groups $(G, \cdot)$ ($x \cdot y = z$ with $x, y, z \ne 1$).
+    - `addCommGroup_schurs_theorem`: Additive Schur theorem in arbitrary abelian groups $(A, +)$ ($x + y = z$ with $x, y, z \ne 0$).
+    - `finite_group_color_classes_not_product_free`: Finite group product-free partition impossibility.
+    - `finite_addCommGroup_partition_regular`: Partition regularity of $A \setminus \{0\}$.
+  - **Quantitative Supersaturation & Counting:** [`Formalization/SchursTheorem/Quantitative.lean`](Formalization/SchursTheorem/Quantitative.lean)
+    - `monoSchurTriples`: Finset of monochromatic Schur triples in $\{1, \dots, N\}$.
+    - `card_monoSchurTriples_one`: Exact quadratic formula $\frac{(N-1)N}{2}$ for 1-colorings ($r = 1$).
+    - `supersaturation_bound`: Positive supersaturation lower bound $k \le (N + 1) \cdot |\text{monoSchurTriples } \chi N|$ via disjoint graph triangle embeddings.
+  - **Single-Equation Rado Partition Regularity:** [`Formalization/SchursTheorem/Rado.lean`](Formalization/SchursTheorem/Rado.lean)
+    - `rado_zero_sum_partition_regular_of_le`: Partition regularity of zero-sum linear equations $\sum_{i=0}^{k-1} c_i x_i = 0$.
+    - `schur_is_rado_regular`: Schur's equation $(1, 1, -1)$ as a Rado partition regular equation.
+    - `ap3_is_rado_regular`: Monochromatic 3-term arithmetic progressions from zero-sum $(1, -2, 1)$.
+    - `add4_is_rado_regular`: 4-variable additive balance equation $(1, 1, -1, -1)$.
+* **Mathematical Statement:** For every $r \ge 1$, any $r$-coloring of the integers $\{1, \dots, B_r\}$, arbitrary groups $G$, or linear homogeneous systems contains monochromatic algebraic solutions, with positive supersaturation density. All statements rigorously maintain bound fidelity ($B_r \ge R_r(3) \ge S(r)$).
 
 ---
 

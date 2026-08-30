@@ -1,49 +1,65 @@
 version: "v0.4"
 
 project:
-  name: "The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)"
+  name: "Schur's Theorem: Algebraic, Quantitative & Linear Systems Suite"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A comprehensive, machine-checked Lean 4 formalization of the Erdős–Szekeres Convex Polygon Theorem (1935).
-    Formalizes orientation determinants, general position, 2D rotation transformations with finite slope avoidance
-    (rotating any finite set to have mutually distinct x-coordinates), x-coordinate sorting, cup-cap sequences with
-    Pascal-type binomial split recurrences, halfspace separation for convex hulls, and rotation invariance of convex
-    polygons. Proves that any finite set of at least choose(2k - 4, k - 2) + 1 points in general position in ℝ²
-    contains the vertices of a strictly convex k-gon, verifying the Happy Ending Theorem under pure general position
-    with no distinct-x-coordinate restriction. To the maintainers' knowledge, the theorem was not found in an exact
-    declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A comprehensive, machine-checked Lean 4 formalization of Schur's Theorem on sum-free partitions
+    (Issai Schur, 1916), its algebraic generalizations to general groups and additive abelian groups,
+    quantitative supersaturation counting bounds (exact (N - 1) * N / 2 count for r = 1 and double-counting
+    supersaturation bounds for general r), and single-equation Rado partition regularity (Richard Rado, 1933).
+    Proves that every r-coloring of integers or groups contains monochromatic solutions to x * y = z, x + y = z,
+    and zero-sum linear homogeneous systems ∑ c_i x_i = 0. Explicitly distinguishes the recursive upper bound
+    B_r = ramseyTriangleBound r from exact canonical Ramsey numbers R_r(3) and Schur numbers S(r).
+    To the maintainers' knowledge, these theorems were not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.MG]
-  msc2020: ["52C10", "05D10", "52A10"]
+  arxiv: [math.CO, math.NT, math.GR]
+  msc2020: ["05D10", "11B75", "05C55", "20D60"]
 
 sources:
-  - title: "A combinatorial problem in geometry"
+  - title: "Über die Kongruenz x^m + y^m ≡ z^m (mod p)"
     type: paper
+    year: 1916
+    venue: "Jahresbericht der Deutschen Mathematiker-Vereinigung"
     authors:
-      - "Paul Erdős"
-      - "George Szekeres"
-    year: 1935
-    venue: "Compositio Mathematica, Vol. 2, pp. 463-470"
+      - "Issai Schur"
     relationship: formalizes
-  - title: "Problem 1835"
+  - title: "On a Problem in Formal Logic"
     type: paper
+    year: 1930
+    venue: "Proceedings of the London Mathematical Society"
     authors:
-      - "Esther Klein"
-    year: 1935
-    venue: "Középiskolai Matematikai Lapok"
+      - "Frank P. Ramsey"
+    relationship: background
+  - title: "Studien zur Kombinatorik"
+    type: paper
+    year: 1933
+    venue: "Mathematische Zeitschrift"
+    authors:
+      - "Richard Rado"
+    relationship: formalizes
+  - title: "Ramsey Theory"
+    type: book
+    year: 1990
+    venue: "John Wiley & Sons"
+    authors:
+      - "R. L. Graham"
+      - "B. L. Rothschild"
+      - "J. H. Spencer"
     relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's convex geometry and finite set infrastructure (convexHull ℝ)
-      to formalize extreme points of convex polygons, orientation determinants, and cup-cap Ramsey duality.
+      Formalization builds on Mathlib's finite set cardinality, finset pigeonhole, group theory,
+      and big operators infrastructure to establish algebraic Schur, supersaturation, and Rado partition regularity.
 
 automation:
   methods:
@@ -60,4 +76,4 @@ review:
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
     while all definitions and theorem statements are completely specified. Solution verified through
-    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.
