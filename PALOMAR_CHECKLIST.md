@@ -7,8 +7,20 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 ### Submission Settings for submit.palomar-registry.org:
 - **Repository**: `sneed-and-feed/lean-theorems-1`
 - **Comparator Path**: `comparator.json` *(or `palomar/<slug>/comparator.json`)*
-- **Existing Palomar ID**: *(leave blank)*
+- **Existing Palomar ID**: *(leave blank for new submissions)*
 - **Relationship**: `Maintainer` / `Author`
+
+### 🔑 How to Obtain the Exact Commit SHA to Enter on the Palomar Form:
+1. **Terminal Command**: Run the following in PowerShell / terminal from the repository root:
+   ```powershell
+   git rev-parse HEAD
+   ```
+2. **Copy & Paste**: Copy the exact 40-character hexadecimal output (e.g. `c088600d832865582f3ef8411d33190df031a0e1`) into the **Git Commit SHA** field on `submit.palomar-registry.org`.
+3. **Push to Remote First**: Before submitting, ensure your branch is pushed so Palomar's build servers can fetch the commit:
+   ```powershell
+   git push origin main
+   ```
+4. **Note on Self-Referential SHAs**: Any subsequent commit modifies the repository tree and generates a new commit hash. Therefore, always use the dynamic output of `git rev-parse HEAD` as the ground truth SHA at the exact moment of submission.
 
 ---
 
