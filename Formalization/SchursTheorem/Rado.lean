@@ -29,29 +29,37 @@ $$\sum_{i=0}^{k-1} c_i x_i = 0 \quad (c_i \in \mathbb{Z} \setminus \{0\}),$$
 if and only if there exists a non-empty subset of indices $I \subseteq \{0, \dots, k-1\}$ such that
 $$\sum_{i \in I} c_i = 0.$$
 
-### Key Subcases Formalized in this Module:
+### Constant-Solution Zero-Sum vs. Non-Zero-Sum Equations
 
-1. **Zero-Sum Partition Regularity (Theorem 1)**:
-   When the entire coefficient vector sums to zero ($\sum_{i=0}^{k-1} c_i = 0$), the equation admits
-   an explicit constant monochromatic solution $x = (m, m, \dots, m)$ for any $m \ge 1$.
-   Hence, every zero-sum linear equation is partition regular over $\mathbb{N}^+$ with cutoff $N = 1$.
+Rado's condition bifurcates naturally into two fundamentally distinct regimes:
+1. **Zero-Sum Case ($\sum_{i=0}^{k-1} c_i = 0$)**:
+   When the entire coefficient vector sums to zero, the equation admits an explicit constant
+   monochromatic solution $x = (m, m, \dots, m)$ for any $m \ge 1$, since $\sum c_i m = m \sum c_i = 0$.
+   Hence, every zero-sum linear equation is partition regular over $\mathbb{N}^+$ with trivial cutoff $N = 1$.
+
+2. **Non-Zero-Sum Case ($\sum c_i \ne 0$ with $\sum_{i \in I} c_i = 0$ for some $I \subsetneq \{0, \dots, k-1\}$)**:
+   In this case, no constant vector can solve the equation. Proving partition regularity requires
+   significantly deeper Ramsey-theoretic machinery (such as Deuber's $(m, p, c)$-sets, van der Waerden's
+   theorem on arithmetic progressions, or graph Ramsey reductions). Schur's equation $x + y - z = 0$
+   is the prototypical example, where the full sum is $1 + 1 - 1 = 1 \ne 0$ but the sub-sum $c_0 + c_2 = 0$
+   vanishes, and partition regularity is established via multicolor graph Ramsey triangles.
+
+### Key Results Formalized in this Module:
+
+1. **Constant-Solution Zero-Sum Corollary to Rado's Theorem (Theorem 1)**:
+   Zero-sum linear equations $\sum c_i = 0$ are partition regular via constant solutions $x = (1, \dots, 1)$.
 
 2. **Schur's Equation as a Rado Equation (Theorem 2)**:
-   The Schur equation $x + y = z$ corresponds to the coefficient vector $c_{\text{Schur}} = (1, 1, -1)$.
-   Its total sum is $\sum c_i = 1 + 1 - 1 = 1 \ne 0$, but the non-empty subset $\{0, 2\}$ satisfies
-   $c_0 + c_2 = 1 + (-1) = 0$.
-   Using `SchursTheorem.schurs_theorem`, we deduce that $c_{\text{Schur}}$ is partition regular with
-   explicit finite interval cutoff $B_r = \text{ramseyTriangleBound } r$.
+   The Schur equation $x + y = z$ with $c_{\text{Schur}} = (1, 1, -1)$ satisfies Rado's sub-sum condition ($c_0 + c_2 = 0$).
+   Using `SchursTheorem.schurs_theorem`, we deduce partition regularity on $\mathbb{N}^+$ (`schur_is_rado_regular`)
+   with explicit finite interval cutoff $B_r = \text{ramseyTriangleBound } r$ (`schur_interval_bound`).
 
 3. **3-Term Arithmetic Progressions (Theorem 3)**:
-   The 3-AP equation $x_0 - 2 x_1 + x_2 = 0$ (equivalent to $x_0 + x_2 = 2 x_1$) corresponds to
-   $c_{\text{AP3}} = (1, -2, 1)$.
-   Since $1 + (-2) + 1 = 0$, $c_{\text{AP3}}$ is a zero-sum equation, and its partition regularity
-   follows directly from Rado's zero-sum theorem.
+   The 3-AP equation $x_0 - 2 x_1 + x_2 = 0$ corresponds to $c_{\text{AP3}} = (1, -2, 1)$, with $\sum c_i = 0$.
+   Its partition regularity follows directly from the zero-sum corollary.
 
 4. **4-Variable Additive Balance Equation**:
-   The equation $x_0 + x_1 = x_2 + x_3$ with $c = (1, 1, -1, -1)$ has $\sum c_i = 0$ and is partition
-   regular over $\mathbb{N}^+$.
+   The equation $x_0 + x_1 = x_2 + x_3$ with $c = (1, 1, -1, -1)$ has $\sum c_i = 0$ and is partition regular.
 
 ## Bound Fidelity Note (Anti-Pattern Q)
 
@@ -67,11 +75,11 @@ extremal Schur / Ramsey numbers $S(r)$ and $R_r(3)$.
 * `SchursTheorem.HasDistinctMonoSol`: Existence of mutually distinct monochromatic solution in $\mathbb{N}^+$.
 * `SchursTheorem.HasIntervalMonoSol`: Existence of monochromatic solution in $\{1, \dots, N\}$.
 * `SchursTheorem.RadoSingleEquationCondition`: Non-empty zero sub-sum criterion $\exists I \ne \emptyset, \sum_{i \in I} c_i = 0$.
-* `SchursTheorem.rado_zero_sum_partition_regular`: Theorem 1 (Zero-sum partition regularity).
+* `SchursTheorem.rado_zero_sum_partition_regular`: Theorem 1 (Constant-solution zero-sum corollary to Rado's theorem).
 * `SchursTheorem.rado_zero_sum_interval`: Finite interval version for zero-sum equations.
 * `SchursTheorem.schurCoeffs`: Schur coefficient vector $(1, 1, -1)$.
 * `SchursTheorem.schurCoeffs_satisfies_rado`: Proof that Schur coefficients satisfy Rado's condition.
-* `SchursTheorem.schur_is_rado_regular`: Theorem 2 (Schur partition regularity).
+* `SchursTheorem.schur_is_rado_regular`: Theorem 2 (Schur partition regularity over $\mathbb{N}^+$).
 * `SchursTheorem.schur_interval_bound`: Schur finite interval bound with $B_r = \text{ramseyTriangleBound } r$.
 * `SchursTheorem.ap3Coeffs`: 3-AP coefficient vector $(1, -2, 1)$.
 * `SchursTheorem.ap3_is_rado_regular`: Theorem 3 (3-AP partition regularity).
@@ -146,7 +154,17 @@ lemma isLinearSol_const (c : Fin k → ℤ) (m : ℕ) (h_sum : ∑ i : Fin k, c 
 
 /-- **Rado's Single-Equation Condition**:
 A single homogeneous linear equation $c : \text{Fin } k \to \mathbb{Z}$ satisfies Rado's condition
-if there exists a non-empty subset $I \subseteq \text{Fin } k$ whose coefficients sum to zero. -/
+if there exists a non-empty subset $I \subseteq \text{Fin } k$ whose coefficients sum to zero:
+$$\exists \emptyset \ne I \subseteq \{0,\dots,k-1\}, \sum_{i \in I} c_i = 0.$$
+
+### Mathematical Context:
+Rado's 1933 theorem proves that this condition is both necessary and sufficient for the partition
+regularity of $\sum c_i x_i = 0$ over $\mathbb{N}^+$.
+* **Zero-sum case ($\sum_{i=0}^{k-1} c_i = 0$)**: Admits constant monochromatic solutions $x = (m,\dots,m)$
+  since $\sum c_i m = m \sum c_i = 0$.
+* **Non-zero-sum case ($\sum c_i \ne 0$ with $\sum_{i \in I} c_i = 0$)**: No constant solution exists;
+  proving partition regularity requires deeper combinatorial and Ramsey-theoretic machinery
+  (e.g., Deuber's $(m, p, c)$-sets, van der Waerden's theorem, or graph Ramsey reductions). -/
 def RadoSingleEquationCondition (c : Fin k → ℤ) : Prop :=
   ∃ I : Finset (Fin k), I.Nonempty ∧ ∑ i ∈ I, c i = 0
 
@@ -155,16 +173,21 @@ lemma rado_condition_of_zero_sum [NeZero k] (c : Fin k → ℤ) (h_sum : ∑ i :
     RadoSingleEquationCondition c :=
   ⟨Finset.univ, Finset.univ_nonempty, h_sum⟩
 
-/-- **Rado's Zero-Sum Criterion (Theorem 1: Zero-Sum Regularity)**:
-Every integer coefficient vector $c : \text{Fin } k \to \mathbb{Z}$ whose coefficients sum to zero
-($\sum_{i=0}^{k-1} c_i = 0$) is partition regular over $\mathbb{N}^+$. -/
+/-- **Constant-Solution Zero-Sum Corollary to Rado's Theorem**:
+Every integer coefficient vector $c : \text{Fin } k \to \mathbb{Z}$ whose full coefficients sum to zero
+($\sum_{i=0}^{k-1} c_i = 0$) is partition regular over $\mathbb{N}^+$.
+
+The proof constructs an explicit constant monochromatic solution $x = (1, \dots, 1)$, which satisfies
+$\sum c_i \cdot 1 = \sum c_i = 0$ and is monochromatic under any coloring.
+(For non-zero-sum equations satisfying Rado's condition $\sum_{i \in I} c_i = 0$ for $I \subsetneq \{0,\dots,k-1\}$,
+constant solutions fail and deeper Ramsey machinery such as Deuber / van der Waerden is required.) -/
 theorem rado_zero_sum_partition_regular (k : ℕ) [NeZero k] (c : Fin k → ℤ)
     (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
     HasNonzeroMonoSol c χ :=
   ⟨fun _ => 1, fun _ => le_rfl, isLinearSol_const c 1 h_sum, isMonoSol_const χ 1⟩
 
-/-- **Rado's Zero-Sum Criterion (Explicit Index Size Formulation)**:
-Variant taking explicit `1 ≤ k` hypothesis instead of typeclass `[NeZero k]`. -/
+/-- **Constant-Solution Zero-Sum Corollary to Rado's Theorem (Explicit Index Size Formulation)**:
+Variant of `rado_zero_sum_partition_regular` taking an explicit `1 ≤ k` hypothesis instead of typeclass `[NeZero k]`. -/
 theorem rado_zero_sum_partition_regular_of_le (k : ℕ) (hk : 1 ≤ k) (c : Fin k → ℤ)
     (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
     letI : NeZero k := ⟨by omega⟩
@@ -243,7 +266,10 @@ theorem schur_interval_bound (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
   · rw [isMonoSol_three_iff]; exact ⟨hcy.trans hcx.symm, hcz.trans hcx.symm⟩
 
 /-- **Schur Partition Regularity on Positive Integers**:
-The Schur equation $x + y = z$ is partition regular over $\mathbb{N}^+$. -/
+The Schur equation $x + y = z$ is partition regular over the positive integers $\mathbb{N}^+$:
+for any $r$-coloring $\chi : ℕ \to \text{Fin } r$, there exists a positive monochromatic solution.
+For the quantitative finite interval cutoff $N = \text{ramseyTriangleBound } r$, see `schur_interval_bound`
+and `SchursTheorem.schurs_theorem`. -/
 theorem schur_is_rado_regular (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
     HasNonzeroMonoSol schurCoeffs χ :=
   (schur_interval_bound r hr χ).toHasNonzeroMonoSol

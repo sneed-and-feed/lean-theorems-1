@@ -84,7 +84,7 @@ lemma sorted_mono_triangle {n : ℕ} {C : Type*} (edgeColor : Fin n → Fin n �
 
 /-- **Group Schur Theorem (Multiplicative Formulation)**:
 For any group $G$ (`[Group G] [DecidableEq G]`), any integer $r \ge 1$, any finite subset
-$S \subseteq G$ with $\text{ramseyTriangleBound } r \le |S|$, and any coloring $\chi : G \to \text{Fin } r$,
+$S \subseteq G$ with $|S| \ge \text{ramseyTriangleBound } r$, and any coloring $\chi : G \to \text{Fin } r$,
 there exist distinct elements $u, v, w \in S$ such that setting
 $x = u^{-1} v$, $y = v^{-1} w$, and $z = u^{-1} w$ satisfies:
 * $x \cdot y = z$
@@ -145,8 +145,8 @@ theorem group_schurs_theorem {G : Type*} [Group G] [DecidableEq G]
     hc_ab, hc_bc, hc_ac⟩
 
 /-- **Group Schur Theorem (Existential Elements Corollary)**:
-In any $r$-coloring of a group $G$, any finite subset $S \subseteq G$ of size at least
-`ramseyTriangleBound r` yields non-identity elements $x, y, z \in G \setminus \{1\}$ such that
+In any $r$-coloring of a group $G$, any finite subset $S \subseteq G$ with
+$|S| \ge \text{ramseyTriangleBound } r$ yields non-identity elements $x, y, z \in G \setminus \{1\}$ such that
 $x \cdot y = z$ and $\chi(x) = \chi(y) = \chi(z)$. -/
 theorem group_schurs_theorem_simple {G : Type*} [Group G] [DecidableEq G]
     (r : ℕ) (hr : 1 ≤ r) (S : Finset G) (hS : ramseyTriangleBound r ≤ S.card)
@@ -194,12 +194,12 @@ theorem finite_group_color_classes_not_product_free {G : Type*} [Fintype G] [Gro
 
 /-- **Finite Group Partition Regularity (Product Formulation)**:
 If $G \setminus \{1\}$ is covered by $r$ sets $A_0, \dots, A_{r-1}$ where $|G| \ge \text{ramseyTriangleBound } r$,
-then at least one set $A_i$ contains a solution to $x \cdot y = z$. -/
+then at least one set $A_i$ contains a non-identity solution to $x \cdot y = z$ ($x, y, z \ne 1$). -/
 theorem finite_group_partition_regular {G : Type*} [Fintype G] [Group G] [DecidableEq G]
     (r : ℕ) (hr : 1 ≤ r) (hG : ramseyTriangleBound r ≤ Fintype.card G)
     (A : Fin r → Finset G)
     (h_cover : (Finset.univ : Finset G).erase 1 ⊆ Finset.biUnion Finset.univ A) :
-    ∃ i : Fin r, ∃ x y z, x ∈ A i ∧ y ∈ A i ∧ z ∈ A i ∧ x * y = z := by
+    ∃ i : Fin r, ∃ x y z, x ∈ A i ∧ y ∈ A i ∧ z ∈ A i ∧ x ≠ 1 ∧ y ≠ 1 ∧ z ≠ 1 ∧ x * y = z := by
   have h_choice : ∀ g : G, ∃ i : Fin r, g ∈ (Finset.univ : Finset G).erase 1 → g ∈ A i := by
     intro g
     by_cases hg : g ∈ (Finset.univ : Finset G).erase 1
@@ -210,7 +210,7 @@ theorem finite_group_partition_regular {G : Type*} [Fintype G] [Group G] [Decida
   have hχ : ∀ {g : G}, g ≠ 1 → g ∈ A (χ g) :=
     fun hg => (h_choice _).choose_spec (Finset.mem_erase.mpr ⟨hg, Finset.mem_univ _⟩)
   rcases finite_group_schurs_theorem r hr hG χ with ⟨c, x, y, z, hx1, hy1, hz1, hxyz, hcx, hcy, hcz⟩
-  exact ⟨c, x, y, z, hcx ▸ hχ hx1, hcy ▸ hχ hy1, hcz ▸ hχ hz1, hxyz⟩
+  exact ⟨c, x, y, z, hcx ▸ hχ hx1, hcy ▸ hχ hy1, hcz ▸ hχ hz1, hx1, hy1, hz1, hxyz⟩
 
 /-- **Finite Group Partition Not Product-Free**:
 In any $r$-covering of $G \setminus \{1\}$ with $|G| \ge \text{ramseyTriangleBound } r$,
@@ -220,14 +220,14 @@ theorem finite_group_partition_not_product_free {G : Type*} [Fintype G] [Group G
     (A : Fin r → Finset G)
     (h_cover : (Finset.univ : Finset G).erase 1 ⊆ Finset.biUnion Finset.univ A) :
     ∃ i : Fin r, ¬ IsProductFree (A i) := by
-  rcases finite_group_partition_regular r hr hG A h_cover with ⟨i, x, y, z, hx, hy, hz, hxyz⟩
+  rcases finite_group_partition_regular r hr hG A h_cover with ⟨i, x, y, z, hx, hy, hz, -, -, -, hxyz⟩
   exact ⟨i, fun h_pf => (hxyz ▸ h_pf x hx y hy) hz⟩
 
 /-! ### 3. General Additive Group Schur's Theorem -/
 
 /-- **Additive Group Schur Theorem (General Additive Group)**:
 For any additive group $A$ (`[AddGroup A] [DecidableEq A]`), any integer $r \ge 1$,
-any finite subset $S \subseteq A$ with $\text{ramseyTriangleBound } r \le |S|$,
+any finite subset $S \subseteq A$ with $|S| \ge \text{ramseyTriangleBound } r$,
 and any coloring $\chi : A \to \text{Fin } r$, there exist distinct elements $u, v, w \in S$
 and non-zero elements $x, y, z \in A$ such that:
 * $x = -u + v$, $y = -v + w$, $z = -u + w$
@@ -289,7 +289,7 @@ theorem addGroup_schurs_theorem {A : Type*} [AddGroup A] [DecidableEq A]
 
 /-- **Abelian Group Schur Theorem (Additive Formulation)**:
 For any additive abelian group $A$ (`[AddCommGroup A] [DecidableEq A]`), any integer $r \ge 1$,
-any finite subset $S \subseteq A$ with $\text{ramseyTriangleBound } r \le |S|$,
+any finite subset $S \subseteq A$ with $|S| \ge \text{ramseyTriangleBound } r$,
 and any coloring $\chi : A \to \text{Fin } r$, there exist distinct elements $u, v, w \in S$
 and non-zero differences $x = v - u$, $y = w - v$, and $z = w - u$ satisfying:
 * $x + y = z$
@@ -313,8 +313,8 @@ theorem addCommGroup_schurs_theorem {A : Type*} [AddCommGroup A] [DecidableEq A]
     rfl, rfl, rfl, h_sum, hx0, hy0, hz0, hcx, hcy, hcz⟩
 
 /-- **Abelian Group Schur Theorem (Simple Existential Formulation)**:
-In any $r$-coloring of an additive abelian group $A$, any finite subset of size at least
-`ramseyTriangleBound r` yields non-zero elements $x, y, z \in A \setminus \{0\}$ such that
+In any $r$-coloring of an additive abelian group $A$, any finite subset $S \subseteq A$ with
+$|S| \ge \text{ramseyTriangleBound } r$ yields non-zero elements $x, y, z \in A \setminus \{0\}$ such that
 $x + y = z$ and $\chi(x) = \chi(y) = \chi(z)$. -/
 theorem addCommGroup_schurs_theorem_simple {A : Type*} [AddCommGroup A] [DecidableEq A]
     (r : ℕ) (hr : 1 ≤ r) (S : Finset A) (hS : ramseyTriangleBound r ≤ S.card)
@@ -360,12 +360,12 @@ theorem finite_addCommGroup_color_classes_not_sum_free {A : Type*} [Fintype A] [
 
 /-- **Finite Additive Abelian Group Partition Regularity**:
 If $A \setminus \{0\}$ is covered by $r$ sets $A_0, \dots, A_{r-1}$ where $|A| \ge \text{ramseyTriangleBound } r$,
-then at least one set $A_i$ contains a solution to $x + y = z$. -/
+then at least one set $A_i$ contains a non-zero solution to $x + y = z$ ($x, y, z \ne 0$). -/
 theorem finite_addCommGroup_partition_regular {A : Type*} [Fintype A] [AddCommGroup A] [DecidableEq A]
     (r : ℕ) (hr : 1 ≤ r) (hA : ramseyTriangleBound r ≤ Fintype.card A)
     (Sets : Fin r → Finset A)
     (h_cover : (Finset.univ : Finset A).erase 0 ⊆ Finset.biUnion Finset.univ Sets) :
-    ∃ i : Fin r, ∃ x y z, x ∈ Sets i ∧ y ∈ Sets i ∧ z ∈ Sets i ∧ x + y = z := by
+    ∃ i : Fin r, ∃ x y z, x ∈ Sets i ∧ y ∈ Sets i ∧ z ∈ Sets i ∧ x ≠ 0 ∧ y ≠ 0 ∧ z ≠ 0 ∧ x + y = z := by
   have h_choice : ∀ a : A, ∃ i : Fin r, a ∈ (Finset.univ : Finset A).erase 0 → a ∈ Sets i := by
     intro a
     by_cases ha : a ∈ (Finset.univ : Finset A).erase 0
@@ -376,7 +376,7 @@ theorem finite_addCommGroup_partition_regular {A : Type*} [Fintype A] [AddCommGr
   have hχ : ∀ {a : A}, a ≠ 0 → a ∈ Sets (χ a) :=
     fun ha => (h_choice _).choose_spec (Finset.mem_erase.mpr ⟨ha, Finset.mem_univ _⟩)
   rcases finite_addCommGroup_schurs_theorem r hr hA χ with ⟨c, x, y, z, hx0, hy0, hz0, hxyz, hcx, hcy, hcz⟩
-  exact ⟨c, x, y, z, hcx ▸ hχ hx0, hcy ▸ hχ hy0, hcz ▸ hχ hz0, hxyz⟩
+  exact ⟨c, x, y, z, hcx ▸ hχ hx0, hcy ▸ hχ hy0, hcz ▸ hχ hz0, hx0, hy0, hz0, hxyz⟩
 
 /-- **Finite Additive Abelian Group Partition Not Sum-Free**:
 In any $r$-covering of $A \setminus \{0\}$ with $|A| \ge \text{ramseyTriangleBound } r$,
@@ -386,7 +386,7 @@ theorem finite_addCommGroup_partition_not_sum_free {A : Type*} [Fintype A] [AddC
     (Sets : Fin r → Finset A)
     (h_cover : (Finset.univ : Finset A).erase 0 ⊆ Finset.biUnion Finset.univ Sets) :
     ∃ i : Fin r, ¬ IsSumFree (Sets i) := by
-  rcases finite_addCommGroup_partition_regular r hr hA Sets h_cover with ⟨i, x, y, z, hx, hy, hz, hxyz⟩
+  rcases finite_addCommGroup_partition_regular r hr hA Sets h_cover with ⟨i, x, y, z, hx, hy, hz, -, -, -, hxyz⟩
   exact ⟨i, fun h_sf => (hxyz ▸ h_sf x hx y hy) hz⟩
 
 #print axioms group_schurs_theorem

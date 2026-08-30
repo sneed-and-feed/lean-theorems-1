@@ -110,12 +110,12 @@ theorem addCommGroup_schurs_theorem {A : Type*} [AddCommGroup A] [DecidableEq A]
 
 /-- **Finite Additive Abelian Group Partition Regularity**:
 If $A \setminus \{0\}$ is covered by $r$ sets $A_0, \dots, A_{r-1}$ where $|A| \ge \text{ramseyTriangleBound } r$,
-then at least one set contains a solution to $x + y = z$. -/
+then at least one set $A_i$ contains a non-zero solution to $x + y = z$ ($x, y, z \ne 0$). -/
 theorem finite_addCommGroup_partition_regular {A : Type*} [Fintype A] [AddCommGroup A] [DecidableEq A]
     (r : ℕ) (hr : 1 ≤ r) (hA : ramseyTriangleBound r ≤ Fintype.card A)
     (Sets : Fin r → Finset A)
     (h_cover : (Finset.univ : Finset A).erase 0 ⊆ Finset.biUnion Finset.univ Sets) :
-    ∃ i : Fin r, ∃ x y z, x ∈ Sets i ∧ y ∈ Sets i ∧ z ∈ Sets i ∧ x + y = z := sorry
+    ∃ i : Fin r, ∃ x y z, x ∈ Sets i ∧ y ∈ Sets i ∧ z ∈ Sets i ∧ x ≠ 0 ∧ y ≠ 0 ∧ z ≠ 0 ∧ x + y = z := sorry
 
 /-- **Exact Monochromatic Count for $r = 1$**:
 For 1-colorings (uncolored positive integers), the number of monochromatic Schur triples
@@ -123,25 +123,31 @@ in $\{1, \dots, N\}$ is exactly $(N - 1) N / 2$. -/
 theorem card_monoSchurTriples_one (χ : ℕ → Fin 1) (N : ℕ) :
     (monoSchurTriples χ N).card = (N - 1) * N / 2 := sorry
 
-/-- **Quantitative Schur Supersaturation Density (Positive Scaling)**:
+/-- **Quantitative Disjoint-Block Double-Counting Bound**:
 For any $r \ge 1$, $k \ge 1$, and $N \ge k \cdot \text{ramseyTriangleBound } r$,
-the product $N \cdot |\text{monoSchurTriples } \chi N|$ is bounded from below by $k$:
-$$k \le N \cdot |\text{monoSchurTriples } \chi N|$$ -/
+the double counting between $k$ disjoint graph triangles in $\{0, \dots, N\}$ and integer Schur difference triples
+yields:
+$$k \le N \cdot |\text{monoSchurTriples } \chi N|$$
+This quantitative disjoint-block double-counting bound relates the number $k$ of disjoint blocks of size $B_r$
+to the count of monochromatic Schur triples. In contrast, for $r = 1$, `card_monoSchurTriples_one`
+establishes the exact quadratic density $\frac{(N-1)N}{2} = \frac{1}{2}N^2 - \frac{1}{2}N$. -/
 theorem supersaturation_bound (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) (k N : ℕ)
     (hN : k * ramseyTriangleBound r ≤ N) :
     k ≤ N * (monoSchurTriples χ N).card := sorry
 
-/-- **Rado's Zero-Sum Criterion**:
-Every integer coefficient vector $c : \text{Fin } k \to \mathbb{Z}$ whose coefficients sum to zero
-is partition regular over $\mathbb{N}^+$. -/
+/-- **Constant-Solution Zero-Sum Corollary to Rado's Theorem (Explicit Index Size Formulation)**:
+Variant of `rado_zero_sum_partition_regular` taking an explicit `1 ≤ k` hypothesis instead of typeclass `[NeZero k]`.
+For zero-sum linear equations ($\sum_{i=0}^{k-1} c_i = 0$), partition regularity over $\mathbb{N}^+$
+admits an explicit constant monochromatic solution $x = (1, \dots, 1)$. -/
 theorem rado_zero_sum_partition_regular_of_le (k : ℕ) (hk : 1 ≤ k) (c : Fin k → ℤ)
     (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
     letI : NeZero k := ⟨by omega⟩
     HasNonzeroMonoSol c χ := sorry
 
-/-- **Schur's Equation as a Rado Regular Equation**:
-The Schur equation $x + y = z$ is partition regular over $\mathbb{N}^+$ with cutoff
-$N = \text{ramseyTriangleBound } r$. -/
+/-- **Schur Partition Regularity on Positive Integers**:
+The Schur equation $x + y = z$ is partition regular over the positive integers $\mathbb{N}^+$:
+for any $r$-coloring $\chi : ℕ \to \text{Fin } r$, there exists a positive monochromatic solution.
+For the quantitative finite interval cutoff $N = \text{ramseyTriangleBound } r$, see `schurs_theorem`. -/
 theorem schur_is_rado_regular (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
     HasNonzeroMonoSol schurCoeffs χ := sorry
 
