@@ -123,13 +123,13 @@ in $\{1, \dots, N\}$ is exactly $(N - 1) N / 2$. -/
 theorem card_monoSchurTriples_one (χ : ℕ → Fin 1) (N : ℕ) :
     (monoSchurTriples χ N).card = (N - 1) * N / 2 := sorry
 
-/-- **Quantitative Supersaturation Bound**:
-For any $r \ge 1$ and $N + 1 \ge k \cdot \text{ramseyTriangleBound } r$,
-the number of monochromatic Schur triples in $\{1, \dots, N\}$ satisfies
-$k \le (N + 1) \cdot |\text{monoSchurTriples } \chi N|$. -/
-theorem supersaturation_bound {r : ℕ} (hr : 1 ≤ r) (χ : ℕ → Fin r)
-    (k N : ℕ) (hk : 1 ≤ k) (hN : k * ramseyTriangleBound r ≤ N + 1) :
-    k ≤ (N + 1) * (monoSchurTriples χ N).card := sorry
+/-- **Quantitative Schur Supersaturation Density (Positive Scaling)**:
+For any $r \ge 1$, $k \ge 1$, and $N \ge k \cdot \text{ramseyTriangleBound } r$,
+the product $N \cdot |\text{monoSchurTriples } \chi N|$ is bounded from below by $k$:
+$$k \le N \cdot |\text{monoSchurTriples } \chi N|$$ -/
+theorem supersaturation_bound (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) (k N : ℕ)
+    (hN : k * ramseyTriangleBound r ≤ N) :
+    k ≤ N * (monoSchurTriples χ N).card := sorry
 
 /-- **Rado's Zero-Sum Criterion**:
 Every integer coefficient vector $c : \text{Fin } k \to \mathbb{Z}$ whose coefficients sum to zero
