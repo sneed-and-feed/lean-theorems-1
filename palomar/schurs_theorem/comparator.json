@@ -6,11 +6,7 @@
     "SchursTheorem.schurs_theorem",
     "SchursTheorem.group_schurs_theorem",
     "SchursTheorem.addCommGroup_schurs_theorem",
-    "SchursTheorem.finite_addCommGroup_partition_regular",
-    "SchursTheorem.card_monoSchurTriples_one",
-    "SchursTheorem.supersaturation_bound",
-    "SchursTheorem.rado_zero_sum_partition_regular_of_le",
-    "SchursTheorem.schur_is_rado_regular"
+    "SchursTheorem.finite_addCommGroup_partition_regular"
   ],
   "permitted_axioms": [
     "propext",
