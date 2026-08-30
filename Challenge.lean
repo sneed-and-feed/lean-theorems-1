@@ -8,8 +8,6 @@ import Mathlib.Algebra.BigOperators.Fin
 
 namespace SchursTheorem
 
-variable {α : Type*} [DecidableEq α]
-
 /-- Explicit recursive upper bound for the multicolor triangle Ramsey number $R_r(3)$:
     $B(0) = 2$, $B(r + 1) = (r + 1) \cdot B(r) + 1$.
     Note that `ramseyTriangleBound r` is an explicit upper bound ($B_r \ge R_r(3)$),
@@ -17,6 +15,10 @@ variable {α : Type*} [DecidableEq α]
 def ramseyTriangleBound : ℕ → ℕ
   | 0 => 2
   | r + 1 => (r + 1) * ramseyTriangleBound r + 1
+
+section RamseyTriangle
+
+variable {α : Type*} [DecidableEq α]
 
 /-- A triple of distinct vertices forming a monochromatic triangle of color `k`. -/
 def isMonoTriangle (c : α → α → Fin r) (S : Finset α) (u v w : α) (k : Fin r) : Prop :=
@@ -26,6 +28,17 @@ def isMonoTriangle (c : α → α → Fin r) (S : Finset α) (u v w : α) (k : F
 /-- There exists a monochromatic triangle in `S` for edge-coloring `c`. -/
 def hasMonoTriangle (c : α → α → Fin r) (S : Finset α) : Prop :=
   ∃ u v w k, isMonoTriangle c S u v w k
+
+/-- **Multicolor Triangle Ramsey Theorem**:
+Any symmetric edge-coloring with `r ≥ 1` colors of a complete graph with at least
+`ramseyTriangleBound r` vertices contains a monochromatic triangle. -/
+theorem ramsey_triangle :
+    ∀ (r : ℕ) (_hr : 1 ≤ r) (S : Finset α) (c : α → α → Fin r),
+      (∀ u v, c u v = c v u) →
+      ramseyTriangleBound r ≤ S.card →
+      hasMonoTriangle c S := sorry
+
+end RamseyTriangle
 
 /-- The finite set of integers $\{1, \dots, N\}$. -/
 def schurInterval (N : ℕ) : Finset ℕ :=
@@ -54,15 +67,6 @@ def HasIntervalMonoSol {r : ℕ} [NeZero k] (c : Fin k → ℤ) (χ : ℕ → Fi
 
 /-- The coefficient vector of Schur's equation $x_0 + x_1 - x_2 = 0$. -/
 def schurCoeffs : Fin 3 → ℤ := ![(1 : ℤ), 1, -1]
-
-/-- **Multicolor Triangle Ramsey Theorem**:
-Any symmetric edge-coloring with `r ≥ 1` colors of a complete graph with at least
-`ramseyTriangleBound r` vertices contains a monochromatic triangle. -/
-theorem ramsey_triangle :
-    ∀ (r : ℕ) (_hr : 1 ≤ r) (S : Finset α) (c : α → α → Fin r),
-      (∀ u v, c u v = c v u) →
-      ramseyTriangleBound r ≤ S.card →
-      hasMonoTriangle c S := sorry
 
 /-- **Schur's Theorem on Sum-Free Partitions** (Issai Schur, 1916):
 For any $r \ge 1$, every $r$-coloring $\chi$ of the integers $\{1, \dots, N\}$
@@ -119,13 +123,13 @@ in $\{1, \dots, N\}$ is exactly $(N - 1) N / 2$. -/
 theorem card_monoSchurTriples_one (χ : ℕ → Fin 1) (N : ℕ) :
     (monoSchurTriples χ N).card = (N - 1) * N / 2 := sorry
 
-/-- **Quantitative Schur Supersaturation Density (Positive Scaling)**:
-For any $r \ge 1$, $k \ge 1$, and $N \ge k \cdot \text{ramseyTriangleBound } r$,
-the product $N \cdot |\text{monoSchurTriples } \chi N|$ is bounded from below by $k$:
-$$k \le N \cdot |\text{monoSchurTriples } \chi N|$$ -/
-theorem supersaturation_bound (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) (k N : ℕ)
-    (hN : k * ramseyTriangleBound r ≤ N) :
-    k ≤ N * (monoSchurTriples χ N).card := sorry
+/-- **Quantitative Supersaturation Bound**:
+For any $r \ge 1$ and $N + 1 \ge k \cdot \text{ramseyTriangleBound } r$,
+the number of monochromatic Schur triples in $\{1, \dots, N\}$ satisfies
+$k \le (N + 1) \cdot |\text{monoSchurTriples } \chi N|$. -/
+theorem supersaturation_bound {r : ℕ} (hr : 1 ≤ r) (χ : ℕ → Fin r)
+    (k N : ℕ) (hk : 1 ≤ k) (hN : k * ramseyTriangleBound r ≤ N + 1) :
+    k ≤ (N + 1) * (monoSchurTriples χ N).card := sorry
 
 /-- **Rado's Zero-Sum Criterion**:
 Every integer coefficient vector $c : \text{Fin } k \to \mathbb{Z}$ whose coefficients sum to zero
