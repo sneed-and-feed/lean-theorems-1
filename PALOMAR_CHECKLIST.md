@@ -36,7 +36,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Status |
 | :---: | :--- | :--- | :--- | :--- | :---: |
-| **1** | **Schur's Theorem: Algebraic, Quantitative & Linear Systems Suite** | `schurs_theorem` | `HEAD` *(or active commit)* | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit (Research-Grade Upgrade)** |
+| **1** | **Schur's Theorem: Algebraic, Quantitative & Linear Systems Suite** | `schurs_theorem` | `4db514fc629a13e1ade6b85c8cf84e02d9559eb4` | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit (Research-Grade Upgrade)** |
 | **3** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `frankl_wilson` | `a3047d6bc04685572164ac141822aea8d3ad60e4` | `palomar/frankl_wilson/comparator.json` | [ ] **Ready to Submit** |
 | **4** | **Kneser's Graph Coloring Upper Bound (1955)** | `kneser_lovasz` | `a1b19ef1479c60afc12d154206cc4cc7c3993f18` | `palomar/kneser_lovasz/comparator.json` | [ ] **Ready to Submit** |
 | **5** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | [ ] **Ready to Submit** |
