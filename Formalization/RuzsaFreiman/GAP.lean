@@ -63,6 +63,8 @@ of the Bogolyubov 4-sumset.
 
 namespace RuzsaFreiman
 
+variable {G : Type*} [DecidableEq G] [AddCommGroup G]
+
 /-- A Generalized Arithmetic Progression (GAP) of dimension `dim` in an additive group $G$. -/
 structure GAP (G : Type*) [AddCommGroup G] where
   dim : ℕ
@@ -71,32 +73,32 @@ structure GAP (G : Type*) [AddCommGroup G] where
   lengths : Fin dim → ℕ
 
 /-- The Finset of elements represented by a GAP $P$. -/
-def gapElements {G : Type*} [DecidableEq G] [AddCommGroup G] (P : GAP G) : Finset G :=
+def gapElements (P : GAP G) : Finset G :=
   (Fintype.piFinset (fun i : Fin P.dim => Finset.range (P.lengths i))).image
     (fun (k : Fin P.dim → ℕ) => P.base + ∑ i : Fin P.dim, (k i) • (P.steps i))
 
 /-- The cardinality of a GAP is bounded by the volume (product of side lengths). -/
-theorem gapElements_card_le {G : Type*} [DecidableEq G] [AddCommGroup G] (P : GAP G) :
-    (gapElements P).card ≤ ∏ i : Fin P.dim, P.lengths i := by
-  dsimp [gapElements]; exact Finset.card_image_le.trans (by simp)
+theorem gapElements_card_le (P : GAP G) :
+    (gapElements P).card ≤ ∏ i : Fin P.dim, P.lengths i :=
+  Finset.card_image_le.trans (by simp)
 
 /-- A GAP is proper if all linear combinations evaluate to distinct elements of $G$. -/
-def isProperGAP {G : Type*} [DecidableEq G] [AddCommGroup G] (P : GAP G) : Prop :=
+def isProperGAP (P : GAP G) : Prop :=
   (gapElements P).card = ∏ i : Fin P.dim, P.lengths i
 
 /-- A map $\phi : A \to B$ is a Freiman homomorphism of order $k$ if it preserves $k$-term equality of sums. -/
-def IsFreimanHomomorphism {G H : Type*} [AddCommGroup G] [AddCommGroup H]
+def IsFreimanHomomorphism {H : Type*} [AddCommGroup H]
     (A : Finset G) (f : G → H) (k : ℕ) : Prop :=
   ∀ (xs ys : Fin k → G), (∀ i, xs i ∈ A) → (∀ i, ys i ∈ A) →
     (∑ i, xs i = ∑ i, ys i) → (∑ i, f (xs i) = ∑ i, f (ys i))
 
 /-- Identity map is always a Freiman homomorphism of any order $k$. -/
-theorem freimanHomomorphism_id {G : Type*} [AddCommGroup G] (A : Finset G) (k : ℕ) :
+theorem freimanHomomorphism_id (A : Finset G) (k : ℕ) :
     IsFreimanHomomorphism A id k :=
   fun _ _ _ _ => id
 
 /-- Composition of Freiman homomorphisms is a Freiman homomorphism. -/
-theorem freimanHomomorphism_comp {G H K : Type*} [AddCommGroup G] [AddCommGroup H] [AddCommGroup K] [DecidableEq H]
+theorem freimanHomomorphism_comp {H K : Type*} [AddCommGroup H] [AddCommGroup K] [DecidableEq H]
     (A : Finset G) (f : G → H) (g : H → K) (k : ℕ)
     (hf : IsFreimanHomomorphism A f k)
     (hg : IsFreimanHomomorphism (A.image f) g k) :
@@ -106,25 +108,22 @@ theorem freimanHomomorphism_comp {G H K : Type*} [AddCommGroup G] [AddCommGroup 
       (fun i => Finset.mem_image_of_mem f (hys i)) (hf xs ys hxs hys h)
 
 /-- A map $\phi : A \to B$ is a Freiman isomorphism of order $k$ if it is a Freiman homomorphism with an inverse. -/
-def IsFreimanIsomorphism {G H : Type*} [AddCommGroup G] [AddCommGroup H] [DecidableEq H]
+def IsFreimanIsomorphism {H : Type*} [AddCommGroup H] [DecidableEq H]
     (A : Finset G) (f : G → H) (k : ℕ) : Prop :=
   IsFreimanHomomorphism A f k ∧
   ∃ (g : H → G), IsFreimanHomomorphism (A.image f) g k ∧
     ∀ x ∈ A, g (f x) = x
 
 /-- Zero is in the difference set of any nonempty set. -/
-theorem zero_mem_diffset_self {G : Type*} [DecidableEq G] [AddCommGroup G]
-    {A : Finset G} (hA : A.Nonempty) : (0 : G) ∈ A - A :=
+theorem zero_mem_diffset_self {A : Finset G} (hA : A.Nonempty) : (0 : G) ∈ A - A :=
   let ⟨a, ha⟩ := hA; Finset.mem_sub.2 ⟨a, ha, a, ha, sub_self a⟩
 
 /-- Zero is in the Bogolyubov 4-sumset $(A + A) - (A + A)$ for any nonempty $A$. -/
-theorem zero_mem_bogolyubov {G : Type*} [DecidableEq G] [AddCommGroup G]
-    {A : Finset G} (hA : A.Nonempty) : (0 : G) ∈ ((A + A) - (A + A)) :=
+theorem zero_mem_bogolyubov {A : Finset G} (hA : A.Nonempty) : (0 : G) ∈ ((A + A) - (A + A)) :=
   zero_mem_diffset_self (hA.add hA)
 
 /-- Nonemptiness of the Bogolyubov 4-sumset $(A + A) - (A + A)$ for nonempty $A$. -/
-theorem bogolyubov_set_nonempty {G : Type*} [DecidableEq G] [AddCommGroup G]
-    {A : Finset G} (hA : A.Nonempty) : ((A + A) - (A + A)).Nonempty :=
+theorem bogolyubov_set_nonempty {A : Finset G} (hA : A.Nonempty) : ((A + A) - (A + A)).Nonempty :=
   ⟨0, zero_mem_bogolyubov hA⟩
 
 end RuzsaFreiman

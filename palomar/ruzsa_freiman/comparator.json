@@ -2,6 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
+    "RuzsaFreiman.doublingConstant_ge_one",
     "RuzsaFreiman.ruzsa_triangle_cardinality",
     "RuzsaFreiman.ruzsa_triangle_inequality",
     "RuzsaFreiman.diffset_bound_of_doubling",
@@ -9,7 +10,8 @@
     "RuzsaFreiman.plunnecke_ruzsa_inequality",
     "RuzsaFreiman.plunnecke_tripling",
     "RuzsaFreiman.plunnecke_two_sub_two",
-    "RuzsaFreiman.gapElements_card_le"
+    "RuzsaFreiman.gapElements_card_le",
+    "RuzsaFreiman.freimanHomomorphism_id"
   ],
   "permitted_axioms": [
     "propext",

@@ -107,7 +107,7 @@ theorem plunnecke_petridis_lemma (A B : Finset G) (hA : A.Nonempty) (_hB : B.Non
     rcases A''.eq_empty_or_nonempty with rfl | hA''ne
     · simp
     have hmem : A'' ∈ A.powerset.erase ∅ :=
-      Finset.mem_erase_of_ne_of_mem hA''ne.ne_empty (Finset.mem_powerset.2 (hA''sub.trans hA'mem.2))
+      Finset.mem_erase.2 ⟨hA''ne.ne_empty, Finset.mem_powerset.2 (hA''sub.trans hA'mem.2)⟩
     exact_mod_cast (div_le_div_iff₀ (by positivity) (by positivity)).1 (hAmin A'' hmem)
   simpa [add_comm X, add_assoc, add_left_comm X] using Finset.pluennecke_petridis_inequality_add X h_hyp
 
@@ -120,12 +120,10 @@ theorem plunnecke_ruzsa_inequality {A B : Finset G} (hA : A.Nonempty) {K : ℝ}
     (hK : ((A + B).card : ℝ) ≤ K * (A.card : ℝ)) (k l : ℕ) :
     ((iteratedSumset k B - iteratedSumset l B).card : ℝ) ≤ K ^ (k + l) * (A.card : ℝ) := by
   simp only [iteratedSumset_eq_nsmul]
-  have h_pr : ((k • B - l • B).card : ℝ) ≤ (((A + B).card : ℝ) / A.card) ^ (k + l) * A.card := by
-    have := (NNRat.cast_le (K := ℝ)).mpr (Finset.pluennecke_ruzsa_inequality_nsmul_sub_nsmul_add hA B k l)
-    push_cast at this
-    exact this
-  refine h_pr.trans (mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) ?_ _) (by positivity))
-  exact (div_le_iff₀ (by positivity : (0 : ℝ) < A.card)).2 hK
+  refine (show ((k • B - l • B).card : ℝ) ≤ (((A + B).card : ℝ) / A.card) ^ (k + l) * A.card by
+    simpa using (NNRat.cast_le (K := ℝ)).2 (Finset.pluennecke_ruzsa_inequality_nsmul_sub_nsmul_add hA B k l)).trans ?_
+  exact mul_le_mul_of_nonneg_right
+    (pow_le_pow_left₀ (by positivity) ((div_le_iff₀ (by positivity : (0 : ℝ) < A.card)).2 hK) _) (by positivity)
 
 /--
 **The Plünnecke–Ruzsa Inequality (Automorphic / Single-Set Form)**:

@@ -50,7 +50,7 @@ In general, for $A, B$ non-empty:
 
 namespace RuzsaFreiman
 
-variable {G : Type*} [DecidableEq G] [AddGroup G]
+variable {G : Type*} [DecidableEq G] [AddCommGroup G]
 
 /-- The sumset $A + B = \{a + b : a \in A, b \in B\}$. -/
 def sumset (A B : Finset G) : Finset G := A + B

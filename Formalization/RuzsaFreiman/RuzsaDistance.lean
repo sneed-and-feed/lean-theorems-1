@@ -84,20 +84,20 @@ theorem ruzsa_triangle_cardinality (A B C : Finset G) :
 /-- Strict positivity of the Ruzsa multiplicative ratio for non-empty sets. -/
 theorem ruzsaRatio_pos {A B : Finset G} (hA : A.Nonempty) (hB : B.Nonempty) :
     0 < ruzsaRatio A B := by
-  have := hA.sub hB; dsimp [ruzsaRatio]; positivity
+  dsimp [ruzsaRatio]; positivity
 
 /-- Multiplicative triangle inequality for the Ruzsa ratio. -/
 theorem ruzsaRatio_mul_le {A B C : Finset G}
     (hA : A.Nonempty) (hB : B.Nonempty) (hC : C.Nonempty) :
     ruzsaRatio A C ≤ ruzsaRatio A B * ruzsaRatio B C := by
   dsimp [ruzsaRatio]
-  have h_card : (B.card : ℝ) * (A - C).card ≤ (A - B).card * (B - C).card := by
-    exact_mod_cast ruzsa_triangle_cardinality A B C
+  have h_card : (B.card : ℝ) * (A - C).card ≤ (A - B).card * (B - C).card :=
+    mod_cast ruzsa_triangle_cardinality A B C
   have hs (X Y : Finset G) : Real.sqrt ((X.card : ℝ) * Y.card) = Real.sqrt X.card * Real.sqrt Y.card :=
     Real.sqrt_mul (Nat.cast_nonneg _) _
   rw [div_mul_div_comm, hs A B, hs B C, hs A C, mul_assoc (Real.sqrt A.card), ← mul_assoc (Real.sqrt B.card),
     Real.mul_self_sqrt (Nat.cast_nonneg _), mul_left_comm,
-    ← mul_div_mul_left _ _ (ne_of_gt (by positivity : (0 : ℝ) < B.card))]
+    ← mul_div_mul_left _ _ (by positivity : (B.card : ℝ) ≠ 0)]
   exact div_le_div_of_nonneg_right h_card (by positivity)
 
 /--
@@ -128,8 +128,8 @@ $|A - A| \le K^2 |A|$.
 theorem diffset_bound_of_doubling {A : Finset G} (hA : A.Nonempty) {K : ℝ}
     (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
     ((A - A).card : ℝ) ≤ K ^ 2 * (A.card : ℝ) := by
-  have h : ((A - A).card : ℝ) * A.card ≤ ((A + A).card : ℝ) * (A + A).card := by
-    exact_mod_cast Finset.ruzsa_triangle_inequality_sub_add_add A A A
-  exact (mul_le_mul_iff_of_pos_right (by positivity : (0 : ℝ) < A.card)).1 (by nlinarith)
+  have h : ((A - A).card : ℝ) * A.card ≤ ((A + A).card : ℝ) * (A + A).card :=
+    mod_cast Finset.ruzsa_triangle_inequality_sub_add_add A A A
+  nlinarith [show (0 : ℝ) < A.card by positivity]
 
 end RuzsaFreiman

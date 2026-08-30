@@ -1,154 +1,170 @@
-import Mathlib.Data.Finset.Basic
+import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Prod
-import Mathlib.Data.Fin.Basic
-import Mathlib.Data.Fintype.Basic
-import Mathlib.Algebra.Group.Basic
-import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Fintype.BigOperators
+import Mathlib.Combinatorics.Additive.PluenneckeRuzsa
+import Mathlib.Data.Real.Basic
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Linarith
 
-namespace SchursTheorem
+open scoped Pointwise
+open scoped BigOperators Finset
 
-/-- Explicit recursive upper bound for the multicolor triangle Ramsey number $R_r(3)$:
-    $B(0) = 2$, $B(r + 1) = (r + 1) \cdot B(r) + 1$.
-    Note that `ramseyTriangleBound r` is an explicit upper bound ($B_r \ge R_r(3)$),
-    not the exact multicolor Ramsey number. -/
-def ramseyTriangleBound : ℕ → ℕ
-  | 0 => 2
-  | r + 1 => (r + 1) * ramseyTriangleBound r + 1
+set_option linter.unusedSectionVars false
 
-section RamseyTriangle
+/-!
+# Ruzsa–Freiman Sumset Calculus and Plünnecke–Ruzsa Bounds
 
-variable {α : Type*} [DecidableEq α]
+This module formalizes the core algebraic machinery of **Ruzsa Distance, Plünnecke–Ruzsa Bounds,
+and Freiman Homomorphisms** (Imre Z. Ruzsa 1989/1996, Helmut Plünnecke 1970, Giorgis Petridis 2012).
 
-/-- A triple of distinct vertices forming a monochromatic triangle of color `k`. -/
-def isMonoTriangle (c : α → α → Fin r) (S : Finset α) (u v w : α) (k : Fin r) : Prop :=
-  u ∈ S ∧ v ∈ S ∧ w ∈ S ∧ u ≠ v ∧ u ≠ w ∧ v ≠ w ∧
-  c u v = k ∧ c u w = k ∧ c v w = k
+## Mathematical Overview
 
-/-- There exists a monochromatic triangle in `S` for edge-coloring `c`. -/
-def hasMonoTriangle (c : α → α → Fin r) (S : Finset α) : Prop :=
-  ∃ u v w k, isMonoTriangle c S u v w k
+For finite subsets $A, B, C$ of an additive abelian group $G$:
+1. **Ruzsa Cardinality Inequality**: $|B| \cdot |A - C| \le |A - B| \cdot |B - C|$.
+2. **Ruzsa Metric Triangle Inequality**: $d_R(A, C) \le d_R(A, B) + d_R(B, C)$ where $d_R(A, B) = \log \frac{|A - B|}{\sqrt{|A||B|}}$.
+3. **Plünnecke–Petridis Lemma**: Existence of a minimal magnification subset $A' \subseteq A$.
+4. **Plünnecke–Ruzsa Inequality**: $|k B - \ell B| \le K^{k+\ell} |A|$ whenever $|A + B| \le K |A|$.
+5. **Sumset Tripling and Difference Bounds**: $|A + A + A| \le K^3 |A|$ and $|2A - 2A| \le K^4 |A|$.
 
-/-- **Multicolor Triangle Ramsey Theorem**:
-Any symmetric edge-coloring with `r ≥ 1` colors of a complete graph with at least
-`ramseyTriangleBound r` vertices contains a monochromatic triangle. -/
-theorem ramsey_triangle :
-    ∀ (r : ℕ) (_hr : 1 ≤ r) (S : Finset α) (c : α → α → Fin r),
-      (∀ u v, c u v = c v u) →
-      ramseyTriangleBound r ≤ S.card →
-      hasMonoTriangle c S := sorry
+## References
 
-end RamseyTriangle
+- Ruzsa, I. Z. (1996). *Sums of finite sets*. Number Theory: New York Seminar, Springer, 281–293.
+- Petridis, G. (2012). *New proofs of Plünnecke-type estimates for sumsets*. Combinatorics, Probability and Computing, 21(6), 821–828.
+- Tao, T., & Vu, V. (2006). *Additive Combinatorics*. Cambridge University Press.
+-/
 
-/-- The finite set of integers $\{1, \dots, N\}$. -/
-def schurInterval (N : ℕ) : Finset ℕ :=
-  (Finset.range (N + 1)).filter (fun x => 1 ≤ x)
+namespace RuzsaFreiman
 
-/-- The set of monochromatic Schur triples `(x, y, z)` in `{1, ..., N}` under an `r`-coloring `χ`. -/
-def monoSchurTriples {r : ℕ} (χ : ℕ → Fin r) (N : ℕ) : Finset (ℕ × ℕ × ℕ) :=
-  (schurInterval N ×ˢ (schurInterval N ×ˢ schurInterval N)).filter
-    (fun ⟨x, y, z⟩ => x + y = z ∧ χ x = χ y ∧ χ y = χ z)
+variable {G : Type*} [DecidableEq G] [AddCommGroup G]
 
-/-- A vector $x$ satisfies the homogeneous linear equation defined by $c$. -/
-def IsLinearSol {k : ℕ} (c : Fin k → ℤ) (x : Fin k → ℕ) : Prop :=
-  (∑ i : Fin k, c i * (x i : ℤ)) = 0
+/-- The sumset $A + B = \{a + b : a \in A, b \in B\}$. -/
+def sumset (A B : Finset G) : Finset G := A + B
 
-/-- A vector $x$ is monochromatic under coloring $\chi$. -/
-def IsMonoSol {r : ℕ} [NeZero k] (χ : ℕ → Fin r) (x : Fin k → ℕ) : Prop :=
-  ∀ i : Fin k, χ (x i) = χ (x 0)
+/-- The difference set $A - B = \{a - b : a \in A, b \in B\}$. -/
+def diffset (A B : Finset G) : Finset G := A - B
 
-/-- Existence of a non-zero monochromatic solution in $\mathbb{N}^+$. -/
-def HasNonzeroMonoSol {r : ℕ} [NeZero k] (c : Fin k → ℤ) (χ : ℕ → Fin r) : Prop :=
-  ∃ x : Fin k → ℕ, (∀ i, 1 ≤ x i) ∧ IsLinearSol c x ∧ IsMonoSol χ x
+/-- The doubling constant $\sigma(A) = \frac{|A + A|}{|A|}$. -/
+def doublingConstant (A : Finset G) : ℚ :=
+  (A + A).card / (A.card : ℚ)
 
-/-- Existence of a monochromatic solution bounded in $\{1, \dots, N\}$. -/
-def HasIntervalMonoSol {r : ℕ} [NeZero k] (c : Fin k → ℤ) (χ : ℕ → Fin r) (N : ℕ) : Prop :=
-  ∃ x : Fin k → ℕ, (∀ i, 1 ≤ x i ∧ x i ≤ N) ∧ IsLinearSol c x ∧ IsMonoSol χ x
+/-- The Ruzsa multiplicative ratio $\rho_R(A, B) = \frac{|A - B|}{\sqrt{|A| |B|}}$. -/
+noncomputable def ruzsaRatio (A B : Finset G) : ℝ :=
+  (A - B).card / Real.sqrt ((A.card : ℝ) * (B.card : ℝ))
 
-/-- The coefficient vector of Schur's equation $x_0 + x_1 - x_2 = 0$. -/
-def schurCoeffs : Fin 3 → ℤ := ![(1 : ℤ), 1, -1]
+/-- The Ruzsa distance $d_R(A, B) = \log \frac{|A - B|}{\sqrt{|A| |B|}}$. -/
+noncomputable def ruzsaDistance (A B : Finset G) : ℝ :=
+  Real.log (ruzsaRatio A B)
 
-/-- **Schur's Theorem on Sum-Free Partitions** (Issai Schur, 1916):
-For any $r \ge 1$, every $r$-coloring $\chi$ of the integers $\{1, \dots, N\}$
-(where $N = \text{ramseyTriangleBound } r$) contains a monochromatic solution to $x + y = z$. -/
-theorem schurs_theorem (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
-    let N := ramseyTriangleBound r
-    ∃ (c : Fin r) (x y z : ℕ),
-      1 ≤ x ∧ 1 ≤ y ∧ 1 ≤ z ∧
-      x ≤ N ∧ y ≤ N ∧ z ≤ N ∧
-      x + y = z ∧
-      χ x = c ∧ χ y = c ∧ χ z = c := sorry
+/-- Iterated sumset $k A = A + \dots + A$ ($k$ terms). -/
+def iteratedSumset (k : ℕ) (A : Finset G) : Finset G :=
+  match k with
+  | 0 => {0}
+  | k + 1 => iteratedSumset k A + A
 
-/-- **Multiplicative Group Schur Theorem**:
-For any group `G`, any `r ≥ 1`, any finite subset `S ⊆ G` with `ramseyTriangleBound r ≤ S.card`,
-and any coloring `χ : G → Fin r`, there exists a monochromatic solution to $x \cdot y = z$. -/
-theorem group_schurs_theorem {G : Type*} [Group G] [DecidableEq G]
-    (r : ℕ) (hr : 1 ≤ r) (S : Finset G) (hS : ramseyTriangleBound r ≤ S.card)
-    (χ : G → Fin r) :
-    ∃ (c : Fin r) (u v w : G) (x y z : G),
-      u ∈ S ∧ v ∈ S ∧ w ∈ S ∧
-      u ≠ v ∧ u ≠ w ∧ v ≠ w ∧
-      x = u⁻¹ * v ∧ y = v⁻¹ * w ∧ z = u⁻¹ * w ∧
-      x * y = z ∧
-      x ≠ 1 ∧ y ≠ 1 ∧ z ≠ 1 ∧
-      χ x = c ∧ χ y = c ∧ χ z = c := sorry
+/-- A Generalized Arithmetic Progression (GAP) of dimension `dim` in an additive group $G$. -/
+structure GAP (G : Type*) [AddCommGroup G] where
+  dim : ℕ
+  base : G
+  steps : Fin dim → G
+  lengths : Fin dim → ℕ
 
-/-- **Additive Abelian Group Schur Theorem**:
-For any additive abelian group `A`, any `r ≥ 1`, any finite subset `S ⊆ A` with
-`ramseyTriangleBound r ≤ S.card`, and any coloring `χ : A → Fin r`,
-there exists a monochromatic solution to $x + y = z$. -/
-theorem addCommGroup_schurs_theorem {A : Type*} [AddCommGroup A] [DecidableEq A]
-    (r : ℕ) (hr : 1 ≤ r) (S : Finset A) (hS : ramseyTriangleBound r ≤ S.card)
-    (χ : A → Fin r) :
-    ∃ (c : Fin r) (u v w : A) (x y z : A),
-      u ∈ S ∧ v ∈ S ∧ w ∈ S ∧
-      u ≠ v ∧ u ≠ w ∧ v ≠ w ∧
-      x = v - u ∧ y = w - v ∧ z = w - u ∧
-      x + y = z ∧
-      x ≠ 0 ∧ y ≠ 0 ∧ z ≠ 0 ∧
-      χ x = c ∧ χ y = c ∧ χ z = c := sorry
+/-- The Finset of elements represented by a GAP $P$. -/
+def gapElements (P : GAP G) : Finset G :=
+  (Fintype.piFinset (fun i : Fin P.dim => Finset.range (P.lengths i))).image
+    (fun (k : Fin P.dim → ℕ) => P.base + ∑ i : Fin P.dim, (k i) • (P.steps i))
 
-/-- **Finite Additive Abelian Group Partition Regularity**:
-If $A \setminus \{0\}$ is covered by $r$ sets $A_0, \dots, A_{r-1}$ where $|A| \ge \text{ramseyTriangleBound } r$,
-then at least one set $A_i$ contains a non-zero solution to $x + y = z$ ($x, y, z \ne 0$). -/
-theorem finite_addCommGroup_partition_regular {A : Type*} [Fintype A] [AddCommGroup A] [DecidableEq A]
-    (r : ℕ) (hr : 1 ≤ r) (hA : ramseyTriangleBound r ≤ Fintype.card A)
-    (Sets : Fin r → Finset A)
-    (h_cover : (Finset.univ : Finset A).erase 0 ⊆ Finset.biUnion Finset.univ Sets) :
-    ∃ i : Fin r, ∃ x y z, x ∈ Sets i ∧ y ∈ Sets i ∧ z ∈ Sets i ∧ x ≠ 0 ∧ y ≠ 0 ∧ z ≠ 0 ∧ x + y = z := sorry
+/-- A map $\phi : A \to B$ is a Freiman homomorphism of order $k$ if it preserves $k$-term equality of sums. -/
+def IsFreimanHomomorphism {H : Type*} [AddCommGroup H]
+    (A : Finset G) (f : G → H) (k : ℕ) : Prop :=
+  ∀ (xs ys : Fin k → G), (∀ i, xs i ∈ A) → (∀ i, ys i ∈ A) →
+    (∑ i, xs i = ∑ i, ys i) → (∑ i, f (xs i) = ∑ i, f (ys i))
 
-/-- **Exact Monochromatic Count for $r = 1$**:
-For 1-colorings (uncolored positive integers), the number of monochromatic Schur triples
-in $\{1, \dots, N\}$ is exactly $(N - 1) N / 2$. -/
-theorem card_monoSchurTriples_one (χ : ℕ → Fin 1) (N : ℕ) :
-    (monoSchurTriples χ N).card = (N - 1) * N / 2 := sorry
+/-- Doubling constant is at least 1 for non-empty sets. -/
+theorem doublingConstant_ge_one {A : Finset G} (hA : A.Nonempty) :
+    1 ≤ doublingConstant A := by
+  sorry
 
-/-- **Quantitative Disjoint-Block Double-Counting Bound**:
-For any $r \ge 1$, $k \ge 1$, and $N \ge k \cdot \text{ramseyTriangleBound } r$,
-the double counting between $k$ disjoint graph triangles in $\{0, \dots, N\}$ and integer Schur difference triples
-yields:
-$$k \le N \cdot |\text{monoSchurTriples } \chi N|$$
-This quantitative disjoint-block double-counting bound relates the number $k$ of disjoint blocks of size $B_r$
-to the count of monochromatic Schur triples. In contrast, for $r = 1$, `card_monoSchurTriples_one`
-establishes the exact quadratic density $\frac{(N-1)N}{2} = \frac{1}{2}N^2 - \frac{1}{2}N$. -/
-theorem supersaturation_bound (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) (k N : ℕ)
-    (hN : k * ramseyTriangleBound r ≤ N) :
-    k ≤ N * (monoSchurTriples χ N).card := sorry
+/--
+**Ruzsa Triangle Inequality (Cardinality Form)**:
+For any finite subsets $A, B, C$ in an additive group $G$:
+$$|B| \cdot |A - C| \le |A - B| \cdot |B - C|$$
+-/
+theorem ruzsa_triangle_cardinality (A B C : Finset G) :
+    B.card * (A - C).card ≤ (A - B).card * (B - C).card := by
+  sorry
 
-/-- **Constant-Solution Zero-Sum Corollary to Rado's Theorem (Explicit Index Size Formulation)**:
-Variant of `rado_zero_sum_partition_regular` taking an explicit `1 ≤ k` hypothesis instead of typeclass `[NeZero k]`.
-For zero-sum linear equations ($\sum_{i=0}^{k-1} c_i = 0$), partition regularity over $\mathbb{N}^+$
-admits an explicit constant monochromatic solution $x = (1, \dots, 1)$. -/
-theorem rado_zero_sum_partition_regular_of_le (k : ℕ) (hk : 1 ≤ k) (c : Fin k → ℤ)
-    (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
-    letI : NeZero k := ⟨by omega⟩
-    HasNonzeroMonoSol c χ := sorry
+/--
+**Ruzsa Triangle Inequality (Metric Form)**:
+For any non-empty finite subsets $A, B, C \subseteq G$:
+$$d_R(A, C) \le d_R(A, B) + d_R(B, C)$$
+-/
+theorem ruzsa_triangle_inequality {A B C : Finset G}
+    (hA : A.Nonempty) (hB : B.Nonempty) (hC : C.Nonempty) :
+    ruzsaDistance A C ≤ ruzsaDistance A B + ruzsaDistance B C := by
+  sorry
 
-/-- **Schur Partition Regularity on Positive Integers**:
-The Schur equation $x + y = z$ is partition regular over the positive integers $\mathbb{N}^+$:
-for any $r$-coloring $\chi : ℕ \to \text{Fin } r$, there exists a positive monochromatic solution.
-For the quantitative finite interval cutoff $N = \text{ramseyTriangleBound } r$, see `schurs_theorem`. -/
-theorem schur_is_rado_regular (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
-    HasNonzeroMonoSol schurCoeffs χ := sorry
+/--
+**Iterated Difference Bound**:
+For any non-empty finite set $A \subseteq G$ with $|A + A| \le K |A|$,
+$|A - A| \le K^2 |A|$.
+-/
+theorem diffset_bound_of_doubling {A : Finset G} (hA : A.Nonempty) {K : ℝ}
+    (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
+    ((A - A).card : ℝ) ≤ K ^ 2 * (A.card : ℝ) := by
+  sorry
 
-end SchursTheorem
+/--
+**Petridis' Minimizer Lemma**:
+For any non-empty finite subsets $A, B \subseteq G$, there exists a non-empty subset $A' \subseteq A$ such that
+for all finite sets $X \subseteq G$:
+$$|A' + B + X| \le \frac{|A' + B|}{|A'|} |A' + X|$$
+-/
+theorem plunnecke_petridis_lemma (A B : Finset G) (hA : A.Nonempty) (hB : B.Nonempty) :
+    ∃ A' : Finset G, A'.Nonempty ∧ A' ⊆ A ∧
+      ∀ X : Finset G, (A' + B + X).card * A'.card ≤ (A' + B).card * (A' + X).card := by
+  sorry
+
+/--
+**The Plünnecke–Ruzsa Inequality (General Two-Set Form)**:
+If $A, B \subseteq G$ are finite sets with $|A + B| \le K |A|$, then for any $k, \ell \ge 0$:
+$$|k B - \ell B| \le K^{k + \ell} |A|$$
+-/
+theorem plunnecke_ruzsa_inequality {A B : Finset G} (hA : A.Nonempty) {K : ℝ}
+    (hK : ((A + B).card : ℝ) ≤ K * (A.card : ℝ)) (k l : ℕ) :
+    ((iteratedSumset k B - iteratedSumset l B).card : ℝ) ≤ K ^ (k + l) * (A.card : ℝ) := by
+  sorry
+
+/--
+**Tripling Bound from Doubling**:
+If $|A + A| \le K |A|$, then $|A + A + A| \le K^3 |A|$.
+-/
+theorem plunnecke_tripling {A : Finset G} (hA : A.Nonempty) {K : ℝ}
+    (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
+    ((A + A + A).card : ℝ) ≤ K ^ 3 * (A.card : ℝ) := by
+  sorry
+
+/--
+**Four-fold Difference Bound**:
+If $|A + A| \le K |A|$, then $|2A - 2A| \le K^4 |A|$.
+-/
+theorem plunnecke_two_sub_two {A : Finset G} (hA : A.Nonempty) {K : ℝ}
+    (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
+    (((A + A) - (A + A)).card : ℝ) ≤ K ^ 4 * (A.card : ℝ) := by
+  sorry
+
+/-- The cardinality of a GAP is bounded by the product of side lengths. -/
+theorem gapElements_card_le (P : GAP G) :
+    (gapElements P).card ≤ ∏ i : Fin P.dim, P.lengths i := by
+  sorry
+
+/-- Identity map is always a Freiman homomorphism of any order $k$. -/
+theorem freimanHomomorphism_id (A : Finset G) (k : ℕ) :
+    IsFreimanHomomorphism A id k := by
+  sorry
+
+end RuzsaFreiman
