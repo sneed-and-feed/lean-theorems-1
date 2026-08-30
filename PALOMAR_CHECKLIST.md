@@ -58,6 +58,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **21** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `—` | `palomar/konig_matching/comparator.json` | [ ] **Ready to Submit** |
 | **22** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & GAP Algebra** | `ruzsa_freiman` | `e22a65743cd2d6b209bfcf9c7b346fb5bac5e1d0` | `palomar/ruzsa_freiman/comparator.json` | [ ] **Ready to Submit** |
 | **23** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `—` | `palomar/gilmer_union_closed/comparator.json` | [ ] **Ready to Submit** |
+| **24** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `e42ad68e63a5588bd6da8f64f1d6bee75ff1e222` | `palomar/tuckers_lemma/comparator.json` | [ ] **Ready to Submit** |
 
 ---
 
@@ -67,5 +68,4 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | :--- | :--- | :---: |
 | `picks_theorem` | Elementary triangulation carrier bakes Euler formula equation ( - E + F = 1$); needs intrinsic polygon carrier | [ ] Refactor Needed |
 | `szemeredi_trotter` | Carrier bakes Crossing Lemma inequality directly; needs point-line arrangement carrier in $\mathbb{R}^2$ | [ ] Refactor Needed |
-| `tuckers_lemma` | Premise `h_witness` directly supplies existential conclusion; needs combinatorial parity lemma | [ ] Refactor Needed |
 | `sperners_lemma` / `sperner_3d` | Concrete 1D/2D/3D instances superseded by live General $-D Sperner (PALOMAR-2026-08-27-000014) | [-] Superseded |

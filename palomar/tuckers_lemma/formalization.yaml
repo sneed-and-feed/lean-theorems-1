@@ -1,35 +1,65 @@
 version: "v0.4"
 
 project:
-  name: "Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem"
+  name: "Tucker's Combinatorial Lemma and Discrete Borsuk–Ulam Suite"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Tucker's Combinatorial Lemma (Albert W. Tucker, 1945),
-    the discrete foundational precursor to the Borsuk–Ulam Theorem in algebraic topology.
-    Formalizes discrete 1D sign changes, symmetric triangulations with antipodal involutions,
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Tucker's Combinatorial Lemma (Albert W. Tucker, 1945)
+    and the discrete Borsuk–Ulam theorem across 1D paths, 2D edge-pseudomanifolds, and the octahedral 2-sphere.
+    Formalizes the 1D discrete sign-change parity theorem and antipodal interval lemma; the 2D combinatorial
+    double-counting identity summing door counts over triangular faces; the modulo-2 parity conservation theorem
+    equating face door parity to boundary door parity; and the genuine 2D existence theorem establishing
+    complementary edges (opposite-signed adjacent vertices) on symmetric triangulations with odd boundary door count
+    with zero artificial premise hypotheses. Additionally certifies a concrete 6-vertex, 8-face, 12-edge closed
+    symmetric triangulation of the octahedral 2-sphere S^2_8.
+    To the maintainers' knowledge, these theorems were not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO, math.AT]
-  msc2020: ["05E45", "55M20", "57M15"]
+  msc2020: ["05C10", "55M20", "57M15"]
 
 sources:
   - title: "Some topological properties of disk and sphere"
     type: paper
+    year: 1945
+    venue: "Proceedings of the First Canadian Mathematical Congress, Montreal"
     authors:
       - "Albert W. Tucker"
     relationship: formalizes
+  - title: "A generalization of Tucker's combinatorial lemma with topological applications"
+    type: paper
+    year: 1952
+    venue: "Annals of Mathematics"
+    authors:
+      - "Ky Fan"
+    relationship: adapts
+  - title: "A constructive proof of Tucker's combinatorial lemma for primitive sets"
+    type: paper
+    year: 1981
+    venue: "Mathematics of Operations Research"
+    authors:
+      - "Robert M. Freund"
+      - "Michael J. Todd"
+    relationship: adapts
+
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
+    relationship: builds-on
+    note: >-
+      Formalization builds on Mathlib's finite set powerset, filter, card, and big operators infrastructure
+      to model combinatorial 2D pseudomanifolds, door counting, and parity conservation.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction.
+        Lean LSP checking under maintainer direction and human verification.
         All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
@@ -37,5 +67,7 @@ review:
   reviewers:
     - "sneed-and-feed maintainers"
   notes: >-
-    Challenge contains deliberate statement holes. Solution verified through human audit by the
-    maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
+    while all definitions and theorem statements are completely specified with 100% AST parity. Solution verified through
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.
+

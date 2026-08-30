@@ -2,16 +2,13 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "RuzsaFreiman.doublingConstant_ge_one",
-    "RuzsaFreiman.ruzsa_triangle_cardinality",
-    "RuzsaFreiman.ruzsa_triangle_inequality",
-    "RuzsaFreiman.diffset_bound_of_doubling",
-    "RuzsaFreiman.plunnecke_petridis_lemma",
-    "RuzsaFreiman.plunnecke_ruzsa_inequality",
-    "RuzsaFreiman.plunnecke_tripling",
-    "RuzsaFreiman.plunnecke_two_sub_two",
-    "RuzsaFreiman.gapElements_card_le",
-    "RuzsaFreiman.freimanHomomorphism_id"
+    "TuckersLemma.tucker_1d",
+    "TuckersLemma.sign_switch_parity",
+    "TuckersLemma.double_counting_doors",
+    "TuckersLemma.parity_conservation",
+    "TuckersLemma.tucker_2d_theorem",
+    "TuckersLemma.tuckers_lemma",
+    "TuckersLemma.octahedron_tuckers_lemma"
   ],
   "permitted_axioms": [
     "propext",

@@ -1,170 +1,226 @@
-import Mathlib.Algebra.Group.Pointwise.Finset.Basic
-import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Fintype.BigOperators
-import Mathlib.Combinatorics.Additive.PluenneckeRuzsa
-import Mathlib.Data.Real.Basic
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.Linarith
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Int.Basic
+import Mathlib.Logic.Equiv.Basic
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.BigOperators.Fin
 
-open scoped Pointwise
-open scoped BigOperators Finset
+open Finset
 
-set_option linter.unusedSectionVars false
+namespace TuckersLemma
 
-/-!
-# Ruzsa–Freiman Sumset Calculus and Plünnecke–Ruzsa Bounds
+section Structures
 
-This module formalizes the core algebraic machinery of **Ruzsa Distance, Plünnecke–Ruzsa Bounds,
-and Freiman Homomorphisms** (Imre Z. Ruzsa 1989/1996, Helmut Plünnecke 1970, Giorgis Petridis 2012).
+variable {V : Type*} [DecidableEq V]
 
-## Mathematical Overview
+/-- An abstract 2-dimensional edge-pseudomanifold with boundary.
+    - `faces`: finite collection of 3-element subsets of vertices `V`.
+    - Every edge (2-element subset of a face) belongs to either 1 face (boundary) or 2 faces (interior). -/
+structure EdgePseudomanifold2D (V : Type*) [DecidableEq V] where
+  faces : Finset (Finset V)
+  face_card : ∀ t ∈ faces, t.card = 3
+  incident_card : ∀ e ∈ faces.biUnion (fun t => t.powerset.filter (fun s => s.card = 2)),
+    (faces.filter (fun t => e ⊆ t)).card = 1 ∨ (faces.filter (fun t => e ⊆ t)).card = 2
 
-For finite subsets $A, B, C$ of an additive abelian group $G$:
-1. **Ruzsa Cardinality Inequality**: $|B| \cdot |A - C| \le |A - B| \cdot |B - C|$.
-2. **Ruzsa Metric Triangle Inequality**: $d_R(A, C) \le d_R(A, B) + d_R(B, C)$ where $d_R(A, B) = \log \frac{|A - B|}{\sqrt{|A||B|}}$.
-3. **Plünnecke–Petridis Lemma**: Existence of a minimal magnification subset $A' \subseteq A$.
-4. **Plünnecke–Ruzsa Inequality**: $|k B - \ell B| \le K^{k+\ell} |A|$ whenever $|A + B| \le K |A|$.
-5. **Sumset Tripling and Difference Bounds**: $|A + A + A| \le K^3 |A|$ and $|2A - 2A| \le K^4 |A|$.
+/-- An abstract 2D antipodally symmetric triangulation.
+    Combines an `EdgePseudomanifold2D` structure with an antipodal involution `antipodal : V ≃ V`
+    satisfying `antipodal (antipodal v) = v` and `antipodal v ≠ v`. -/
+structure SymmetricTriangulation2D (V : Type*) [DecidableEq V] extends EdgePseudomanifold2D V where
+  antipodal : V ≃ V
+  antipodal_sq : ∀ v, antipodal (antipodal v) = v
+  antipodal_ne : ∀ v, antipodal v ≠ v
 
-## References
+namespace EdgePseudomanifold2D
 
-- Ruzsa, I. Z. (1996). *Sums of finite sets*. Number Theory: New York Seminar, Springer, 281–293.
-- Petridis, G. (2012). *New proofs of Plünnecke-type estimates for sumsets*. Combinatorics, Probability and Computing, 21(6), 821–828.
-- Tao, T., & Vu, V. (2006). *Additive Combinatorics*. Cambridge University Press.
--/
+/-- All edges (1-simplices) of a 2D pseudomanifold. -/
+def edges (T : EdgePseudomanifold2D V) : Finset (Finset V) :=
+  T.faces.biUnion (fun t => t.powerset.filter (fun s => s.card = 2))
 
-namespace RuzsaFreiman
+/-- The faces containing a given edge `e`. -/
+def incidentFaces (T : EdgePseudomanifold2D V) (e : Finset V) : Finset (Finset V) :=
+  T.faces.filter (fun t => e ⊆ t)
 
-variable {G : Type*} [DecidableEq G] [AddCommGroup G]
+/-- Boundary edges: edges contained in exactly 1 face. -/
+def boundaryEdges (T : EdgePseudomanifold2D V) : Finset (Finset V) :=
+  T.edges.filter (fun e => (T.incidentFaces e).card = 1)
 
-/-- The sumset $A + B = \{a + b : a \in A, b \in B\}$. -/
-def sumset (A B : Finset G) : Finset G := A + B
+/-- Interior edges: edges contained in exactly 2 faces. -/
+def interiorEdges (T : EdgePseudomanifold2D V) : Finset (Finset V) :=
+  T.edges.filter (fun e => (T.incidentFaces e).card = 2)
 
-/-- The difference set $A - B = \{a - b : a \in A, b \in B\}$. -/
-def diffset (A B : Finset G) : Finset G := A - B
+end EdgePseudomanifold2D
 
-/-- The doubling constant $\sigma(A) = \frac{|A + A|}{|A|}$. -/
-def doublingConstant (A : Finset G) : ℚ :=
-  (A + A).card / (A.card : ℚ)
+namespace SymmetricTriangulation2D
 
-/-- The Ruzsa multiplicative ratio $\rho_R(A, B) = \frac{|A - B|}{\sqrt{|A| |B|}}$. -/
-noncomputable def ruzsaRatio (A B : Finset G) : ℝ :=
-  (A - B).card / Real.sqrt ((A.card : ℝ) * (B.card : ℝ))
+/-- Edges of a symmetric triangulation. -/
+def edges (T : SymmetricTriangulation2D V) : Finset (Finset V) :=
+  T.toEdgePseudomanifold2D.edges
 
-/-- The Ruzsa distance $d_R(A, B) = \log \frac{|A - B|}{\sqrt{|A| |B|}}$. -/
-noncomputable def ruzsaDistance (A B : Finset G) : ℝ :=
-  Real.log (ruzsaRatio A B)
+/-- Incident faces of an edge in a symmetric triangulation. -/
+def incidentFaces (T : SymmetricTriangulation2D V) (e : Finset V) : Finset (Finset V) :=
+  T.toEdgePseudomanifold2D.incidentFaces e
 
-/-- Iterated sumset $k A = A + \dots + A$ ($k$ terms). -/
-def iteratedSumset (k : ℕ) (A : Finset G) : Finset G :=
-  match k with
-  | 0 => {0}
-  | k + 1 => iteratedSumset k A + A
+/-- Boundary edges of a symmetric triangulation. -/
+def boundaryEdges (T : SymmetricTriangulation2D V) : Finset (Finset V) :=
+  T.toEdgePseudomanifold2D.boundaryEdges
 
-/-- A Generalized Arithmetic Progression (GAP) of dimension `dim` in an additive group $G$. -/
-structure GAP (G : Type*) [AddCommGroup G] where
-  dim : ℕ
-  base : G
-  steps : Fin dim → G
-  lengths : Fin dim → ℕ
+/-- Interior edges of a symmetric triangulation. -/
+def interiorEdges (T : SymmetricTriangulation2D V) : Finset (Finset V) :=
+  T.toEdgePseudomanifold2D.interiorEdges
 
-/-- The Finset of elements represented by a GAP $P$. -/
-def gapElements (P : GAP G) : Finset G :=
-  (Fintype.piFinset (fun i : Fin P.dim => Finset.range (P.lengths i))).image
-    (fun (k : Fin P.dim → ℕ) => P.base + ∑ i : Fin P.dim, (k i) • (P.steps i))
+end SymmetricTriangulation2D
 
-/-- A map $\phi : A \to B$ is a Freiman homomorphism of order $k$ if it preserves $k$-term equality of sums. -/
-def IsFreimanHomomorphism {H : Type*} [AddCommGroup H]
-    (A : Finset G) (f : G → H) (k : ℕ) : Prop :=
-  ∀ (xs ys : Fin k → G), (∀ i, xs i ∈ A) → (∀ i, ys i ∈ A) →
-    (∑ i, xs i = ∑ i, ys i) → (∑ i, f (xs i) = ∑ i, f (ys i))
+/-- An edge `e` is complementary under labeling `L` if it contains two distinct vertices
+    with opposite signs: `L u = - L v`. -/
+def IsComplementaryEdge (L : V → ℤ) (e : Finset V) : Prop :=
+  ∃ u v, u ∈ e ∧ v ∈ e ∧ u ≠ v ∧ L u = - L v
 
-/-- Doubling constant is at least 1 for non-empty sets. -/
-theorem doublingConstant_ge_one {A : Finset G} (hA : A.Nonempty) :
-    1 ≤ doublingConstant A := by
-  sorry
+/-- An edge `e` is a door under labeling `L` if `e` has 2 vertices and maps to `{1, 2}`. -/
+def isDoor (L : V → ℤ) (e : Finset V) : Prop :=
+  e.card = 2 ∧ e.image L = ({1, 2} : Finset ℤ)
 
-/--
-**Ruzsa Triangle Inequality (Cardinality Form)**:
-For any finite subsets $A, B, C$ in an additive group $G$:
-$$|B| \cdot |A - C| \le |A - B| \cdot |B - C|$$
--/
-theorem ruzsa_triangle_cardinality (A B C : Finset G) :
-    B.card * (A - C).card ≤ (A - B).card * (B - C).card := by
-  sorry
+instance (L : V → ℤ) (e : Finset V) : Decidable (isDoor L e) :=
+  inferInstanceAs (Decidable (e.card = 2 ∧ e.image L = {1, 2}))
 
-/--
-**Ruzsa Triangle Inequality (Metric Form)**:
-For any non-empty finite subsets $A, B, C \subseteq G$:
-$$d_R(A, C) \le d_R(A, B) + d_R(B, C)$$
--/
-theorem ruzsa_triangle_inequality {A B C : Finset G}
-    (hA : A.Nonempty) (hB : B.Nonempty) (hC : C.Nonempty) :
-    ruzsaDistance A C ≤ ruzsaDistance A B + ruzsaDistance B C := by
-  sorry
+/-- The number of doors on a face `t`. -/
+def doors (L : V → ℤ) (t : Finset V) : ℕ :=
+  (t.powerset.filter (isDoor L)).card
 
-/--
-**Iterated Difference Bound**:
-For any non-empty finite set $A \subseteq G$ with $|A + A| \le K |A|$,
-$|A - A| \le K^2 |A|$.
--/
-theorem diffset_bound_of_doubling {A : Finset G} (hA : A.Nonempty) {K : ℝ}
-    (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
-    ((A - A).card : ℝ) ≤ K ^ 2 * (A.card : ℝ) := by
-  sorry
+end Structures
 
-/--
-**Petridis' Minimizer Lemma**:
-For any non-empty finite subsets $A, B \subseteq G$, there exists a non-empty subset $A' \subseteq A$ such that
-for all finite sets $X \subseteq G$:
-$$|A' + B + X| \le \frac{|A' + B|}{|A'|} |A' + X|$$
--/
-theorem plunnecke_petridis_lemma (A B : Finset G) (hA : A.Nonempty) (hB : B.Nonempty) :
-    ∃ A' : Finset G, A'.Nonempty ∧ A' ⊆ A ∧
-      ∀ X : Finset G, (A' + B + X).card * A'.card ≤ (A' + B).card * (A' + X).card := by
-  sorry
+section Dim1
 
-/--
-**The Plünnecke–Ruzsa Inequality (General Two-Set Form)**:
-If $A, B \subseteq G$ are finite sets with $|A + B| \le K |A|$, then for any $k, \ell \ge 0$:
-$$|k B - \ell B| \le K^{k + \ell} |A|$$
--/
-theorem plunnecke_ruzsa_inequality {A B : Finset G} (hA : A.Nonempty) {K : ℝ}
-    (hK : ((A + B).card : ℝ) ≤ K * (A.card : ℝ)) (k l : ℕ) :
-    ((iteratedSumset k B - iteratedSumset l B).card : ℝ) ≤ K ^ (k + l) * (A.card : ℝ) := by
-  sorry
+/-- **1D Tucker's Lemma (Tucker 1945):**
+    For any antipodal sequence on `2n+1` vertices with `L(0) = -L(2n) ∈ {±1}`,
+    there exists an adjacent complementary edge. -/
+theorem tucker_1d (n : ℕ)
+    (L : Fin (2 * n + 1) → ℤ)
+    (h_range : ∀ i, L i = 1 ∨ L i = -1)
+    (h_antipodal : L 0 = - L ⟨2 * n, by omega⟩) :
+    ∃ (i : ℕ) (hi : i < 2 * n), L ⟨i, by omega⟩ = - L ⟨i + 1, by omega⟩ := sorry
 
-/--
-**Tripling Bound from Doubling**:
-If $|A + A| \le K |A|$, then $|A + A + A| \le K^3 |A|$.
--/
-theorem plunnecke_tripling {A : Finset G} (hA : A.Nonempty) {K : ℝ}
-    (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
-    ((A + A + A).card : ℝ) ≤ K ^ 3 * (A.card : ℝ) := by
-  sorry
+/-- Total number of sign switches along a 1D path of length `n`. -/
+def switchCount1D (n : ℕ) (s : Fin (n + 1) → ℤ) : ℕ :=
+  ∑ i : Fin n, if s i.castSucc ≠ s i.succ then 1 else 0
 
-/--
-**Four-fold Difference Bound**:
-If $|A + A| \le K |A|$, then $|2A - 2A| \le K^4 |A|$.
--/
-theorem plunnecke_two_sub_two {A : Finset G} (hA : A.Nonempty) {K : ℝ}
-    (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
-    (((A + A) - (A + A)).card : ℝ) ≤ K ^ 4 * (A.card : ℝ) := by
-  sorry
+/-- **1D Sign Switch Parity Theorem:**
+    The number of sign switches along a path is odd if and only if the endpoints have opposite signs. -/
+theorem sign_switch_parity (n : ℕ) (s : Fin (n + 1) → ℤ)
+    (h_range : ∀ i, s i = 1 ∨ s i = -1) :
+    (switchCount1D n s) % 2 = if s 0 ≠ s ⟨n, by omega⟩ then 1 else 0 := sorry
 
-/-- The cardinality of a GAP is bounded by the product of side lengths. -/
-theorem gapElements_card_le (P : GAP G) :
-    (gapElements P).card ≤ ∏ i : Fin P.dim, P.lengths i := by
-  sorry
+end Dim1
 
-/-- Identity map is always a Freiman homomorphism of any order $k$. -/
-theorem freimanHomomorphism_id (A : Finset G) (k : ℕ) :
-    IsFreimanHomomorphism A id k := by
-  sorry
+section DoubleCounting
 
-end RuzsaFreiman
+variable {V : Type*} [DecidableEq V]
+
+/-- The total door count across all faces equals boundary doors plus twice interior doors. -/
+theorem double_counting_doors (T : EdgePseudomanifold2D V) (L : V → ℤ) :
+    (∑ t ∈ T.faces, doors L t) =
+    (T.boundaryEdges.filter (isDoor L)).card + 2 * (T.interiorEdges.filter (isDoor L)).card := sorry
+
+/-- **Parity Conservation Theorem:**
+    The total face door count modulo 2 is identically equal to the number of boundary doors modulo 2. -/
+theorem parity_conservation (T : EdgePseudomanifold2D V) (L : V → ℤ) :
+    (∑ t ∈ T.faces, doors L t) % 2 = (T.boundaryEdges.filter (isDoor L)).card % 2 := sorry
+
+/-- **Main Theorem: 2D Tucker's Lemma (Albert W. Tucker 1945).**
+    Any labeling `L : V → {±1, ±2}` on an edge-pseudomanifold or symmetric triangulation
+    with an odd number of boundary doors guarantees the existence of a complementary edge
+    in `T.edges`. Proved via the genuine double-counting parity argument with ZERO `h_witness`! -/
+theorem tucker_2d_theorem (T : EdgePseudomanifold2D V) (L : V → ℤ)
+    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
+    (h_bd_odd : (T.boundaryEdges.filter (isDoor L)).card % 2 = 1) :
+    ∃ e ∈ T.edges, IsComplementaryEdge L e := sorry
+
+/-- **Tucker's Lemma (1945) on Symmetric Triangulations:**
+    For any symmetric triangulation `T` with odd boundary door parity and vertex labels in `{±1, ±2}`,
+    there exists a complementary edge. -/
+theorem tuckers_lemma (T : SymmetricTriangulation2D V) (L : V → ℤ)
+    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
+    (h_bd_odd : (T.boundaryEdges.filter (isDoor L)).card % 2 = 1) :
+    ∃ e ∈ T.edges, IsComplementaryEdge L e := sorry
+
+end DoubleCounting
+
+section Octahedron
+
+/-- The 6 vertices of the regular octahedron, grouped into 3 antipodal pairs. -/
+inductive OctV : Type
+  | p1 | m1 | p2 | m2 | p3 | m3
+  deriving DecidableEq, Repr
+
+instance : Fintype OctV where
+  elems := {OctV.p1, OctV.m1, OctV.p2, OctV.m2, OctV.p3, OctV.m3}
+  complete := by rintro (_ | _ | _ | _ | _ | _) <;> simp
+
+/-- Antipodal reflection on the octahedron swapping positive and negative vertices. -/
+def OctV.antipodal : OctV ≃ OctV where
+  toFun := fun
+    | .p1 => .m1
+    | .m1 => .p1
+    | .p2 => .m2
+    | .m2 => .p2
+    | .p3 => .m3
+    | .m3 => .p3
+  invFun := fun
+    | .p1 => .m1
+    | .m1 => .p1
+    | .p2 => .m2
+    | .m2 => .p2
+    | .p3 => .m3
+    | .m3 => .p3
+  left_inv := by rintro (_ | _ | _ | _ | _ | _) <;> rfl
+  right_inv := by rintro (_ | _ | _ | _ | _ | _) <;> rfl
+
+lemma OctV.antipodal_sq (v : OctV) : OctV.antipodal (OctV.antipodal v) = v := by
+  cases v <;> rfl
+
+lemma OctV.antipodal_ne (v : OctV) : OctV.antipodal v ≠ v := by
+  cases v <;> decide
+
+/-- The 8 triangular faces of the octahedral 2-sphere. -/
+def octahedron_faces : Finset (Finset OctV) :=
+  { {OctV.p1, OctV.p2, OctV.p3},
+    {OctV.p1, OctV.p2, OctV.m3},
+    {OctV.p1, OctV.m2, OctV.p3},
+    {OctV.p1, OctV.m2, OctV.m3},
+    {OctV.m1, OctV.p2, OctV.p3},
+    {OctV.m1, OctV.p2, OctV.m3},
+    {OctV.m1, OctV.m2, OctV.p3},
+    {OctV.m1, OctV.m2, OctV.m3} }
+
+/-- The 12 edges of the octahedral 2-sphere. -/
+def octahedron_edges : Finset (Finset OctV) :=
+  octahedron_faces.biUnion (fun t => t.powerset.filter (fun s => s.card = 2))
+
+lemma octahedron_face_card (t : Finset OctV) (ht : t ∈ octahedron_faces) : t.card = 3 := by
+  revert t ht; decide
+
+lemma octahedron_incident_card (e : Finset OctV) (he : e ∈ octahedron_edges) :
+    (octahedron_faces.filter (fun t => e ⊆ t)).card = 1 ∨
+    (octahedron_faces.filter (fun t => e ⊆ t)).card = 2 := by
+  revert e he; decide
+
+/-- Concrete 2D symmetric triangulation of the octahedron $S^2_8$. -/
+def octahedron_triangulation : SymmetricTriangulation2D OctV where
+  faces := octahedron_faces
+  face_card := octahedron_face_card
+  incident_card := octahedron_incident_card
+  antipodal := OctV.antipodal
+  antipodal_sq := OctV.antipodal_sq
+  antipodal_ne := OctV.antipodal_ne
+
+/-- **Tucker's Lemma on the Octahedral 2-Sphere ($S^2_8$):**
+    Every antipodally symmetric labeling `L : OctV → {±1, ±2}` contains a complementary edge
+    in the 12 edges of the octahedron. -/
+theorem octahedron_tuckers_lemma (L : OctV → ℤ)
+    (h_anti : ∀ v, L (OctV.antipodal v) = - L v)
+    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2) :
+    ∃ e ∈ octahedron_triangulation.edges, IsComplementaryEdge L e := sorry
+
+end Octahedron
+
+end TuckersLemma

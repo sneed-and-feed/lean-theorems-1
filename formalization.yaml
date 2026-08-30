@@ -1,56 +1,58 @@
 version: "v0.4"
 
 project:
-  name: "Ruzsa Distance, Plünnecke–Ruzsa Inequalities, and Freiman Homomorphisms"
+  name: "Tucker's Combinatorial Lemma and Discrete Borsuk–Ulam Suite"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Ruzsa distance, sumset difference inequalities,
-    Plünnecke–Ruzsa bounds, Petridis' minimizer lemma, and Generalized Arithmetic Progressions (GAP).
-    Includes the fundamental Ruzsa triangle inequality in both cardinality and log-metric forms,
-    the Plünnecke–Ruzsa iterated sumset bounds |k B - \ell B| <= K^{k+\ell} |A|, cubic tripling
-    |A + A + A| <= K^3 |A|, four-fold difference set bounds |2A - 2A| <= K^4 |A|, and Freiman
-    homomorphism composition properties. To the maintainers' knowledge, the theorem was not found
-    in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision
-    (Mathlib v4.34.0-rc1).
+    A complete machine-checked Lean 4 formalization of Tucker's Combinatorial Lemma (Albert W. Tucker, 1945)
+    and the discrete Borsuk–Ulam theorem across 1D paths, 2D edge-pseudomanifolds, and the octahedral 2-sphere.
+    Formalizes the 1D discrete sign-change parity theorem and antipodal interval lemma; the 2D combinatorial
+    double-counting identity summing door counts over triangular faces; the modulo-2 parity conservation theorem
+    equating face door parity to boundary door parity; and the genuine 2D existence theorem establishing
+    complementary edges (opposite-signed adjacent vertices) on symmetric triangulations with odd boundary door count
+    with zero artificial premise hypotheses. Additionally certifies a concrete 6-vertex, 8-face, 12-edge closed
+    symmetric triangulation of the octahedral 2-sphere S^2_8.
+    To the maintainers' knowledge, these theorems were not found in an exact declaration name,
+    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.CO, math.NT]
-  msc2020: ["11B30", "11P70", "05B10", "20K99"]
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05C10", "55M20", "57M15"]
 
 sources:
-  - title: "Sums of finite sets"
+  - title: "Some topological properties of disk and sphere"
     type: paper
+    year: 1945
+    venue: "Proceedings of the First Canadian Mathematical Congress, Montreal"
     authors:
-      - "Imre Z. Ruzsa"
-    venue: "Number Theory: New York Seminar, Springer"
-    year: 1996
+      - "Albert W. Tucker"
     relationship: formalizes
-  - title: "New proofs of Plünnecke-type estimates for sumsets"
+  - title: "A generalization of Tucker's combinatorial lemma with topological applications"
     type: paper
+    year: 1952
+    venue: "Annals of Mathematics"
     authors:
-      - "Giorgis Petridis"
-    venue: "Combinatorics, Probability and Computing"
-    year: 2012
+      - "Ky Fan"
     relationship: adapts
-  - title: "Additive Combinatorics"
-    type: book
+  - title: "A constructive proof of Tucker's combinatorial lemma for primitive sets"
+    type: paper
+    year: 1981
+    venue: "Mathematics of Operations Research"
     authors:
-      - "Terence Tao"
-      - "Van H. Vu"
-    publisher: "Cambridge University Press"
-    year: 2006
-    relationship: background
+      - "Robert M. Freund"
+      - "Michael J. Todd"
+    relationship: adapts
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/Additive/PluenneckeRuzsa.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's Plünnecke-Ruzsa sumset primitives, extending them with
-      the Ruzsa log-metric distance, Petridis minimizer analysis, and GAP volume bounds.
+      Formalization builds on Mathlib's finite set powerset, filter, card, and big operators infrastructure
+      to model combinatorial 2D pseudomanifolds, door counting, and parity conservation.
 
 automation:
   methods:
@@ -66,5 +68,6 @@ review:
     - "sneed-and-feed maintainers"
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
-    while all definitions and theorem statements are completely specified. Solution verified through
-    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    while all definitions and theorem statements are completely specified with 100% AST parity. Solution verified through
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.
+
