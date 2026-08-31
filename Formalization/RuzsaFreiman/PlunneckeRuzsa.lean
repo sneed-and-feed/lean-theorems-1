@@ -78,16 +78,19 @@ theorem sub_singleton_zero (A : Finset G) : A - {0} = A := by
 theorem iteratedSumset_zero (A : Finset G) : iteratedSumset 0 A = {0} := rfl
 
 /-- 1-st iterated sumset is $A$. -/
-theorem iteratedSumset_one (A : Finset G) : iteratedSumset 1 A = A :=
-  singleton_zero_add A
+theorem iteratedSumset_one (A : Finset G) : iteratedSumset 1 A = A := by
+  change {0} + A = A
+  exact singleton_zero_add A
 
 /-- 2-nd iterated sumset is $A + A$. -/
-theorem iteratedSumset_two (A : Finset G) : iteratedSumset 2 A = A + A :=
-  congr_arg (· + A) (iteratedSumset_one A)
+theorem iteratedSumset_two (A : Finset G) : iteratedSumset 2 A = A + A := by
+  change iteratedSumset 1 A + A = A + A
+  rw [iteratedSumset_one]
 
 /-- 3-rd iterated sumset is $A + A + A$. -/
-theorem iteratedSumset_three (A : Finset G) : iteratedSumset 3 A = A + A + A :=
-  congr_arg (· + A) (iteratedSumset_two A)
+theorem iteratedSumset_three (A : Finset G) : iteratedSumset 3 A = A + A + A := by
+  change iteratedSumset 2 A + A = A + A + A
+  rw [iteratedSumset_two]
 
 /--
 **Petridis' Minimizer Lemma**:
@@ -98,18 +101,21 @@ $$|A' + B + X| \le \frac{|A' + B|}{|A'|} |A' + X|$$
 theorem plunnecke_petridis_lemma (A B : Finset G) (hA : A.Nonempty) (_hB : B.Nonempty) :
     ∃ A' : Finset G, A'.Nonempty ∧ A' ⊆ A ∧
       ∀ X : Finset G, (A' + B + X).card * A'.card ≤ (A' + B).card * (A' + X).card := by
-  have ⟨A', hA'mem, hAmin⟩ :=
-    Finset.exists_min_image (A.powerset.erase ∅) (fun C ↦ ((C + B).card : ℚ≥0) / (C.card : ℚ≥0))
-      ⟨A, Finset.mem_erase_of_ne_of_mem hA.ne_empty (Finset.mem_powerset_self _)⟩
+  have hA' : A ∈ A.powerset.erase ∅ := Finset.mem_erase_of_ne_of_mem hA.ne_empty (Finset.mem_powerset_self _)
+  obtain ⟨A', hA'mem, hAmin⟩ :=
+    Finset.exists_min_image (A.powerset.erase ∅) (fun C ↦ ((C + B).card : ℚ≥0) / (C.card : ℚ≥0)) ⟨A, hA'⟩
   rw [Finset.mem_erase, Finset.mem_powerset, ← Finset.nonempty_iff_ne_empty] at hA'mem
-  refine ⟨A', hA'mem.1, hA'mem.2, fun X ↦ ?_⟩
-  have h_hyp (A'') (hA''sub : A'' ⊆ A') : (A' + B).card * A''.card ≤ (A'' + B).card * A'.card := by
-    rcases A''.eq_empty_or_nonempty with rfl | hA''ne
+  obtain ⟨hA'nonempty, hA'sub⟩ := hA'mem
+  refine ⟨A', hA'nonempty, hA'sub, fun X ↦ ?_⟩
+  have h_hyp : ∀ A'' ⊆ A', (A' + B).card * A''.card ≤ (A'' + B).card * A'.card := by
+    intro A'' hA''sub
+    obtain rfl | hA''_nonempty := A''.eq_empty_or_nonempty
     · simp
-    have hmem : A'' ∈ A.powerset.erase ∅ :=
-      Finset.mem_erase.2 ⟨hA''ne.ne_empty, Finset.mem_powerset.2 (hA''sub.trans hA'mem.2)⟩
-    exact_mod_cast (div_le_div_iff₀ (by positivity) (by positivity)).1 (hAmin A'' hmem)
-  simpa [add_comm X, add_assoc, add_left_comm X] using Finset.pluennecke_petridis_inequality_add X h_hyp
+    have hA''mem : A'' ∈ A.powerset.erase ∅ :=
+      Finset.mem_erase_of_ne_of_mem hA''_nonempty.ne_empty (Finset.mem_powerset.2 (hA''sub.trans hA'sub))
+    exact_mod_cast (div_le_div_iff₀ (by positivity) (by positivity)).1 (hAmin A'' hA''mem)
+  have h_petridis := Finset.pluennecke_petridis_inequality_add X h_hyp
+  rwa [add_comm X A', add_assoc, add_comm X B, ← add_assoc] at h_petridis
 
 /--
 **The Plünnecke–Ruzsa Inequality (General Two-Set Form)**:
@@ -120,10 +126,17 @@ theorem plunnecke_ruzsa_inequality {A B : Finset G} (hA : A.Nonempty) {K : ℝ}
     (hK : ((A + B).card : ℝ) ≤ K * (A.card : ℝ)) (k l : ℕ) :
     ((iteratedSumset k B - iteratedSumset l B).card : ℝ) ≤ K ^ (k + l) * (A.card : ℝ) := by
   simp only [iteratedSumset_eq_nsmul]
-  refine (show ((k • B - l • B).card : ℝ) ≤ (((A + B).card : ℝ) / A.card) ^ (k + l) * A.card by
-    simpa using (NNRat.cast_le (K := ℝ)).2 (Finset.pluennecke_ruzsa_inequality_nsmul_sub_nsmul_add hA B k l)).trans ?_
-  exact mul_le_mul_of_nonneg_right
-    (pow_le_pow_left₀ (by positivity) ((div_le_iff₀ (by positivity : (0 : ℝ) < A.card)).2 hK) _) (by positivity)
+  have h_pr := Finset.pluennecke_ruzsa_inequality_nsmul_sub_nsmul_add hA B k l
+  have h_cast : (((k • B - l • B).card : ℚ≥0) : ℝ) ≤
+      (((((A + B).card : ℚ≥0) / (A.card : ℚ≥0)) ^ (k + l) * (A.card : ℚ≥0) : ℚ≥0) : ℝ) :=
+    NNRat.cast_le.mpr h_pr
+  push_cast at h_cast
+  have h_div_le : ((A + B).card : ℝ) / A.card ≤ K := (div_le_iff₀ (by positivity : (0 : ℝ) < A.card)).mpr hK
+  have h_pow_le : (((A + B).card : ℝ) / A.card) ^ (k + l) ≤ K ^ (k + l) :=
+    pow_le_pow_left₀ (by positivity) h_div_le (k + l)
+  have h_final : (((A + B).card : ℝ) / A.card) ^ (k + l) * A.card ≤ K ^ (k + l) * A.card :=
+    mul_le_mul_of_nonneg_right h_pow_le (by positivity)
+  exact le_trans h_cast h_final
 
 /--
 **The Plünnecke–Ruzsa Inequality (Automorphic / Single-Set Form)**:
@@ -142,7 +155,8 @@ If $|A + A| \le K |A|$, then $|A + A + A| \le K^3 |A|$.
 theorem plunnecke_tripling {A : Finset G} (hA : A.Nonempty) {K : ℝ}
     (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
     ((A + A + A).card : ℝ) ≤ K ^ 3 * (A.card : ℝ) := by
-  simpa [iteratedSumset_three, iteratedSumset_zero, sub_singleton_zero] using plunnecke_ruzsa_self hA hK 3 0
+  have h := plunnecke_ruzsa_self hA hK 3 0
+  rwa [iteratedSumset_three, iteratedSumset_zero, sub_singleton_zero] at h
 
 /--
 **Four-fold Difference Bound**:
@@ -151,6 +165,7 @@ If $|A + A| \le K |A|$, then $|2A - 2A| \le K^4 |A|$.
 theorem plunnecke_two_sub_two {A : Finset G} (hA : A.Nonempty) {K : ℝ}
     (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
     (((A + A) - (A + A)).card : ℝ) ≤ K ^ 4 * (A.card : ℝ) := by
-  simpa [iteratedSumset_two] using plunnecke_ruzsa_self hA hK 2 2
+  have h := plunnecke_ruzsa_self hA hK 2 2
+  rwa [iteratedSumset_two, show 2 + 2 = 4 from rfl] at h
 
 end RuzsaFreiman

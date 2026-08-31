@@ -50,7 +50,7 @@ In general, for $A, B$ non-empty:
 
 namespace RuzsaFreiman
 
-variable {G : Type*} [DecidableEq G] [AddCommGroup G]
+variable {G : Type*} [DecidableEq G] [AddGroup G]
 
 /-- The sumset $A + B = \{a + b : a \in A, b \in B\}$. -/
 def sumset (A B : Finset G) : Finset G := A + B
@@ -98,8 +98,10 @@ theorem card_le_card_add_right {A : Finset G} (hA : A.Nonempty) (B : Finset G) :
 
 /-- Doubling constant is at least 1 for non-empty sets. -/
 theorem doublingConstant_ge_one {A : Finset G} (hA : A.Nonempty) :
-    1 ≤ doublingConstant A :=
-  (one_le_div₀ (by positivity)).2 (Nat.cast_le.2 (Finset.card_le_card_add_right hA))
+    1 ≤ doublingConstant A := by
+  dsimp [doublingConstant]
+  rw [one_le_div₀ (by positivity)]
+  exact_mod_cast Finset.card_le_card_add_right hA
 
 /-- Iterated sumset $k A = A + \dots + A$ ($k$ terms). -/
 def iteratedSumset (k : ℕ) (A : Finset G) : Finset G :=
@@ -110,6 +112,8 @@ def iteratedSumset (k : ℕ) (A : Finset G) : Finset G :=
 /-- Equivalence between `iteratedSumset` and pointwise `nsmul`. -/
 theorem iteratedSumset_eq_nsmul (k : ℕ) (A : Finset G) :
     iteratedSumset k A = k • A := by
-  induction k with | zero => rfl | succ k ih => rw [iteratedSumset, ih, succ_nsmul]
+  induction k with
+  | zero => rfl
+  | succ k ih => simp only [iteratedSumset, ih, succ_nsmul]
 
 end RuzsaFreiman

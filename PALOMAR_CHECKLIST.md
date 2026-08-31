@@ -45,6 +45,8 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **6** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
 | **7** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
 | **8** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
+| **9** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `a21ba2ed4fb4de4a8220bf3f13a3eac857ca5802` | `palomar/gilmer_union_closed/comparator.json` | Extremal Combinatorics / Information Theory |
+| **10** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & Petridis Magnification** | `ruzsa_freiman` | `e9f647dbe83af9b300ece231a240142ec21af11d` | `palomar/ruzsa_freiman/comparator.json` | Additive Combinatorics / Sumset Calculus |
 
 ---
 
@@ -64,8 +66,6 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | `crossing_lemma` | **AP-02, AP-18**: Proves dummy real scalars `(v e cr : ℝ)` via 1 line of `linarith`; 0 graphs, 0 drawings. | [-] **RETIRED** |
 | `elekes_sum_product` | **AP-02, AP-07**: Replaced sets and incidences with a dummy structure baking in crossing bounds. | [-] **RETIRED** |
 | `erdos_unit_distances` | **AP-02, AP-07**: Replaced Euclidean geometry with dummy real structs baking in crossing bounds. | [-] **RETIRED** |
-| `gilmer_union_closed` | **AP-18, AP-26**: Left main theorem as unproven `def : Prop` in Repo 1 *(Full 100% verified proof live in Repo 3)*. | [-] **RETIRED** |
-| `ruzsa_freiman` | **AP-18, AP-26**: Mathlib duplicate; Freiman unproven in Repo 1 *(Full Petridis magnification live in Repo 3)*. | [-] **RETIRED** |
 | `picks_theorem` | **AP-07**: Elementary carrier bakes Euler formula; needs intrinsic polygon carrier. | [-] **RETIRED** |
 | `szemeredi_trotter` | **AP-07**: Carrier bakes Crossing Lemma directly; needs point-line arrangement carrier. | [-] **RETIRED** |
 | `sperners_lemma` / `sperner_3d` | **AP-10**: Low-dimensional specializations superseded by live General $n$-D Sperner ([PALOMAR-2026-08-27-000014](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000014)). | [-] **SUPERSEDED** |

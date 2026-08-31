@@ -70,7 +70,8 @@ theorem card_diffset_symm (A B : Finset G) :
 /-- Symmetry of the Ruzsa distance: $d_R(A, B) = d_R(B, A)$. -/
 theorem ruzsaDistance_symm (A B : Finset G) :
     ruzsaDistance A B = ruzsaDistance B A := by
-  simp [ruzsaDistance, ruzsaRatio, card_diffset_symm A B, mul_comm (A.card : ℝ)]
+  dsimp [ruzsaDistance, ruzsaRatio]
+  rw [card_diffset_symm A B, mul_comm (A.card : ℝ)]
 
 /--
 **Ruzsa Triangle Inequality (Cardinality Form)**:
@@ -79,25 +80,32 @@ $$|B| \cdot |A - C| \le |A - B| \cdot |B - C|$$
 -/
 theorem ruzsa_triangle_cardinality (A B C : Finset G) :
     B.card * (A - C).card ≤ (A - B).card * (B - C).card := by
-  simpa [mul_comm B.card, card_diffset_symm B C] using Finset.ruzsa_triangle_inequality_sub_sub_sub A B C
+  have h := Finset.ruzsa_triangle_inequality_sub_sub_sub A B C
+  rw [mul_comm B.card, card_diffset_symm B C]
+  exact h
 
 /-- Strict positivity of the Ruzsa multiplicative ratio for non-empty sets. -/
 theorem ruzsaRatio_pos {A B : Finset G} (hA : A.Nonempty) (hB : B.Nonempty) :
     0 < ruzsaRatio A B := by
-  dsimp [ruzsaRatio]; positivity
+  have : (A - B).Nonempty := hA.sub hB
+  dsimp [ruzsaRatio]
+  positivity
 
 /-- Multiplicative triangle inequality for the Ruzsa ratio. -/
 theorem ruzsaRatio_mul_le {A B C : Finset G}
     (hA : A.Nonempty) (hB : B.Nonempty) (hC : C.Nonempty) :
     ruzsaRatio A C ≤ ruzsaRatio A B * ruzsaRatio B C := by
   dsimp [ruzsaRatio]
-  have h_card : (B.card : ℝ) * (A - C).card ≤ (A - B).card * (B - C).card :=
-    mod_cast ruzsa_triangle_cardinality A B C
-  have hs (X Y : Finset G) : Real.sqrt ((X.card : ℝ) * Y.card) = Real.sqrt X.card * Real.sqrt Y.card :=
+  have h_card : (B.card : ℝ) * (A - C).card ≤ (A - B).card * (B - C).card := by
+    exact_mod_cast ruzsa_triangle_cardinality A B C
+  have h_sqrt (X Y : Finset G) : Real.sqrt ((X.card : ℝ) * (Y.card : ℝ)) = Real.sqrt X.card * Real.sqrt Y.card :=
     Real.sqrt_mul (Nat.cast_nonneg _) _
-  rw [div_mul_div_comm, hs A B, hs B C, hs A C, mul_assoc (Real.sqrt A.card), ← mul_assoc (Real.sqrt B.card),
-    Real.mul_self_sqrt (Nat.cast_nonneg _), mul_left_comm,
-    ← mul_div_mul_left _ _ (by positivity : (B.card : ℝ) ≠ 0)]
+  have hB_self : Real.sqrt B.card * Real.sqrt B.card = B.card := Real.mul_self_sqrt (Nat.cast_nonneg _)
+  have h_denom : Real.sqrt A.card * Real.sqrt B.card * (Real.sqrt B.card * Real.sqrt C.card) =
+      (B.card : ℝ) * (Real.sqrt A.card * Real.sqrt C.card) := by
+    linear_combination Real.sqrt A.card * Real.sqrt C.card * hB_self
+  rw [div_mul_div_comm, h_sqrt A B, h_sqrt B C, h_sqrt A C, h_denom,
+    ← mul_div_mul_left _ _ (ne_of_gt (by positivity : (0 : ℝ) < B.card))]
   exact div_le_div_of_nonneg_right h_card (by positivity)
 
 /--
@@ -108,7 +116,8 @@ $$d_R(A, C) \le d_R(A, B) + d_R(B, C)$$
 theorem ruzsa_triangle_inequality {A B C : Finset G}
     (hA : A.Nonempty) (hB : B.Nonempty) (hC : C.Nonempty) :
     ruzsaDistance A C ≤ ruzsaDistance A B + ruzsaDistance B C := by
-  rw [ruzsaDistance, ruzsaDistance, ruzsaDistance, ← Real.log_mul (ruzsaRatio_pos hA hB).ne' (ruzsaRatio_pos hB hC).ne']
+  dsimp [ruzsaDistance]
+  rw [← Real.log_mul (ne_of_gt (ruzsaRatio_pos hA hB)) (ne_of_gt (ruzsaRatio_pos hB hC))]
   exact Real.log_le_log (ruzsaRatio_pos hA hC) (ruzsaRatio_mul_le hA hB hC)
 
 /--
@@ -118,7 +127,9 @@ $$|A - A| \le \frac{|A + A|^2}{|A|}$$
 -/
 theorem diffset_le_sq_doubling {A : Finset G} (hA : A.Nonempty) :
     (A - A).card ≤ (A + A).card ^ 2 / A.card := by
-  simpa [Nat.le_div_iff_mul_le hA.card_pos, sq] using Finset.ruzsa_triangle_inequality_sub_add_add A A A
+  have h := Finset.ruzsa_triangle_inequality_sub_add_add A A A
+  rw [Nat.le_div_iff_mul_le hA.card_pos, sq]
+  exact h
 
 /--
 **Iterated Difference Bound**:
@@ -128,8 +139,9 @@ $|A - A| \le K^2 |A|$.
 theorem diffset_bound_of_doubling {A : Finset G} (hA : A.Nonempty) {K : ℝ}
     (hK : ((A + A).card : ℝ) ≤ K * (A.card : ℝ)) :
     ((A - A).card : ℝ) ≤ K ^ 2 * (A.card : ℝ) := by
-  have h : ((A - A).card : ℝ) * A.card ≤ ((A + A).card : ℝ) * (A + A).card :=
-    mod_cast Finset.ruzsa_triangle_inequality_sub_add_add A A A
-  nlinarith [show (0 : ℝ) < A.card by positivity]
+  have h_pos : (0 : ℝ) < A.card := by positivity
+  have h_ineq : ((A - A).card : ℝ) * A.card ≤ ((A + A).card : ℝ) * (A + A).card := by
+    exact_mod_cast Finset.ruzsa_triangle_inequality_sub_add_add A A A
+  exact (mul_le_mul_iff_of_pos_right h_pos).mp (by nlinarith)
 
 end RuzsaFreiman
