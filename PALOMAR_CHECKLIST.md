@@ -40,7 +40,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `friendship_windmill` | `b7e7ba84c08d50ab167cae98aec2521000988f09` | `palomar/friendship_windmill/comparator.json` | Algebraic Graph Theory / Group Actions |
+| **1** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `friendship_windmill` | `c94b0fe5c01b10b1636c1cbfac33c8fc7e0f3b93` | `palomar/friendship_windmill/comparator.json` | Algebraic Graph Theory / Group Actions |
 | **2** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `5584ebaada8ef2e2490ab35ed79e6a7436aa6c2a` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
 | **3** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
 | **4** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
