@@ -38,7 +38,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Lovász's Colorful Helly Theorem for Convex Sets (General Dimension $d$)** | `colorful_helly` | `306308a0f8d627f63cacab04b7d5ee5c5d1a02b5` | `palomar/colorful_helly/comparator.json` | Discrete & Convex Geometry / Hulls |
+| **1** | **Lovász's Colorful Helly Theorem for Convex Sets (General Dimension $d$)** | `colorful_helly` | `52c423eed602287430ec4118f447bbba822f1fd7` | `palomar/colorful_helly/comparator.json` | Discrete & Convex Geometry / Hulls |
 | **2** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `friendship_windmill` | `999125cd5629665ef15b11b97b7bb817f702816c` | `palomar/friendship_windmill/comparator.json` | Algebraic Graph Theory / Group Actions |
 | **3** | **Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem** | `dilworth_mirsky` | `becacae53c6b6de3322707e130b5829dbbce0ed4` | `palomar/dilworth_mirsky/comparator.json` | Order Theory / Min-Max Duality |
 | **4** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `5584ebaada8ef2e2490ab35ed79e6a7436aa6c2a` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
