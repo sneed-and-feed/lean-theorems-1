@@ -3,9 +3,9 @@ version: "v0.4"
 project:
   name: "Pick's Theorem on Lattice Polygons (Wiedijk #92)"
   authors:
-    - "Sneed & Feed Formalization Team"
+    - "Noah Cohen"
   responsible_maintainers:
-    - "sneed-and-feed"
+    - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
     A complete, machine-checked Lean 4 formalization of Pick's Theorem (Georg Alexander Pick, 1899;
@@ -42,7 +42,7 @@ automation:
 review:
   status: self-assessed
   reviewers:
-    - "sneed-and-feed maintainers"
+    - "Noah Cohen"
   notes: >-
     Challenge contains deliberate statement holes. Solution verified through human audit by the
     maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

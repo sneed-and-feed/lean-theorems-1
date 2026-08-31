@@ -3,9 +3,9 @@ version: "v0.4"
 project:
   name: "Desargues's Theorem and Synthetic Projective Equivalence"
   authors:
-    - "Sneed & Feed Formalization Team"
+    - "Noah Cohen"
   responsible_maintainers:
-    - "sneed-and-feed"
+    - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
     A complete machine-checked Lean 4 formalization of Desargues's theorem and its converse
@@ -48,7 +48,7 @@ automation:
 review:
   status: self-assessed
   reviewers:
-    - "sneed-and-feed maintainers"
+    - "Noah Cohen"
   notes: >-
     Challenge contains deliberate statement holes. Solution verified through human audit by the
     maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.

@@ -3,9 +3,9 @@ version: "v0.4"
 project:
   name: "Gilmer's Entropy Bound on Frankl's Union-Closed Sets Conjecture"
   authors:
-    - "Sneed & Feed Formalization Team"
+    - "Noah Cohen"
   responsible_maintainers:
-    - "sneed-and-feed"
+    - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
     A complete, machine-checked Lean 4 formalization of Justin Gilmer's 2022 landmark theorem
@@ -63,7 +63,7 @@ automation:
 review:
   status: self-assessed
   reviewers:
-    - "sneed-and-feed maintainers"
+    - "Noah Cohen"
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
     while all definitions and theorem statements are completely specified. Solution verified through
