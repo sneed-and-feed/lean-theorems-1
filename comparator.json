@@ -2,11 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SchursTheorem.ramsey_triangle",
-    "SchursTheorem.schurs_theorem",
-    "SchursTheorem.group_schurs_theorem",
-    "SchursTheorem.addCommGroup_schurs_theorem",
-    "SchursTheorem.finite_addCommGroup_partition_regular"
+    "ColorfulHelly.colorful_helly",
+    "ColorfulHelly.colorful_helly_all_dimensions"
   ],
   "permitted_axioms": [
     "propext",

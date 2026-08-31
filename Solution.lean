@@ -1,1 +1,1 @@
-import Formalization.SchursTheorem
+import Formalization.ColorfulHelly
