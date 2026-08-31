@@ -2,13 +2,11 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "TuckersLemma.tucker_1d",
-    "TuckersLemma.sign_switch_parity",
-    "TuckersLemma.double_counting_doors",
-    "TuckersLemma.parity_conservation",
-    "TuckersLemma.tucker_2d_theorem",
-    "TuckersLemma.tuckers_lemma",
-    "TuckersLemma.octahedron_tuckers_lemma"
+    "SchursTheorem.ramsey_triangle",
+    "SchursTheorem.schurs_theorem",
+    "SchursTheorem.group_schurs_theorem",
+    "SchursTheorem.addCommGroup_schurs_theorem",
+    "SchursTheorem.finite_addCommGroup_partition_regular"
   ],
   "permitted_axioms": [
     "propext",

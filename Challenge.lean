@@ -1,226 +1,154 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Powerset
-import Mathlib.Data.Int.Basic
-import Mathlib.Logic.Equiv.Basic
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Data.Finset.Prod
+import Mathlib.Data.Fin.Basic
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Algebra.Group.Basic
 import Mathlib.Algebra.BigOperators.Fin
 
-open Finset
+namespace SchursTheorem
 
-namespace TuckersLemma
+/-- Explicit recursive upper bound for the multicolor triangle Ramsey number $R_r(3)$:
+    $B(0) = 2$, $B(r + 1) = (r + 1) \cdot B(r) + 1$.
+    Note that `ramseyTriangleBound r` is an explicit upper bound ($B_r \ge R_r(3)$),
+    not the exact multicolor Ramsey number. -/
+def ramseyTriangleBound : ℕ → ℕ
+  | 0 => 2
+  | r + 1 => (r + 1) * ramseyTriangleBound r + 1
 
-section Structures
+section RamseyTriangle
 
-variable {V : Type*} [DecidableEq V]
+variable {α : Type*} [DecidableEq α]
 
-/-- An abstract 2-dimensional edge-pseudomanifold with boundary.
-    - `faces`: finite collection of 3-element subsets of vertices `V`.
-    - Every edge (2-element subset of a face) belongs to either 1 face (boundary) or 2 faces (interior). -/
-structure EdgePseudomanifold2D (V : Type*) [DecidableEq V] where
-  faces : Finset (Finset V)
-  face_card : ∀ t ∈ faces, t.card = 3
-  incident_card : ∀ e ∈ faces.biUnion (fun t => t.powerset.filter (fun s => s.card = 2)),
-    (faces.filter (fun t => e ⊆ t)).card = 1 ∨ (faces.filter (fun t => e ⊆ t)).card = 2
+/-- A triple of distinct vertices forming a monochromatic triangle of color `k`. -/
+def isMonoTriangle (c : α → α → Fin r) (S : Finset α) (u v w : α) (k : Fin r) : Prop :=
+  u ∈ S ∧ v ∈ S ∧ w ∈ S ∧ u ≠ v ∧ u ≠ w ∧ v ≠ w ∧
+  c u v = k ∧ c u w = k ∧ c v w = k
 
-/-- An abstract 2D antipodally symmetric triangulation.
-    Combines an `EdgePseudomanifold2D` structure with an antipodal involution `antipodal : V ≃ V`
-    satisfying `antipodal (antipodal v) = v` and `antipodal v ≠ v`. -/
-structure SymmetricTriangulation2D (V : Type*) [DecidableEq V] extends EdgePseudomanifold2D V where
-  antipodal : V ≃ V
-  antipodal_sq : ∀ v, antipodal (antipodal v) = v
-  antipodal_ne : ∀ v, antipodal v ≠ v
+/-- There exists a monochromatic triangle in `S` for edge-coloring `c`. -/
+def hasMonoTriangle (c : α → α → Fin r) (S : Finset α) : Prop :=
+  ∃ u v w k, isMonoTriangle c S u v w k
 
-namespace EdgePseudomanifold2D
+/-- **Multicolor Triangle Ramsey Theorem**:
+Any symmetric edge-coloring with `r ≥ 1` colors of a complete graph with at least
+`ramseyTriangleBound r` vertices contains a monochromatic triangle. -/
+theorem ramsey_triangle :
+    ∀ (r : ℕ) (_hr : 1 ≤ r) (S : Finset α) (c : α → α → Fin r),
+      (∀ u v, c u v = c v u) →
+      ramseyTriangleBound r ≤ S.card →
+      hasMonoTriangle c S := sorry
 
-/-- All edges (1-simplices) of a 2D pseudomanifold. -/
-def edges (T : EdgePseudomanifold2D V) : Finset (Finset V) :=
-  T.faces.biUnion (fun t => t.powerset.filter (fun s => s.card = 2))
+end RamseyTriangle
 
-/-- The faces containing a given edge `e`. -/
-def incidentFaces (T : EdgePseudomanifold2D V) (e : Finset V) : Finset (Finset V) :=
-  T.faces.filter (fun t => e ⊆ t)
+/-- The finite set of integers $\{1, \dots, N\}$. -/
+def schurInterval (N : ℕ) : Finset ℕ :=
+  (Finset.range (N + 1)).filter (fun x => 1 ≤ x)
 
-/-- Boundary edges: edges contained in exactly 1 face. -/
-def boundaryEdges (T : EdgePseudomanifold2D V) : Finset (Finset V) :=
-  T.edges.filter (fun e => (T.incidentFaces e).card = 1)
+/-- The set of monochromatic Schur triples `(x, y, z)` in `{1, ..., N}` under an `r`-coloring `χ`. -/
+def monoSchurTriples {r : ℕ} (χ : ℕ → Fin r) (N : ℕ) : Finset (ℕ × ℕ × ℕ) :=
+  (schurInterval N ×ˢ (schurInterval N ×ˢ schurInterval N)).filter
+    (fun ⟨x, y, z⟩ => x + y = z ∧ χ x = χ y ∧ χ y = χ z)
 
-/-- Interior edges: edges contained in exactly 2 faces. -/
-def interiorEdges (T : EdgePseudomanifold2D V) : Finset (Finset V) :=
-  T.edges.filter (fun e => (T.incidentFaces e).card = 2)
+/-- A vector $x$ satisfies the homogeneous linear equation defined by $c$. -/
+def IsLinearSol {k : ℕ} (c : Fin k → ℤ) (x : Fin k → ℕ) : Prop :=
+  (∑ i : Fin k, c i * (x i : ℤ)) = 0
 
-end EdgePseudomanifold2D
+/-- A vector $x$ is monochromatic under coloring $\chi$. -/
+def IsMonoSol {r : ℕ} [NeZero k] (χ : ℕ → Fin r) (x : Fin k → ℕ) : Prop :=
+  ∀ i : Fin k, χ (x i) = χ (x 0)
 
-namespace SymmetricTriangulation2D
+/-- Existence of a non-zero monochromatic solution in $\mathbb{N}^+$. -/
+def HasNonzeroMonoSol {r : ℕ} [NeZero k] (c : Fin k → ℤ) (χ : ℕ → Fin r) : Prop :=
+  ∃ x : Fin k → ℕ, (∀ i, 1 ≤ x i) ∧ IsLinearSol c x ∧ IsMonoSol χ x
 
-/-- Edges of a symmetric triangulation. -/
-def edges (T : SymmetricTriangulation2D V) : Finset (Finset V) :=
-  T.toEdgePseudomanifold2D.edges
+/-- Existence of a monochromatic solution bounded in $\{1, \dots, N\}$. -/
+def HasIntervalMonoSol {r : ℕ} [NeZero k] (c : Fin k → ℤ) (χ : ℕ → Fin r) (N : ℕ) : Prop :=
+  ∃ x : Fin k → ℕ, (∀ i, 1 ≤ x i ∧ x i ≤ N) ∧ IsLinearSol c x ∧ IsMonoSol χ x
 
-/-- Incident faces of an edge in a symmetric triangulation. -/
-def incidentFaces (T : SymmetricTriangulation2D V) (e : Finset V) : Finset (Finset V) :=
-  T.toEdgePseudomanifold2D.incidentFaces e
+/-- The coefficient vector of Schur's equation $x_0 + x_1 - x_2 = 0$. -/
+def schurCoeffs : Fin 3 → ℤ := ![(1 : ℤ), 1, -1]
 
-/-- Boundary edges of a symmetric triangulation. -/
-def boundaryEdges (T : SymmetricTriangulation2D V) : Finset (Finset V) :=
-  T.toEdgePseudomanifold2D.boundaryEdges
+/-- **Schur's Theorem on Sum-Free Partitions** (Issai Schur, 1916):
+For any $r \ge 1$, every $r$-coloring $\chi$ of the integers $\{1, \dots, N\}$
+(where $N = \text{ramseyTriangleBound } r$) contains a monochromatic solution to $x + y = z$. -/
+theorem schurs_theorem (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
+    let N := ramseyTriangleBound r
+    ∃ (c : Fin r) (x y z : ℕ),
+      1 ≤ x ∧ 1 ≤ y ∧ 1 ≤ z ∧
+      x ≤ N ∧ y ≤ N ∧ z ≤ N ∧
+      x + y = z ∧
+      χ x = c ∧ χ y = c ∧ χ z = c := sorry
 
-/-- Interior edges of a symmetric triangulation. -/
-def interiorEdges (T : SymmetricTriangulation2D V) : Finset (Finset V) :=
-  T.toEdgePseudomanifold2D.interiorEdges
+/-- **Multiplicative Group Schur Theorem**:
+For any group `G`, any `r ≥ 1`, any finite subset `S ⊆ G` with `ramseyTriangleBound r ≤ S.card`,
+and any coloring `χ : G → Fin r`, there exists a monochromatic solution to $x \cdot y = z$. -/
+theorem group_schurs_theorem {G : Type*} [Group G] [DecidableEq G]
+    (r : ℕ) (hr : 1 ≤ r) (S : Finset G) (hS : ramseyTriangleBound r ≤ S.card)
+    (χ : G → Fin r) :
+    ∃ (c : Fin r) (u v w : G) (x y z : G),
+      u ∈ S ∧ v ∈ S ∧ w ∈ S ∧
+      u ≠ v ∧ u ≠ w ∧ v ≠ w ∧
+      x = u⁻¹ * v ∧ y = v⁻¹ * w ∧ z = u⁻¹ * w ∧
+      x * y = z ∧
+      x ≠ 1 ∧ y ≠ 1 ∧ z ≠ 1 ∧
+      χ x = c ∧ χ y = c ∧ χ z = c := sorry
 
-end SymmetricTriangulation2D
+/-- **Additive Abelian Group Schur Theorem**:
+For any additive abelian group `A`, any `r ≥ 1`, any finite subset `S ⊆ A` with
+`ramseyTriangleBound r ≤ S.card`, and any coloring `χ : A → Fin r`,
+there exists a monochromatic solution to $x + y = z$. -/
+theorem addCommGroup_schurs_theorem {A : Type*} [AddCommGroup A] [DecidableEq A]
+    (r : ℕ) (hr : 1 ≤ r) (S : Finset A) (hS : ramseyTriangleBound r ≤ S.card)
+    (χ : A → Fin r) :
+    ∃ (c : Fin r) (u v w : A) (x y z : A),
+      u ∈ S ∧ v ∈ S ∧ w ∈ S ∧
+      u ≠ v ∧ u ≠ w ∧ v ≠ w ∧
+      x = v - u ∧ y = w - v ∧ z = w - u ∧
+      x + y = z ∧
+      x ≠ 0 ∧ y ≠ 0 ∧ z ≠ 0 ∧
+      χ x = c ∧ χ y = c ∧ χ z = c := sorry
 
-/-- An edge `e` is complementary under labeling `L` if it contains two distinct vertices
-    with opposite signs: `L u = - L v`. -/
-def IsComplementaryEdge (L : V → ℤ) (e : Finset V) : Prop :=
-  ∃ u v, u ∈ e ∧ v ∈ e ∧ u ≠ v ∧ L u = - L v
+/-- **Finite Additive Abelian Group Partition Regularity**:
+If $A \setminus \{0\}$ is covered by $r$ sets $A_0, \dots, A_{r-1}$ where $|A| \ge \text{ramseyTriangleBound } r$,
+then at least one set $A_i$ contains a non-zero solution to $x + y = z$ ($x, y, z \ne 0$). -/
+theorem finite_addCommGroup_partition_regular {A : Type*} [Fintype A] [AddCommGroup A] [DecidableEq A]
+    (r : ℕ) (hr : 1 ≤ r) (hA : ramseyTriangleBound r ≤ Fintype.card A)
+    (Sets : Fin r → Finset A)
+    (h_cover : (Finset.univ : Finset A).erase 0 ⊆ Finset.biUnion Finset.univ Sets) :
+    ∃ i : Fin r, ∃ x y z, x ∈ Sets i ∧ y ∈ Sets i ∧ z ∈ Sets i ∧ x ≠ 0 ∧ y ≠ 0 ∧ z ≠ 0 ∧ x + y = z := sorry
 
-/-- An edge `e` is a door under labeling `L` if `e` has 2 vertices and maps to `{1, 2}`. -/
-def isDoor (L : V → ℤ) (e : Finset V) : Prop :=
-  e.card = 2 ∧ e.image L = ({1, 2} : Finset ℤ)
+/-- **Exact Monochromatic Count for $r = 1$**:
+For 1-colorings (uncolored positive integers), the number of monochromatic Schur triples
+in $\{1, \dots, N\}$ is exactly $(N - 1) N / 2$. -/
+theorem card_monoSchurTriples_one (χ : ℕ → Fin 1) (N : ℕ) :
+    (monoSchurTriples χ N).card = (N - 1) * N / 2 := sorry
 
-instance (L : V → ℤ) (e : Finset V) : Decidable (isDoor L e) :=
-  inferInstanceAs (Decidable (e.card = 2 ∧ e.image L = {1, 2}))
+/-- **Quantitative Disjoint-Block Double-Counting Bound**:
+For any $r \ge 1$, $k \ge 1$, and $N \ge k \cdot \text{ramseyTriangleBound } r$,
+the double counting between $k$ disjoint graph triangles in $\{0, \dots, N\}$ and integer Schur difference triples
+yields:
+$$k \le N \cdot |\text{monoSchurTriples } \chi N|$$
+This quantitative disjoint-block double-counting bound relates the number $k$ of disjoint blocks of size $B_r$
+to the count of monochromatic Schur triples. In contrast, for $r = 1$, `card_monoSchurTriples_one`
+establishes the exact quadratic density $\frac{(N-1)N}{2} = \frac{1}{2}N^2 - \frac{1}{2}N$. -/
+theorem supersaturation_bound (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) (k N : ℕ)
+    (hN : k * ramseyTriangleBound r ≤ N) :
+    k ≤ N * (monoSchurTriples χ N).card := sorry
 
-/-- The number of doors on a face `t`. -/
-def doors (L : V → ℤ) (t : Finset V) : ℕ :=
-  (t.powerset.filter (isDoor L)).card
+/-- **Constant-Solution Zero-Sum Corollary to Rado's Theorem (Explicit Index Size Formulation)**:
+Variant of `rado_zero_sum_partition_regular` taking an explicit `1 ≤ k` hypothesis instead of typeclass `[NeZero k]`.
+For zero-sum linear equations ($\sum_{i=0}^{k-1} c_i = 0$), partition regularity over $\mathbb{N}^+$
+admits an explicit constant monochromatic solution $x = (1, \dots, 1)$. -/
+theorem rado_zero_sum_partition_regular_of_le (k : ℕ) (hk : 1 ≤ k) (c : Fin k → ℤ)
+    (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
+    letI : NeZero k := ⟨by omega⟩
+    HasNonzeroMonoSol c χ := sorry
 
-end Structures
+/-- **Schur Partition Regularity on Positive Integers**:
+The Schur equation $x + y = z$ is partition regular over the positive integers $\mathbb{N}^+$:
+for any $r$-coloring $\chi : ℕ \to \text{Fin } r$, there exists a positive monochromatic solution.
+For the quantitative finite interval cutoff $N = \text{ramseyTriangleBound } r$, see `schurs_theorem`. -/
+theorem schur_is_rado_regular (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
+    HasNonzeroMonoSol schurCoeffs χ := sorry
 
-section Dim1
-
-/-- **1D Tucker's Lemma (Tucker 1945):**
-    For any antipodal sequence on `2n+1` vertices with `L(0) = -L(2n) ∈ {±1}`,
-    there exists an adjacent complementary edge. -/
-theorem tucker_1d (n : ℕ)
-    (L : Fin (2 * n + 1) → ℤ)
-    (h_range : ∀ i, L i = 1 ∨ L i = -1)
-    (h_antipodal : L 0 = - L ⟨2 * n, by omega⟩) :
-    ∃ (i : ℕ) (hi : i < 2 * n), L ⟨i, by omega⟩ = - L ⟨i + 1, by omega⟩ := sorry
-
-/-- Total number of sign switches along a 1D path of length `n`. -/
-def switchCount1D (n : ℕ) (s : Fin (n + 1) → ℤ) : ℕ :=
-  ∑ i : Fin n, if s i.castSucc ≠ s i.succ then 1 else 0
-
-/-- **1D Sign Switch Parity Theorem:**
-    The number of sign switches along a path is odd if and only if the endpoints have opposite signs. -/
-theorem sign_switch_parity (n : ℕ) (s : Fin (n + 1) → ℤ)
-    (h_range : ∀ i, s i = 1 ∨ s i = -1) :
-    (switchCount1D n s) % 2 = if s 0 ≠ s ⟨n, by omega⟩ then 1 else 0 := sorry
-
-end Dim1
-
-section DoubleCounting
-
-variable {V : Type*} [DecidableEq V]
-
-/-- The total door count across all faces equals boundary doors plus twice interior doors. -/
-theorem double_counting_doors (T : EdgePseudomanifold2D V) (L : V → ℤ) :
-    (∑ t ∈ T.faces, doors L t) =
-    (T.boundaryEdges.filter (isDoor L)).card + 2 * (T.interiorEdges.filter (isDoor L)).card := sorry
-
-/-- **Parity Conservation Theorem:**
-    The total face door count modulo 2 is identically equal to the number of boundary doors modulo 2. -/
-theorem parity_conservation (T : EdgePseudomanifold2D V) (L : V → ℤ) :
-    (∑ t ∈ T.faces, doors L t) % 2 = (T.boundaryEdges.filter (isDoor L)).card % 2 := sorry
-
-/-- **Main Theorem: 2D Tucker's Lemma (Albert W. Tucker 1945).**
-    Any labeling `L : V → {±1, ±2}` on an edge-pseudomanifold or symmetric triangulation
-    with an odd number of boundary doors guarantees the existence of a complementary edge
-    in `T.edges`. Proved via the genuine double-counting parity argument with ZERO `h_witness`! -/
-theorem tucker_2d_theorem (T : EdgePseudomanifold2D V) (L : V → ℤ)
-    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
-    (h_bd_odd : (T.boundaryEdges.filter (isDoor L)).card % 2 = 1) :
-    ∃ e ∈ T.edges, IsComplementaryEdge L e := sorry
-
-/-- **Tucker's Lemma (1945) on Symmetric Triangulations:**
-    For any symmetric triangulation `T` with odd boundary door parity and vertex labels in `{±1, ±2}`,
-    there exists a complementary edge. -/
-theorem tuckers_lemma (T : SymmetricTriangulation2D V) (L : V → ℤ)
-    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
-    (h_bd_odd : (T.boundaryEdges.filter (isDoor L)).card % 2 = 1) :
-    ∃ e ∈ T.edges, IsComplementaryEdge L e := sorry
-
-end DoubleCounting
-
-section Octahedron
-
-/-- The 6 vertices of the regular octahedron, grouped into 3 antipodal pairs. -/
-inductive OctV : Type
-  | p1 | m1 | p2 | m2 | p3 | m3
-  deriving DecidableEq, Repr
-
-instance : Fintype OctV where
-  elems := {OctV.p1, OctV.m1, OctV.p2, OctV.m2, OctV.p3, OctV.m3}
-  complete := by rintro (_ | _ | _ | _ | _ | _) <;> simp
-
-/-- Antipodal reflection on the octahedron swapping positive and negative vertices. -/
-def OctV.antipodal : OctV ≃ OctV where
-  toFun := fun
-    | .p1 => .m1
-    | .m1 => .p1
-    | .p2 => .m2
-    | .m2 => .p2
-    | .p3 => .m3
-    | .m3 => .p3
-  invFun := fun
-    | .p1 => .m1
-    | .m1 => .p1
-    | .p2 => .m2
-    | .m2 => .p2
-    | .p3 => .m3
-    | .m3 => .p3
-  left_inv := by rintro (_ | _ | _ | _ | _ | _) <;> rfl
-  right_inv := by rintro (_ | _ | _ | _ | _ | _) <;> rfl
-
-lemma OctV.antipodal_sq (v : OctV) : OctV.antipodal (OctV.antipodal v) = v := by
-  cases v <;> rfl
-
-lemma OctV.antipodal_ne (v : OctV) : OctV.antipodal v ≠ v := by
-  cases v <;> decide
-
-/-- The 8 triangular faces of the octahedral 2-sphere. -/
-def octahedron_faces : Finset (Finset OctV) :=
-  { {OctV.p1, OctV.p2, OctV.p3},
-    {OctV.p1, OctV.p2, OctV.m3},
-    {OctV.p1, OctV.m2, OctV.p3},
-    {OctV.p1, OctV.m2, OctV.m3},
-    {OctV.m1, OctV.p2, OctV.p3},
-    {OctV.m1, OctV.p2, OctV.m3},
-    {OctV.m1, OctV.m2, OctV.p3},
-    {OctV.m1, OctV.m2, OctV.m3} }
-
-/-- The 12 edges of the octahedral 2-sphere. -/
-def octahedron_edges : Finset (Finset OctV) :=
-  octahedron_faces.biUnion (fun t => t.powerset.filter (fun s => s.card = 2))
-
-lemma octahedron_face_card (t : Finset OctV) (ht : t ∈ octahedron_faces) : t.card = 3 := by
-  revert t ht; decide
-
-lemma octahedron_incident_card (e : Finset OctV) (he : e ∈ octahedron_edges) :
-    (octahedron_faces.filter (fun t => e ⊆ t)).card = 1 ∨
-    (octahedron_faces.filter (fun t => e ⊆ t)).card = 2 := by
-  revert e he; decide
-
-/-- Concrete 2D symmetric triangulation of the octahedron $S^2_8$. -/
-def octahedron_triangulation : SymmetricTriangulation2D OctV where
-  faces := octahedron_faces
-  face_card := octahedron_face_card
-  incident_card := octahedron_incident_card
-  antipodal := OctV.antipodal
-  antipodal_sq := OctV.antipodal_sq
-  antipodal_ne := OctV.antipodal_ne
-
-/-- **Tucker's Lemma on the Octahedral 2-Sphere ($S^2_8$):**
-    Every antipodally symmetric labeling `L : OctV → {±1, ±2}` contains a complementary edge
-    in the 12 edges of the octahedron. -/
-theorem octahedron_tuckers_lemma (L : OctV → ℤ)
-    (h_anti : ∀ v, L (OctV.antipodal v) = - L v)
-    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2) :
-    ∃ e ∈ octahedron_triangulation.edges, IsComplementaryEdge L e := sorry
-
-end Octahedron
-
-end TuckersLemma
+end SchursTheorem

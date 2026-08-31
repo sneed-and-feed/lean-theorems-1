@@ -30,6 +30,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **29** | **Radon's Lemma and Helly's Theorem on Convex Sets (Wiedijk #99)** | `ab63e28a6ca4082ddb2191c9cb676622c90f3797` | [PALOMAR-2026-08-29-000007](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000007) | [x] **LIVE** |
 | **20** | **Bárány's Colorful Carathéodory Theorem, Selection Lemmas, and Centerpoint Theorem** | `737f479090feab036d6f83b069e23a9e523daf33` | [PALOMAR-2026-08-29-000012](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000012) | [x] **LIVE** |
 | **18** | **The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)** | `f72d0d60a7ba8c8a4789e03bb6be0f9d007bea64` | [PALOMAR-2026-08-29-000013](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000013) | [x] **LIVE** |
+| **10** | **Schur's Theorem on Sum-Free Partitions & Group Generalizations** | `7dbbe53aa7154f489af96dc0f64876bfc21a193d` | *(did not meet research floor)* | [-] **REJECTED** |
 
 ---
 
@@ -37,7 +38,6 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Status |
 | :---: | :--- | :--- | :--- | :--- | :---: |
-| **1** | **Schur's Theorem: Algebraic, Quantitative & Linear Systems Suite** | `schurs_theorem` | `7dbbe53aa7154f489af96dc0f64876bfc21a193d` | `palomar/schurs_theorem/comparator.json` | [ ] **Ready to Submit (Research-Grade Upgrade)** |
 | **3** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `frankl_wilson` | `a3047d6bc04685572164ac141822aea8d3ad60e4` | `palomar/frankl_wilson/comparator.json` | [ ] **Ready to Submit** |
 | **4** | **Kneser's Graph Coloring Upper Bound (1955)** | `kneser_lovasz` | `a1b19ef1479c60afc12d154206cc4cc7c3993f18` | `palomar/kneser_lovasz/comparator.json` | [ ] **Ready to Submit** |
 | **5** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | [ ] **Ready to Submit** |

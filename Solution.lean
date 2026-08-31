@@ -1,1 +1,1 @@
-import Formalization.TuckersLemma
+import Formalization.SchursTheorem

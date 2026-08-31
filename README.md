@@ -138,14 +138,14 @@ construction with its exact cardinality are fully proved.
     - `schurs_theorem_color_classes`: Any finite integer coloring contains a non-sum-free color class.
     - `schurs_theorem_partition`: Partition regularity under finite coverings of $\{1, \dots, B_r\}$.
   - **Group-Theoretic & Algebraic Extensions:** [`Formalization/SchursTheorem/Group.lean`](Formalization/SchursTheorem/Group.lean)
-    - `group_schurs_theorem`: Multiplicative Schur theorem in arbitrary groups $(G, \cdot)$ ($x \cdot y = z$ with non-identity $x, y, z \ne 1$) for any subset $|S| \ge B_r$.
-    - `addCommGroup_schurs_theorem`: Additive Schur theorem in arbitrary abelian groups $(A, +)$ ($x + y = z$ with non-zero $x, y, z \ne 0$) for any subset $|S| \ge B_r$.
+    - `group_schurs_theorem`: Multiplicative Schur theorem in arbitrary groups $(G, \cdot)$, yielding non-identity monochromatic solutions $x, y, z \in S^{-1}S \setminus \{1\}$ ($x \cdot y = z$) for any subset $|S| \ge B_r$.
+    - `addCommGroup_schurs_theorem`: Additive Schur theorem in arbitrary abelian groups $(A, +)$, yielding non-zero monochromatic solutions $x, y, z \in (S - S) \setminus \{0\}$ ($x + y = z$) for any subset $|S| \ge B_r$.
     - `finite_group_color_classes_not_product_free`: Finite group product-free partition impossibility for $|G| \ge B_r$.
     - `finite_addCommGroup_partition_regular`: Partition regularity of $A \setminus \{0\}$ for finite abelian groups of order $|A| \ge B_r$.
   - **Auxiliary Counting & Linear Equation Modules (Library):**
     - [`Formalization/SchursTheorem/Quantitative.lean`](Formalization/SchursTheorem/Quantitative.lean): Exact count $\frac{(N-1)N}{2}$ for 1-colorings ($r = 1$) and disjoint-block counting relation $k \le N \cdot |\text{monoSchurTriples } \chi N|$ for $N \ge k B_r$.
     - [`Formalization/SchursTheorem/Rado.lean`](Formalization/SchursTheorem/Rado.lean): Constant-solution zero-sum corollary ($\sum c_i = 0$) and Schur equation $(1, 1, -1)$ regularity.
-* **Mathematical Statement:** For every $r \ge 1$, any $r$-coloring of the integers $\{1, \dots, B_r\}$, or of any group $G$ containing a subset with $|S| \ge B_r = \text{ramseyTriangleBound } r$, contains non-trivial monochromatic solutions to $x + y = z$ or $x \cdot y = z$. All statements rigorously maintain bound fidelity ($B_r \ge R_r(3) \ge S(r)$).
+* **Mathematical Statement:** For every $r \ge 1$, any $r$-coloring of the integers $\{1, \dots, B_r\}$, or of the quotient/difference set $S^{-1}S$ (or $S - S$) of any group $G$ containing a subset with $|S| \ge B_r = \text{ramseyTriangleBound } r$, contains non-trivial monochromatic solutions to $x + y = z$ or $x \cdot y = z$. All statements rigorously maintain bound fidelity ($B_r \ge R_r(3) \ge S(r)$).
 
 ---
 

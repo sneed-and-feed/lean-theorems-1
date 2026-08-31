@@ -19,19 +19,19 @@ Schur's theorem is understood as a fundamental partition regularity phenomenon h
 1. **Multiplicative Group Schur Theorem**: For any group $(G, \cdot)$ and any finite subset
    $S \subseteq G$ with $|S| \ge B_r$ (where $B_r = \text{ramseyTriangleBound } r$), every $r$-coloring
    $\chi : G \to \text{Fin } r$ produces distinct elements $u, v, w \in S$ such that
-   $x = u^{-1} v$, $y = v^{-1} w$, and $z = u^{-1} w$ are non-identity elements satisfying
-   $x \cdot y = z$ and $\chi(x) = \chi(y) = \chi(z)$.
+   $x = u^{-1} v$, $y = v^{-1} w$, and $z = u^{-1} w$ are non-identity elements in the quotient set
+   $S^{-1} S \setminus \{1\}$ satisfying $x \cdot y = z$ and $\chi(x) = \chi(y) = \chi(z)$.
 
 2. **Additive Abelian Group Schur Theorem**: For any additive abelian group $(A, +)$, any finite subset
    $S \subseteq A$ with $|S| \ge B_r$, and any coloring $\chi : A \to \text{Fin } r$, there exist
    distinct $u, v, w \in S$ such that $x = v - u$, $y = w - v$, and $z = w - u$ are non-zero elements
-   satisfying $x + y = z$ and $\chi(x) = \chi(y) = \chi(z)$.
+   in the difference set $(S - S) \setminus \{0\}$ satisfying $x + y = z$ and $\chi(x) = \chi(y) = \chi(z)$.
 
 3. **Finite Group Partition Regularity & Sum-Free Sets**: For any finite group $G$ with
-   $|G| \ge B_r$, in any $r$-partition (or cover) $G \setminus \{1\} = \bigcup_{i=0}^{r-1} C_i$, at least
-   one partition class $C_i$ is not product-free (contains $x, y, z \in C_i$ with $x \cdot y = z$).
-   Analogously, for any finite additive abelian group $A$, any $r$-partition of $A \setminus \{0\}$
-   contains a class that is not sum-free.
+   $|G| \ge B_r$ (where $S = G$, so $S^{-1}S = G$), in any $r$-partition (or cover)
+   $G \setminus \{1\} = \bigcup_{i=0}^{r-1} C_i$, at least one partition class $C_i$ is not product-free
+   (contains $x, y, z \in C_i$ with $x \cdot y = z$). Analogously, for any finite additive abelian group $A$,
+   any $r$-partition of $A \setminus \{0\}$ contains a class that is not sum-free.
 
 ## Bound Fidelity Note (Anti-Pattern Q)
 
