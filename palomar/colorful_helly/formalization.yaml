@@ -22,7 +22,12 @@ sources:
     type: paper
     authors:
       - "Imre Bárány"
-    relationship: formalizes
+    relationship: adapts
+    note: >-
+      Bárány's 1982 Theorem 3.1 is formulated for families of compact convex sets. This formalization adapts
+      and extends the theorem to arbitrary (not necessarily compact) convex sets in ℝ^d by extracting a finite
+      transversal witness pool W across all colorful choices and applying internal compact convex hull
+      replacement K(S) = conv(W ∩ S) ⊆ S.
   - title: "Problem 206"
     type: paper
     authors:

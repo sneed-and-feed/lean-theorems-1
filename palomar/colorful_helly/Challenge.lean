@@ -12,7 +12,7 @@ structure ColorfulConvexSystem (d : ℕ) where
 namespace ColorfulHelly
 
 /-- Main Theorem: Lovász's Colorful Helly theorem (1974; first published proof, Bárány 1982).
-    If all colorful selections of `d + 1` sets intersect in positive dimension, then at least
+    If all colorful selections of `d + 1` sets have a non-empty intersection, then at least
     one family has a non-empty global intersection. -/
 theorem colorful_helly (d : ℕ) (hd : 1 ≤ d) (sys : ColorfulConvexSystem d)
     (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),

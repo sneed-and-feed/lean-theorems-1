@@ -29,7 +29,8 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **9** | **Descartes's Rule of Signs (Wiedijk #73)** | `262be20ccc67d4a9e1beb939d3842bff730d7fd8` | [PALOMAR-2026-08-27-000016](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000016) | [x] **LIVE** |
 | **10** | **Radon's Lemma and Helly's Theorem on Convex Sets (Wiedijk #99)** | `ab63e28a6ca4082ddb2191c9cb676622c90f3797` | [PALOMAR-2026-08-29-000007](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000007) | [x] **LIVE** |
 | **11** | **Bárány's Colorful Carathéodory Theorem, Selection Lemmas, and Centerpoint Theorem** | `737f479090feab036d6f83b069e23a9e523daf33` | [PALOMAR-2026-08-29-000012](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000012) | [x] **LIVE** |
-| **12** | **The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)** | `f72d0d60a7ba8c8a4789e03bb6be0f9d007bea64` | [PALOMAR-2026-08-29-000013](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-29-000013) | [x] **LIVE** |
+| **12** | **The Happy Ending Theorem (Erdős–Szekeres Convex Polygon Theorem, 1935)** | `f72d0d60a7ba8c8a4789e03bb6be0f9d007bea64` | [PALOMAR-2026-08-29-000013](https://palomar-registry.org/entry?id=PALOMAR-2026-08-29-000013) | [x] **LIVE** |
+| **13** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `a3047d6bc04685572164ac141822aea8d3ad60e4` | [PALOMAR-2026-08-31-000003](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000003) | [x] **LIVE** |
 
 ---
 
@@ -37,16 +38,15 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `frankl_wilson` | `a3047d6bc04685572164ac141822aea8d3ad60e4` | `palomar/frankl_wilson/comparator.json` | Extremal Combinatorics / Polynomial Method |
-| **2** | **Lovász's Colorful Helly Theorem for Convex Sets (General Dimension $d$)** | `colorful_helly` | `306308a0f8d627f63cacab04b7d5ee5c5d1a02b5` | `palomar/colorful_helly/comparator.json` | Discrete & Convex Geometry / Hulls |
-| **3** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `friendship_windmill` | `999125cd5629665ef15b11b97b7bb817f702816c` | `palomar/friendship_windmill/comparator.json` | Algebraic Graph Theory / Group Actions |
-| **4** | **Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem** | `dilworth_mirsky` | `becacae53c6b6de3322707e130b5829dbbce0ed4` | `palomar/dilworth_mirsky/comparator.json` | Order Theory / Min-Max Duality |
-| **5** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `5584ebaada8ef2e2490ab35ed79e6a7436aa6c2a` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
-| **6** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
-| **7** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
-| **8** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
-| **9** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `a21ba2ed4fb4de4a8220bf3f13a3eac857ca5802` | `palomar/gilmer_union_closed/comparator.json` | Extremal Combinatorics / Information Theory |
-| **10** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & Petridis Magnification** | `ruzsa_freiman` | `e9f647dbe83af9b300ece231a240142ec21af11d` | `palomar/ruzsa_freiman/comparator.json` | Additive Combinatorics / Sumset Calculus |
+| **1** | **Lovász's Colorful Helly Theorem for Convex Sets (General Dimension $d$)** | `colorful_helly` | `306308a0f8d627f63cacab04b7d5ee5c5d1a02b5` | `palomar/colorful_helly/comparator.json` | Discrete & Convex Geometry / Hulls |
+| **2** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `friendship_windmill` | `999125cd5629665ef15b11b97b7bb817f702816c` | `palomar/friendship_windmill/comparator.json` | Algebraic Graph Theory / Group Actions |
+| **3** | **Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem** | `dilworth_mirsky` | `becacae53c6b6de3322707e130b5829dbbce0ed4` | `palomar/dilworth_mirsky/comparator.json` | Order Theory / Min-Max Duality |
+| **4** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `5584ebaada8ef2e2490ab35ed79e6a7436aa6c2a` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
+| **5** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
+| **6** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
+| **7** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
+| **8** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `a21ba2ed4fb4de4a8220bf3f13a3eac857ca5802` | `palomar/gilmer_union_closed/comparator.json` | Extremal Combinatorics / Information Theory |
+| **9** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & Petridis Magnification** | `ruzsa_freiman` | `e9f647dbe83af9b300ece231a240142ec21af11d` | `palomar/ruzsa_freiman/comparator.json` | Additive Combinatorics / Sumset Calculus |
 
 ---
 
