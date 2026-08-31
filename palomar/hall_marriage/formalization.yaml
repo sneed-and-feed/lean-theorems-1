@@ -1,4 +1,4 @@
-﻿version: "v0.4"
+version: "v0.4"
 
 project:
   name: "Hall's Marriage Theorem on Systems of Distinct Representatives"
@@ -30,6 +30,9 @@ sources:
       - "P. R. Halmos"
       - "H. E. Vaughan"
     relationship: adapts
+    note: >-
+      Formalization adapts Halmos and Vaughan's finite induction and defect matching reduction for Hall's
+      Marriage condition.
 
 automation:
   methods:

@@ -41,11 +41,15 @@ sources:
     authors:
       - "Saunders Mac Lane"
     relationship: adapts
+    note: >-
+      Formalization adapts Mac Lane's 2-basis cycle space planarity criterion for combinatorial planar graphs.
   - title: "A census of planar maps"
     type: paper
     authors:
       - "W. T. Tutte"
     relationship: adapts
+    note: >-
+      Formalization adapts Mac Lane's 2-basis cycle space planarity criterion for combinatorial planar graphs.
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Acyclic.lean"

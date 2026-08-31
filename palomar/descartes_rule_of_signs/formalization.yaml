@@ -39,6 +39,9 @@ sources:
     volume: "3"
     pages: "5-8"
     relationship: adapts
+    note: >-
+      Formalization adapts Gauss's algebraic sign-variation reduction and polynomial root induction for real
+      polynomial sign variation bounds.
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Algebra/Polynomial/RuleOfSigns.lean"

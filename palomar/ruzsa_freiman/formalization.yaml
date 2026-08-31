@@ -36,6 +36,9 @@ sources:
     venue: "Combinatorics, Probability and Computing"
     year: 2012
     relationship: adapts
+    note: >-
+      Formalization adapts Petridis' inductive ratio-minimizer method to establish Plünnecke–Ruzsa sumset
+      bounds and multi-fold difference estimates.
   - title: "Additive Combinatorics"
     type: book
     authors:

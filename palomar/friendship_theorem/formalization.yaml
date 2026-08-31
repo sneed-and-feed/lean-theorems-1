@@ -33,6 +33,9 @@ sources:
     authors:
       - "H. S. Wilf"
     relationship: adapts
+    note: >-
+      Formalization adapts Wilf's algebraic spectral and eigenvalue multiplicity argument to prove the
+      existence of a universal friend vertex.
 
 automation:
   methods:

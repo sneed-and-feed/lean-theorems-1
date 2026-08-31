@@ -33,6 +33,9 @@ sources:
     authors:
       - "G. A. Dirac"
     relationship: adapts
+    note: >-
+      Formalization adapts Dirac's minimum-degree condition (minDegree(G) >= n / 2) as an immediate corollary
+      of Ore's degree-sum theorem.
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Hamiltonian.lean"

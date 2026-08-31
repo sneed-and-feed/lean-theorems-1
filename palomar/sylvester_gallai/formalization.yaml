@@ -36,6 +36,9 @@ sources:
       - "H. S. M. Coxeter"
       - "L. M. Kelly"
     relationship: adapts
+    note: >-
+      Formalization adapts Kelly's Euclidean distance-minimization proof (via Coxeter) to establish the
+      existence of an ordinary line in non-collinear point configurations.
 
 automation:
   methods:

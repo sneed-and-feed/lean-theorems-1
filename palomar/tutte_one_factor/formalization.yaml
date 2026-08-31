@@ -34,6 +34,9 @@ sources:
     authors:
       - "C. Berge"
     relationship: adapts
+    note: >-
+      Formalization adapts Berge's maximum matching and deficiency characterization (Tutte–Berge formula) for
+      general simple graphs.
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Tutte.lean"

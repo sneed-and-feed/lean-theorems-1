@@ -30,6 +30,9 @@ sources:
     authors:
       - "László A. Székely"
     relationship: adapts
+    note: >-
+      Formalization adapts Székely's crossing lemma application to deduce the Szemerédi–Trotter point-line
+      incidence bound O(n^{2/3} m^{2/3} + n + m).
 
 automation:
   methods:

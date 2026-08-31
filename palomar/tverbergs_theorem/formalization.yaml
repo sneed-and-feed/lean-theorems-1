@@ -34,6 +34,9 @@ sources:
       - "Wolfgang Mulzer"
       - "Daniel Werner"
     relationship: adapts
+    note: >-
+      Formalization adapts Mulzer and Werner's geometric transversal and partition framework for discrete
+      Tverberg point approximations.
   - title: "Radon-partition property in topological affine spaces"
     type: paper
     authors:

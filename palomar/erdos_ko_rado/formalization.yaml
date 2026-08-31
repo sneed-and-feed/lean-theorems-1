@@ -30,12 +30,18 @@ sources:
     authors:
       - "G. O. H. Katona"
     relationship: adapts
+    note: >-
+      Formalization adapts Katona's circle permutation and cyclic interval counting method to establish the
+      Erdős–Ko–Rado bound.
   - title: "Some intersection theorems for systems of finite sets"
     type: paper
     authors:
       - "A. J. W. Hilton"
       - "E. C. Milner"
     relationship: adapts
+    note: >-
+      Formalization adapts Katona's circle permutation and cyclic interval counting method to establish the
+      Erdős–Ko–Rado bound.
 
 automation:
   methods:

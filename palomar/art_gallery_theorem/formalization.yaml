@@ -33,6 +33,9 @@ sources:
     authors:
       - "Steve Fisk"
     relationship: adapts
+    note: >-
+      Formalization adapts Fisk's 3-coloring triangulation partitioning argument to select a minimal guard
+      vertex set of size at most floor(n / 3).
   - title: "Art Gallery Theorems and Algorithms"
     type: book
     authors:

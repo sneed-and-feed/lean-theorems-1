@@ -31,6 +31,9 @@ sources:
     authors:
       - "Helge Tverberg"
     relationship: adapts
+    note: >-
+      Formalization adapts Tverberg's linear-algebraic quadratic form argument to establish the n - 1 lower
+      bound on complete bipartite partitions of K_n.
 
 automation:
   methods:

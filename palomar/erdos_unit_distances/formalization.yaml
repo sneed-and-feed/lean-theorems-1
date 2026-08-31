@@ -39,6 +39,9 @@ sources:
     authors:
       - "László A. Székely"
     relationship: adapts
+    note: >-
+      Formalization adapts Székely's crossing number method to establish upper bounds on the unit distance
+      problem in the Euclidean plane.
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean"

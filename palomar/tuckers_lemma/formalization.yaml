@@ -38,6 +38,9 @@ sources:
     authors:
       - "Ky Fan"
     relationship: adapts
+    note: >-
+      Formalization adapts Ky Fan's multidimensional antipodal labeling generalization to 1D paths and 2D
+      pseudomanifolds.
   - title: "A constructive proof of Tucker's combinatorial lemma for primitive sets"
     type: paper
     year: 1981
@@ -46,6 +49,9 @@ sources:
       - "Robert M. Freund"
       - "Michael J. Todd"
     relationship: adapts
+    note: >-
+      Formalization adapts Ky Fan's multidimensional antipodal labeling generalization to 1D paths and 2D
+      pseudomanifolds.
 
 related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"

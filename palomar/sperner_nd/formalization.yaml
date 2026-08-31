@@ -36,6 +36,9 @@ sources:
     issue: "1"
     pages: "265-272"
     relationship: adapts
+    note: >-
+      Formalization adapts Sperner's boundary door-parity induction to general n-dimensional simplicial
+      pseudomanifolds.
   - title: "Simplicial Approximation of Fixed Points"
     type: paper
     authors:
@@ -46,6 +49,9 @@ sources:
     issue: "4"
     pages: "1238-1242"
     relationship: adapts
+    note: >-
+      Formalization adapts Kuhn's labeled cubical triangulation and constructive combinatorial path-following
+      algorithms.
 
 automation:
   methods:

@@ -27,6 +27,9 @@ sources:
     authors:
       - "David Hilbert"
     relationship: adapts
+    note: >-
+      Formalization adapts Hilbert's synthetic axiomatization and perspective configuration theorems in
+      projective and affine geometries.
   - title: "Manière universelle de Mr Desargues, pour pratiquer la perspective par petit-pied, comme le géométral"
     type: book
     authors:
