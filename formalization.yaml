@@ -1,53 +1,52 @@
 version: "v0.4"
 
 project:
-  name: "Lovász's Colorful Helly Theorem for Convex Sets"
+  name: "The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)"
   authors:
     - "Sneed & Feed Formalization Team"
   responsible_maintainers:
     - "sneed-and-feed"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Lovász's Colorful Helly Theorem (1974 / Bárány 1982).
-    Proves that for any d + 1 finite families of convex sets in R^d such that every colorful transversal
-    has a non-empty intersection, at least one entire family has a non-empty intersection.
+    A complete, machine-checked Lean 4 formalization of the Friendship Windmill Structure Theorem
+    (Erdős, Rényi, and Sós, 1966). Proves that any finite graph in which every pair of distinct vertices
+    shares exactly one common neighbor possesses a universal vertex w, has an odd number of vertices |V| = 2k + 1,
+    induces a 1-regular perfect matching on V \ {w}, and is isomorphic to the Dutch windmill graph Wd(k, 2)
     To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
-  arxiv: [math.MG, math.CO]
-  msc2020: ["52A35", "52A20", "05D15"]
+  arxiv: [math.CO]
+  msc2020: ["05C75", "05C50", "05C07"]
 
 sources:
-  - title: "A generalization of Carathéodory's theorem"
+  - title: "On a problem of graph theory"
     type: paper
     authors:
-      - "Imre Bárány"
-    relationship: adapts
-    note: >-
-      Bárány's 1982 Theorem 3.1 is formulated for families of compact convex sets. This formalization adapts
-      and extends the theorem to arbitrary (not necessarily compact) convex sets in ℝ^d by extracting a finite
-      transversal witness pool W across all colorful choices and applying internal compact convex hull
-      replacement K(S) = conv(W ∩ S) ⊆ S.
-  - title: "Problem 206"
-    type: paper
+      - "Paul Erdős"
+      - "Alfréd Rényi"
+      - "Vera T. Sós"
+    relationship: formalizes
+  - title: "Proofs from THE BOOK"
+    type: book
     authors:
-      - "László Lovász"
+      - "Martin Aigner"
+      - "Günter M. Ziegler"
     relationship: background
 
 related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Basic.lean"
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Finite.lean"
     relationship: builds-on
     note: >-
-      Formalization builds on Mathlib's convex analysis infrastructure (Convex ℝ) to establish
-      colorful convex systems, transversal intersections, and family-wide Helly intersections.
+      Formalization builds on Mathlib's simple graph theory library and finite graph neighborhood infrastructure
+      (SimpleGraph.neighborFinset, SimpleGraph.degree) to construct and prove the windmill graph decomposition.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
         Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Lean LSP checking under maintainer direction and human verification.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed

@@ -7,6 +7,8 @@ import Mathlib.Data.Fintype.Basic
 
 open Finset SimpleGraph
 
+namespace FriendshipWindmill
+
 variable {V : Type*} [Fintype V] [DecidableEq V] [Nonempty V]
 
 /-- The friendship property: every pair of distinct vertices has exactly one common neighbor. -/
@@ -32,3 +34,5 @@ def IsWindmillGraph (G : SimpleGraph V) (w : V) (k : ℕ) : Prop :=
 Every finite graph satisfying the friendship property is a windmill graph $Wd(k, 2)$ consisting of $k$ triangles sharing a universal vertex. -/
 theorem friendship_windmill (G : SimpleGraph V) [DecidableRel G.Adj]
     (h_friend : HasFriendshipProperty G) : ∃ (w : V) (k : ℕ), IsWindmillGraph G w k := sorry
+
+end FriendshipWindmill

@@ -1,1 +1,1 @@
-import Formalization.ColorfulHelly
+import Formalization.FriendshipWindmill

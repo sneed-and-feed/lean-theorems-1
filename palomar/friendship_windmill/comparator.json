@@ -2,7 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "friendship_windmill"
+    "FriendshipWindmill.friendship_windmill"
   ],
   "permitted_axioms": [
     "propext",

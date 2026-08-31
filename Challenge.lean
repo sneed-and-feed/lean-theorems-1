@@ -1,32 +1,38 @@
-import Mathlib.Analysis.Convex.Basic
+import Mathlib.Data.Fintype.Card
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Fintype.Basic
 
-open BigOperators
+open Finset SimpleGraph
 
-/-- A Colorful Convex System in ℝ^d consisting of d + 1 finite families of convex sets. -/
-structure ColorfulConvexSystem (d : ℕ) where
-  families : Fin (d + 1) → Finset (Set (Fin d → ℝ))
-  h_convex : ∀ (c : Fin (d + 1)) (S : Set (Fin d → ℝ)), S ∈ families c → Convex ℝ S
+namespace FriendshipWindmill
 
-namespace ColorfulHelly
+variable {V : Type*} [Fintype V] [DecidableEq V] [Nonempty V]
 
-/-- Main Theorem: Lovász's Colorful Helly theorem (1974; first published proof, Bárány 1982).
-    If all colorful selections of `d + 1` sets have a non-empty intersection, then at least
-    one family has a non-empty global intersection. -/
-theorem colorful_helly (d : ℕ) (hd : 1 ≤ d) (sys : ColorfulConvexSystem d)
-    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
-      (∀ c, choice c ∈ sys.families c) →
-      (⋂ c : Fin (d + 1), choice c).Nonempty) :
-    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := sorry
+/-- The friendship property: every pair of distinct vertices has exactly one common neighbor. -/
+def HasFriendshipProperty (G : SimpleGraph V) [DecidableRel G.Adj] : Prop :=
+  ∀ u v : V, u ≠ v → (G.neighborFinset u ∩ G.neighborFinset v).card = 1
 
-/-- Lovász's Colorful Helly theorem in every dimension `d`, including `d = 0`: if all colorful
-    selections of `d + 1` sets intersect, then at least one family has a non-empty global
-    intersection. -/
-theorem colorful_helly_all_dimensions (d : ℕ) (sys : ColorfulConvexSystem d)
-    (h_transversal : ∀ (choice : (c : Fin (d + 1)) → Set (Fin d → ℝ)),
-      (∀ c, choice c ∈ sys.families c) →
-      (⋂ c : Fin (d + 1), choice c).Nonempty) :
-    ∃ (j : Fin (d + 1)), (⋂ S ∈ sys.families j, S).Nonempty := sorry
+/-- A universal vertex (politician) in `G` that is adjacent to all other vertices. -/
+def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
+  ∀ v : V, v ≠ w → G.Adj w v
 
-end ColorfulHelly
+/-- Predicate defining a windmill graph $Wd(k, 2)$: a central vertex `w` connected to
+    `k` vertex-disjoint triangles. -/
+def IsWindmillGraph (G : SimpleGraph V) (w : V) (k : ℕ) : Prop :=
+  IsUniversalVertex G w ∧
+  Fintype.card V = 2 * k + 1 ∧
+  ∃ (matching : Finset (Finset V)),
+    matching.card = k ∧
+    (∀ e ∈ matching, e.card = 2 ∧ w ∉ e) ∧
+    (∀ e₁ ∈ matching, ∀ e₂ ∈ matching, e₁ ≠ e₂ → Disjoint e₁ e₂) ∧
+    (∀ u v, u ≠ w → v ≠ w → (G.Adj u v ↔ {u, v} ∈ matching))
+
+/-- **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)**:
+Every finite graph satisfying the friendship property is a windmill graph $Wd(k, 2)$ consisting of $k$ triangles sharing a universal vertex. -/
+theorem friendship_windmill (G : SimpleGraph V) [DecidableRel G.Adj]
+    (h_friend : HasFriendshipProperty G) : ∃ (w : V) (k : ℕ), IsWindmillGraph G w k := sorry
+
+end FriendshipWindmill
