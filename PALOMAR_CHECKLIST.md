@@ -33,6 +33,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **13** | **The Frankl–Wilson Theorem on Modulo-p Intersecting Set Families** | `a3047d6bc04685572164ac141822aea8d3ad60e4` | [PALOMAR-2026-08-31-000003](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000003) | [x] **LIVE** |
 | **14** | **Lovász's Colorful Helly Theorem for Convex Sets (General Dimension $d$)** | `2db81c6fcc8e448e60ada17f9abdf01aa38fc09d` | [PALOMAR-2026-08-31-000006](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000006) | [x] **LIVE** |
 | **15** | **Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem** | `becacae53c6b6de3322707e130b5829dbbce0ed4` | [PALOMAR-2026-08-31-000017](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000017) | [x] **LIVE** |
+| **16** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `fc3f38a8933c133d481761afad170b0b99aa9abd` | [PALOMAR-2026-08-31-000020](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000020) | [x] **LIVE** |
 
 ---
 
@@ -40,13 +41,10 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `friendship_windmill` | `fc3f38a8933c133d481761afad170b0b99aa9abd` | `palomar/friendship_windmill/comparator.json` | Algebraic Graph Theory / Group Actions |
-| **2** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `5584ebaada8ef2e2490ab35ed79e6a7436aa6c2a` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
-| **3** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
-| **4** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
-| **5** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
-| **6** | **Gilmer's Golden-Ratio Entropy Bound on Frankl's Union-Closed Conjecture** | `gilmer_union_closed` | `a21ba2ed4fb4de4a8220bf3f13a3eac857ca5802` | `palomar/gilmer_union_closed/comparator.json` | Extremal Combinatorics / Information Theory |
-| **7** | **Plünnecke–Ruzsa Inequality, Ruzsa Log-Metric Distance, & Petridis Magnification** | `ruzsa_freiman` | `e9f647dbe83af9b300ece231a240142ec21af11d` | `palomar/ruzsa_freiman/comparator.json` | Additive Combinatorics / Sumset Calculus |
+| **1** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `5584ebaada8ef2e2490ab35ed79e6a7436aa6c2a` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
+| **2** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
+| **3** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
+| **4** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
 
 ---
 
@@ -69,3 +67,5 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | `picks_theorem` | **AP-07**: Elementary carrier bakes Euler formula; needs intrinsic polygon carrier. | [-] **RETIRED** |
 | `szemeredi_trotter` | **AP-07**: Carrier bakes Crossing Lemma directly; needs point-line arrangement carrier. | [-] **RETIRED** |
 | `sperners_lemma` / `sperner_3d` | **AP-10**: Low-dimensional specializations superseded by live General $n$-D Sperner ([PALOMAR-2026-08-27-000014](https://palomar-registry.org/entry.html?id=PALOMAR-2026-08-27-000014)). | [-] **SUPERSEDED** |
+| `gilmer_union_closed` | **DUPLICATE**: Canonical package verified and live in Tier-1 queue of Repo 3 (`sneed-and-feed/lean-theorems-3`). | [-] **SUPERSEDED** |
+| `ruzsa_freiman` | **DUPLICATE**: Canonical package verified and live in Tier-1 queue of Repo 3 (`sneed-and-feed/lean-theorems-3`). | [-] **SUPERSEDED** |
