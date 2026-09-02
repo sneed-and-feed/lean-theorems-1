@@ -35,6 +35,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **15** | **Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem** | `becacae53c6b6de3322707e130b5829dbbce0ed4` | [PALOMAR-2026-08-31-000017](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000017) | [x] **LIVE** |
 | **16** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `fc3f38a8933c133d481761afad170b0b99aa9abd` | [PALOMAR-2026-08-31-000020](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000020) | [x] **LIVE** |
 | **17** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `14283c4b8b8648afe8342429f2127a27fc7f6732` | [PALOMAR-2026-09-02-000005](https://palomar-registry.org/entry?id=PALOMAR-2026-09-02-000005) | [x] **LIVE** |
+| **18** | **The Kőnig–Egerváry Theorem & Gallai Invariant Identities** | `87f8794c71218c0174f51248bde1396f3793abdd` | [PALOMAR-2026-09-02-000010](https://palomar-registry.org/entry?id=PALOMAR-2026-09-02-000010) | [x] **LIVE** |
 
 ---
 
@@ -42,11 +43,10 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `1499114c361bbb9fe5824818d03a55e86b9c196b` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
-| **2** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `061f829be1a4f0a8c9cd9ee0d0346d7ff7867380` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
-| **3** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `061f829be1a4f0a8c9cd9ee0d0346d7ff7867380` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
-| **4** | **Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)** | `tverbergs_theorem` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/tverbergs_theorem/comparator.json` | Combinatorial Convex Geometry / Discrete Geometry |
-| **5** | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | `euler_polyhedron` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/euler_polyhedron/comparator.json` | Topological Graph Theory / Discrete Geometry |
+| **1** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `061f829be1a4f0a8c9cd9ee0d0346d7ff7867380` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
+| **2** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `061f829be1a4f0a8c9cd9ee0d0346d7ff7867380` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
+| **3** | **Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)** | `tverbergs_theorem` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/tverbergs_theorem/comparator.json` | Combinatorial Convex Geometry / Discrete Geometry |
+| **4** | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | `euler_polyhedron` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/euler_polyhedron/comparator.json` | Topological Graph Theory / Discrete Geometry |
 
 ---
 
