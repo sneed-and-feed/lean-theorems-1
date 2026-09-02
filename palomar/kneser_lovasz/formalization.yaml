@@ -36,13 +36,6 @@ sources:
       - "László Lovász"
     relationship: background
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Coloring/Vertex.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's `SimpleGraph` vertex coloring framework (`SimpleGraph.Colorable`, `SimpleGraph.Coloring`)
-      and finite graph infrastructure to construct Kneser graphs and prove the chromatic upper bound n - 2k + 2.
-
 automation:
   methods:
     - method: agent

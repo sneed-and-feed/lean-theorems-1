@@ -53,13 +53,6 @@ sources:
       Formalization adapts Ky Fan's multidimensional antipodal labeling generalization to 1D paths and 2D
       pseudomanifolds.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's finite set powerset, filter, card, and big operators infrastructure
-      to model combinatorial 2D pseudomanifolds, door counting, and parity conservation.
-
 automation:
   methods:
     - method: agent

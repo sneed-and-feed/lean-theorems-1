@@ -46,13 +46,6 @@ sources:
       Formalization adapts Rado's centerpoint theorem to the 1-dimensional discrete setting via median and
       halfspace depth bounds.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Caratheodory.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds upon Mathlib's classical Carathéodory theorem infrastructure (Caratheodory.minCardFinsetOfMemConvexHull)
-      and affine independence to establish the general colorful selection theorem and its deduction back to classical bounds.
-
 automation:
   methods:
     - method: agent

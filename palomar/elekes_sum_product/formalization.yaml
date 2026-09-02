@@ -35,13 +35,6 @@ sources:
       - "Endre Szemerédi"
     relationship: background
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's real power functions (rpow) and order tactics
-      to establish Elekes's algebraic point-line incidence reductions and sum-product exponent bounds.
-
 automation:
   methods:
     - method: agent

@@ -47,14 +47,6 @@ sources:
       - "Freek Wiedijk"
     relationship: background
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's convex analysis infrastructure (`convexHull`, `Convex`)
-      to formalize Radon's partition lemma on affine dependencies in ℝ^d and Helly's theorem for finite
-      families of convex sets (Freek Wiedijk #99).
-
 automation:
   methods:
     - method: agent

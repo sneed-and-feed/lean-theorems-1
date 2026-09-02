@@ -29,13 +29,6 @@ sources:
       - "R. M. Wilson"
     relationship: formalizes
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/ZMod/Basic.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's `ZMod p` modular arithmetic and finite field linear algebra
-      to formalize the linear-algebraic polynomial method for modulo-p intersecting set systems.
-
 automation:
   methods:
     - method: agent

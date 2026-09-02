@@ -38,13 +38,6 @@ sources:
       Formalization adapts Berge's maximum matching and deficiency characterization (Tutte–Berge formula) for
       general simple graphs.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Tutte.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's SimpleGraph.tutte and IsTutteViolator infrastructure to establish
-      the idiomatic 1-factor characterization, explicit odd-component counting, and the Tutte-Berge defect duality.
-
 automation:
   methods:
     - method: agent

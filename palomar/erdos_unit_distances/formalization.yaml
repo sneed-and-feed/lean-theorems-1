@@ -43,13 +43,6 @@ sources:
       Formalization adapts Székely's crossing number method to establish upper bounds on the unit distance
       problem in the Euclidean plane.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's real power functions (rpow) and order inequality infrastructure
-      to establish topological graph circle crossings and Spencer–Szemerédi–Trotter unit distance bounds.
-
 automation:
   methods:
     - method: agent

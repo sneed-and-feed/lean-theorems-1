@@ -43,16 +43,6 @@ sources:
       Formalization adapts Gauss's algebraic sign-variation reduction and polynomial root induction for real
       polynomial sign variation bounds.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Algebra/Polynomial/RuleOfSigns.lean"
-    relationship: builds-on
-    note: >-
-      Mathlib's `Mathlib.Algebra.Polynomial.RuleOfSigns` proves the upper-bound inequality
-      `Polynomial.roots_countP_pos_le_signVariations` using an `eraseLead` formulation. The
-      present work builds on this bound by formalizing the even-parity conclusion (Gauss 1828),
-      proving equivalence between recursive and list-based sign variations, and packaging the
-      full Descartes's Rule of Signs (Wiedijk #73).
-
 automation:
   methods:
     - method: agent
@@ -71,6 +61,4 @@ review:
     maintainer audit with 0 errors, 0 warnings, 0 sorries, and strictly standard kernel axioms.
     Imports and connects to Mathlib.Algebra.Polynomial.RuleOfSigns for the upper bound, while
     formalizing the complete sign-variation parity theorem and list-based interface.
-
-
 

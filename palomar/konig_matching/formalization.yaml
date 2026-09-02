@@ -38,13 +38,6 @@ sources:
       Formalization adapts Gallai's minimax identity relating the maximum independence number and minimum
       vertex cover number (independenceNumber(G) + vertexCoverNumber(G) = |V(G)|) in finite graphs.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/Hall/Basic.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's Hall marriage condition (all_card_le_biUnion_card_iff_exists_injective)
-      to establish the defect matching reduction in bipartite graphs.
-
 automation:
   methods:
     - method: agent

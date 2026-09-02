@@ -51,14 +51,6 @@ sources:
     note: >-
       Formalization adapts Mac Lane's 2-basis cycle space planarity criterion for combinatorial planar graphs.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Acyclic.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's graph theory and permutation cycle type libraries
-      (SimpleGraph.IsTree, Equiv.Perm.cycleType, Equiv.Perm.sign) to establish combinatorial map
-      Euler characteristics, signature parity invariants, and tree Euler formulas.
-
 automation:
   methods:
     - method: agent

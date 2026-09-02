@@ -45,13 +45,6 @@ sources:
       - "János Pach"
     relationship: formalizes
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's convex geometry library (convexHull, affine independence, affine combinations)
-      and extends it with constructive Tverberg partitions, Radon point reductions, and the 1D symmetric-rank pairing theorem.
-
 automation:
   methods:
     - method: agent

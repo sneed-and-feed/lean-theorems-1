@@ -38,13 +38,6 @@ sources:
     venue: "Középiskolai Matematikai Lapok"
     relationship: background
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/Convex/Hull.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's convex geometry and finite set infrastructure (convexHull ℝ)
-      to formalize extreme points of convex polygons, orientation determinants, and cup-cap Ramsey duality.
-
 automation:
   methods:
     - method: agent

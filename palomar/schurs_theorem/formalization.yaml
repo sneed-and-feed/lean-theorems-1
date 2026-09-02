@@ -58,13 +58,6 @@ sources:
       - "Richard Rado"
     relationship: background
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's finite set cardinality, finset pigeonhole, group theory,
-      and big operators infrastructure to establish algebraic Schur, supersaturation, and Rado partition regularity.
-
 automation:
   methods:
     - method: agent

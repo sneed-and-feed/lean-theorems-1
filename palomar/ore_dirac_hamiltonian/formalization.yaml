@@ -37,13 +37,6 @@ sources:
       Formalization adapts Dirac's minimum-degree condition (minDegree(G) >= n / 2) as an immediate corollary
       of Ore's degree-sum theorem.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Hamiltonian.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's `SimpleGraph.Walk.IsHamiltonianCycle` and `SimpleGraph.Walk.IsHamiltonian`
-      definitions in `Mathlib.Combinatorics.SimpleGraph.Hamiltonian` to formalize Ore's and Dirac's theorems.
-
 automation:
   methods:
     - method: agent

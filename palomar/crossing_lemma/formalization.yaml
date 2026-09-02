@@ -39,13 +39,6 @@ sources:
       Formalization adapts Székely's probabilistic crossing lemma and incidence counting techniques to bound
       graph edge crossings and point-line incidences.
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Real/Basic.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's real arithmetic and order inequality tactics
-      to establish Székely's polynomial expectation identity and crossing number lower bounds.
-
 automation:
   methods:
     - method: agent

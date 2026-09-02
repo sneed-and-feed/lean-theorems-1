@@ -29,13 +29,6 @@ sources:
       - "József Beck"
     relationship: formalizes
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Prod.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's finite set product and image counting infrastructure
-      to formulate 2D point configurations, spanned lines, and double-counting sum identities.
-
 automation:
   methods:
     - method: agent

@@ -33,13 +33,6 @@ sources:
       - "Günter M. Ziegler"
     relationship: background
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Finite.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's simple graph theory library and finite graph neighborhood infrastructure
-      (SimpleGraph.neighborFinset, SimpleGraph.degree) to construct and prove the windmill graph decomposition.
-
 automation:
   methods:
     - method: agent
