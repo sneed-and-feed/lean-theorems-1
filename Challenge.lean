@@ -21,6 +21,12 @@ structure LinearSpace (P : Finset α) (L : Finset (Finset α)) : Prop where
   non_collinear : ∀ l ∈ L, ¬ P ⊆ l
   three_le_card : 3 ≤ P.card
 
+/-- The lines of a near-pencil configuration on point set `P` with apex `p₀ ∈ P`:
+one long line `P \ {p₀}` containing all other points, and `|P| - 1` lines of size 2
+connecting `p₀` to each other point. -/
+def nearPencilLines (P : Finset α) (p₀ : α) : Finset (Finset α) :=
+  insert (P.erase p₀) ((P.erase p₀).image (fun q => {p₀, q}))
+
 /-- **The De Bruijn–Erdős Theorem on Incidence Geometry (1948)**:
 In any finite non-collinear linear space with at least 3 points, the number of lines
 is at least the number of points: `|P| ≤ |L|`. -/
@@ -29,8 +35,8 @@ theorem de_bruijn_erdos {P : Finset α} {L : Finset (Finset α)}
 
 /-- **Tightness of the De Bruijn–Erdős Theorem**:
 For any finite set of points `P` with `|P| ≥ 3` and any point `p₀ ∈ P`,
-the near-pencil linear space on `P` with apex `p₀` achieves equality: `|P| = |L|`. -/
+the near-pencil linear space on `P` with apex `p₀` achieves equality: `|L| = |P|`. -/
 theorem de_bruijn_erdos_tight (P : Finset α) (p₀ : α) (hp₀ : p₀ ∈ P) (hcard : 3 ≤ P.card) :
-    ∃ L : Finset (Finset α), LinearSpace P L ∧ L.card = P.card := sorry
+    LinearSpace P (nearPencilLines P p₀) ∧ (nearPencilLines P p₀).card = P.card := sorry
 
 end DeBruijnErdos

@@ -400,14 +400,13 @@ lemma nearPencil_linearSpace (P : Finset α) (p₀ : α) (hp₀ : p₀ ∈ P) (h
 
 /-- **Tightness of the De Bruijn–Erdős Theorem**:
 For any finite set of points `P` with `|P| ≥ 3` and any point `p₀ ∈ P`,
-the near-pencil linear space on `P` with apex `p₀` achieves equality: `|P| = |L|`. -/
+the near-pencil linear space on `P` with apex `p₀` achieves equality: `|L| = |P|`. -/
 theorem de_bruijn_erdos_tight (P : Finset α) (p₀ : α) (hp₀ : p₀ ∈ P) (hcard : 3 ≤ P.card) :
-    ∃ L : Finset (Finset α), LinearSpace P L ∧ L.card = P.card :=
-  ⟨nearPencilLines P p₀, nearPencil_linearSpace P p₀ hp₀ hcard, nearPencil_card P p₀ hp₀ hcard⟩
+    LinearSpace P (nearPencilLines P p₀) ∧ (nearPencilLines P p₀).card = P.card :=
+  ⟨nearPencil_linearSpace P p₀ hp₀ hcard, nearPencil_card P p₀ hp₀ hcard⟩
 
 #print axioms de_bruijn_erdos
 #print axioms de_bruijn_erdos'
 #print axioms de_bruijn_erdos_tight
 
-end DeBruijnErdos
 
