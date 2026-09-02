@@ -41,7 +41,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `cb6f7664e64ff21beae579993db58f43bc0d97a7` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
+| **1** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `9f771221703aeabe16bb362ed3fceaa61a649a2a` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
 | **2** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
 | **3** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
 | **4** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
