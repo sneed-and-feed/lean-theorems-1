@@ -6,6 +6,8 @@ import Mathlib.Data.Finset.Max
 open SimpleGraph
 open scoped List
 
+section Helpers
+
 variable {V : Type*} [Fintype V] [DecidableEq V]
 
 namespace SimpleGraph.Walk
@@ -391,6 +393,8 @@ lemma mem_support_oreCycle_iff {G : SimpleGraph V} {u v : V} {p : G.Walk u v} (i
     · right
       exact hperm.mem_iff.mpr hw
 
+end Helpers
+
 /-- Ore's Theorem (1960): A simple graph on n ≥ 3 vertices with deg(u) + deg(v) ≥ n
     for all non-adjacent u ≠ v has a Hamiltonian cycle. -/
 theorem ore_hamiltonian {V : Type*} [Fintype V] [DecidableEq V]
@@ -529,6 +533,12 @@ theorem dirac_hamiltonian {V : Type*} [Fintype V] [DecidableEq V]
   have hv := hdirac v
   omega
 
+section PathHelpers
+
+set_option linter.unusedSectionVars false
+
+variable {V : Type*} [Fintype V] [DecidableEq V]
+
 /-- Every Hamiltonian cycle yields a Hamiltonian path by dropping the last edge. -/
 lemma isHamiltonian_dropLast_of_isHamiltonianCycle {G : SimpleGraph V} {v : V} {C : G.Walk v v}
     (hC : C.IsHamiltonianCycle) :
@@ -570,4 +580,6 @@ theorem dirac_hamiltonian_path {V : Type*} [Fintype V] [DecidableEq V]
     ∃ (u v : V) (p : G.Walk u v), p.IsHamiltonian := by
   obtain ⟨v, C, hC⟩ := dirac_hamiltonian G hn hdirac
   refine ⟨v, _, C.dropLast, isHamiltonian_dropLast_of_isHamiltonianCycle hC⟩
+
+end PathHelpers
 

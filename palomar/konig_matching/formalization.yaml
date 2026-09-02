@@ -21,22 +21,37 @@ classification:
 sources:
   - title: "Gráfok és mátrixok"
     type: paper
+    year: 1931
+    venue: "Matematikai és Fizikai Lapok 38, 116–119"
     authors:
       - "Dénes Kőnig"
     relationship: formalizes
   - title: "Matrixok kombinatorius tulajdonságairól"
     type: paper
+    year: 1931
+    venue: "Matematikai és Fizikai Lapok 38, 16–28"
     authors:
       - "Jenő Egerváry"
     relationship: formalizes
   - title: "Über extreme Punkt- und Kantenmengen"
     type: paper
+    year: 1959
+    venue: "Annales Universitatis Scientiarum Budapestinensis de Rolando Eötvös Nominatae, Sectio Mathematica 2, 133–138"
     authors:
       - "Tibor Gallai"
     relationship: adapts
     note: >-
       Formalization adapts Gallai's minimax identity relating the maximum independence number and minimum
       vertex cover number (independenceNumber(G) + vertexCoverNumber(G) = |V(G)|) in finite graphs.
+  - title: "On Representatives of Subsets"
+    type: paper
+    year: 1935
+    venue: "Journal of the London Mathematical Society, s1-10(1), 26–30"
+    authors:
+      - "Philip Hall"
+    relationship: adapts
+    note: >-
+      Uses Hall's marriage condition with defect to construct maximum bipartite matchings achieving the min-max bound.
 
 automation:
   methods:

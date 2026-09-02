@@ -50,8 +50,8 @@ sources:
       - "Michael J. Todd"
     relationship: adapts
     note: >-
-      Formalization adapts Ky Fan's multidimensional antipodal labeling generalization to 1D paths and 2D
-      pseudomanifolds.
+      Formalization adapts Freund and Todd's constructive door-counting combinatorial arguments
+      and parity conservation to 2D edge-pseudomanifolds and symmetric triangulations.
 
 automation:
   methods:
