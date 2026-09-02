@@ -1,114 +1,41 @@
 version: "v0.4"
-schema_version: "0.4.0"
-slug: "euler_polyhedron"
-title: "Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions"
-mathlib_commit: "20bc12820422504f9e52ee6caebf8182a9015336"
 
 project:
-  name: "Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions"
-  slug: "euler_polyhedron"
+  name: "Ore's and Dirac's Theorems on Hamiltonian Cycles"
   authors:
     - "Noah Cohen"
   responsible_maintainers:
     - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
-    A complete, research-grade machine-checked Lean 4 formalization of Euler's Polyhedron Formula
-    V - E + F = 2 (1758, Wiedijk #13), topological genus invariants, and non-planarity obstructions
-    across two mathematical carrier frameworks:
-    (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
-    alpha and vertex permutation sigma), proving the universal even parity of the Euler characteristic
-    chi(M) via the permutation signature homomorphism, face-cycle sum handshaking inequalities 3F <= 2E
-    and 4F <= 2E, classical planar edge bounds E <= 3V - 6 and E <= 2V - 4, average degree bound 2E < 6V,
-    authentic topological genus obstructions for K5 (chi <= 0, genus >= 1, chi != 2) and K3,3 (chi <= 0,
-    genus >= 1, chi != 2) eliminating numerical pseudo-contradictions (AP-05), and a concrete tightness
-    certificate via the toroidal embedding of K5 on 20 darts with chi = 0 and genus = 1;
-    (2) SimpleGraph Trees (Euler 1758, Cauchy 1813), proving Euler's formula for trees V - E + 1 = 2
-    on genuine SimpleGraph carriers.
+    A complete machine-checked Lean 4 formalization of Ore's theorem (1960) and Dirac's theorem (1952)
+    on the existence of Hamiltonian cycles in simple graphs. Proves Ore's degree-sum condition via maximal
+    path cycle-closure and connectivity arguments, and derives Dirac's minimum-degree theorem as a corollary.
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
     docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05C10", "52B05", "57M15"]
-
-theorems:
-  - tree_euler_formula
-  - planar_edge_bound
-  - planar_edge_bound_triangle_free
-  - average_degree_lt_six
-  - k5_eulerChar_le_zero
-  - k5_genus_ge_one
-  - k5_not_planar
-  - k33_eulerChar_le_zero
-  - k33_genus_ge_one
-  - k33_not_planar
-  - k5_torus_eulerChar
-  - k5_torus_genus
-  - tetrahedron_eulerChar
-  - combinatorialMap_eulerChar_is_even
+  msc2020: ["05C38", "05C45"]
 
 sources:
-  - title: "Elementa doctrinae solidorum"
+  - title: "Note on Hamilton circuits"
     type: paper
+    year: 1960
+    venue: "The American Mathematical Monthly"
     authors:
-      - "Leonhard Euler"
-    relationship: inspired_by
-  - title: "Recherches sur les polyedres"
-    type: paper
-    authors:
-      - "A.-L. Cauchy"
+      - "Øystein Ore"
     relationship: formalizes
-  - title: "A combinatorial representation for polyhedral surfaces"
+  - title: "Some theorems on abstract graphs"
     type: paper
+    year: 1952
+    venue: "Proceedings of the London Mathematical Society"
     authors:
-      - "Jack Edmonds"
-    relationship: formalizes
-  - title: "A census of planar maps"
-    type: paper
-    authors:
-      - "W. T. Tutte"
+      - "G. A. Dirac"
     relationship: adapts
     note: >-
-      Formalization formalizes Tutte's combinatorial map rotation system framework for 2-cell surface embeddings.
-  - title: "Über das Problem der Nachbargebiete"
-    type: paper
-    authors:
-      - "Lothar Heffter"
-    relationship: adapts
-    note: >-
-      Formalization constructs the concrete rotation system for the toroidal embedding of K5.
-
-references:
-  - title: "Elementa doctrinae solidorum"
-    type: paper
-    authors:
-      - "Leonhard Euler"
-    relationship: inspired_by
-  - title: "Recherches sur les polyedres"
-    type: paper
-    authors:
-      - "A.-L. Cauchy"
-    relationship: formalizes
-  - title: "A combinatorial representation for polyhedral surfaces"
-    type: paper
-    authors:
-      - "Jack Edmonds"
-    relationship: formalizes
-  - title: "A census of planar maps"
-    type: paper
-    authors:
-      - "W. T. Tutte"
-    relationship: adapts
-    note: >-
-      Formalization formalizes Tutte's combinatorial map rotation system framework for 2-cell surface embeddings.
-  - title: "Über das Problem der Nachbargebiete"
-    type: paper
-    authors:
-      - "Lothar Heffter"
-    relationship: adapts
-    note: >-
-      Formalization constructs the concrete rotation system for the toroidal embedding of K5.
+      Formalization adapts Dirac's minimum-degree condition (minDegree(G) >= n / 2) as an immediate corollary
+      of Ore's degree-sum theorem.
 
 automation:
   methods:
@@ -125,4 +52,4 @@ review:
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
     while all definitions and theorem statements are completely specified. Solution verified through
-    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.
