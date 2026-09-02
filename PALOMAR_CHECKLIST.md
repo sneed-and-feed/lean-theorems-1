@@ -34,6 +34,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **14** | **Lovász's Colorful Helly Theorem for Convex Sets (General Dimension $d$)** | `2db81c6fcc8e448e60ada17f9abdf01aa38fc09d` | [PALOMAR-2026-08-31-000006](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000006) | [x] **LIVE** |
 | **15** | **Dilworth's Poset Chain Decomposition Theorem and Mirsky's Dual Theorem** | `becacae53c6b6de3322707e130b5829dbbce0ed4` | [PALOMAR-2026-08-31-000017](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000017) | [x] **LIVE** |
 | **16** | **The Friendship Windmill Structure Theorem (Erdős–Rényi–Sós 1966)** | `fc3f38a8933c133d481761afad170b0b99aa9abd` | [PALOMAR-2026-08-31-000020](https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000020) | [x] **LIVE** |
+| **17** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `14283c4b8b8648afe8342429f2127a27fc7f6732` | [PALOMAR-2026-09-02-000005](https://palomar-registry.org/entry?id=PALOMAR-2026-09-02-000005) | [x] **LIVE** |
 
 ---
 
@@ -41,10 +42,9 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `de_bruijn_erdos` | `41389484b178b923b6fc371ce22bf8d08534e643` | `palomar/de_bruijn_erdos/comparator.json` | Incidence Geometry / Linear Spaces |
-| **2** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
-| **3** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
-| **4** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
+| **1** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `c464c8885b628707bd5edeb708dcfb1568bd09eb` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
+| **2** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `239fe6bab6ccdc19999a60bdbc4e3f6a0a1f5a0a` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
+| **3** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `9e7288c2be00db1c342cfc3ce4a63fa97bc3a503` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
 
 ---
 
