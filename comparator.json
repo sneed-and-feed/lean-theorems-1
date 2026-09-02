@@ -2,7 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "FriendshipWindmill.friendship_windmill"
+    "DeBruijnErdos.de_bruijn_erdos",
+    "DeBruijnErdos.de_bruijn_erdos_tight"
   ],
   "permitted_axioms": [
     "propext",
