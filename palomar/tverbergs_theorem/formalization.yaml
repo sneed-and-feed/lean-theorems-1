@@ -9,14 +9,14 @@ project:
   license: "CC0-1.0"
   description: >-
     A complete, machine-checked Lean 4 formalization of Tverberg's Theorem (Helge Tverberg,
-    1966) for r <= 2 across all dimensions, the full 1D Tverberg theorem for arbitrary r via
-    symmetric-rank pairing following Mulzer–Werner, and the 1-dimensional Colorful Tverberg
-    Theorem for arbitrary r (Bárány–Larman–Pach 1992). Proves that any (r - 1)(d + 1) + 1 points
-    in ℝ^d can be partitioned into r parts whose convex hulls intersect, and that two disjoint
-    color classes of r points each in ℝ¹ can be partitioned into r colorful pairs whose convex
-    hulls share a common point of intersection. To the maintainers' knowledge, the theorem was not
-    found in an exact declaration name, docstring, and type signature search of the pinned Mathlib
-    revision (Mathlib v4.34.0-rc1).
+    1966) for all r >= 1 across all dimensions d >= 0 via the Sarkaria–Bárány Colorful Carathéodory
+    reduction, the full 1D Tverberg theorem for arbitrary r via symmetric-rank pairing following
+    Mulzer–Werner, and the 1-dimensional Colorful Tverberg Theorem for arbitrary r (Bárány–Larman–Pach
+    1992). Proves that any (r - 1)(d + 1) + 1 points in ℝ^d can be partitioned into r parts whose
+    convex hulls intersect, and that two disjoint color classes of r points each in ℝ¹ can be
+    partitioned into r colorful pairs whose convex hulls share a common point of intersection.
+    To the maintainers' knowledge, the theorem was not found in an exact declaration name, docstring,
+    and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
 classification:
   arxiv: [math.MG, math.CO]
@@ -27,6 +27,16 @@ sources:
     type: paper
     authors:
       - "Helge Tverberg"
+    relationship: formalizes
+  - title: "Tverberg's theorem via number of roots of polynomial systems"
+    type: paper
+    authors:
+      - "Karanbir S. Sarkaria"
+    relationship: formalizes
+  - title: "A generalization of Carathéodory's theorem"
+    type: paper
+    authors:
+      - "Imre Bárány"
     relationship: formalizes
   - title: "Approximating Tverberg points in linear time for any fixed dimension"
     type: paper

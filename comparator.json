@@ -2,12 +2,20 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "SimpleGraph.matching_card_le_vertexCover_card",
-    "SimpleGraph.weak_duality",
-    "SimpleGraph.konig_duality_le",
-    "SimpleGraph.konig_duality",
-    "SimpleGraph.gallai_independence_vertex_cover",
-    "SimpleGraph.konig_independence_matching"
+    "tree_euler_formula",
+    "planar_edge_bound",
+    "planar_edge_bound_triangle_free",
+    "average_degree_lt_six",
+    "k5_eulerChar_le_zero",
+    "k5_genus_ge_one",
+    "k5_not_planar",
+    "k33_eulerChar_le_zero",
+    "k33_genus_ge_one",
+    "k33_not_planar",
+    "k5_torus_eulerChar",
+    "k5_torus_genus",
+    "tetrahedron_eulerChar",
+    "combinatorialMap_eulerChar_is_even"
   ],
   "permitted_axioms": [
     "propext",

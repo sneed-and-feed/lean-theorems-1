@@ -42,6 +42,32 @@ def faceCount : ℕ := M.φ.cycleType.card + Fintype.card (Function.fixedPoints 
 /-- The Euler characteristic of a combinatorial map: χ(M) = V - E + F. -/
 def eulerChar : ℤ := (M.vertexCount : ℤ) - (M.edgeCount : ℤ) + (M.faceCount : ℤ)
 
+/-- The topological genus of a combinatorial map: g(M) = 1 - χ(M)/2. -/
+def genus : ℤ := 1 - M.eulerChar / 2
+
+/-- A combinatorial map has no monogons (faces of length 1) if φ has no fixed points. -/
+def HasNoMonogons (M : CombinatorialMap D) : Prop := Function.fixedPoints M.φ = ∅
+
+/-- A combinatorial map has no digons (faces of length 2) if no dart has φ²(d) = d. -/
+def HasNoDigons (M : CombinatorialMap D) : Prop := ∀ d, M.φ (M.φ d) ≠ d
+
+/-- Face cycle lengths lower bound: every face cycle in φ.cycleType has length at least `k`. -/
+def FaceDegreeGe (M : CombinatorialMap D) (k : ℕ) : Prop := ∀ n ∈ M.φ.cycleType, k ≤ n
+
+/-- Fixed points of φ are empty if M has no monogons. -/
+theorem fixedPoints_phi_card_of_hasNoMonogons (h : M.HasNoMonogons) :
+    Fintype.card (Function.fixedPoints M.φ) = 0 := by
+  have : IsEmpty (Function.fixedPoints M.φ) := ⟨fun ⟨x, hx⟩ => by
+    have : x ∈ (∅ : Set D) := by rwa [h] at hx
+    exact this⟩
+  exact Fintype.card_eq_zero
+
+/-- The face count equals the number of face cycles if M has no monogons. -/
+theorem faceCount_eq_cycleType_card (h : M.HasNoMonogons) :
+    M.faceCount = M.φ.cycleType.card := by
+  unfold faceCount
+  rw [fixedPoints_phi_card_of_hasNoMonogons M h, add_zero]
+
 /-- Fixed points of α are empty since α is fixed-point free. -/
 theorem fixedPoints_alpha_isEmpty : IsEmpty (Function.fixedPoints M.α) :=
   ⟨fun ⟨x, hx⟩ => M.α_no_fixed_points x hx⟩
@@ -79,48 +105,6 @@ theorem alpha_cycleType_card_eq_edgeCount :
     M.α.cycleType.card = M.edgeCount := by
   have h1 := card_darts_eq_two_mul_alpha_cycleType_card M
   have h2 := card_darts_eq_two_mul_edgeCount M
-  omega
-
-/-- Classical planar edge bound: E ≤ 3V - 6 for planar maps with face degree ≥ 3 (3F ≤ 2E). -/
-theorem planar_edge_bound (h_euler : M.eulerChar = 2)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
-    (hV : 3 ≤ M.vertexCount) :
-    M.edgeCount ≤ 3 * M.vertexCount - 6 := by
-  unfold eulerChar at h_euler
-  omega
-
-/-- Triangle-free planar edge bound: E ≤ 2V - 4 for planar maps with face degree ≥ 4 (4F ≤ 2E). -/
-theorem planar_edge_bound_triangle_free (h_euler : M.eulerChar = 2)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount)
-    (hV : 3 ≤ M.vertexCount) :
-    M.edgeCount ≤ 2 * M.vertexCount - 4 := by
-  unfold eulerChar at h_euler
-  omega
-
-/-- Average vertex degree bound for planar maps: 2E < 6V. -/
-theorem average_degree_lt_six (h_euler : M.eulerChar = 2)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
-    (hV : 3 ≤ M.vertexCount) :
-    2 * M.edgeCount < 6 * M.vertexCount := by
-  have := planar_edge_bound M h_euler h_face hV
-  omega
-
-/-- Non-planarity obstruction for K5: no combinatorial map with parameters (V=5, E=10, 3F ≤ 2E) can satisfy Euler's formula χ = 2. -/
-theorem non_planarity_k5 (M : CombinatorialMap (Fin 20))
-    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
-    (h_euler : M.eulerChar = 2) :
-    False := by
-  have := planar_edge_bound M h_euler h_face (by omega)
-  omega
-
-/-- Non-planarity obstruction for K3,3: no triangle-free combinatorial map with parameters (V=6, E=9, 4F ≤ 2E) can satisfy Euler's formula χ = 2. -/
-theorem non_planarity_k33 (M : CombinatorialMap (Fin 18))
-    (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount)
-    (h_euler : M.eulerChar = 2) :
-    False := by
-  have := planar_edge_bound_triangle_free M h_euler h_face (by omega)
   omega
 
 end CombinatorialMap

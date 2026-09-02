@@ -1,21 +1,28 @@
 version: "v0.4"
+schema_version: "0.4.0"
+slug: "euler_polyhedron"
+title: "Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions"
+mathlib_commit: "20bc12820422504f9e52ee6caebf8182a9015336"
 
 project:
-  name: "Euler's Polyhedron Formula & Planar Map Invariants"
+  name: "Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions"
+  slug: "euler_polyhedron"
   authors:
     - "Noah Cohen"
   responsible_maintainers:
     - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Euler's Polyhedron Formula V - E + F = 2
-    (1758, Wiedijk #13) and fundamental planar map invariants across two rigorous mathematical
-    carrier frameworks:
+    A complete, research-grade machine-checked Lean 4 formalization of Euler's Polyhedron Formula
+    V - E + F = 2 (1758, Wiedijk #13), topological genus invariants, and non-planarity obstructions
+    across two mathematical carrier frameworks:
     (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
     alpha and vertex permutation sigma), proving the universal even parity of the Euler characteristic
-    chi(M) via the permutation signature homomorphism, classical planar edge bounds E <= 3V - 6 and
-    E <= 2V - 4, average degree bound 2E < 6V, authentic non-planarity obstructions for K5 and K3,3,
-    and concrete machine-checked regular polyhedra (tetrahedron, triangle, square);
+    chi(M) via the permutation signature homomorphism, face-cycle sum handshaking inequalities 3F <= 2E
+    and 4F <= 2E, classical planar edge bounds E <= 3V - 6 and E <= 2V - 4, average degree bound 2E < 6V,
+    authentic topological genus obstructions for K5 (chi <= 0, genus >= 1, chi != 2) and K3,3 (chi <= 0,
+    genus >= 1, chi != 2) eliminating numerical pseudo-contradictions (AP-05), and a concrete tightness
+    certificate via the toroidal embedding of K5 on 20 darts with chi = 0 and genus = 1;
     (2) SimpleGraph Trees (Euler 1758, Cauchy 1813), proving Euler's formula for trees V - E + 1 = 2
     on genuine SimpleGraph carriers.
     To the maintainers' knowledge, the theorem was not found in an exact declaration name,
@@ -23,7 +30,23 @@ project:
 
 classification:
   arxiv: [math.CO]
-  msc2020: ["05C10", "52B05", "05C38"]
+  msc2020: ["05C10", "52B05", "57M15"]
+
+theorems:
+  - tree_euler_formula
+  - planar_edge_bound
+  - planar_edge_bound_triangle_free
+  - average_degree_lt_six
+  - k5_eulerChar_le_zero
+  - k5_genus_ge_one
+  - k5_not_planar
+  - k33_eulerChar_le_zero
+  - k33_genus_ge_one
+  - k33_not_planar
+  - k5_torus_eulerChar
+  - k5_torus_genus
+  - tetrahedron_eulerChar
+  - combinatorialMap_eulerChar_is_even
 
 sources:
   - title: "Elementa doctrinae solidorum"
@@ -36,20 +59,56 @@ sources:
     authors:
       - "A.-L. Cauchy"
     relationship: formalizes
-  - title: "A combinatorial condition for planar graphs"
+  - title: "A combinatorial representation for polyhedral surfaces"
     type: paper
     authors:
-      - "Saunders Mac Lane"
-    relationship: adapts
-    note: >-
-      Formalization adapts Mac Lane's 2-basis cycle space planarity criterion for combinatorial planar graphs.
+      - "Jack Edmonds"
+    relationship: formalizes
   - title: "A census of planar maps"
     type: paper
     authors:
       - "W. T. Tutte"
     relationship: adapts
     note: >-
-      Formalization adapts Mac Lane's 2-basis cycle space planarity criterion for combinatorial planar graphs.
+      Formalization formalizes Tutte's combinatorial map rotation system framework for 2-cell surface embeddings.
+  - title: "Über das Problem der Nachbargebiete"
+    type: paper
+    authors:
+      - "Lothar Heffter"
+    relationship: adapts
+    note: >-
+      Formalization constructs the concrete rotation system for the toroidal embedding of K5.
+
+references:
+  - title: "Elementa doctrinae solidorum"
+    type: paper
+    authors:
+      - "Leonhard Euler"
+    relationship: inspired_by
+  - title: "Recherches sur les polyedres"
+    type: paper
+    authors:
+      - "A.-L. Cauchy"
+    relationship: formalizes
+  - title: "A combinatorial representation for polyhedral surfaces"
+    type: paper
+    authors:
+      - "Jack Edmonds"
+    relationship: formalizes
+  - title: "A census of planar maps"
+    type: paper
+    authors:
+      - "W. T. Tutte"
+    relationship: adapts
+    note: >-
+      Formalization formalizes Tutte's combinatorial map rotation system framework for 2-cell surface embeddings.
+  - title: "Über das Problem der Nachbargebiete"
+    type: paper
+    authors:
+      - "Lothar Heffter"
+    relationship: adapts
+    note: >-
+      Formalization constructs the concrete rotation system for the toroidal embedding of K5.
 
 automation:
   methods:

@@ -20,7 +20,7 @@ construction with its exact cardinality are fully proved.
 | 4 | **Bollobás's Two Families Theorem** | [`bollobas_two_families`](Formalization/BollobasTwoFamilies.lean) | Extremal Combinatorics | Bollobás (1965) |
 | 5 | **Ore's & Dirac's Theorems** | [`ore_hamiltonian`](Formalization/OreHamiltonian.lean), [`dirac_hamiltonian`](Formalization/OreHamiltonian.lean) | Structural Graph Theory | Ore (1960), Dirac (1952) |
 | 6 | **Descartes's Rule of Signs** | [`descartes_rule_of_signs`](Formalization/DescartesSigns.lean) | Real Algebraic Geometry & Polynomials | Descartes (1637), Wiedijk #73 |
-| 7 | **Euler's Polyhedron Formula** | [`euler_polyhedron_formula`](Formalization/EulerPolyhedron.lean), [`planar_edge_bound`](Formalization/EulerPolyhedron.lean), [`non_planarity_k5`](Formalization/EulerPolyhedron.lean), [`non_planarity_k33`](Formalization/EulerPolyhedron.lean) | Combinatorial Graph Theory & Discrete Geometry | Euler (1758), Cauchy (1813), Wiedijk #13 |
+| 7 | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | [`tree_euler_formula`](Formalization/EulerPolyhedron.lean), [`planar_edge_bound`](Formalization/EulerPolyhedron.lean), [`k5_genus_ge_one`](Formalization/EulerPolyhedron.lean), [`k5_torus_eulerChar`](Formalization/EulerPolyhedron.lean), [`combinatorialMap_eulerChar_is_even`](Formalization/EulerPolyhedron.lean) | Combinatorial Graph Theory & Topological Maps | Euler (1758), Cauchy (1813), Edmonds (1960), Tutte (1963), Wiedijk #13 |
 | 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
 | 9 | **De Bruijn–Erdős Theorem on Incidence Geometry & Near-Pencil Tightness** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean), [`de_bruijn_erdos_tight`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
 | 10 | **Schur's Theorem in Additive Combinatorics and Group Theory** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`group_schurs_theorem`](Formalization/SchursTheorem.lean), [`addCommGroup_schurs_theorem`](Formalization/SchursTheorem.lean), [`finite_addCommGroup_partition_regular`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory, Additive Combinatorics & Abstract Group Theory | Schur (1916), Ramsey (1930), Graham-Rothschild-Spencer (1990) |
@@ -29,7 +29,7 @@ construction with its exact cardinality are fully proved.
 | 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
 | 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
 | 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
-| 16 | **Tverberg's Theorem (Classical, Full 1D, & 1D Colorful Tverberg)** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`tverberg_1d`](Formalization/TverbergsTheorem.lean), [`tverberg_1d_of_card_ge`](Formalization/TverbergsTheorem.lean), [`colorful_tverberg_1d`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Convex & Discrete Geometry | Tverberg (1966), Bárány, Larman, Pach (1992), Sarkaria (1992) |
+| 16 | **Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`tverbergs_theorem_of_card_ge`](Formalization/TverbergsTheorem.lean), [`tverberg_bridge`](Formalization/TverbergsTheorem.lean), [`tverberg_1d`](Formalization/TverbergsTheorem.lean), [`colorful_tverberg_1d`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Combinatorial Convex Geometry & Discrete Geometry | Tverberg (1966), Bárány (1982), Bárány, Larman, Pach (1992), Sarkaria (1992) |
 | 17 | **Dilworth's & Mirsky's Decomposition Theorems** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean), [`mirsky_theorem`](Formalization/DilworthTheorem.lean), [`mirsky_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Mirsky (1971), Perles (1963) |
 | 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
 | 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) |
@@ -102,14 +102,17 @@ construction with its exact cardinality are fully proved.
 
 ---
 
-### 7. Euler's Polyhedron Formula (Freek Wiedijk #13)
+### 7. Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions (Freek Wiedijk #13)
 * **Module:** [`Formalization/EulerPolyhedron.lean`](Formalization/EulerPolyhedron.lean)
 * **Modular Package:** [`Formalization/CombinatorialMap/`](Formalization/CombinatorialMap)
-  - `Basic.lean`: Darts, edge involution $\alpha$, vertex permutation $\sigma$, and face permutation $\phi = (\sigma \alpha)^{-1}$.
-  - `Parity.lean`: Tutte–Edmonds rotation systems and topological parity theorem $(-1)^{V+E+F} = 1$.
-  - `Concrete.lean`: Explicit map coordinates for tetrahedron, triangle, and square.
-* **Theorems:** `euler_polyhedron_formula`, `planar_edge_bound`, `planar_edge_bound_triangle_free`, `average_degree_lt_six`, `non_planarity_k5`, `non_planarity_k33`
-* **Mathematical Statement:** For any connected planar map $M$, $V - E + F = 2$.
+  - `Basic.lean`: Darts, edge involution $\alpha$, vertex permutation $\sigma$, faces $\phi = \sigma \alpha$, and topological genus $\operatorname{genus}(M) := 1 - \chi(M)/2$.
+  - `FaceDegree.lean`: Cycle sum theory on permutations (`k_mul_card_le_sum`) and face degree handshaking ($3F \le 2E$ and $4F \le 2E$).
+  - `Obstructions.lean`: Classical planar edge bounds ($E \le 3V - 6$, $E \le 2V - 4$) and authentic topological genus obstructions for $K_5$ ($\chi \le 0, \operatorname{genus} \ge 1, \chi \ne 2$) and $K_{3,3}$ ($\chi \le 0, \operatorname{genus} \ge 1, \chi \ne 2$).
+  - `Parity.lean`: Tutte–Edmonds rotation systems and topological parity theorem $(-1)^{V+E+F} = 1 \implies \chi(M) \equiv 0 \pmod 2$.
+  - `Concrete.lean`: Explicit map coordinates for tetrahedron, cube, triangle, square, and kernel-verified toroidal embedding of $K_5$ ($\chi = 0, \operatorname{genus} = 1$) certifying tightness of the genus obstruction.
+* **Theorems:** `tree_euler_formula`, `planar_edge_bound`, `planar_edge_bound_triangle_free`, `average_degree_lt_six`, `k5_eulerChar_le_zero`, `k5_genus_ge_one`, `k5_not_planar`, `k33_eulerChar_le_zero`, `k33_genus_ge_one`, `k33_not_planar`, `k5_torus_eulerChar`, `k5_torus_genus`, `tetrahedron_eulerChar`, `combinatorialMap_eulerChar_is_even`
+* **Mathematical Statement:** For any tree $T$, $V - E + 1 = 2$. For any combinatorial map $M$, $\chi(M) = V - E + F$ is even. A simple map has $3F \le 2E$, implying $E \le 3V - 6$ for planar maps ($\chi = 2$), while $K_5$ and $K_{3,3}$ satisfy $\chi \le 0$ and $\operatorname{genus} \ge 1$, precluding planar embeddings.
+
 
 ---
 
@@ -188,14 +191,17 @@ construction with its exact cardinality are fully proved.
 
 ---
 
-### 16. Tverberg's Theorem: Classical Reductions, 1D Theorem, & 1D Colorful Tverberg
+### 16. Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)
 * **Module:** [`Formalization/TverbergsTheorem.lean`](Formalization/TverbergsTheorem.lean)
 * **Modular Package:** [`Formalization/TverbergsTheorem/`](Formalization/TverbergsTheorem)
-  - `Basis.lean`: Auxiliary zero-sum basis vectors (`auxVec`) and lifted affine coordinates (`liftAffine`).
+  - `Basis.lean`: Auxiliary zero-sum basis vectors (`auxVec`), lifted affine coordinates (`liftAffine`), and the formal predicate `IsTverbergPartition`.
   - `Sarkaria.lean`: Sarkaria's algebraic reduction lemma, tensor combinations, and $(d+2)$-point Radon partition.
+  - `Bridge.lean`: The Colorful Carathéodory – Sarkaria tensor bridge connecting `colorful_caratheodory_origin` in dimension $D = (d+1)(r-1)$ with `sarkaria_tverberg`, proving general Tverberg's theorem for all $r \ge 2$ and $d \ge 0$.
   - `Dim1.lean`: Classical 1D Tverberg theorem (`tverberg_1d`, `tverberg_1d_of_card_ge`) via symmetric-rank pairing.
   - `Colorful.lean`: 1D Colorful Tverberg Theorem (`colorful_tverberg_1d`, Bárány–Larman–Pach 1992) across two color classes of size $r$.
-* **Theorems:** `tverbergs_theorem`, `tverberg_1d`, `tverberg_1d_of_card_ge`, `colorful_tverberg_1d`, `sarkaria_tverberg`
+* **Theorems:** `tverbergs_theorem`, `tverbergs_theorem_of_card_ge`, `tverberg_bridge`, `tverberg_1d`, `colorful_tverberg_1d`, `sarkaria_tverberg`
+* **Mathematical Statement:** For any $d \ge 0$ and $r \ge 1$, any finite set $S \subset \mathbb{R}^d$ of cardinality $N = (r - 1)(d + 1) + 1$ can be partitioned into $r$ pairwise disjoint subsets $A_1, \dots, A_r$ whose convex hulls share a common point of intersection ($\bigcap_{i=1}^r \operatorname{conv}(A_i) \ne \emptyset$).
+
 
 ---
 
@@ -372,7 +378,7 @@ graph TD
         CC["ColorfulCaratheodory/ (6 Submodules)"]
         CH["ColorfulHelly.lean (Primal-Dual Bridge)"]
         RH["RadonHelly.lean (Freek #99)"]
-        TT["TverbergsTheorem/ (4 Submodules)"]
+        TT["TverbergsTheorem/ (5 Submodules)"]
         ES["ErdosSzekeresConvex/ (4 Submodules)"]
         CA["CauchyArmLemma.lean"]
         PK["PicksTheorem.lean (Freek #92)"]
@@ -384,7 +390,7 @@ graph TD
         S12["SpernersLemma.lean (1D & 2D)"]
         TL["TuckersLemma/ (4 Submodules)"]
         AG["ArtGalleryTheorem.lean (Fisk 3-Color)"]
-        CM["CombinatorialMap/ (3 Submodules)"]
+        CM["CombinatorialMap/ (5 Submodules)"]
         EP["EulerPolyhedron.lean (Freek #13)"]
     end
 
@@ -444,8 +450,10 @@ graph TD
 │   │   └── Selection.lean                        #     - 1D First Selection Lemma & Centerpoint Theorem
 │   ├── ColorfulHelly.lean                        # 32. Lovász's Colorful Helly Theorem (Bárány 1982 Primal-Dual)
 │   ├── CombinatorialMap/                         # 7. Combinatorial Maps (Tutte–Edmonds Rotation Systems)
-│   │   ├── Basic.lean                            #     - Darts, edge involution α, vertex permutation σ, & faces φ
-│   │   ├── Concrete.lean                         #     - Concrete polyhedra (tetrahedron, triangle, square maps)
+│   │   ├── Basic.lean                            #     - Darts, edge involution α, vertex permutation σ, faces φ, & genus
+│   │   ├── Concrete.lean                         #     - Concrete polyhedra & K5 toroidal embedding certificate
+│   │   ├── FaceDegree.lean                       #     - Cycle-sum theory & face degree handshaking (3F ≤ 2E, 4F ≤ 2E)
+│   │   ├── Obstructions.lean                     #     - Planar bounds & authentic K5 / K3,3 topological genus obstructions
 │   │   └── Parity.lean                           #     - Permutation sign parity theorem: (-1)^(V+E+F) = 1
 │   ├── CrossingLemma.lean                        # 22. The Crossing Lemma (Ajtai et al., Leighton)
 │   ├── DeBruijnErdos.lean                        # 9. De Bruijn–Erdős Theorem on Incidence Geometry
@@ -494,9 +502,10 @@ graph TD
 │   │   ├── Dim1.lean                             #     - 1D discrete sign change & transition parity conservation
 │   │   └── Octahedron.lean                       #     - Concrete octahedral 2-sphere S²₈ certification benchmark
 │   ├── TutteOneFactor.lean                       # 31. Tutte's 1-Factor Theorem & Tutte–Berge Formula
-│   ├── TverbergsTheorem.lean                     # 16. Tverberg's Theorem (Master Interface)
+│   ├── TverbergsTheorem.lean                     # 16. Tverberg's Partition Theorem (Master Interface)
 │   └── TverbergsTheorem/                         # 16. Modular Tverberg Package
 │       ├── Basis.lean                            #     - Auxiliary basis vectors & lifted affine coordinates
+│       ├── Bridge.lean                           #     - Colorful Carathéodory – Sarkaria bridge for general r ≥ 2, d ≥ 0
 │       ├── Sarkaria.lean                         #     - Sarkaria algebraic reduction & Radon partition
 │       ├── Dim1.lean                             #     - 1D Tverberg theorem via median & symmetric pairing
 │       └── Colorful.lean                         #     - 1D Colorful Tverberg theorem (Bárány–Larman–Pach 1992)
@@ -520,7 +529,7 @@ graph TD
 │   ├── erdos_ko_rado/
 │   ├── erdos_szekeres_convex/
 │   ├── erdos_unit_distances/
-│   ├── euler_polyhedron/
+│   ├── euler_polyhedron/                         # Verified suite: Euler formula, genus obstructions, K5 torus certificate
 │   ├── frankl_wilson/
 │   ├── friendship_theorem/
 │   ├── friendship_windmill/
@@ -539,7 +548,7 @@ graph TD
 │   ├── szemeredi_trotter/
 │   ├── tuckers_lemma/
 │   ├── tutte_one_factor/
-│   └── tverbergs_theorem/                        # Verified suite: Tverberg, 1D Tverberg, 1D Colorful Tverberg
+│   └── tverbergs_theorem/                        # Verified suite: General Tverberg, 1D Tverberg, 1D Colorful Tverberg
 ├── formalization.yaml                            # Root formalization metadata manifest
 ├── lake-manifest.json                            # Pinned Lake package dependencies
 ├── lakefile.toml                                 # Lake build system manifest

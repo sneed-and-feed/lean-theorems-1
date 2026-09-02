@@ -28,7 +28,7 @@ of Radon's theorem ($r = 2$) and low-order Tverberg partitions ($r \le 2$).
 * `sarkaria_tverberg`: Sarkaria-Bárány algebraic reduction from zero-sum tensor combinations.
 * `radons_theorem`: Classical Radon lemma ($r = 2$).
 * `tverbergs_theorem_one`: Trivial Tverberg partition for $r = 1$.
-* `tverbergs_theorem`: Tverberg's theorem for $r \le 2$.
+* `tverbergs_theorem_le_two`: Tverberg's theorem for $r \le 2$.
 
 ## References
 * K. S. Sarkaria (1992), *Tverberg's theorem via number of roots of polynomial systems*,
@@ -372,7 +372,7 @@ theorem tverbergs_theorem_one
     by ext; simp, ⟨x, Set.mem_iInter.mpr fun _ ↦ subset_convexHull ℝ (S : Set (Fin d → ℝ)) hx⟩⟩
 
 /-- **Tverberg's Theorem** for r ≤ 2 (including Radon's Theorem for r = 2 and trivial partition for r = 1). -/
-theorem tverbergs_theorem (hr1 : 1 ≤ r) (hr2 : r ≤ 2)
+theorem tverbergs_theorem_le_two (hr1 : 1 ≤ r) (hr2 : r ≤ 2)
     (S : Finset (Fin d → ℝ)) (hS : S.card = (r - 1) * (d + 1) + 1) :
     ∃ P : Fin r → Finset (Fin d → ℝ), IsTverbergPartition S P := by
   rcases eq_or_lt_of_le hr1 with rfl | hr_gt

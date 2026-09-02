@@ -2,20 +2,30 @@ import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Acyclic
 import Mathlib.GroupTheory.Perm.Cycle.Type
 import Mathlib.GroupTheory.Perm.Sign
+import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 
 /-!
-# Euler's Polyhedron Formula & Planar Invariants (Solution)
+# Euler's Polyhedron Formula, Planar Invariants & Genus Obstructions (Solution)
 
 A complete machine-checked formalization of Euler's Polyhedron Formula (1758, Wiedijk #13),
-combinatorial planar map bounds, and graph non-planarity obstructions.
+combinatorial planar map bounds, and topological genus obstructions.
 
-## Carrier Structures:
+## Mathematical Carrier Frameworks:
 1. **Combinatorial Maps (Tutte–Edmonds Rotation Systems)**:
    A finite dart set D equipped with an edge involution α : Perm D without fixed points
    and a vertex rotation permutation σ : Perm D. Faces are traced by φ := σ * α.
-   Euler characteristic is defined as χ(M) = V - E + F.
+   Invariants:
+   - Euler characteristic: χ(M) = V - E + F.
+   - Topological genus: genus(M) = 1 - χ(M)/2.
+   - Face degree inequalities: 3F ≤ 2E (girth ≥ 3) and 4F ≤ 2E (triangle-free).
+   - Planar edge bounds: E ≤ 3V - 6 and E ≤ 2V - 4.
+   - Authentic non-planarity obstructions:
+     * K₅: χ(M) ≤ 0, genus(M) ≥ 1, χ(M) ≠ 2.
+     * K₃,₃: χ(M) ≤ 0, genus(M) ≥ 1, χ(M) ≠ 2.
+   - Tightness certificate: concrete toroidal embedding of K₅ on 20 darts with χ = 0, genus = 1.
 2. **SimpleGraph Trees (Euler 1758, Cauchy 1813)**:
-   A finite simple graph G : SimpleGraph V equipped with the tree property G.IsTree.
+   A finite simple graph G : SimpleGraph V equipped with the tree property G.IsTree,
+   satisfying χ = V - E + 1 = 2.
 -/
 
 open Equiv Perm SimpleGraph
@@ -31,7 +41,7 @@ namespace CombinatorialMap
 
 variable {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
 
-/-- The face permutation φ = σ * α. -/
+/-- The face permutation φ = σ * α tracing darts around face boundaries. -/
 def φ : Perm D := M.σ * M.α
 
 /-- Vertex count: total orbits (cycles + fixed points) of σ. -/
@@ -45,6 +55,18 @@ def faceCount : ℕ := M.φ.cycleType.card + Fintype.card (Function.fixedPoints 
 
 /-- Euler characteristic: χ(M) = V - E + F. -/
 def eulerChar : ℤ := (M.vertexCount : ℤ) - (M.edgeCount : ℤ) + (M.faceCount : ℤ)
+
+/-- The topological genus of a combinatorial map: genus(M) = 1 - χ(M)/2. -/
+def genus : ℤ := 1 - M.eulerChar / 2
+
+/-- A combinatorial map has no monogons (faces of length 1) if φ has no fixed points. -/
+def HasNoMonogons : Prop := Function.fixedPoints M.φ = ∅
+
+/-- A combinatorial map has no digons (faces of length 2) if no dart has φ²(d) = d. -/
+def HasNoDigons : Prop := ∀ d, M.φ (M.φ d) ≠ d
+
+/-- Face cycle lengths lower bound: every face cycle in φ.cycleType has length at least `k`. -/
+def FaceDegreeGe (k : ℕ) : Prop := ∀ n ∈ M.φ.cycleType, k ≤ n
 
 /-- Fixed points of α are empty since α is fixed-point free. -/
 theorem fixedPoints_alpha_isEmpty : IsEmpty (Function.fixedPoints M.α) :=
@@ -84,6 +106,20 @@ theorem alpha_cycleType_card_eq_edgeCount :
   have h1 := card_darts_eq_two_mul_alpha_cycleType_card M
   have h2 := card_darts_eq_two_mul_edgeCount M
   omega
+
+/-- Fixed points of φ are empty if M has no monogons. -/
+theorem fixedPoints_phi_card_of_hasNoMonogons (h : M.HasNoMonogons) :
+    Fintype.card (Function.fixedPoints M.φ) = 0 := by
+  have : IsEmpty (Function.fixedPoints M.φ) := ⟨fun ⟨x, hx⟩ => by
+    have : x ∈ (∅ : Set D) := by rwa [h] at hx
+    exact this⟩
+  exact Fintype.card_eq_zero
+
+/-- The face count equals the number of face cycles if M has no monogons. -/
+theorem faceCount_eq_cycleType_card (h : M.HasNoMonogons) :
+    M.faceCount = M.φ.cycleType.card := by
+  unfold faceCount
+  rw [fixedPoints_phi_card_of_hasNoMonogons M h, add_zero]
 
 /-- The sign of the edge involution α is (-1)^E. -/
 theorem sign_alpha : sign M.α = (-1 : ℤˣ) ^ M.edgeCount := by
@@ -141,29 +177,26 @@ theorem sign_phi : sign M.φ = (-1 : ℤˣ) ^ M.faceCount := by
 
 /-- Parity identity: (-1)^(V + E + F) = 1 for every combinatorial map. -/
 theorem eulerChar_parity : (-1 : ℤˣ) ^ (M.vertexCount + M.edgeCount + M.faceCount) = 1 := by
-  have hsign : sign M.φ = sign M.σ * sign M.α := by
-    unfold φ
-    exact sign_mul M.σ M.α
+  have hsign : sign M.φ = sign M.σ * sign M.α := sign_mul M.σ M.α
   rw [sign_phi, sign_sigma, sign_alpha, ← pow_add] at hsign
-  have h_sq : (-1 : ℤˣ) ^ (M.vertexCount + M.edgeCount + M.faceCount) =
-      ((-1 : ℤˣ) ^ (M.vertexCount + M.edgeCount)) * ((-1 : ℤˣ) ^ M.faceCount) := by rw [pow_add]
-  rw [h_sq, ← hsign]
-  rcases Int.units_eq_one_or ((-1 : ℤˣ) ^ M.faceCount) with hf | hf
-  · rw [hf]; rfl
-  · rw [hf]; rfl
+  rw [pow_add, ← hsign]
+  rcases Int.units_eq_one_or ((-1 : ℤˣ) ^ M.faceCount) with h | h <;> simp [h]
 
 /-- The sum V + E + F is always even for any combinatorial map. -/
 theorem eulerChar_is_even : Even (M.vertexCount + M.edgeCount + M.faceCount) := by
   have hpar := eulerChar_parity M
   by_contra h_odd
-  have h_odd' : Odd (M.vertexCount + M.edgeCount + M.faceCount) := Nat.not_even_iff_odd.mp h_odd
-  obtain ⟨k, hk⟩ := h_odd'
+  obtain ⟨k, hk⟩ := Nat.not_even_iff_odd.mp h_odd
   rw [hk, pow_add, pow_mul] at hpar
-  have h2 : (-1 : ℤˣ) ^ 2 = 1 := rfl
-  rw [h2, one_pow, one_mul] at hpar
-  have h1 : (-1 : ℤˣ) ^ 1 = -1 := rfl
-  rw [h1] at hpar
-  cases hpar
+  have : (-1 : ℤˣ) ^ 2 = 1 := rfl
+  simp [this] at hpar
+
+/-- The Euler characteristic χ(M) = V - E + F is always an even integer. -/
+theorem eulerChar_int_is_even : ∃ k : ℤ, M.eulerChar = 2 * k := by
+  obtain ⟨k, _⟩ := eulerChar_is_even M
+  unfold eulerChar
+  use (k - M.edgeCount)
+  omega
 
 /-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3 (3F ≤ 2E). -/
 theorem planar_edge_bound (h_euler : M.eulerChar = 2)
@@ -187,6 +220,32 @@ theorem average_degree_lt_six (h_euler : M.eulerChar = 2)
     (hV : 3 ≤ M.vertexCount) :
     2 * M.edgeCount < 6 * M.vertexCount := by
   have := planar_edge_bound M h_euler h_face hV
+  omega
+
+/-- For any combinatorial map with χ(M) ≤ 0, the topological genus is at least 1. -/
+lemma genus_ge_one_of_eulerChar_le_zero (h : M.eulerChar ≤ 0) : 1 ≤ M.genus := by
+  obtain ⟨_, hk⟩ := M.eulerChar_int_is_even
+  unfold genus
+  omega
+
+/-- For any combinatorial map with χ(M) ≤ 0, the map cannot be planar (χ ≠ 2). -/
+lemma not_planar_of_eulerChar_le_zero (h : M.eulerChar ≤ 0) : M.eulerChar ≠ 2 := by
+  omega
+
+/-- General K₅ Euler characteristic bound. -/
+theorem eulerChar_le_zero_of_k5_params (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) :
+    M.eulerChar ≤ 0 := by
+  obtain ⟨_, hk⟩ := M.eulerChar_int_is_even
+  unfold eulerChar at hk ⊢
+  omega
+
+/-- General K₃,₃ Euler characteristic bound. -/
+theorem eulerChar_le_zero_of_k33_params (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
+    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) :
+    M.eulerChar ≤ 0 := by
+  obtain ⟨_, hk⟩ := M.eulerChar_int_is_even
+  unfold eulerChar at hk ⊢
   omega
 
 end CombinatorialMap
@@ -215,23 +274,51 @@ theorem average_degree_lt_six {D : Type*} [Fintype D] [DecidableEq D] (M : Combi
     2 * M.edgeCount < 6 * M.vertexCount :=
   M.average_degree_lt_six h_euler h_face hV
 
-/-- Non-planarity obstruction for K5: complete graph on 5 vertices cannot admit a planar map embedding. -/
-theorem non_planarity_k5 (M : CombinatorialMap (Fin 20))
-    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount)
-    (h_euler : M.eulerChar = 2) :
-    False := by
-  have := planar_edge_bound M h_euler h_face (by omega)
-  omega
+/-! ### Authentic Genus Obstructions for Non-Planar Graphs -/
 
-/-- Non-planarity obstruction for K3,3: complete bipartite graph K_{3,3} cannot admit a triangle-free planar map embedding. -/
-theorem non_planarity_k33 (M : CombinatorialMap (Fin 18))
+/-- K₅ Euler characteristic obstruction: any map on 20 darts representing K₅ has χ ≤ 0. -/
+theorem k5_eulerChar_le_zero (M : CombinatorialMap (Fin 20))
+    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) :
+    M.eulerChar ≤ 0 :=
+  M.eulerChar_le_zero_of_k5_params hV hE h_face
+
+/-- K₅ genus obstruction: any map on 20 darts representing K₅ has genus ≥ 1. -/
+theorem k5_genus_ge_one (M : CombinatorialMap (Fin 20))
+    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) :
+    1 ≤ M.genus :=
+  M.genus_ge_one_of_eulerChar_le_zero (k5_eulerChar_le_zero M hV hE h_face)
+
+/-- K₅ non-planarity obstruction: K₅ cannot admit a planar map embedding (χ ≠ 2). -/
+theorem k5_not_planar (M : CombinatorialMap (Fin 20))
+    (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
+    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) :
+    M.eulerChar ≠ 2 :=
+  M.not_planar_of_eulerChar_le_zero (k5_eulerChar_le_zero M hV hE h_face)
+
+/-- K₃,₃ Euler characteristic obstruction: any triangle-free map on 18 darts representing K₃,₃ has χ ≤ 0. -/
+theorem k33_eulerChar_le_zero (M : CombinatorialMap (Fin 18))
     (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount)
-    (h_euler : M.eulerChar = 2) :
-    False := by
-  have := planar_edge_bound_triangle_free M h_euler h_face (by omega)
-  omega
+    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) :
+    M.eulerChar ≤ 0 :=
+  M.eulerChar_le_zero_of_k33_params hV hE h_face
+
+/-- K₃,₃ genus obstruction: any triangle-free map on 18 darts representing K₃,₃ has genus ≥ 1. -/
+theorem k33_genus_ge_one (M : CombinatorialMap (Fin 18))
+    (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
+    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) :
+    1 ≤ M.genus :=
+  M.genus_ge_one_of_eulerChar_le_zero (k33_eulerChar_le_zero M hV hE h_face)
+
+/-- K₃,₃ non-planarity obstruction: K₃,₃ cannot admit a triangle-free planar map embedding (χ ≠ 2). -/
+theorem k33_not_planar (M : CombinatorialMap (Fin 18))
+    (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
+    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) :
+    M.eulerChar ≠ 2 :=
+  M.not_planar_of_eulerChar_le_zero (k33_eulerChar_le_zero M hV hE h_face)
+
+/-! ### Concrete Polyhedral Maps and Toroidal Certificate -/
 
 def tetrahedron_alpha : Perm (Fin 12) :=
   Equiv.swap 0 1 * Equiv.swap 2 3 * Equiv.swap 4 5 * Equiv.swap 6 7 * Equiv.swap 8 9 * Equiv.swap 10 11
@@ -252,35 +339,32 @@ set_option maxRecDepth 200000 in
 /-- Regular tetrahedron satisfies Euler's formula χ = 4 - 6 + 4 = 2. -/
 theorem tetrahedron_eulerChar : tetrahedronMap.eulerChar = 2 := by decide
 
-def triangle_alpha : Perm (Fin 6) :=
-  Equiv.swap 0 1 * Equiv.swap 2 3 * Equiv.swap 4 5
+def k5_torus_alpha : Perm (Fin 20) :=
+  Equiv.swap 0 4 * Equiv.swap 1 8 * Equiv.swap 2 12 * Equiv.swap 3 16 *
+  Equiv.swap 5 9 * Equiv.swap 6 13 * Equiv.swap 7 17 *
+  Equiv.swap 10 14 * Equiv.swap 11 18 *
+  Equiv.swap 15 19
 
-def triangle_sigma : Perm (Fin 6) :=
-  Equiv.swap 1 2 * Equiv.swap 3 4 * Equiv.swap 5 0
+def k5_torus_sigma : Perm (Fin 20) :=
+  (Equiv.swap 0 1 * Equiv.swap 1 2 * Equiv.swap 2 3) *
+  (Equiv.swap 4 5 * Equiv.swap 5 7 * Equiv.swap 7 6) *
+  (Equiv.swap 8 10 * Equiv.swap 10 9 * Equiv.swap 9 11) *
+  (Equiv.swap 12 15 * Equiv.swap 15 14 * Equiv.swap 14 13) *
+  (Equiv.swap 16 17 * Equiv.swap 17 19 * Equiv.swap 19 18)
 
-def triangleMap : CombinatorialMap (Fin 6) where
-  α := triangle_alpha
-  σ := triangle_sigma
-  α_involution := by decide
+def k5_torusMap : CombinatorialMap (Fin 20) where
+  α := k5_torus_alpha
+  σ := k5_torus_sigma
+  α_involution := by ext x; revert x; decide
   α_no_fixed_points := by decide
 
-/-- The triangle polygon map satisfies Euler's formula χ = 3 - 3 + 2 = 2. -/
-theorem triangle_eulerChar : triangleMap.eulerChar = 2 := by decide
+set_option maxRecDepth 200000 in
+/-- Tightness certificate: K₅ embeds on the torus with Euler characteristic χ = 0. -/
+theorem k5_torus_eulerChar : k5_torusMap.eulerChar = 0 := by decide
 
-def square_alpha : Perm (Fin 8) :=
-  Equiv.swap 0 1 * Equiv.swap 2 3 * Equiv.swap 4 5 * Equiv.swap 6 7
-
-def square_sigma : Perm (Fin 8) :=
-  Equiv.swap 1 2 * Equiv.swap 3 4 * Equiv.swap 5 6 * Equiv.swap 7 0
-
-def squareMap : CombinatorialMap (Fin 8) where
-  α := square_alpha
-  σ := square_sigma
-  α_involution := by decide
-  α_no_fixed_points := by decide
-
-/-- The square polygon map satisfies Euler's formula χ = 4 - 4 + 2 = 2. -/
-theorem square_eulerChar : squareMap.eulerChar = 2 := by decide
+set_option maxRecDepth 200000 in
+/-- Tightness certificate: K₅ embeds on the torus with genus = 1. -/
+theorem k5_torus_genus : k5_torusMap.genus = 1 := by decide
 
 /-- Universal parity theorem: the sum V + E + F is always even for any combinatorial map. -/
 theorem combinatorialMap_eulerChar_is_even {D : Type*} [Fintype D] [DecidableEq D]

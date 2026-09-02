@@ -16,8 +16,10 @@ def IsTverbergPartition (S : Finset (Fin d → ℝ)) (P : Fin r → Finset (Fin 
   (Finset.biUnion Finset.univ P = S) ∧
   (⋂ i : Fin r, convexHull ℝ (P i : Set (Fin d → ℝ))).Nonempty
 
-/-- **Tverberg's Theorem** for r ≤ 2 (including Radon's Theorem for r = 2 and trivial partition for r = 1). -/
-theorem tverbergs_theorem (hr1 : 1 ≤ r) (hr2 : r ≤ 2)
+/-- **Tverberg's Theorem (Helge Tverberg, 1966)**:
+Any set of `(r - 1) * (d + 1) + 1` points in ℝ^d can be partitioned into `r` pairwise disjoint
+subsets whose convex hulls share a common point of intersection. -/
+theorem tverbergs_theorem (hr : 1 ≤ r)
     (S : Finset (Fin d → ℝ)) (hS : S.card = (r - 1) * (d + 1) + 1) :
     ∃ P : Fin r → Finset (Fin d → ℝ), IsTverbergPartition S P := sorry
 
