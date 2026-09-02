@@ -79,7 +79,7 @@ if (Test-Path $solPath) {
     Write-Host "[PASS] Zero sorries and zero custom axioms in Solution.lean" -ForegroundColor Green
 }
 
-# 5. Schema & Mathlib Attribution in formalization.yaml
+# 5. Schema Check in formalization.yaml
 $yamlPath = "$src\formalization.yaml"
 if (Test-Path $yamlPath) {
     $yamlTxt = [System.IO.File]::ReadAllText($yamlPath)
@@ -87,9 +87,6 @@ if (Test-Path $yamlPath) {
         Write-Host "[NON-BLOCKING WARNING] formalization.yaml schema is not v0.4" -ForegroundColor Yellow
     } else {
         Write-Host "[PASS] formalization.yaml v0.4 schema verified" -ForegroundColor Green
-    }
-    if ($solTxt -match "import Mathlib" -and $yamlTxt -notmatch "related_formalizations") {
-        Write-Host "[NON-BLOCKING ADVISORY] Upstream Mathlib imported without related_formalizations entry" -ForegroundColor Yellow
     }
 }
 

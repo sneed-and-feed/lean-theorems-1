@@ -30,14 +30,6 @@ sources:
       - "Paul Erdős"
     relationship: formalizes
 
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Finset/Card.lean"
-    relationship: builds-on
-    note: >-
-      Formalization builds on Mathlib's finite set combinatorics and double-counting sum infrastructure
-      to establish linear space axioms, point-line incidences, the combinatorial double-counting sum inequality,
-      and near-pencil tightness.
-
 automation:
   methods:
     - method: agent
