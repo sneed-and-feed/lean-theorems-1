@@ -42,7 +42,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `061f829be1a4f0a8c9cd9ee0d0346d7ff7867380` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
+| **1** | **Kőnig–Egerváry Duality Theorem & Gallai Invariant Identities** | `konig_matching` | `1499114c361bbb9fe5824818d03a55e86b9c196b` | `palomar/konig_matching/comparator.json` | Combinatorial Optimization / Matchings |
 | **2** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `ore_dirac_hamiltonian` | `061f829be1a4f0a8c9cd9ee0d0346d7ff7867380` | `palomar/ore_dirac_hamiltonian/comparator.json` | Structural Graph Theory / Cycles |
 | **3** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `061f829be1a4f0a8c9cd9ee0d0346d7ff7867380` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
 
