@@ -44,7 +44,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `1f8697b757547deb8c32785a5f9275c2e282e019` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
+| **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `cf6e9e4fbd1f1964885f3ce73e53edf29bdb9493` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
 | **2** | **Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)** | `tverbergs_theorem` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/tverbergs_theorem/comparator.json` | Combinatorial Convex Geometry / Discrete Geometry |
 | **3** | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | `euler_polyhedron` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/euler_polyhedron/comparator.json` | Topological Graph Theory / Discrete Geometry |
 
