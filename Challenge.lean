@@ -5,10 +5,10 @@ import Mathlib.GroupTheory.Perm.Sign
 import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 
 /-!
-# Euler's Polyhedron Formula, Planar Invariants & Genus Obstructions (Challenge)
+# Combinatorial Map Parity, Face-Degree Handshaking Bounds & Genus Invariants (Challenge)
 
-A machine-checked formalization challenge for Euler's Polyhedron Formula (1758, Wiedijk #13),
-combinatorial planar map bounds, and topological genus obstructions.
+A machine-checked formalization challenge for Tutte–Edmonds combinatorial map invariants,
+face-degree handshaking inequalities, and planar edge bounds.
 
 ## Mathematical Carrier Frameworks:
 1. **Combinatorial Maps (Tutte–Edmonds Rotation Systems)**:
@@ -16,16 +16,17 @@ combinatorial planar map bounds, and topological genus obstructions.
    and a vertex rotation permutation σ : Perm D. Faces are traced by φ := σ * α.
    Invariants:
    - Euler characteristic: χ(M) = V - E + F.
-   - Topological genus: genus(M) = 1 - χ(M)/2.
-   - Face degree inequalities: 3F ≤ 2E (girth ≥ 3) and 4F ≤ 2E (triangle-free).
-   - Planar edge bounds: E ≤ 3V - 6 and E ≤ 2V - 4.
-   - Authentic non-planarity obstructions:
-     * K₅: χ(M) ≤ 0, genus(M) ≥ 1, χ(M) ≠ 2.
-     * K₃,₃: χ(M) ≤ 0, genus(M) ≥ 1, χ(M) ≠ 2.
-   - Tightness certificate: concrete toroidal embedding of K₅ on 20 darts with χ = 0, genus = 1.
+   - Combinatorial genus: genus(M) = 1 - χ(M)/2.
+   - Parity theorem: universal even parity of V + E + F via permutation signatures.
+   - Face-degree handshaking: k * F ≤ 2E proved from absence of monogons and face degree ≥ k.
+   - Planar edge bounds: E ≤ 3V - 6 and E ≤ 2V - 4 derived conditionally under χ(M) = 2
+     from face degree bounds (face degree ≥ 3, resp. ≥ 4).
+   - Combinatorial parameter obstructions for K₅ (V=5, E=10) and K₃,₃ (V=6, E=9):
+     χ(M) ≤ 0, genus(M) ≥ 1, χ(M) ≠ 2.
+   - Tightness certificate: concrete toroidal rotation system on 20 darts with χ = 0, genus = 1.
 2. **SimpleGraph Trees (Euler 1758, Cauchy 1813)**:
-   A finite simple graph G : SimpleGraph V equipped with the tree property G.IsTree,
-   satisfying χ = V - E + 1 = 2.
+   Arithmetic formulation of Euler's formula for trees V - E + 1 = 2,
+   wrapping Mathlib's pre-existing `SimpleGraph.IsTree.card_edgeFinset`.
 -/
 
 open Equiv Perm SimpleGraph
@@ -56,7 +57,7 @@ def faceCount : ℕ := M.φ.cycleType.card + Fintype.card (Function.fixedPoints 
 /-- Euler characteristic: χ(M) = V - E + F. -/
 def eulerChar : ℤ := (M.vertexCount : ℤ) - (M.edgeCount : ℤ) + (M.faceCount : ℤ)
 
-/-- The topological genus of a combinatorial map: genus(M) = 1 - χ(M)/2. -/
+/-- The combinatorial genus of a combinatorial map: genus(M) = 1 - χ(M)/2. -/
 def genus : ℤ := 1 - M.eulerChar / 2
 
 /-- A combinatorial map has no monogons (faces of length 1) if φ has no fixed points. -/
@@ -74,57 +75,71 @@ end CombinatorialMap
 theorem tree_euler_formula {V : Type*} [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
     (hT : G.IsTree) : (Fintype.card V : ℤ) - (G.edgeFinset.card : ℤ) + 1 = 2 := sorry
 
-/-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3 (3F ≤ 2E). -/
+/-- Handshaking inequality for face cycles: if every face cycle in φ has length at least `k`,
+and there are no monogons (fixed points of φ), then `k * F ≤ 2E`. -/
+theorem combinatorialMap_face_handshake_le {D : Type*} [Fintype D] [DecidableEq D]
+    (M : CombinatorialMap D) (k : ℕ) (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe k) :
+    k * M.faceCount ≤ 2 * M.edgeCount := sorry
+
+/-- Classical planar edge bound: E ≤ 3V - 6 for maps with face degree ≥ 3 and no monogons. -/
 theorem planar_edge_bound {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
-    (h_euler : M.eulerChar = 2) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
+    (h_euler : M.eulerChar = 2) (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 3)
+    (hV : 3 ≤ M.vertexCount) :
     M.edgeCount ≤ 3 * M.vertexCount - 6 := sorry
 
-/-- Triangle-free planar edge bound: E ≤ 2V - 4 for maps with face degree ≥ 4 (4F ≤ 2E). -/
+/-- Triangle-free planar edge bound: E ≤ 2V - 4 for maps with face degree ≥ 4 and no monogons. -/
 theorem planar_edge_bound_triangle_free {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
-    (h_euler : M.eulerChar = 2) (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
+    (h_euler : M.eulerChar = 2) (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 4)
+    (hV : 3 ≤ M.vertexCount) :
     M.edgeCount ≤ 2 * M.vertexCount - 4 := sorry
 
 /-- Average vertex degree bound for planar maps: 2E < 6V. -/
 theorem average_degree_lt_six {D : Type*} [Fintype D] [DecidableEq D] (M : CombinatorialMap D)
-    (h_euler : M.eulerChar = 2) (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) (hV : 3 ≤ M.vertexCount) :
+    (h_euler : M.eulerChar = 2) (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 3)
+    (hV : 3 ≤ M.vertexCount) :
     2 * M.edgeCount < 6 * M.vertexCount := sorry
 
-/-! ### Authentic Genus Obstructions for Non-Planar Graphs -/
+/-! ### Combinatorial Parameter Obstructions for K₅ and K₃,₃ Parameters -/
 
-/-- K₅ Euler characteristic obstruction: any map on 20 darts representing K₅ has χ ≤ 0. -/
+/-- K₅ combinatorial parameter obstruction: any map on 20 darts with 5 vertices, 10 edges,
+no monogons, and face degree ≥ 3 has χ ≤ 0.
+Note: continuous surface graph embeddings are unformalized. -/
 theorem k5_eulerChar_le_zero (M : CombinatorialMap (Fin 20))
     (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) :
+    (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 3) :
     M.eulerChar ≤ 0 := sorry
 
-/-- K₅ genus obstruction: any map on 20 darts representing K₅ has genus ≥ 1. -/
+/-- K₅ genus parameter bound: any map on 20 darts with 5 vertices, 10 edges,
+no monogons, and face degree ≥ 3 has combinatorial genus ≥ 1. -/
 theorem k5_genus_ge_one (M : CombinatorialMap (Fin 20))
     (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) :
+    (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 3) :
     1 ≤ M.genus := sorry
 
-/-- K₅ non-planarity obstruction: K₅ cannot admit a planar map embedding (χ ≠ 2). -/
+/-- K₅ non-planarity obstruction: K₅ parameters cannot admit a planar map embedding (χ ≠ 2). -/
 theorem k5_not_planar (M : CombinatorialMap (Fin 20))
     (hV : M.vertexCount = 5) (hE : M.edgeCount = 10)
-    (h_face : 3 * M.faceCount ≤ 2 * M.edgeCount) :
+    (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 3) :
     M.eulerChar ≠ 2 := sorry
 
-/-- K₃,₃ Euler characteristic obstruction: any triangle-free map on 18 darts representing K₃,₃ has χ ≤ 0. -/
+/-- K₃,₃ combinatorial parameter obstruction: any map on 18 darts with 6 vertices, 9 edges,
+no monogons, and face degree ≥ 4 has χ ≤ 0. -/
 theorem k33_eulerChar_le_zero (M : CombinatorialMap (Fin 18))
     (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) :
+    (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 4) :
     M.eulerChar ≤ 0 := sorry
 
-/-- K₃,₃ genus obstruction: any triangle-free map on 18 darts representing K₃,₃ has genus ≥ 1. -/
+/-- K₃,₃ genus parameter bound: any map on 18 darts with 6 vertices, 9 edges,
+no monogons, and face degree ≥ 4 has combinatorial genus ≥ 1. -/
 theorem k33_genus_ge_one (M : CombinatorialMap (Fin 18))
     (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) :
+    (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 4) :
     1 ≤ M.genus := sorry
 
-/-- K₃,₃ non-planarity obstruction: K₃,₃ cannot admit a triangle-free planar map embedding (χ ≠ 2). -/
+/-- K₃,₃ non-planarity obstruction: K₃,₃ parameters cannot admit a planar map embedding (χ ≠ 2). -/
 theorem k33_not_planar (M : CombinatorialMap (Fin 18))
     (hV : M.vertexCount = 6) (hE : M.edgeCount = 9)
-    (h_face : 4 * M.faceCount ≤ 2 * M.edgeCount) :
+    (hmono : M.HasNoMonogons) (hdeg : M.FaceDegreeGe 4) :
     M.eulerChar ≠ 2 := sorry
 
 /-! ### Concrete Polyhedral Maps and Toroidal Certificate -/

@@ -46,7 +46,6 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
 | **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `d9d006584ab0d9ecb0e2ca3c2e052282f7a2db7d` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
-| **2** | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | `euler_polyhedron` | `a3a8e3f53c7fe91fafe220f604358d3922c55d1e` | `palomar/euler_polyhedron/comparator.json` | Topological Graph Theory / Discrete Geometry |
 
 ---
 
@@ -55,7 +54,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | Slug | Core Finding & Reason for Early Retirement | Status |
 | :--- | :--- | :---: |
 | `tverbergs_theorem` | Promoted to Tier-1 and successfully registered: [PALOMAR-2026-09-03-000003](https://palomar-registry.org/entry?id=PALOMAR-2026-09-03-000003). | [x] **REGISTERED** |
-| `euler_polyhedron` | Promoted to Tier-1: AP-05 eliminated via structural genus obstructions and toroidal certificate. | [x] **PROMOTED** |
+| `euler_polyhedron` | **AP-18, AP-26**: Palomar AI review rejected mathematical selection as routine (tree wrapper, assumed $\chi = 2$, parameter bounds lacking continuous surface/graph embedding). Remediated with handshaking lemma and calibrated scope; retained as internal benchmark. | [-] **RETIRED** |
 | `desargues_theorem` | Synthetic projective geometry equivalences did not meet external research-grade interest floor. | [-] **REJECTED** |
 | `schurs_theorem` | Classical sum-free integer coloring & group reparameterization with crude bound lacks research-grade depth. | [-] **REJECTED** |
 | `kneser_lovasz` | **AP-18, AP-26**: Proves only Kneser's 1955 pigeonhole upper bound; Lovász's 1978 topological lower bound is unformalized. | [-] **RETIRED** |

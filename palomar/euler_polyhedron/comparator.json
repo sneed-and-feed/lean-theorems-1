@@ -15,7 +15,8 @@
     "k5_torus_eulerChar",
     "k5_torus_genus",
     "tetrahedron_eulerChar",
-    "combinatorialMap_eulerChar_is_even"
+    "combinatorialMap_eulerChar_is_even",
+    "combinatorialMap_face_handshake_le"
   ],
   "permitted_axioms": [
     "propext",

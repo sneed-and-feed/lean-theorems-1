@@ -1,27 +1,25 @@
 version: "v0.4"
 
 project:
-  name: "Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions"
+  name: "Combinatorial Map Parity, Face-Degree Handshaking Bounds & Combinatorial Genus Invariants"
   authors:
     - "Noah Cohen"
   responsible_maintainers:
     - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
-    A complete, machine-checked Lean 4 formalization of Euler's Polyhedron Formula
-    V - E + F = 2 (1758, Wiedijk #13), topological genus invariants, and non-planarity obstructions
-    across two mathematical carrier frameworks:
+    A machine-checked Lean 4 formalization of Tutte–Edmonds combinatorial map invariants,
+    face-degree handshaking inequalities, and planar edge bounds across two carrier frameworks:
     (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
     alpha and vertex permutation sigma), proving the universal even parity of the Euler characteristic
-    chi(M) via the permutation signature homomorphism, face-cycle sum handshaking inequalities 3F <= 2E
-    and 4F <= 2E, classical planar edge bounds E <= 3V - 6 and E <= 2V - 4, average degree bound 2E < 6V,
-    authentic topological genus obstructions for K5 (chi <= 0, genus >= 1, chi != 2) and K3,3 (chi <= 0,
-    genus >= 1, chi != 2) eliminating numerical pseudo-contradictions, and a concrete tightness
-    certificate via the toroidal embedding of K5 on 20 darts with chi = 0 and genus = 1;
-    (2) SimpleGraph Trees (Euler 1758, Cauchy 1813), proving Euler's formula for trees V - E + 1 = 2
-    on genuine SimpleGraph carriers.
-    To the maintainers' knowledge, the theorem was not found in an exact declaration name,
-    docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
+    chi(M) via the permutation signature homomorphism, the face-cycle handshaking inequality k * F <= 2E
+    derived from absence of monogons and face degree >= k, planar edge bounds E <= 3V - 6 and E <= 2V - 4
+    derived conditionally under the hypothesis chi(M) = 2, average degree bound 2E < 6V, combinatorial
+    parameter obstructions for K5 (V=5, E=10, chi <= 0, genus >= 1) and K3,3 (V=6, E=9, chi <= 0, genus >= 1),
+    and a concrete toroidal embedding certificate on 20 darts with chi = 0 and genus = 1;
+    (2) SimpleGraph Trees, formulating Euler's tree relation V - E + 1 = 2 by wrapping Mathlib's
+    pre-existing SimpleGraph.IsTree.card_edgeFinset theorem.
+    Continuous surface embeddings and topological realizations of genus are outside the formal scope.
 
 classification:
   arxiv: [math.CO]
@@ -69,6 +67,13 @@ sources:
     relationship: adapts
     note: >-
       Formalization constructs the concrete rotation system for the toroidal embedding of K5.
+
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Acyclic.lean"
+    relationship: builds-on
+    note: >-
+      The tree theorem `tree_euler_formula` is an arithmetic wrapper of Mathlib's pre-existing
+      `SimpleGraph.IsTree.card_edgeFinset` theorem, reformulating |E| = |V| - 1 into the Euler form |V| - |E| + 1 = 2.
 
 automation:
   methods:
