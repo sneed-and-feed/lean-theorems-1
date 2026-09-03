@@ -57,8 +57,9 @@ automation:
   methods:
     - method: agent
       tool_setup: >-
-        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
+        Formalized using an agentic Lean 4 workflow powered by Google DeepMind Gemini models (Gemini Flash
+        agent pipeline via the Antigravity system) paired with Lean LSP MCP interactive tooling for proof
+        tactic exploration, AST comparison, and verification under maintainer direction and human oversight.
         All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:

@@ -47,9 +47,10 @@ automation:
   methods:
     - method: agent
       tool_setup: >-
-        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction. All declarations rely strictly
-        on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Formalized using an agentic Lean 4 workflow powered by Google DeepMind Gemini models (Gemini Flash
+        agent pipeline via the Antigravity system) paired with Lean LSP MCP interactive tooling for proof
+        tactic exploration, AST comparison, and verification under maintainer direction and human oversight.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
@@ -61,4 +62,3 @@ review:
     maintainer audit with 0 errors, 0 warnings, 0 sorries, and strictly standard kernel axioms.
     Imports and connects to Mathlib.Algebra.Polynomial.RuleOfSigns for the upper bound, while
     formalizing the complete sign-variation parity theorem and list-based interface.
-
