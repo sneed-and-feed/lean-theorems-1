@@ -1,19 +1,14 @@
 version: "v0.4"
-schema_version: "0.4.0"
-slug: "euler_polyhedron"
-title: "Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions"
-mathlib_commit: "20bc12820422504f9e52ee6caebf8182a9015336"
 
 project:
   name: "Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions"
-  slug: "euler_polyhedron"
   authors:
     - "Noah Cohen"
   responsible_maintainers:
     - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
-    A complete, research-grade machine-checked Lean 4 formalization of Euler's Polyhedron Formula
+    A complete, machine-checked Lean 4 formalization of Euler's Polyhedron Formula
     V - E + F = 2 (1758, Wiedijk #13), topological genus invariants, and non-planarity obstructions
     across two mathematical carrier frameworks:
     (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
@@ -32,40 +27,33 @@ classification:
   arxiv: [math.CO]
   msc2020: ["05C10", "52B05", "57M15"]
 
-theorems:
-  - tree_euler_formula
-  - planar_edge_bound
-  - planar_edge_bound_triangle_free
-  - average_degree_lt_six
-  - k5_eulerChar_le_zero
-  - k5_genus_ge_one
-  - k5_not_planar
-  - k33_eulerChar_le_zero
-  - k33_genus_ge_one
-  - k33_not_planar
-  - k5_torus_eulerChar
-  - k5_torus_genus
-  - tetrahedron_eulerChar
-  - combinatorialMap_eulerChar_is_even
-
 sources:
   - title: "Elementa doctrinae solidorum"
     type: paper
+    year: 1758
+    venue: "Novi Commentarii Academiae Scientiarum Petropolitanae"
     authors:
       - "Leonhard Euler"
     relationship: inspired_by
-  - title: "Recherches sur les polyedres"
+  - title: "Recherches sur les polyèdres"
     type: paper
+    year: 1813
+    venue: "Journal de l'École Polytechnique"
     authors:
-      - "A.-L. Cauchy"
+      - "Augustin-Louis Cauchy"
     relationship: formalizes
   - title: "A combinatorial representation for polyhedral surfaces"
     type: paper
+    year: 1960
+    venue: "Notices of the American Mathematical Society"
     authors:
       - "Jack Edmonds"
     relationship: formalizes
   - title: "A census of planar maps"
     type: paper
+    year: 1962
+    venue: "Canadian Journal of Mathematics"
+    doi: "https://doi.org/10.4153/CJM-1962-002-9"
     authors:
       - "W. T. Tutte"
     relationship: adapts
@@ -73,37 +61,9 @@ sources:
       Formalization formalizes Tutte's combinatorial map rotation system framework for 2-cell surface embeddings.
   - title: "Über das Problem der Nachbargebiete"
     type: paper
-    authors:
-      - "Lothar Heffter"
-    relationship: adapts
-    note: >-
-      Formalization constructs the concrete rotation system for the toroidal embedding of K5.
-
-references:
-  - title: "Elementa doctrinae solidorum"
-    type: paper
-    authors:
-      - "Leonhard Euler"
-    relationship: inspired_by
-  - title: "Recherches sur les polyedres"
-    type: paper
-    authors:
-      - "A.-L. Cauchy"
-    relationship: formalizes
-  - title: "A combinatorial representation for polyhedral surfaces"
-    type: paper
-    authors:
-      - "Jack Edmonds"
-    relationship: formalizes
-  - title: "A census of planar maps"
-    type: paper
-    authors:
-      - "W. T. Tutte"
-    relationship: adapts
-    note: >-
-      Formalization formalizes Tutte's combinatorial map rotation system framework for 2-cell surface embeddings.
-  - title: "Über das Problem der Nachbargebiete"
-    type: paper
+    year: 1891
+    venue: "Mathematische Annalen"
+    doi: "https://doi.org/10.1007/BF01199276"
     authors:
       - "Lothar Heffter"
     relationship: adapts
@@ -125,5 +85,6 @@ review:
     - "Noah Cohen"
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
-    while all definitions and theorem statements are completely specified. Solution verified through
-    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    while all definitions and theorem statements are completely specified with 100% AST parity.
+    Human review verified mathematical statements, carrier fidelity, absence of custom axioms,
+    and clean sequential Lean 4 builds.

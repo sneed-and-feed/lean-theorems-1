@@ -46,7 +46,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
 | **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `d9d006584ab0d9ecb0e2ca3c2e052282f7a2db7d` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
-| **2** | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | `euler_polyhedron` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/euler_polyhedron/comparator.json` | Topological Graph Theory / Discrete Geometry |
+| **2** | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | `euler_polyhedron` | `a41c05886abf2544fbb15ab97aba0033c3098dda` | `palomar/euler_polyhedron/comparator.json` | Topological Graph Theory / Discrete Geometry |
 
 ---
 
