@@ -45,7 +45,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `f19bca60c8af42e360d3dc2c40d233ca23f864e1` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
+| **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `091d5a34846d58dd5c6417e5e6f66ec2f9ce2876` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
 
 ---
 
