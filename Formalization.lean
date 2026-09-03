@@ -1,13 +1,3 @@
-/-!
-# Root Formalization Library: Repo 1
-Imports all verified Tier-1 Palomar submission packages and active queue suites.
-Retired and superseded theories are decoupled below to ensure minimal compilation overhead,
-shield against upstream Mathlib drift, and preserve complete audit integrity.
--/
-
--- ==============================================================================
--- 🟢 Tier-1 Verified & Live Palomar Packages (100% Verified, 0 Axioms, 0 Sorry)
--- ==============================================================================
 import Formalization.GrahamPollak
 import Formalization.BollobasTwoFamilies
 import Formalization.OreHamiltonian
@@ -30,6 +20,13 @@ import Formalization.SpernerND
 import Formalization.ColorfulCaratheodory
 import Formalization.KonigMatching
 
+/-!
+# Root Formalization Library: Repo 1
+Imports all verified Tier-1 Palomar submission packages and active queue suites.
+Retired and superseded theories are decoupled below to ensure minimal compilation overhead,
+shield against upstream Mathlib drift, and preserve complete audit integrity.
+-/
+
 -- ==============================================================================
 -- 🛑 Decoupled Retired & Superseded Theories (Archived in Place for Audit Integrity)
 -- ==============================================================================
@@ -51,4 +48,3 @@ import Formalization.KonigMatching
 -- import Formalization.ErdosUnitDistances -- Retired: AP-02, AP-07 (Dummy real struct baking in crossing bounds)
 -- import Formalization.SzemerediTrotter  -- Retired: AP-07 (Carrier bakes Crossing Lemma directly)
 -- import Formalization.TutteOneFactor    -- Retired: AP-01, AP-18 (1-line definitional wrapper over Mathlib)
-
