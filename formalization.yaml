@@ -1,79 +1,58 @@
 version: "v0.4"
 
 project:
-  name: "Combinatorial Map Parity, Face-Degree Handshaking Bounds & Combinatorial Genus Invariants"
+  name: "Tucker's Lemma: Full Combinatorial & Topological Parity Suite in 1D and 2D"
   authors:
     - "Noah Cohen"
   responsible_maintainers:
     - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
-    A machine-checked Lean 4 formalization of Tutte–Edmonds combinatorial map invariants,
-    face-degree handshaking inequalities, and planar edge bounds across two carrier frameworks:
-    (1) Tutte–Edmonds Combinatorial Maps (dart rotation systems on finite sets with edge involution
-    alpha and vertex permutation sigma), proving the universal even parity of the Euler characteristic
-    chi(M) via the permutation signature homomorphism, the face-cycle handshaking inequality k * F <= 2E
-    derived from absence of monogons and face degree >= k, planar edge bounds E <= 3V - 6 and E <= 2V - 4
-    derived conditionally under the hypothesis chi(M) = 2, average degree bound 2E < 6V, combinatorial
-    parameter obstructions for K5 (V=5, E=10, chi <= 0, genus >= 1) and K3,3 (V=6, E=9, chi <= 0, genus >= 1),
-    and a concrete toroidal embedding certificate on 20 darts with chi = 0 and genus = 1;
-    (2) SimpleGraph Trees, formulating Euler's tree relation V - E + 1 = 2 by wrapping Mathlib's
-    pre-existing SimpleGraph.IsTree.card_edgeFinset theorem.
-    Continuous surface embeddings and topological realizations of genus are outside the formal scope.
+    A complete machine-checked Lean 4 formalization of Tucker's Lemma (Albert W. Tucker, 1945)
+    and the combinatorial Borsuk–Ulam theorem in 1D and 2D without artificial conditions. Formalizes
+    four foundational pillars: (1) 1D discrete sign-change parity and antipodal interval subdivision lemma;
+    (2) 2D combinatorial double counting of face doors and modulo-2 parity conservation on edge-pseudomanifolds;
+    (3) the boundary cycle engine on antipodally symmetric disk triangulations proving that non-complementary
+    boundary labelings have odd boundary door parity, thereby establishing the full, unconditional 2D Tucker's Lemma;
+    and (4) the concrete 6-vertex, 8-face, 12-edge octahedral 2-sphere S^2_8 triangulation.
+    All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 classification:
-  arxiv: [math.CO]
-  msc2020: ["05C10", "52B05", "57M15"]
+  arxiv: [math.CO, math.AT]
+  msc2020: ["05C10", "55M20", "57M15"]
 
 sources:
-  - title: "Elementa doctrinae solidorum"
+  - title: "Some topological properties of disk and sphere"
     type: paper
-    year: 1758
-    venue: "Novi Commentarii Academiae Scientiarum Petropolitanae"
+    year: 1945
+    venue: "Proceedings of the First Canadian Mathematical Congress, Montreal"
     authors:
-      - "Leonhard Euler"
-    relationship: inspired_by
-  - title: "Recherches sur les polyèdres"
-    type: paper
-    year: 1813
-    venue: "Journal de l'École Polytechnique"
-    authors:
-      - "Augustin-Louis Cauchy"
+      - "Albert W. Tucker"
     relationship: formalizes
-  - title: "A combinatorial representation for polyhedral surfaces"
+    note: >-
+      Formalizes Tucker's 1945 combinatorial lemma for 1D antipodal paths and 2D triangulated disks
+      and spheres, establishing complementary edge existence under antipodal sign labelings.
+  - title: "A generalization of Tucker's combinatorial lemma with topological applications"
     type: paper
-    year: 1960
-    venue: "Notices of the American Mathematical Society"
+    year: 1952
+    venue: "Annals of Mathematics"
     authors:
-      - "Jack Edmonds"
-    relationship: formalizes
-  - title: "A census of planar maps"
-    type: paper
-    year: 1962
-    venue: "Canadian Journal of Mathematics"
-    doi: "https://doi.org/10.4153/CJM-1962-002-9"
-    authors:
-      - "W. T. Tutte"
+      - "Ky Fan"
     relationship: adapts
     note: >-
-      Formalization formalizes Tutte's combinatorial map rotation system framework for 2-cell surface embeddings.
-  - title: "Über das Problem der Nachbargebiete"
+      Adapts Ky Fan's multidimensional antipodal labeling perspective to discrete combinatorial triangulations
+      and concrete octahedral spheres.
+  - title: "A constructive proof of Tucker's combinatorial lemma for primitive sets"
     type: paper
-    year: 1891
-    venue: "Mathematische Annalen"
-    doi: "https://doi.org/10.1007/BF01199276"
+    year: 1981
+    venue: "Mathematics of Operations Research"
     authors:
-      - "Lothar Heffter"
+      - "Robert M. Freund"
+      - "Michael J. Todd"
     relationship: adapts
     note: >-
-      Formalization constructs the concrete rotation system for the toroidal embedding of K5.
-
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Acyclic.lean"
-    relationship: builds-on
-    note: >-
-      The tree theorem `tree_euler_formula` is an arithmetic wrapper of Mathlib's pre-existing
-      `SimpleGraph.IsTree.card_edgeFinset` theorem, reformulating |E| = |V| - 1 into the Euler form |V| - |E| + 1 = 2.
+      Formalizes Freund and Todd's door-counting double-counting identity and local triangular face
+      parity invariant on 2D edge-pseudomanifolds.
 
 automation:
   methods:
