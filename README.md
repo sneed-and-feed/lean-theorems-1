@@ -12,43 +12,45 @@ construction with its exact cardinality are fully proved.
 
 ## Table of Theorems
 
-| # | Theorem | Primary Declaration | Mathematical Domain | Reference |
-| :---: | :--- | :--- | :--- | :--- |
-| 1 | **Desargues's Theorem: Vector Identity & Proper Projective Converse** | [`desargues_vector`](Formalization/DesarguesVector.lean), [`desargues_converse_projective_plane`](Formalization/DesarguesVector.lean) | Projective & Affine Geometry | Bosse/Desargues (1647/1648), Coghetto (2021), Wiedijk #53 |
-| 2 | **Graham–Pollak Theorem** | [`graham_pollak`](Formalization/GrahamPollak.lean) | Algebraic Combinatorics | Graham & Pollak (1971), Tverberg (1982) |
-| 3 | **Bondy's Theorem on Induced Subsets** | [`bondy_induced_subsets`](Formalization/BondyInducedSubsets.lean) | Extremal Set Theory & VC Theory | Bondy (1972) |
-| 4 | **Bollobás's Two Families Theorem** | [`bollobas_two_families`](Formalization/BollobasTwoFamilies.lean) | Extremal Combinatorics | Bollobás (1965) |
-| 5 | **Ore's & Dirac's Theorems** | [`ore_hamiltonian`](Formalization/OreHamiltonian.lean), [`dirac_hamiltonian`](Formalization/OreHamiltonian.lean) | Structural Graph Theory | Ore (1960), Dirac (1952) |
-| 6 | **Descartes's Rule of Signs** | [`descartes_rule_of_signs`](Formalization/DescartesSigns.lean) | Real Algebraic Geometry & Polynomials | Descartes (1637), Wiedijk #73 |
-| 7 | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | [`tree_euler_formula`](Formalization/EulerPolyhedron.lean), [`planar_edge_bound`](Formalization/EulerPolyhedron.lean), [`k5_genus_ge_one`](Formalization/EulerPolyhedron.lean), [`k5_torus_eulerChar`](Formalization/EulerPolyhedron.lean), [`combinatorialMap_eulerChar_is_even`](Formalization/EulerPolyhedron.lean) | Combinatorial Graph Theory & Topological Maps | Euler (1758), Cauchy (1813), Edmonds (1960), Tutte (1963), Wiedijk #13 |
-| 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 |
-| 9 | **De Bruijn–Erdős Theorem on Incidence Geometry & Near-Pencil Tightness** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean), [`de_bruijn_erdos_tight`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) |
-| 10 | **Schur's Theorem in Additive Combinatorics and Group Theory** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`group_schurs_theorem`](Formalization/SchursTheorem.lean), [`addCommGroup_schurs_theorem`](Formalization/SchursTheorem.lean), [`finite_addCommGroup_partition_regular`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory, Additive Combinatorics & Abstract Group Theory | Schur (1916), Ramsey (1930), Graham-Rothschild-Spencer (1990) |
-| 11 | **Erdős–Ko–Rado, Small-Parameter Stability, and Hilton–Milner Sharpness** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_uniqueness_one`](Formalization/ErdosKoRado.lean), [`hilton_milner_stability_two`](Formalization/ErdosKoRado.lean), [`exists_hiltonMilner_extremizer`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Hilton & Milner (1967), Katona (1972) |
-| 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 |
-| 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 |
-| 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) |
-| 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 |
-| 16 | **Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)** | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`tverbergs_theorem_of_card_ge`](Formalization/TverbergsTheorem.lean), [`tverberg_bridge`](Formalization/TverbergsTheorem.lean), [`tverberg_1d`](Formalization/TverbergsTheorem.lean), [`colorful_tverberg_1d`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Combinatorial Convex Geometry & Discrete Geometry | Tverberg (1966), Bárány (1982), Bárány, Larman, Pach (1992), Sarkaria (1992) |
-| 17 | **Dilworth's & Mirsky's Decomposition Theorems** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean), [`mirsky_theorem`](Formalization/DilworthTheorem.lean), [`mirsky_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Mirsky (1971), Perles (1963) |
-| 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) |
-| 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) |
-| 20 | **Pick's Theorem on Lattice Polygons** | [`picks_theorem`](Formalization/PicksTheorem.lean), [`picks_theorem_two_area`](Formalization/PicksTheorem.lean), [`picks_theorem_additivity`](Formalization/PicksTheorem.lean) | Discrete & Lattice Geometry | Pick (1899), Wiedijk #92 |
-| 21 | **Erdős–Szekeres Convex Polygon Theorem (Happy Ending)** | [`erdos_szekeres_convex_polygon`](Formalization/ErdosSzekeresConvex.lean), [`erdos_szekeres_triangle`](Formalization/ErdosSzekeresConvex.lean), [`erdos_szekeres_four_points`](Formalization/ErdosSzekeresConvex.lean) | Discrete & Combinatorial Geometry | Erdős & Szekeres (1935), Klein (1935) |
-| 22 | **The Crossing Lemma** | [`crossing_lemma`](Formalization/CrossingLemma.lean) | Topological Graph Theory & Discrete Geometry | Ajtai, Chvátal, Newborn, Szemerédi (1982), Leighton (1983) |
-| 23 | **Kneser's Graph Coloring Upper Bound** | [`kneser_graph_colorable`](Formalization/KneserLovasz.lean) | Combinatorics & Graph Coloring | Kneser (1955), Lovász (1978) |
-| 24 | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem** | [`tucker_2d_theorem`](Formalization/TuckersLemma.lean), [`tuckers_lemma`](Formalization/TuckersLemma.lean), [`tuckers_lemma_2d`](Formalization/TuckersLemma.lean), [`octahedron_tuckers_lemma`](Formalization/TuckersLemma.lean), [`tucker_1d`](Formalization/TuckersLemma.lean), [`double_counting_doors`](Formalization/TuckersLemma.lean) | Topological Combinatorics & Parity Invariants | Tucker (1945), Fan (1952), Freund & Todd (1981) |
-| 25 | **The Friendship Windmill Structure Theorem** | [`friendship_windmill`](Formalization/FriendshipWindmill.lean), [`friendship_matching_on_punctured`](Formalization/FriendshipWindmill.lean), [`friendship_windmill_edge_count`](Formalization/FriendshipWindmill.lean) | Extremal & Structural Graph Theory | Erdős, Rényi, & Sós (1966) |
-| 26 | **General $n$-Dimensional Sperner's Lemma & Specializations** | [`sperner_nd_parity`](Formalization/SpernerND.lean), [`sperner_nd_odd`](Formalization/SpernerND.lean), [`sperner_nd_exists`](Formalization/SpernerND.lean), [`sperner_3d_parity`](Formalization/Sperner3D.lean) | Topological Combinatorics & Simplicial Topology | Sperner (1928), Kuhn (1968) |
-| 27 | **Frankl–Wilson Theorem on Restricted Intersections** | [`frankl_wilson_uniform`](Formalization/FranklWilson.lean), [`frankl_wilson_general`](Formalization/FranklWilson.lean) | Extremal Combinatorics & Polynomial Method | Frankl & Wilson (1981) |
-| 28 | **Beck's Theorem on Incidence Geometry** | [`sum_card_pairs_eq`](Formalization/BecksTheorem.lean), [`pair_counting_bound`](Formalization/BecksTheorem.lean), [`becks_dichotomy_parameterized`](Formalization/BecksTheorem.lean) | Combinatorial & Incidence Geometry | Beck (1983) |
-| 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) |
-| 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) |
-| 31 | **Tutte's 1-Factor Theorem & Tutte–Berge Formula** | [`tutte_1factor_theorem`](Formalization/TutteOneFactor.lean), [`tutte_necessity`](Formalization/TutteOneFactor.lean), [`tutte_berge_min_eq_card_sub_defect`](Formalization/TutteOneFactor.lean), [`matchingDefect_nonpos_iff_hasOneFactor`](Formalization/TutteOneFactor.lean) | Structural Graph Theory & Factorizations | Tutte (1947), Berge (1958) |
-| 32 | **Lovász's Colorful Helly Theorem (Bárány 1982 Primal-Dual Framework)** | [`colorful_helly_all_dimensions`](Formalization/ColorfulHelly.lean), [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Lovász (1974), first published proof: Bárány (1982) |
-| 33 | **Elekes's Sum-Product Inequality** | [`elekes_product_sum_bound`](Formalization/ElekesSumProduct.lean), [`elekes_max_sum_product_bound`](Formalization/ElekesSumProduct.lean), [`elekes_productset_growth_of_small_sumset`](Formalization/ElekesSumProduct.lean) | Additive Combinatorics & Incidence Geometry | Elekes (1997), Erdős & Szemerédi (1983) |
-| 34 | **Bárány's Colorful Carathéodory Theorem, Selection Lemmas, & Centerpoints** | [`colorful_caratheodory_point`](Formalization/ColorfulCaratheodory.lean), [`colorful_caratheodory_origin`](Formalization/ColorfulCaratheodory.lean), [`caratheodory_classical`](Formalization/ColorfulCaratheodory.lean), [`first_selection_lemma_1d`](Formalization/ColorfulCaratheodory.lean), [`centerpoint_1d`](Formalization/ColorfulCaratheodory.lean), [`colorful_selection_lemma_1d`](Formalization/ColorfulCaratheodory.lean) | Convex & Discrete Geometry | Bárány (1982), Carathéodory (1907), Rado (1946) |
-| 35 | **Kőnig–Egerváry Duality Theorem & Gallai Identities** | [`konig_duality`](Formalization/KonigMatching.lean), [`konig_duality_le`](Formalization/KonigMatching.lean), [`weak_duality`](Formalization/KonigMatching.lean), [`gallai_independence_vertex_cover`](Formalization/KonigMatching.lean), [`konig_independence_matching`](Formalization/KonigMatching.lean) | Structural Graph Theory & Combinatorial Optimization | Kőnig (1931), Egerváry (1931), Gallai (1959) |
+The primary build target [`Formalization.lean`](Formalization.lean) compiles the **21 active, machine-checked theorem suites** (100% verified, 0 custom axioms, 0 `sorry`). Historical formalizations, classical pedagogical instances, and elementary parameter reductions are retained in place within `Formalization/` and decoupled from the root target to ensure rapid compilation and long-term insulation from upstream Mathlib drift.
+
+| # | Theorem | Primary Declaration | Mathematical Domain | Reference | Status & Mathematical Scope |
+| :---: | :--- | :--- | :--- | :--- | :--- |
+| 1 | **Desargues's Theorem: Vector Identity & Proper Projective Converse** | [`desargues_vector`](Formalization/DesarguesVector.lean), [`desargues_converse_projective_plane`](Formalization/DesarguesVector.lean) | Projective & Affine Geometry | Bosse/Desargues (1647/1648), Coghetto (2021), Wiedijk #53 | Vector algebra identity & projective plane converse (Decoupled from root build) |
+| 2 | **Graham–Pollak Theorem** | [`graham_pollak`](Formalization/GrahamPollak.lean) | Algebraic Combinatorics | Graham & Pollak (1971), Tverberg (1982) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 3 | **Bondy's Theorem on Induced Subsets** | [`bondy_induced_subsets`](Formalization/BondyInducedSubsets.lean) | Extremal Set Theory & VC Theory | Bondy (1972) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 4 | **Bollobás's Two Families Theorem** | [`bollobas_two_families`](Formalization/BollobasTwoFamilies.lean) | Extremal Combinatorics | Bollobás (1965) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 5 | **Ore's & Dirac's Theorems** | [`ore_hamiltonian`](Formalization/OreHamiltonian.lean), [`dirac_hamiltonian`](Formalization/OreHamiltonian.lean) | Structural Graph Theory | Ore (1960), Dirac (1952) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 6 | **Descartes's Rule of Signs** | [`descartes_rule_of_signs`](Formalization/DescartesSigns.lean) | Real Algebraic Geometry & Polynomials | Descartes (1637), Wiedijk #73 | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 7 | **Euler's Polyhedron Formula & Planar Map Invariants** | [`tree_euler_formula`](Formalization/EulerPolyhedron.lean), [`planar_edge_bound`](Formalization/EulerPolyhedron.lean), [`k5_genus_ge_one`](Formalization/EulerPolyhedron.lean), [`k5_torus_eulerChar`](Formalization/EulerPolyhedron.lean), [`combinatorialMap_eulerChar_is_even`](Formalization/EulerPolyhedron.lean) | Combinatorial Graph Theory & Topological Maps | Euler (1758), Cauchy (1813), Edmonds (1960), Tutte (1963), Wiedijk #13 | Combinatorial maps, dart permutations, and $E \le 3V - 6$ (Continuous embeddings unformalized; Decoupled from root build) |
+| 8 | **Sperner's Lemma (1D & 2D)** | [`sperner_1d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_parity`](Formalization/SpernersLemma.lean), [`sperner_2d_exists`](Formalization/SpernersLemma.lean) | Topological Combinatorics & Fixed Point Theory | Sperner (1928), Wiedijk #57 | Simplicial parity (Superseded by general $n$-D Sperner in row 26; Decoupled from root build) |
+| 9 | **De Bruijn–Erdős Theorem on Incidence Geometry & Near-Pencil Tightness** | [`de_bruijn_erdos`](Formalization/DeBruijnErdos.lean), [`de_bruijn_erdos_tight`](Formalization/DeBruijnErdos.lean) | Incidence Geometry & Extremal Combinatorics | De Bruijn & Erdős (1948) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 10 | **Schur's Theorem in Additive Combinatorics and Group Theory** | [`schurs_theorem`](Formalization/SchursTheorem.lean), [`group_schurs_theorem`](Formalization/SchursTheorem.lean), [`addCommGroup_schurs_theorem`](Formalization/SchursTheorem.lean), [`finite_addCommGroup_partition_regular`](Formalization/SchursTheorem.lean), [`ramsey_triangle`](Formalization/SchursTheorem.lean) | Ramsey Theory, Additive Combinatorics & Abstract Group Theory | Schur (1916), Ramsey (1930), Graham-Rothschild-Spencer (1990) | Classical sum-free integer coloring bounds & group Schur partitions (Decoupled from root build) |
+| 11 | **Erdős–Ko–Rado, Small-Parameter Stability, and Hilton–Milner Sharpness** | [`erdos_ko_rado`](Formalization/ErdosKoRado.lean), [`erdos_ko_rado_uniqueness_one`](Formalization/ErdosKoRado.lean), [`hilton_milner_stability_two`](Formalization/ErdosKoRado.lean), [`exists_hiltonMilner_extremizer`](Formalization/ErdosKoRado.lean) | Extremal Set Theory & Combinatorics | Erdős, Ko, & Rado (1961), Hilton & Milner (1967), Katona (1972) | **100% Verified (0 axioms)** — Active in `Formalization.lean` ($k \ge 3$ Hilton–Milner bound open) |
+| 12 | **Sylvester–Gallai Theorem** | [`sylvester_gallai`](Formalization/SylvesterGallai.lean) | Incidence & Euclidean Geometry | Sylvester (1893), Gallai (1944), Kelly (1948), Wiedijk #98 | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 13 | **Hall's Marriage Theorem** | [`hall_marriage_theorem`](Formalization/HallMarriage.lean) | Combinatorial Matching Theory | Hall (1935), Halmos & Vaughan (1950), Wiedijk #87 | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 14 | **The Friendship Theorem** | [`friendship_theorem`](Formalization/FriendshipTheorem.lean) | Extremal & Spectral Graph Theory | Erdős, Rényi, & Sós (1966), Wilf (1971) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 15 | **Radon's Lemma & Helly's Theorem** | [`radons_theorem`](Formalization/RadonHelly.lean), [`hellys_theorem`](Formalization/RadonHelly.lean) | Convex & Discrete Geometry | Radon (1921), Helly (1923), Wiedijk #99 | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 16 | Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$) | [`tverbergs_theorem`](Formalization/TverbergsTheorem.lean), [`tverbergs_theorem_of_card_ge`](Formalization/TverbergsTheorem.lean), [`tverberg_bridge`](Formalization/TverbergsTheorem.lean), [`tverberg_1d`](Formalization/TverbergsTheorem.lean), [`colorful_tverberg_1d`](Formalization/TverbergsTheorem.lean), [`sarkaria_tverberg`](Formalization/TverbergsTheorem.lean) | Combinatorial Convex Geometry & Discrete Geometry | Tverberg (1966), Bárány (1982), Bárány, Larman, Pach (1992), Sarkaria (1992) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 17 | **Dilworth's & Mirsky's Decomposition Theorems** | [`dilworth_theorem`](Formalization/DilworthTheorem.lean), [`dilworth_duality`](Formalization/DilworthTheorem.lean), [`mirsky_theorem`](Formalization/DilworthTheorem.lean), [`mirsky_duality`](Formalization/DilworthTheorem.lean) | Poset & Combinatorial Order Theory | Dilworth (1950), Mirsky (1971), Perles (1963) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 18 | **Chvátal's Art Gallery Theorem** | [`art_gallery_theorem`](Formalization/ArtGalleryTheorem.lean), [`min_color_class_le_third`](Formalization/ArtGalleryTheorem.lean) | Computational Geometry & Graph Coloring | Chvátal (1975), Fisk (1978) | Fisk 3-coloring pigeonhole lemma assuming 3-colorability; polygon triangulation unformalized (Decoupled from root build) |
+| 19 | **Cauchy's Arm Lemma & Convex Rigidity** | [`cauchy_arm_lemma`](Formalization/CauchyArmLemma.lean), [`cauchy_arm_lemma_two`](Formalization/CauchyArmLemma.lean) | Discrete & Euclidean Geometry | Cauchy (1813), Schoenberg & Klee (1969) | Restricted to $n \le 2$ (3-vertex Law of Cosines monotonicity; Decoupled from root build) |
+| 20 | **Pick's Theorem on Lattice Polygons** | [`picks_theorem`](Formalization/PicksTheorem.lean), [`picks_theorem_two_area`](Formalization/PicksTheorem.lean), [`picks_theorem_additivity`](Formalization/PicksTheorem.lean) | Discrete & Lattice Geometry | Pick (1899), Wiedijk #92 | Elementary lattice polygon area formula (Decoupled from root build) |
+| 21 | **Erdős–Szekeres Convex Polygon Theorem (Happy Ending)** | [`erdos_szekeres_convex_polygon`](Formalization/ErdosSzekeresConvex.lean), [`erdos_szekeres_triangle`](Formalization/ErdosSzekeresConvex.lean), [`erdos_szekeres_four_points`](Formalization/ErdosSzekeresConvex.lean) | Discrete & Combinatorial Geometry | Erdős & Szekeres (1935), Klein (1935) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 22 | **The Crossing Lemma** | [`crossing_lemma`](Formalization/CrossingLemma.lean) | Topological Graph Theory & Discrete Geometry | Ajtai, Chvátal, Newborn, Szemerédi (1982), Leighton (1983) | Real scalar inequality; topological drawing and planar crossing number unformalized (Decoupled from root build) |
+| 23 | **Kneser's Graph Coloring Upper Bound** | [`kneser_graph_colorable`](Formalization/KneserLovasz.lean) | Combinatorics & Graph Coloring | Kneser (1955), Lovász (1978) | Kneser 1955 upper bound; Lovász topological lower bound $\chi(KG_{n,k}) \ge n - 2k + 2$ unformalized (Decoupled from root build) |
+| 24 | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem** | [`tucker_2d_theorem`](Formalization/TuckersLemma.lean), [`tuckers_lemma`](Formalization/TuckersLemma.lean), [`tuckers_lemma_2d`](Formalization/TuckersLemma.lean), [`octahedron_tuckers_lemma`](Formalization/TuckersLemma.lean), [`tucker_1d`](Formalization/TuckersLemma.lean), [`double_counting_doors`](Formalization/TuckersLemma.lean) | Topological Combinatorics & Parity Invariants | Tucker (1945), Fan (1952), Freund & Todd (1981) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 25 | **The Friendship Windmill Structure Theorem** | [`friendship_windmill`](Formalization/FriendshipWindmill.lean), [`friendship_matching_on_punctured`](Formalization/FriendshipWindmill.lean), [`friendship_windmill_edge_count`](Formalization/FriendshipWindmill.lean) | Extremal & Structural Graph Theory | Erdős, Rényi, & Sós (1966) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 26 | General $n$-Dimensional Sperner's Lemma & Specializations | [`sperner_nd_parity`](Formalization/SpernerND.lean), [`sperner_nd_odd`](Formalization/SpernerND.lean), [`sperner_nd_exists`](Formalization/SpernerND.lean), [`sperner_3d_parity`](Formalization/Sperner3D.lean) | Topological Combinatorics & Simplicial Topology | Sperner (1928), Kuhn (1968) | **100% Verified (0 axioms)** — Active in `Formalization.lean` (General Kuhn cubical triangulation) |
+| 27 | **Frankl–Wilson Theorem on Restricted Intersections** | [`frankl_wilson_uniform`](Formalization/FranklWilson.lean), [`frankl_wilson_general`](Formalization/FranklWilson.lean) | Extremal Combinatorics & Polynomial Method | Frankl & Wilson (1981) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 28 | **Beck's Theorem on Incidence Geometry** | [`sum_card_pairs_eq`](Formalization/BecksTheorem.lean), [`pair_counting_bound`](Formalization/BecksTheorem.lean), [`becks_dichotomy_parameterized`](Formalization/BecksTheorem.lean) | Combinatorial & Incidence Geometry | Beck (1983) | Point-pair double counting bound; $\Omega(n^2)$ dichotomy unformalized (Decoupled from root build) |
+| 29 | **Szemerédi–Trotter Theorem on Point-Line Incidences** | [`szemeredi_trotter_bound`](Formalization/SzemerediTrotter.lean), [`k_rich_lines_bound`](Formalization/SzemerediTrotter.lean), [`szemeredi_trotter_uniform_bound`](Formalization/SzemerediTrotter.lean) | Incidence Geometry & Topological Graph Theory | Szemerédi & Trotter (1983), Székely (1997) | Bound conditional on carrier baking in crossing inequality (Decoupled from root build) |
+| 30 | **Erdős Unit Distances Bound via Circle Crossing** | [`erdos_unit_distances_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_edge_bound`](Formalization/ErdosUnitDistances.lean), [`erdos_unit_distances_uniform_bound`](Formalization/ErdosUnitDistances.lean) | Discrete & Extremal Geometry | Spencer, Szemerédi, Trotter (1984), Székely (1997) | Bound conditional on carrier baking in crossing inequality (Decoupled from root build) |
+| 31 | **Tutte's 1-Factor Theorem & Tutte–Berge Formula** | [`tutte_1factor_theorem`](Formalization/TutteOneFactor.lean), [`tutte_necessity`](Formalization/TutteOneFactor.lean), [`tutte_berge_min_eq_card_sub_defect`](Formalization/TutteOneFactor.lean), [`matchingDefect_nonpos_iff_hasOneFactor`](Formalization/TutteOneFactor.lean) | Structural Graph Theory & Factorizations | Tutte (1947), Berge (1958) | Definitional wrapper around Mathlib's native `SimpleGraph.tutte` (Decoupled from root build) |
+| 32 | **Lovász's Colorful Helly Theorem (Bárány 1982 Primal-Dual Framework)** | [`colorful_helly_all_dimensions`](Formalization/ColorfulHelly.lean), [`colorful_helly`](Formalization/ColorfulHelly.lean), [`colorful_helly_inductive`](Formalization/ColorfulHelly.lean) | Convex & Discrete Geometry | Lovász (1974), first published proof: Bárány (1982) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 33 | **Elekes's Sum-Product Inequality** | [`elekes_product_sum_bound`](Formalization/ElekesSumProduct.lean), [`elekes_max_sum_product_bound`](Formalization/ElekesSumProduct.lean), [`elekes_productset_growth_of_small_sumset`](Formalization/ElekesSumProduct.lean) | Additive Combinatorics & Incidence Geometry | Elekes (1997), Erdős & Szemerédi (1983) | Bound conditional on carrier baking in crossing inequality (Decoupled from root build) |
+| 34 | **Bárány's Colorful Carathéodory Theorem, Selection Lemmas, & Centerpoints** | [`colorful_caratheodory_point`](Formalization/ColorfulCaratheodory.lean), [`colorful_caratheodory_origin`](Formalization/ColorfulCaratheodory.lean), [`caratheodory_classical`](Formalization/ColorfulCaratheodory.lean), [`first_selection_lemma_1d`](Formalization/ColorfulCaratheodory.lean), [`centerpoint_1d`](Formalization/ColorfulCaratheodory.lean), [`colorful_selection_lemma_1d`](Formalization/ColorfulCaratheodory.lean) | Convex & Discrete Geometry | Bárány (1982), Carathéodory (1907), Rado (1946) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
+| 35 | **Kőnig–Egerváry Duality Theorem & Gallai Identities** | [`konig_duality`](Formalization/KonigMatching.lean), [`konig_duality_le`](Formalization/KonigMatching.lean), [`weak_duality`](Formalization/KonigMatching.lean), [`gallai_independence_vertex_cover`](Formalization/KonigMatching.lean), [`konig_independence_matching`](Formalization/KonigMatching.lean) | Structural Graph Theory & Combinatorial Optimization | Kőnig (1931), Egerváry (1931), Gallai (1959) | **100% Verified (0 axioms)** — Active in `Formalization.lean` |
 
 ---
 
@@ -57,7 +59,7 @@ construction with its exact cardinality are fully proved.
 ### 1. Desargues's Theorem: Vector and Axiomatic Projective Forms
 * **Module:** [`Formalization/DesarguesVector.lean`](Formalization/DesarguesVector.lean)
 * **Theorems:** `desargues_vector`, `desargues_projective_plane_proper`, `desargues_converse_projective_plane`, `exists_centralPerspective_iff_exists_properAxialPerspective`, `axialPerspective_not_implies_central`
-* **Mathematical Statement:** Let $V$ be a module over a commutative ring $K$. If two triangles $(A_1, B_1, C_1)$ and $(A_2, B_2, C_2)$ are in central perspective from a center $O$ with scaling coefficients $(a, b, c)$ and $(\lambda, \mu, \nu)$, then their corresponding side-intersection points:
+* **Mathematical Statement:** Let $V$ be a module over a commutative ring $K$. If two triangles with vertices $(A_1, B_1, C_1), (A_2, B_2, C_2)$ are in central perspective from a center $O$ with scaling coefficients $(a, b, c)$ and $(\lambda, \mu, \nu)$, then their corresponding side-intersection points:
   $$P = \mu A_2 - \lambda B_2, \quad Q = \nu B_2 - \mu C_2, \quad R = \lambda C_2 - \nu A_2$$
   satisfy the linear dependence relation $\nu P + \lambda Q + \mu R = 0$ demonstrating axial perspective (collinearity).
 
@@ -66,7 +68,13 @@ construction with its exact cardinality are fully proved.
 ### 2. Graham–Pollak Theorem on Bipartite Partitions of Complete Graphs
 * **Module:** [`Formalization/GrahamPollak.lean`](Formalization/GrahamPollak.lean)
 * **Theorems:** `graham_pollak`, `graham_pollak_tight`
-* **Mathematical Statement:** Any partition of the edge set of the complete graph $K_n$ into $m$ complete bipartite graphs $K_{A_k, B_k}$ requires at least $n - 1$ bipartite graphs ($m \ge n - 1$). The star decomposition proves this bound is sharp.
+* **Mathematical Statement:** Any partition of the edge set of the complete graph on $n$ vertices into $m$ complete bipartite graphs $H_k = K_{A_k, B_k}$ requires at least $n - 1$ bipartite graphs:
+
+```math
+E(K_n) = \bigsqcup_{k=1}^m E(K_{A_k, B_k}) \implies m \ge n - 1
+```
+
+The star decomposition proves this bound is sharp.
 
 ---
 
@@ -80,7 +88,7 @@ construction with its exact cardinality are fully proved.
 ### 4. Bollobás's Two Families Theorem (Set Pairs Inequality)
 * **Module:** [`Formalization/BollobasTwoFamilies.lean`](Formalization/BollobasTwoFamilies.lean)
 * **Theorem:** `bollobas_two_families`
-* **Mathematical Statement:** Let $A_1, \dots, A_m$ and $B_1, \dots, B_m$ be finite sets such that $A_i \cap B_j = \emptyset \iff i = j$. Then:
+* **Mathematical Statement:** Let families $\mathcal{A} = \{A_1, \dots, A_m\}$ and $\mathcal{B} = \{B_1, \dots, B_m\}$ be finite sets satisfying $A_i \cap B_j = \emptyset \iff i = j$. Then:
   $$\sum_{i=1}^m \frac{1}{\binom{|A_i| + |B_i|}{|A_i|}} \le 1$$
 
 ---
@@ -107,11 +115,11 @@ construction with its exact cardinality are fully proved.
 * **Modular Package:** [`Formalization/CombinatorialMap/`](Formalization/CombinatorialMap)
   - `Basic.lean`: Darts, edge involution $\alpha$, vertex permutation $\sigma$, faces $\phi = \sigma \alpha$, and topological genus $\mathrm{genus}(M) := 1 - \chi(M)/2$.
   - `FaceDegree.lean`: Cycle sum theory on permutations (`k_mul_card_le_sum`) and face degree handshaking ($3F \le 2E$ and $4F \le 2E$).
-  - `Obstructions.lean`: Classical planar edge bounds ($E \le 3V - 6$, $E \le 2V - 4$) and authentic topological genus obstructions for $K_5$ ($\chi \le 0, \mathrm{genus} \ge 1, \chi \ne 2$) and $K_{3,3}$ ($\chi \le 0, \mathrm{genus} \ge 1, \chi \ne 2$).
+  - `Obstructions.lean`: Classical planar edge bounds ($E \le 3V - 6$, $E \le 2V - 4$) and authentic topological genus obstructions for $K_5$ and $K_{3,3}$ (satisfying $\chi \le 0, \mathrm{genus} \ge 1, \chi \ne 2$).
   - `Parity.lean`: Tutte–Edmonds rotation systems and topological parity theorem $(-1)^{V+E+F} = 1 \implies \chi(M) \equiv 0 \pmod 2$.
   - `Concrete.lean`: Explicit map coordinates for tetrahedron, cube, triangle, square, and kernel-verified toroidal embedding of $K_5$ ($\chi = 0, \mathrm{genus} = 1$) certifying tightness of the genus obstruction.
 * **Theorems:** `tree_euler_formula`, `planar_edge_bound`, `planar_edge_bound_triangle_free`, `average_degree_lt_six`, `k5_eulerChar_le_zero`, `k5_genus_ge_one`, `k5_not_planar`, `k33_eulerChar_le_zero`, `k33_genus_ge_one`, `k33_not_planar`, `k5_torus_eulerChar`, `k5_torus_genus`, `tetrahedron_eulerChar`, `combinatorialMap_eulerChar_is_even`
-* **Mathematical Statement:** For any tree $T$, $V - E + 1 = 2$. For any combinatorial map $M$, $\chi(M) = V - E + F$ is even. A simple map has $3F \le 2E$, implying $E \le 3V - 6$ for planar maps ($\chi = 2$), while $K_5$ and $K_{3,3}$ satisfy $\chi \le 0$ and $\mathrm{genus} \ge 1$, precluding planar embeddings.
+* **Mathematical Statement:** For any tree $T$, $V - E + 1 = 2$. For any combinatorial map $M$, $\chi(M) = V - E + F$ is even. A simple map has $3F \le 2E$, implying $E \le 3V - 6$ for planar maps ($\chi = 2$), while graphs $K_5, K_{3,3}$ satisfy $\chi \le 0$ and $\mathrm{genus} \ge 1$, precluding planar embeddings.
 
 
 ---
@@ -135,7 +143,7 @@ construction with its exact cardinality are fully proved.
 * **Submodules:**
   - **Foundational & Integer Formulations:** [`Formalization/SchursTheorem/Basic.lean`](Formalization/SchursTheorem/Basic.lean)
     - `ramsey_triangle`: Multicolor triangle Ramsey theorem on complete graph edge-colorings.
-    - `schurs_theorem`: Monochromatic solutions to $x + y = z$ in $\{1, \dots, B_r\}$ where $B_r = \text{ramseyTriangleBound } r$.
+    - `schurs_theorem`: Monochromatic solutions to $x + y = z$ in $\{1, \dots, B_r\}$ where bound $B_r = \mathrm{ramseyTriangleBound}(r)$.
     - `schurs_theorem_color_classes`: Any finite integer coloring contains a non-sum-free color class.
     - `schurs_theorem_partition`: Partition regularity under finite coverings of $\{1, \dots, B_r\}$.
   - **Group-Theoretic & Algebraic Extensions:** [`Formalization/SchursTheorem/Group.lean`](Formalization/SchursTheorem/Group.lean)
@@ -146,7 +154,7 @@ construction with its exact cardinality are fully proved.
   - **Auxiliary Counting & Linear Equation Modules (Library):**
     - [`Formalization/SchursTheorem/Quantitative.lean`](Formalization/SchursTheorem/Quantitative.lean): Exact count $\frac{(N-1)N}{2}$ for 1-colorings ($r = 1$) and disjoint-block counting relation $k \le N \cdot |\text{monoSchurTriples } \chi N|$ for $N \ge k B_r$.
     - [`Formalization/SchursTheorem/Rado.lean`](Formalization/SchursTheorem/Rado.lean): Constant-solution zero-sum corollary ($\sum c_i = 0$) and Schur equation $(1, 1, -1)$ regularity.
-* **Mathematical Statement:** For every $r \ge 1$, any $r$-coloring of the integers $\{1, \dots, B_r\}$, or of the quotient/difference set $S^{-1}S$ (or $S - S$) of any group $G$ containing a subset with $|S| \ge B_r = \text{ramseyTriangleBound } r$, contains non-trivial monochromatic solutions to $x + y = z$ or $x \cdot y = z$. All statements rigorously maintain bound fidelity $(B_r \ge R_r(3) \ge S(r))$.
+* **Mathematical Statement:** For every $r \ge 1$, any $r$-coloring of the integers $\{1, \dots, B_r\}$, or of the quotient/difference set $S^{-1}S$ (or $S - S$) of any group $G$ containing a subset with $|S| \ge B_r = \mathrm{ramseyTriangleBound}(r)$, contains non-trivial monochromatic solutions to $x + y = z$ or $x \cdot y = z$, with bound fidelity $B_r \ge R_r(3) \ge S(r)$.
 
 ---
 
@@ -200,7 +208,11 @@ construction with its exact cardinality are fully proved.
   - `Dim1.lean`: Classical 1D Tverberg theorem (`tverberg_1d`, `tverberg_1d_of_card_ge`) via symmetric-rank pairing.
   - `Colorful.lean`: 1D Colorful Tverberg Theorem (`colorful_tverberg_1d`, Bárány–Larman–Pach 1992) across two color classes of size $r$.
 * **Theorems:** `tverbergs_theorem`, `tverbergs_theorem_of_card_ge`, `tverberg_bridge`, `tverberg_1d`, `colorful_tverberg_1d`, `sarkaria_tverberg`
-* **Mathematical Statement:** For any $d \ge 0$ and $r \ge 1$, any finite set $S \subset \mathbb{R}^d$ of cardinality $N = (r - 1)(d + 1) + 1$ can be partitioned into $r$ pairwise disjoint subsets $A_1, \dots, A_r$ whose convex hulls share a common point of intersection $(\bigcap_{i=1}^r \mathrm{conv}(A_i) \ne \emptyset)$.
+* **Mathematical Statement:** For any $d \ge 0$ and $r \ge 1$, any finite set $S \subset \mathbb{R}^d$ of cardinality $N = (r - 1)(d + 1) + 1$ can be partitioned into $r$ pairwise disjoint subsets $A_1, \dots, A_r$ whose convex hulls share a common point of intersection:
+
+```math
+\bigcap_{i=1}^r \mathrm{conv}(A_i) \ne \emptyset
+```
 
 
 ---
@@ -327,7 +339,13 @@ construction with its exact cardinality are fully proved.
 ### 32. Lovász's Colorful Helly Theorem & Bárány (1982) Primal-Dual Framework
 * **Module:** [`Formalization/ColorfulHelly.lean`](Formalization/ColorfulHelly.lean)
 * **Theorems:** `colorful_helly_all_dimensions`, `colorful_helly`, `colorful_helly_inductive`
-* **Mathematical Statement:** Given $d+1$ finite families $\mathcal{F}_0, \dots, \mathcal{F}_d$ of convex sets in $\mathbb{R}^d$, if every colorful transversal intersects, then some family $\mathcal{F}_j$ has $\bigcap_{S \in \mathcal{F}_j} S \ne \emptyset$. Formulates the dual face to Bárány's Colorful Carathéodory theorem.
+* **Mathematical Statement:** Given $d+1$ finite families $\mathcal{F}_0, \dots, \mathcal{F}_d$ of convex sets in $\mathbb{R}^d$, if every colorful transversal intersects, then at least one family has non-empty intersection:
+
+```math
+\exists j \in \{0, \dots, d\}, \quad \bigcap_{S \in \mathcal{F}_j} S \ne \emptyset
+```
+
+This formulates the dual face to Bárány's Colorful Carathéodory theorem.
 
 ---
 
@@ -349,7 +367,7 @@ construction with its exact cardinality are fully proved.
   - `Selection.lean`: 1D Centerpoint Theorem, Bárány's 1982 First Selection Lemma in 1D, and 1D Colorful Selection Lemma.
 * **Theorems:** `colorful_caratheodory_point`, `colorful_caratheodory_origin`, `colorful_caratheodory_dim1`, `colorful_caratheodory_dim2`, `caratheodory_classical`, `caratheodory_classical_deduction`, `centerpoint_1d`, `first_selection_lemma_1d`, `colorful_selection_lemma_1d`
 * **Mathematical Statement:**
-  - **Colorful Carathéodory (Bárány 1982):** For any $d+1$ color classes $S_0, \dots, S_d \subset \mathbb{R}^d$ whose convex hulls all contain $p$, there exists a colorful transversal $f$ $(f(i) \in S_i)$ such that $p \in \mathrm{conv}(\mathrm{range} f)$.
+  - **Colorful Carathéodory (Bárány 1982):** For any $d+1$ color classes $S_0, \dots, S_d \subset \mathbb{R}^d$ whose convex hulls all contain $p$, there exists a colorful transversal $f$ ($f(i) \in S_i$) such that $p \in \mathrm{conv}(\mathrm{range}(f))$.
   - **1D First Selection Lemma (Bárány 1982):** Any finite set of $n \ge 2$ points in $\mathbb{R}^1$ has a median point with halfspace depth $\ge \lfloor (n+1)/2 \rfloor = \lceil n/2 \rceil$ contained in at least $\lfloor n/2 \rfloor \cdot \lceil n/2 \rceil \ge \frac{n^2 - 1}{4}$ spanned intervals ($c_1 = 1/2$).
   - **1D Centerpoint Theorem (Rado 1946):** The median point of any finite point set in $\mathbb{R}^1$ has halfspace depth $\ge \lfloor (n+1)/2 \rfloor = \lceil n/2 \rceil$.
 
