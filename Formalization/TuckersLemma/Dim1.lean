@@ -27,8 +27,8 @@ section Dim1
     there must exist an adjacent transition with `s(i) = -s(i+1)`. -/
 lemma exists_adjacent_sign_change : ∀ (N : ℕ) (s : Fin (N + 1) → ℤ),
     (∀ i, s i = 1 ∨ s i = -1) →
-    s 0 ≠ s ⟨N, by omega⟩ →
-    ∃ (i : ℕ) (hi : i < N), s ⟨i, by omega⟩ = - s ⟨i + 1, by omega⟩
+    s 0 ≠ s (Fin.last N) →
+    ∃ (i : ℕ) (hi : i < N), s ⟨i, Nat.lt_succ_of_lt hi⟩ = - s ⟨i + 1, Nat.succ_lt_succ hi⟩
   | 0, _, _, h_diff => (h_diff rfl).elim
   | n + 1, s, h_val, h_diff => by
     by_cases h_step : s ⟨n, by omega⟩ = s ⟨n + 1, by omega⟩
@@ -43,8 +43,8 @@ lemma exists_adjacent_sign_change : ∀ (N : ℕ) (s : Fin (N + 1) → ℤ),
 theorem tucker_1d (n : ℕ)
     (L : Fin (2 * n + 1) → ℤ)
     (h_range : ∀ i, L i = 1 ∨ L i = -1)
-    (h_antipodal : L 0 = - L ⟨2 * n, by omega⟩) :
-    ∃ (i : ℕ) (hi : i < 2 * n), L ⟨i, by omega⟩ = - L ⟨i + 1, by omega⟩ := by
+    (h_antipodal : L 0 = - L (Fin.last (2 * n))) :
+    ∃ (i : ℕ) (hi : i < 2 * n), L ⟨i, Nat.lt_succ_of_lt hi⟩ = - L ⟨i + 1, Nat.succ_lt_succ hi⟩ := by
   apply exists_adjacent_sign_change (2 * n) L h_range
   intro h
   obtain h1 | h1 := h_range 0 <;> omega

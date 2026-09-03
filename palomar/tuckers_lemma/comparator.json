@@ -6,8 +6,8 @@
     "TuckersLemma.sign_switch_parity",
     "TuckersLemma.double_counting_doors",
     "TuckersLemma.parity_conservation",
-    "TuckersLemma.tucker_2d_theorem",
-    "TuckersLemma.tuckers_lemma",
+    "TuckersLemma.boundary_doors_odd_of_no_comp",
+    "TuckersLemma.tuckers_lemma_2d",
     "TuckersLemma.octahedron_tuckers_lemma"
   ],
   "permitted_axioms": [

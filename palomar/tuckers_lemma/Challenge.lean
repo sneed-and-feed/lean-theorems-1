@@ -6,6 +6,8 @@ import Mathlib.Logic.Equiv.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Data.Fintype.Fin
+import Mathlib.Algebra.Group.Fin.Basic
 
 open Finset
 
@@ -98,8 +100,8 @@ section Dim1
 theorem tucker_1d (n : ℕ)
     (L : Fin (2 * n + 1) → ℤ)
     (h_range : ∀ i, L i = 1 ∨ L i = -1)
-    (h_antipodal : L 0 = - L ⟨2 * n, by omega⟩) :
-    ∃ (i : ℕ) (hi : i < 2 * n), L ⟨i, by omega⟩ = - L ⟨i + 1, by omega⟩ := sorry
+    (h_antipodal : L 0 = - L (Fin.last (2 * n))) :
+    ∃ (i : ℕ) (hi : i < 2 * n), L ⟨i, Nat.lt_succ_of_lt hi⟩ = - L ⟨i + 1, Nat.succ_lt_succ hi⟩ := sorry
 
 /-- Total number of sign switches along a 1D path of length `n`. -/
 def switchCount1D (n : ℕ) (s : Fin (n + 1) → ℤ) : ℕ :=
@@ -127,24 +129,63 @@ theorem double_counting_doors (T : EdgePseudomanifold2D V) (L : V → ℤ) :
 theorem parity_conservation (T : EdgePseudomanifold2D V) (L : V → ℤ) :
     (∑ t ∈ T.faces, doors L t) % 2 = (T.boundaryEdges.filter (isDoor L)).card % 2 := sorry
 
-/-- **Main Theorem: 2D Tucker's Lemma (Albert W. Tucker 1945).**
-    Any labeling `L : V → {±1, ±2}` on an edge-pseudomanifold or symmetric triangulation
-    with an odd number of boundary doors guarantees the existence of a complementary edge
-    in `T.edges`. Proved via the genuine double-counting parity argument with ZERO `h_witness`! -/
-theorem tucker_2d_theorem (T : EdgePseudomanifold2D V) (L : V → ℤ)
-    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
-    (h_bd_odd : (T.boundaryEdges.filter (isDoor L)).card % 2 = 1) :
-    ∃ e ∈ T.edges, IsComplementaryEdge L e := sorry
-
-/-- **Tucker's Lemma (1945) on Symmetric Triangulations:**
-    For any symmetric triangulation `T` with odd boundary door parity and vertex labels in `{±1, ±2}`,
-    there exists a complementary edge. -/
-theorem tuckers_lemma (T : SymmetricTriangulation2D V) (L : V → ℤ)
-    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
-    (h_bd_odd : (T.boundaryEdges.filter (isDoor L)).card % 2 = 1) :
-    ∃ e ∈ T.edges, IsComplementaryEdge L e := sorry
-
 end DoubleCounting
+
+lemma neZero_two_mul_of_pos {k : ℕ} (hk : 0 < k) : NeZero (2 * k) :=
+  ⟨Nat.ne_of_gt (Nat.mul_pos Nat.zero_lt_two hk)⟩
+
+/-- Half-shift index in `Fin (2 * k)` representing antipodal antiposition along the cycle. -/
+def finHalfShift (k : ℕ) (hk : 0 < k) : Fin (2 * k) :=
+  ⟨k, (Nat.two_mul k).symm ▸ Nat.lt_add_of_pos_right hk⟩
+
+section BoundaryCycle
+
+variable {V : Type*} [DecidableEq V]
+
+/-- An abstract 2D antipodally symmetric disk triangulation.
+    Extends `SymmetricTriangulation2D` with an explicit cyclic boundary of length $2k$
+    satisfying the antipodal boundary condition `c(i + k) = antipodal(c(i))`. -/
+structure SymmetricDiskTriangulation2D (V : Type*) [DecidableEq V] extends SymmetricTriangulation2D V where
+  k : ℕ
+  hk : 0 < k
+  boundaryCycle : Fin (2 * k) → V
+  boundary_injective : Function.Injective boundaryCycle
+  boundary_edges :
+    have := neZero_two_mul_of_pos hk
+    toEdgePseudomanifold2D.boundaryEdges =
+      Finset.image (fun i : Fin (2 * k) => {boundaryCycle i, boundaryCycle (i + 1)}) Finset.univ
+  boundary_antipodal :
+    have := neZero_two_mul_of_pos hk
+    ∀ i : Fin (2 * k),
+      antipodal (boundaryCycle i) = boundaryCycle (i + finHalfShift k hk)
+
+instance (T : SymmetricDiskTriangulation2D V) : NeZero (2 * T.k) := neZero_two_mul_of_pos T.hk
+
+/-- The vertices belonging to the boundary cycle. -/
+def boundaryVertices (T : SymmetricDiskTriangulation2D V) : Finset V :=
+  Finset.image T.boundaryCycle Finset.univ
+
+/-- **Boundary Door Parity Theorem:**
+    In an antipodally symmetric disk triangulation `T`, if the vertex labeling `L : V → {±1, ±2}`
+    is antipodal on the boundary and there are no complementary boundary edges,
+    then the total number of boundary doors is odd (1 mod 2). -/
+theorem boundary_doors_odd_of_no_comp (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
+    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
+    (h_anti_bd : ∀ v ∈ boundaryVertices T, L (T.antipodal v) = - L v)
+    (h_no_comp : ∀ e ∈ T.boundaryEdges, ¬ IsComplementaryEdge L e) :
+    (T.boundaryEdges.filter (isDoor L)).card % 2 = 1 := sorry
+
+/-- **Unconditional 2D Tucker's Lemma (Albert W. Tucker, 1945):**
+    For any antipodally symmetric disk triangulation `T` and any vertex labeling `L : V → {±1, ±2}`
+    that is antipodal on the boundary cycle (`∀ v ∈ T.boundaryVertices, L (T.antipodal v) = - L v`),
+    there exists a complementary edge in `T.edges`.
+    Proved without ANY artificial assumptions or preconditions on boundary door parity! -/
+theorem tuckers_lemma_2d (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
+    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
+    (h_anti_bd : ∀ v ∈ boundaryVertices T, L (T.antipodal v) = - L v) :
+    ∃ e ∈ T.edges, IsComplementaryEdge L e := sorry
+
+end BoundaryCycle
 
 section Octahedron
 

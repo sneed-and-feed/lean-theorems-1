@@ -1,6 +1,7 @@
 import Formalization.TuckersLemma.Basic
 import Formalization.TuckersLemma.DoubleCounting
 import Formalization.TuckersLemma.Dim1
+import Formalization.TuckersLemma.BoundaryCycle
 import Formalization.TuckersLemma.Octahedron
 
 open Finset
@@ -25,9 +26,17 @@ open Finset
    - `double_counting_doors`: $\sum_{t \in T.faces} \text{doors}(L, t) = |E_{bd}^{\text{door}}| + 2 |E_{int}^{\text{door}}|$.
    - `parity_conservation`: $(\sum_{t \in T.faces} \text{doors}(L, t)) \equiv |E_{bd}^{\text{door}}| \pmod 2$.
    - `tucker_2d_theorem` / `tuckers_lemma`: If the boundary door count is odd, there exists a complementary edge
-     $\∃ e \in T.edges, \text{IsComplementaryEdge } L e$ (with NO artificial `h_witness`).
+     $\∃ e \in T.edges, \text{IsComplementaryEdge } L e$ (with ZERO artificial `h_witness`).
 
-3. **Concrete Octahedral Sphere Instance (`Formalization.TuckersLemma.Octahedron`):**
+3. **The Missing Bridge: Boundary Cycle & Unconditional 2D Tucker (`Formalization.TuckersLemma.BoundaryCycle`):**
+   - `SymmetricDiskTriangulation2D`: Symmetric disk triangulation with an explicit cyclic boundary.
+   - `boundaryDoorPotential`, `doorStep`: Potential engine on $\{\pm 1, \pm 2\}$.
+   - `path_doorStep_sum_odd_of_antipodal`: Telescoping path parity modulo 2.
+   - `boundary_vertex_degree_two`: 2-regularity of the boundary cycle.
+   - `boundary_doors_odd_of_no_comp`: Odd boundary door parity theorem.
+   - `tuckers_lemma_2d`: **Full, Unconditional 2D Tucker's Lemma** without assuming odd boundary doors.
+
+4. **Concrete Octahedral Sphere Instance (`Formalization.TuckersLemma.Octahedron`):**
    - `OctV`: 6 vertices of the regular octahedron.
    - `octahedron_triangulation`: Canonical 8-face, 12-edge closed symmetric triangulation $S^2_8$.
    - `octahedron_tuckers_lemma`: Every antipodal labeling $L : \text{OctV} \to \{\pm 1, \pm 2\}$
@@ -63,6 +72,17 @@ theorem tuckers_lemma (T : SymmetricTriangulation2D V) (L : V → ℤ)
     (h_bd_odd : (T.boundaryEdges.filter (isDoor L)).card % 2 = 1) :
     ∃ e ∈ T.edges, IsComplementaryEdge L e :=
   symmetric_tucker_2d_of_odd_boundary T L h_range h_bd_odd
+
+/-- **Full, Unconditional 2D Tucker's Lemma (Albert W. Tucker, 1945):**
+    For any antipodally symmetric disk triangulation `T` and any vertex labeling `L : V → {±1, ±2}`
+    that is antipodal on the boundary cycle (`∀ v ∈ T.boundaryVertices, L (T.antipodal v) = - L v`),
+    there exists a complementary edge in `T.edges`.
+    Eliminates all preconditions on boundary door parity! -/
+theorem tuckers_lemma_2d_main (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
+    (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
+    (h_anti_bd : ∀ v ∈ boundaryVertices T, L (T.antipodal v) = - L v) :
+    ∃ e ∈ T.edges, IsComplementaryEdge L e :=
+  tuckers_lemma_2d T L h_range h_anti_bd
 
 /-- Combinatorial Borsuk–Ulam Corollary:
     An odd boundary door count guarantees at least one complementary edge. -/

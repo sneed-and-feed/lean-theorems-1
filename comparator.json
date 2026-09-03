@@ -2,9 +2,13 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "TverbergsTheorem.tverbergs_theorem",
-    "TverbergsTheorem.tverberg_1d",
-    "TverbergsTheorem.colorful_tverberg_1d"
+    "TuckersLemma.tucker_1d",
+    "TuckersLemma.sign_switch_parity",
+    "TuckersLemma.double_counting_doors",
+    "TuckersLemma.parity_conservation",
+    "TuckersLemma.boundary_doors_odd_of_no_comp",
+    "TuckersLemma.tuckers_lemma_2d",
+    "TuckersLemma.octahedron_tuckers_lemma"
   ],
   "permitted_axioms": [
     "propext",
