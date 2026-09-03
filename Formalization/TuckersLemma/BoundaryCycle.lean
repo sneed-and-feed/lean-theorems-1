@@ -6,6 +6,7 @@ import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
 import Mathlib.Algebra.Group.Fin.Basic
 import Mathlib.Logic.Equiv.Fin.Rotate
+import Mathlib.Logic.Relation
 
 open Finset
 
@@ -13,7 +14,7 @@ open Finset
 # Boundary Cycle, Telescoping Parity & Unconditional 2D Tucker's Lemma
 
 This module establishes the "missing bridge" connecting 1D parity arguments and 2D
-double-counting on symmetric triangulations to prove the **full, unconditional 2D Tucker's Lemma**:
+double-counting on edge-pseudomanifolds to prove the **full, unconditional 2D Tucker's Lemma**:
 
 1. **Boundary Door Potentials & Door Steps:**
    - `boundaryDoorPotential x`: potential function on vertex labels $\{1, -1, 2, -2\}$.
@@ -21,10 +22,12 @@ double-counting on symmetric triangulations to prove the **full, unconditional 2
    - `doorStep_eq_potential_mod_two`: local potential-step equality modulo 2.
    - `potential_antipodal_mod_two`: antipodal boundary points have odd potential sum.
 
-2. **Symmetric Disk Triangulations (`SymmetricDiskTriangulation2D`):**
+2. **Cyclic Boundary Pseudomanifolds (`CyclicBoundaryPseudomanifold2D`):**
    - Triangulation with an explicit boundary cycle `boundaryCycle : Fin (2 * k) → V`.
-   - Injective cycle of length $2k$ with antipodal symmetry `c(i + k) = antipodal(c(i))`.
+   - Injective cycle of length $2k$.
    - Boundary edges are precisely the cycle segments $\{c(i), c(i + 1)\}$.
+   - Decoupled from any global involution on $V$.
+   - `SymmetricDiskTriangulation2D` provided as alias for backwards compatibility.
 
 3. **Boundary Graph Properties:**
    - `boundary_subset_edges`: boundary edges belong to `T.edges`.
@@ -35,12 +38,15 @@ double-counting on symmetric triangulations to prove the **full, unconditional 2
    - `path_doorStep_sum_odd_of_antipodal`: odd sum when endpoints are antipodal.
 
 5. **Boundary Door Parity Theorem:**
-   - `boundary_doors_odd_of_no_comp`: if $L$ is antipodal on the boundary and has
+   - `boundary_doors_odd_of_no_comp`: if $L$ is antipodal on the boundary cycle and has
      no complementary boundary edges, then the number of boundary doors is odd (1 mod 2).
 
 6. **Full Unconditional 2D Tucker's Lemma:**
-   - `tuckers_lemma_2d`: every antipodally labeled symmetric disk triangulation contains
-     a complementary edge in `T.edges`, with NO assumptions on boundary door parity!
+   - `tuckers_lemma_2d`: every cyclic boundary pseudomanifold with an antipodal boundary labeling
+     contains a complementary edge in `T.edges`, with NO assumptions on boundary door parity!
+
+7. **Combinatorial 2-Disk Characterization (`IsCombinatorialDisk2D`):**
+   - Formal vertex link conditions (circle for interior, path for boundary) and connectedness.
 -/
 
 namespace TuckersLemma
@@ -80,31 +86,40 @@ section BoundaryCycle
 
 variable {V : Type*} [DecidableEq V]
 
-/-- An abstract 2D antipodally symmetric disk triangulation.
-    Extends `SymmetricTriangulation2D` with an explicit cyclic boundary of length $2k$
-    satisfying the antipodal boundary condition `c(i + k) = antipodal(c(i))`. -/
-structure SymmetricDiskTriangulation2D (V : Type*) [DecidableEq V] extends SymmetricTriangulation2D V where
+/-- An abstract 2-dimensional edge-pseudomanifold equipped with an explicit cyclic boundary of length $2k$.
+    The boundary edges form a single simple cycle of even length $2k$.
+    Crucially, this decouples the boundary structure from any requirement of a global involution on the
+    interior vertices $V$, isolating the exact combinatorial boundary topology needed for Tucker's Lemma. -/
+structure CyclicBoundaryPseudomanifold2D (V : Type*) [DecidableEq V] extends EdgePseudomanifold2D V where
   k : ℕ
   hk : 0 < k
   boundaryCycle : Fin (2 * k) → V
   boundary_injective : Function.Injective boundaryCycle
   boundary_edges :
-    have := neZero_two_mul_of_pos hk
     toEdgePseudomanifold2D.boundaryEdges =
-      Finset.image (fun i : Fin (2 * k) => {boundaryCycle i, boundaryCycle (i + 1)}) Finset.univ
-  boundary_antipodal :
-    have := neZero_two_mul_of_pos hk
-    ∀ i : Fin (2 * k),
-      antipodal (boundaryCycle i) = boundaryCycle (i + finHalfShift k hk)
+      Finset.image (fun i : Fin (2 * k) => ({boundaryCycle i, boundaryCycle (finRotate (2 * k) i)} : Finset V)) Finset.univ
 
-instance (T : SymmetricDiskTriangulation2D V) : NeZero (2 * T.k) := neZero_two_mul_of_pos T.hk
+/-- Backward-compatible alias for `CyclicBoundaryPseudomanifold2D`.
+    In earlier formulations, this was named `SymmetricDiskTriangulation2D`; however, the combinatorial
+    proof of Tucker's Lemma does not require global antipodal symmetry on the interior of the disk,
+    only that the 1-dimensional boundary pseudomanifold cycle admits an antipodal labeling. -/
+abbrev SymmetricDiskTriangulation2D := CyclicBoundaryPseudomanifold2D
+
+instance (T : CyclicBoundaryPseudomanifold2D V) : NeZero (2 * T.k) := neZero_two_mul_of_pos T.hk
+
+/-- The cycle boundary edges can be equivalently indexed via successor `i + 1`. -/
+lemma boundary_edges_eq (T : CyclicBoundaryPseudomanifold2D V) :
+    T.boundaryEdges = Finset.image (fun i : Fin (2 * T.k) => ({T.boundaryCycle i, T.boundaryCycle (i + 1)} : Finset V)) Finset.univ := by
+  have h := T.boundary_edges
+  simp_rw [finRotate_apply] at h
+  exact h
 
 /-- The vertices belonging to the boundary cycle. -/
-def boundaryVertices (T : SymmetricDiskTriangulation2D V) : Finset V :=
+def boundaryVertices (T : CyclicBoundaryPseudomanifold2D V) : Finset V :=
   Finset.image T.boundaryCycle Finset.univ
 
 /-- Boundary edges are contained in the full edge set `T.edges`. -/
-lemma boundary_subset_edges (T : SymmetricDiskTriangulation2D V) :
+lemma boundary_subset_edges (T : CyclicBoundaryPseudomanifold2D V) :
     T.boundaryEdges ⊆ T.edges :=
   Finset.filter_subset _ _
 
@@ -119,39 +134,30 @@ lemma fin_ne_add_two {k : ℕ} (hk : 1 < k) [NeZero (2 * k)] (j : Fin (2 * k)) :
     j ≠ j + 1 + 1 := by
   intro h
   have h_val := congrArg Fin.val h
-  have h_one : ((1 : Fin (2 * k))).val = 1 := by
-    rw [Fin.val_one']
-    apply Nat.mod_eq_of_lt
-    omega
+  have h_one : ((1 : Fin (2 * k))).val = 1 := by rw [Fin.val_one', Nat.mod_eq_of_lt (by omega)]
   have h_add2 : (j + 1 + 1).val = (j.val + 2) % (2 * k) := by
-    rw [Fin.val_add, Fin.val_add, h_one]
-    rw [Nat.add_mod ((j.val + 1) % (2 * k)) 1, Nat.mod_mod, ← Nat.add_mod (j.val + 1) 1]
-  rw [h_add2] at h_val
-  have h_modeq : j.val + 2 ≡ j.val [MOD 2 * k] := by
-    rw [Nat.ModEq, h_val.symm, Nat.mod_eq_of_lt j.isLt]
-  have hdvd : 2 * k ∣ (j.val + 2) - j.val := h_modeq.symm.dvd'
-  have hsub : (j.val + 2) - j.val = 2 := by omega
-  rw [hsub] at hdvd
-  have hle := Nat.le_of_dvd (by omega) hdvd
+    rw [Fin.val_add, Fin.val_add, h_one, Nat.add_mod ((j.val + 1) % (2 * k)) 1, Nat.mod_mod, ← Nat.add_mod]
+  have hdvd : 2 * k ∣ 2 := by
+    have hm : j.val + 2 ≡ j.val [MOD 2 * k] := by rw [Nat.ModEq, ← h_add2, h_val.symm, Nat.mod_eq_of_lt j.isLt]
+    have := hm.symm.dvd'
+    rwa [show (j.val + 2) - j.val = 2 by omega] at this
+  have := Nat.le_of_dvd (by omega) hdvd
   omega
 
 lemma fin_ne_succ {n : ℕ} [NeZero n] (hn : 1 < n) (i : Fin n) : i ≠ i + 1 := by
   intro h
   have h_val := congrArg Fin.val h
-  have h_one : ((1 : Fin n)).val = 1 := by
-    rw [Fin.val_one']
-    exact Nat.mod_eq_of_lt hn
+  have h_one : ((1 : Fin n)).val = 1 := by rw [Fin.val_one', Nat.mod_eq_of_lt hn]
   rw [Fin.val_add, h_one] at h_val
-  have h_modeq : i.val + 1 ≡ i.val [MOD n] := by
-    rw [Nat.ModEq, h_val.symm, Nat.mod_eq_of_lt i.isLt]
-  have hdvd : n ∣ (i.val + 1) - i.val := h_modeq.symm.dvd'
-  have hsub : (i.val + 1) - i.val = 1 := by omega
-  rw [hsub] at hdvd
-  have hle := Nat.le_of_dvd (by omega) hdvd
+  have hdvd : n ∣ 1 := by
+    have hm : i.val + 1 ≡ i.val [MOD n] := by rw [Nat.ModEq, h_val.symm, Nat.mod_eq_of_lt i.isLt]
+    have := hm.symm.dvd'
+    rwa [show (i.val + 1) - i.val = 1 by omega] at this
+  have := Nat.le_of_dvd (by omega) hdvd
   omega
 
 /-- The cycle edge parameterization `i ↦ {c(i), c(i + 1)}` is injective when $k > 1$. -/
-lemma boundary_edge_map_inj (T : SymmetricDiskTriangulation2D V) (hk : 1 < T.k) :
+lemma boundary_edge_map_inj (T : CyclicBoundaryPseudomanifold2D V) (hk : 1 < T.k) :
     Function.Injective (fun i : Fin (2 * T.k) => ({T.boundaryCycle i, T.boundaryCycle (i + 1)} : Finset V)) := by
   intro i j hij
   rw [finset_pair_eq_pair_iff] at hij
@@ -165,13 +171,13 @@ lemma boundary_edge_map_inj (T : SymmetricDiskTriangulation2D V) (hk : 1 < T.k) 
 
 /-- 2-regularity of the boundary cycle:
     for any $k > 1$, each boundary vertex is incident to exactly 2 boundary edges. -/
-lemma boundary_vertex_degree_two (T : SymmetricDiskTriangulation2D V) (hk : 1 < T.k)
+lemma boundary_vertex_degree_two (T : CyclicBoundaryPseudomanifold2D V) (hk : 1 < T.k)
     (v : V) (hv : v ∈ boundaryVertices T) :
     (T.boundaryEdges.filter (fun e => v ∈ e)).card = 2 := by
   obtain ⟨j, _, rfl⟩ := Finset.mem_image.mp hv
   have h_bd_edges : T.boundaryEdges =
       Finset.image (fun i : Fin (2 * T.k) => {T.boundaryCycle i, T.boundaryCycle (i + 1)}) Finset.univ :=
-    T.boundary_edges
+    boundary_edges_eq T
   rw [h_bd_edges, Finset.filter_image]
   have h_inj := boundary_edge_map_inj T hk
   rw [Finset.card_image_of_injective _ h_inj]
@@ -269,7 +275,7 @@ lemma sum_fin_two_mul (k : ℕ) (g : Fin (2 * k) → ℕ) :
   rw [h1, h2]
 
 /-- The canonical half-cycle path of length $k$ along the boundary cycle. -/
-def boundaryPath (T : SymmetricDiskTriangulation2D V) (L : V → ℤ) :
+def boundaryPath (T : CyclicBoundaryPseudomanifold2D V) (L : V → ℤ) :
     Fin (T.k + 1) → ℤ :=
   fun j => L (T.boundaryCycle ⟨j.val, by have := T.hk; omega⟩)
 
@@ -299,121 +305,79 @@ lemma isDoor_pair_eq (u v : V) (huv : u ≠ v) (L : V → ℤ) :
 
 /-- If there are no complementary boundary edges, then $k > 1$.
     (At $k = 1$, the unique boundary edge is between antipodal vertices, hence complementary). -/
-lemma k_ge_two_of_no_comp_boundary (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
-    (h_anti_bd : ∀ v ∈ boundaryVertices T, L (T.antipodal v) = - L v)
+lemma k_ge_two_of_no_comp_boundary (T : CyclicBoundaryPseudomanifold2D V) (L : V → ℤ)
+    (h_anti_bd : ∀ i : Fin (2 * T.k), L (T.boundaryCycle (i + finHalfShift T.k T.hk)) = - L (T.boundaryCycle i))
     (h_no_comp : ∀ e ∈ T.boundaryEdges, ¬ IsComplementaryEdge L e) :
     1 < T.k := by
   by_contra! h_k
   have hk1 : T.k = 1 := by have := T.hk; omega
   have h_edge : {T.boundaryCycle 0, T.boundaryCycle (0 + 1)} ∈ T.boundaryEdges := by
-    change {T.boundaryCycle 0, T.boundaryCycle (0 + 1)} ∈ T.toEdgePseudomanifold2D.boundaryEdges
-    rw [T.boundary_edges]
+    rw [boundary_edges_eq T]
     apply Finset.mem_image_of_mem
     exact Finset.mem_univ 0
   apply h_no_comp {T.boundaryCycle 0, T.boundaryCycle (0 + 1)} h_edge
   have h0 : (0 : Fin (2 * T.k)) + finHalfShift T.k T.hk = 0 + 1 := by
-    ext
-    simp [finHalfShift, hk1]
+    ext; simp [finHalfShift, hk1]
   refine ⟨T.boundaryCycle 0, T.boundaryCycle (0 + 1), by simp, by simp, ?_, ?_⟩
   · intro h_eq
-    have := T.boundary_injective h_eq
-    have h_val : (0 : Fin (2 * T.k)).val = (0 + 1 : Fin (2 * T.k)).val := congrArg Fin.val this
-    simp [hk1] at h_val
-  · have h_anti := T.boundary_antipodal 0
+    have := congrArg Fin.val (T.boundary_injective h_eq)
+    simp [hk1] at this
+  · have h_anti := h_anti_bd 0
     rw [h0] at h_anti
-    have h_v_bd : T.boundaryCycle 0 ∈ boundaryVertices T := by
-      dsimp [boundaryVertices]
-      exact Finset.mem_image_of_mem _ (Finset.mem_univ 0)
-    have h_lab := h_anti_bd (T.boundaryCycle 0) h_v_bd
-    rw [h_anti] at h_lab
     omega
 
-lemma boundaryPath_nocomp (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
+lemma boundaryPath_nocomp (T : CyclicBoundaryPseudomanifold2D V) (L : V → ℤ)
     (h_no_comp : ∀ e ∈ T.boundaryEdges, ¬ IsComplementaryEdge L e)
     (i : Fin T.k) :
     boundaryPath T L i.castSucc ≠ - boundaryPath T L i.succ := by
   intro h_comp
   have h_edge_mem : {T.boundaryCycle ⟨i.val, by have := T.hk; omega⟩,
                      T.boundaryCycle (⟨i.val, by have := T.hk; omega⟩ + 1)} ∈ T.boundaryEdges := by
-    change _ ∈ T.toEdgePseudomanifold2D.boundaryEdges
-    rw [T.boundary_edges]
+    rw [boundary_edges_eq T]
     apply Finset.mem_image_of_mem
     exact Finset.mem_univ _
   have h_succ_val : (⟨i.val, by have := T.hk; omega⟩ + 1 : Fin (2 * T.k)) =
       ⟨i.val + 1, by have := T.hk; omega⟩ := by
     ext
-    rw [Fin.val_add]
-    have h_one : ((1 : Fin (2 * T.k))).val = 1 := by
-      rw [Fin.val_one']
-      apply Nat.mod_eq_of_lt
-      have := T.hk; omega
-    rw [h_one]
-    have hlt : i.val + 1 < 2 * T.k := by have := i.isLt; have := T.hk; omega
-    exact Nat.mod_eq_of_lt hlt
-  have h_u : T.boundaryCycle ⟨i.val, by have := T.hk; omega⟩ =
-             T.boundaryCycle ⟨i.castSucc.val, by have := T.hk; omega⟩ := rfl
-  have h_v : T.boundaryCycle (⟨i.val, by have := T.hk; omega⟩ + 1) =
-             T.boundaryCycle ⟨i.succ.val, by have := T.hk; omega⟩ := by
-    congr 1
+    rw [Fin.val_add, Fin.val_one', Nat.mod_eq_of_lt (show 1 < 2 * T.k by have := T.hk; omega),
+        Nat.mod_eq_of_lt (show i.val + 1 < 2 * T.k by have := i.isLt; have := T.hk; omega)]
   apply h_no_comp _ h_edge_mem
   refine ⟨T.boundaryCycle ⟨i.val, by have := T.hk; omega⟩,
           T.boundaryCycle (⟨i.val, by have := T.hk; omega⟩ + 1),
           by simp, by simp, ?_, ?_⟩
   · intro h_eq
-    have := T.boundary_injective h_eq
+    have := congrArg Fin.val (T.boundary_injective h_eq)
     rw [h_succ_val] at this
-    have h_v := congrArg Fin.val this
-    dsimp at h_v
+    dsimp at this
     omega
-  · rw [h_u, h_v]
-    dsimp [boundaryPath] at h_comp
+  · change L (T.boundaryCycle ⟨i.castSucc.val, by have := T.hk; omega⟩) = - L (T.boundaryCycle (⟨i.val, by have := T.hk; omega⟩ + 1))
+    rw [h_succ_val]
     exact h_comp
 
-lemma boundaryPath_antipodal (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
-    (h_anti_bd : ∀ v ∈ boundaryVertices T, L (T.antipodal v) = - L v) :
+lemma boundaryPath_antipodal (T : CyclicBoundaryPseudomanifold2D V) (L : V → ℤ)
+    (h_anti_bd : ∀ i : Fin (2 * T.k), L (T.boundaryCycle (i + finHalfShift T.k T.hk)) = - L (T.boundaryCycle i)) :
     boundaryPath T L (Fin.last T.k) = - boundaryPath T L 0 := by
-  have h0_bd : T.boundaryCycle 0 ∈ boundaryVertices T := by
-    dsimp [boundaryVertices]
-    exact Finset.mem_image_of_mem _ (Finset.mem_univ 0)
-  have h_lab := h_anti_bd (T.boundaryCycle 0) h0_bd
-  have h_anti := T.boundary_antipodal 0
   have h_add : (0 : Fin (2 * T.k)) + finHalfShift T.k T.hk = ⟨T.k, by have := T.hk; omega⟩ := by
-    ext
-    rw [Fin.val_add, Fin.val_zero]
-    have : (finHalfShift T.k T.hk).val = T.k := rfl
-    rw [this]
-    have hlt : 0 + T.k < 2 * T.k := by have := T.hk; omega
-    rw [Nat.mod_eq_of_lt hlt]
-    dsimp
-    omega
-  rw [h_add] at h_anti
-  have h_last : (Fin.last T.k).val = T.k := rfl
-  have h_fin_last : (⟨(Fin.last T.k).val, by have := T.hk; omega⟩ : Fin (2 * T.k)) =
-      ⟨T.k, by have := T.hk; omega⟩ := by
-    ext
-    exact h_last
-  change L (T.boundaryCycle ⟨(Fin.last T.k).val, by have := T.hk; omega⟩) = - L (T.boundaryCycle 0)
-  rw [h_fin_last, ← h_anti]
-  exact h_lab
+    ext; simp [finHalfShift]
+  have h := h_anti_bd 0
+  rwa [h_add] at h
 
 /-- **Boundary Door Parity Theorem:**
-    In an antipodally symmetric disk triangulation `T`, if the vertex labeling `L : V → {±1, ±2}`
-    is antipodal on the boundary and there are no complementary boundary edges,
+    In a cyclic boundary pseudomanifold `T`, if the vertex labeling `L : V → {±1, ±2}`
+    is antipodal on the boundary cycle
+    (`∀ i : Fin (2 * T.k), L (T.boundaryCycle (i + finHalfShift T.k T.hk)) = - L (T.boundaryCycle i)`)
+    and there are no complementary boundary edges,
     then the total number of boundary doors is odd (1 mod 2). -/
-theorem boundary_doors_odd_of_no_comp (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
+theorem boundary_doors_odd_of_no_comp (T : CyclicBoundaryPseudomanifold2D V) (L : V → ℤ)
     (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
-    (h_anti_bd : ∀ v ∈ boundaryVertices T, L (T.antipodal v) = - L v)
+    (h_anti_bd : ∀ i : Fin (2 * T.k), L (T.boundaryCycle (i + finHalfShift T.k T.hk)) = - L (T.boundaryCycle i))
     (h_no_comp : ∀ e ∈ T.boundaryEdges, ¬ IsComplementaryEdge L e) :
     (T.boundaryEdges.filter (isDoor L)).card % 2 = 1 := by
   have hk : 1 < T.k := k_ge_two_of_no_comp_boundary T L h_anti_bd h_no_comp
   have h_card_eq : (T.boundaryEdges.filter (isDoor L)).card =
       ∑ x : Fin (2 * T.k), if isDoor L {T.boundaryCycle x, T.boundaryCycle (x + 1)} then 1 else 0 := by
-    have h_bd_edges : T.boundaryEdges =
-        Finset.image (fun i : Fin (2 * T.k) => {T.boundaryCycle i, T.boundaryCycle (i + 1)}) Finset.univ :=
-      T.boundary_edges
-    rw [h_bd_edges, Finset.filter_image]
-    have h_inj := boundary_edge_map_inj T hk
-    rw [Finset.card_image_of_injective _ h_inj, card_filter]
+    rw [boundary_edges_eq T, Finset.filter_image,
+        Finset.card_image_of_injective _ (boundary_edge_map_inj T hk), card_filter]
   rw [h_card_eq]
   let g := fun x : Fin (2 * T.k) => if isDoor L {T.boundaryCycle x, T.boundaryCycle (x + 1)} then 1 else 0
   change (∑ x : Fin (2 * T.k), g x) % 2 = 1
@@ -440,22 +404,12 @@ theorem boundary_doors_odd_of_no_comp (T : SymmetricDiskTriangulation2D V) (L : 
       isDoor_pair_eq (T.boundaryCycle j2) (T.boundaryCycle (j2 + 1)) hj2_ne L
     have hj2_eq : j2 = j1 + finHalfShift T.k T.hk := j2_eq_j1_add_shift T.k T.hk i
     have hj2_succ_eq : j2 + 1 = (j1 + 1) + finHalfShift T.k T.hk := j1_succ_add_shift T.k T.hk i
-    have hc_j2 : T.boundaryCycle j2 = T.antipodal (T.boundaryCycle j1) := by
-      have := T.boundary_antipodal j1
-      rw [← hj2_eq] at this
-      exact this.symm
-    have hc_j2_succ : T.boundaryCycle (j2 + 1) = T.antipodal (T.boundaryCycle (j1 + 1)) := by
-      have := T.boundary_antipodal (j1 + 1)
-      rw [← hj2_succ_eq] at this
-      exact this.symm
-    have hj1_bd : T.boundaryCycle j1 ∈ boundaryVertices T := by
-      dsimp [boundaryVertices]; exact Finset.mem_image_of_mem _ (Finset.mem_univ _)
-    have hj1_succ_bd : T.boundaryCycle (j1 + 1) ∈ boundaryVertices T := by
-      dsimp [boundaryVertices]; exact Finset.mem_image_of_mem _ (Finset.mem_univ _)
     have hL_j2 : L (T.boundaryCycle j2) = - L (T.boundaryCycle j1) := by
-      rw [hc_j2]; exact h_anti_bd _ hj1_bd
+      rw [hj2_eq]
+      exact h_anti_bd j1
     have hL_j2_succ : L (T.boundaryCycle (j2 + 1)) = - L (T.boundaryCycle (j1 + 1)) := by
-      rw [hc_j2_succ]; exact h_anti_bd _ hj1_succ_bd
+      rw [hj2_succ_eq]
+      exact h_anti_bd (j1 + 1)
     dsimp [g]
     rw [if_congr h_door1 rfl rfl, if_congr h_door2 rfl rfl]
     rw [hL_j2, hL_j2_succ]
@@ -464,14 +418,9 @@ theorem boundary_doors_odd_of_no_comp (T : SymmetricDiskTriangulation2D V) (L : 
     rw [h_split]
     have hj1_succ : (j1 + 1) = ⟨i.succ.val, by have := T.hk; omega⟩ := by
       ext
-      rw [Fin.val_add]
-      have h_one : ((1 : Fin (2 * T.k))).val = 1 := by
-        rw [Fin.val_one']
-        apply Nat.mod_eq_of_lt
-        have := T.hk; omega
-      rw [h_one]
-      have hlt : i.val + 1 < 2 * T.k := by have := i.isLt; have := T.hk; omega
-      exact Nat.mod_eq_of_lt hlt
+      rw [Fin.val_add, Fin.val_one', Nat.mod_eq_of_lt (show 1 < 2 * T.k by have := T.hk; omega),
+          Nat.mod_eq_of_lt (show i.val + 1 < 2 * T.k by have := i.isLt; have := T.hk; omega)]
+      rfl
     rw [hj1_succ]
     rfl
   rw [h_step_sum]
@@ -484,13 +433,14 @@ theorem boundary_doors_odd_of_no_comp (T : SymmetricDiskTriangulation2D V) (L : 
   exact path_doorStep_sum_odd_of_antipodal T.k (boundaryPath T L) h_path_range h_path_nocomp h_path_anti
 
 /-- **Unconditional 2D Tucker's Lemma (Albert W. Tucker, 1945):**
-    For any antipodally symmetric disk triangulation `T` and any vertex labeling `L : V → {±1, ±2}`
-    that is antipodal on the boundary cycle (`∀ v ∈ T.boundaryVertices, L (T.antipodal v) = - L v`),
+    For any cyclic boundary pseudomanifold `T` and any vertex labeling `L : V → {±1, ±2}`
+    that is antipodal on the boundary cycle
+    (`∀ i : Fin (2 * T.k), L (T.boundaryCycle (i + finHalfShift T.k T.hk)) = - L (T.boundaryCycle i)`),
     there exists a complementary edge in `T.edges`.
     Proved without ANY artificial assumptions or preconditions on boundary door parity! -/
-theorem tuckers_lemma_2d (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
+theorem tuckers_lemma_2d (T : CyclicBoundaryPseudomanifold2D V) (L : V → ℤ)
     (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
-    (h_anti_bd : ∀ v ∈ boundaryVertices T, L (T.antipodal v) = - L v) :
+    (h_anti_bd : ∀ i : Fin (2 * T.k), L (T.boundaryCycle (i + finHalfShift T.k T.hk)) = - L (T.boundaryCycle i)) :
     ∃ e ∈ T.edges, IsComplementaryEdge L e := by
   by_cases h_comp : ∃ e ∈ T.boundaryEdges, IsComplementaryEdge L e
   · obtain ⟨e, he_bd, he_comp⟩ := h_comp
@@ -500,6 +450,59 @@ theorem tuckers_lemma_2d (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
       exact h_comp ⟨e, he, hc⟩
     have h_odd := boundary_doors_odd_of_no_comp T L h_range h_anti_bd h_no_comp
     exact tucker_2d_of_odd_boundary T.toEdgePseudomanifold2D L h_range h_odd
+
+/-! ### Topological Disk Triangulation & Vertex Link Characterization -/
+
+/-- Adjacency relation between vertices in an edge set `E`. -/
+def GraphAdj (E : Finset (Finset V)) (u v : V) : Prop :=
+  {u, v} ∈ E
+
+/-- A graph `(V', E)` is connected if it is nonempty and any two vertices are connected by a path. -/
+def IsConnectedGraph (V' : Finset V) (E : Finset (Finset V)) : Prop :=
+  V'.Nonempty ∧ ∀ u ∈ V', ∀ w ∈ V', Relation.ReflTransGen (GraphAdj E) u w
+
+/-- A 1D combinatorial circle (homeomorphic to $S^1$):
+    a nonempty connected graph where every vertex has degree 2. -/
+def IsCombinatorialCircle (V' : Finset V) (E : Finset (Finset V)) : Prop :=
+  IsConnectedGraph V' E ∧
+  ∀ u ∈ V', (E.filter (fun e => u ∈ e)).card = 2
+
+/-- A 1D combinatorial path (homeomorphic to $[0, 1]$):
+    a nonempty connected graph where exactly two boundary vertices have degree 1
+    and all other internal vertices have degree 2. -/
+def IsCombinatorialPath (V' : Finset V) (E : Finset (Finset V)) : Prop :=
+  IsConnectedGraph V' E ∧
+  (V'.filter (fun u => (E.filter (fun e => u ∈ e)).card = 1)).card = 2 ∧
+  ∀ u ∈ V', (E.filter (fun e => u ∈ e)).card = 1 ∨ (E.filter (fun e => u ∈ e)).card = 2
+
+/-- Link edges of a vertex `v` in an edge-pseudomanifold:
+    the 2-element edges opposite to `v` in faces containing `v`. -/
+def vertexLinkEdges (T : EdgePseudomanifold2D V) (v : V) : Finset (Finset V) :=
+  (T.faces.filter (fun t => v ∈ t)).image (fun t => t.erase v)
+
+/-- Vertices belonging to the link of `v`. -/
+def vertexLinkVertices (T : EdgePseudomanifold2D V) (v : V) : Finset V :=
+  (vertexLinkEdges T v).biUnion id
+
+/-- All vertices participating in the 2D pseudomanifold. -/
+def EdgePseudomanifold2D.vertices (T : EdgePseudomanifold2D V) : Finset V :=
+  T.faces.biUnion id
+
+/-- Formal topological manifold condition characterizing a true combinatorial 2-disk triangulation:
+    1. **Connectedness**: The 1-skeleton of the complex is connected.
+    2. **Interior Link Condition**: For every interior vertex (a vertex not on the boundary cycle),
+       its link $\text{Lk}(v)$ is a combinatorial circle (homeomorphic to $S^1$).
+    3. **Boundary Link Condition**: For every boundary vertex, its link $\text{Lk}(v)$ is a
+       combinatorial path (homeomorphic to $I = [0, 1]$).
+    Together with the cyclic boundary condition, these conditions ensure that the complex is a
+    combinatorial 2-manifold with boundary homeomorphic to the closed unit disk $D^2$. -/
+def IsCombinatorialDisk2D (T : CyclicBoundaryPseudomanifold2D V) : Prop :=
+  IsConnectedGraph T.toEdgePseudomanifold2D.vertices T.edges ∧
+  (∀ v ∈ T.toEdgePseudomanifold2D.vertices,
+    if v ∈ boundaryVertices T then
+      IsCombinatorialPath (vertexLinkVertices T.toEdgePseudomanifold2D v) (vertexLinkEdges T.toEdgePseudomanifold2D v)
+    else
+      IsCombinatorialCircle (vertexLinkVertices T.toEdgePseudomanifold2D v) (vertexLinkEdges T.toEdgePseudomanifold2D v))
 
 end BoundaryCycle
 

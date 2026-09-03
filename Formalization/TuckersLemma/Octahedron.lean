@@ -79,6 +79,9 @@ lemma octahedron_incident_card (e : Finset OctV) (he : e ∈ octahedron_edges) :
     (octahedron_faces.filter (fun t => e ⊆ t)).card = 2 := by
   revert e he; decide
 
+lemma octahedron_face_antipodal : ∀ t ∈ octahedron_faces, t.image OctV.antipodal ∈ octahedron_faces := by
+  decide
+
 /-- Concrete 2D symmetric triangulation of the octahedron $S^2_8$. -/
 def octahedron_triangulation : SymmetricTriangulation2D OctV where
   faces := octahedron_faces
@@ -87,6 +90,7 @@ def octahedron_triangulation : SymmetricTriangulation2D OctV where
   antipodal := OctV.antipodal
   antipodal_sq := OctV.antipodal_sq
   antipodal_ne := OctV.antipodal_ne
+  face_antipodal := octahedron_face_antipodal
 
 /-- Exhaustive pigeonhole principle on 3 label values in `{±1, ±2}`. -/
 lemma pigeonhole_labels (x y z : ℤ)

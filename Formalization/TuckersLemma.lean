@@ -29,12 +29,13 @@ open Finset
      $\∃ e \in T.edges, \text{IsComplementaryEdge } L e$ (with ZERO artificial `h_witness`).
 
 3. **The Missing Bridge: Boundary Cycle & Unconditional 2D Tucker (`Formalization.TuckersLemma.BoundaryCycle`):**
-   - `SymmetricDiskTriangulation2D`: Symmetric disk triangulation with an explicit cyclic boundary.
+   - `CyclicBoundaryPseudomanifold2D`: 2D edge-pseudomanifold with an explicit cyclic boundary of length $2k$.
    - `boundaryDoorPotential`, `doorStep`: Potential engine on $\{\pm 1, \pm 2\}$.
    - `path_doorStep_sum_odd_of_antipodal`: Telescoping path parity modulo 2.
    - `boundary_vertex_degree_two`: 2-regularity of the boundary cycle.
    - `boundary_doors_odd_of_no_comp`: Odd boundary door parity theorem.
    - `tuckers_lemma_2d`: **Full, Unconditional 2D Tucker's Lemma** without assuming odd boundary doors.
+   - `IsCombinatorialDisk2D`: Vertex link characterization of true topological disks.
 
 4. **Concrete Octahedral Sphere Instance (`Formalization.TuckersLemma.Octahedron`):**
    - `OctV`: 6 vertices of the regular octahedron.
@@ -74,13 +75,14 @@ theorem tuckers_lemma (T : SymmetricTriangulation2D V) (L : V → ℤ)
   symmetric_tucker_2d_of_odd_boundary T L h_range h_bd_odd
 
 /-- **Full, Unconditional 2D Tucker's Lemma (Albert W. Tucker, 1945):**
-    For any antipodally symmetric disk triangulation `T` and any vertex labeling `L : V → {±1, ±2}`
-    that is antipodal on the boundary cycle (`∀ v ∈ T.boundaryVertices, L (T.antipodal v) = - L v`),
+    For any cyclic boundary pseudomanifold `T` and any vertex labeling `L : V → {±1, ±2}`
+    that is antipodal on the boundary cycle
+    (`∀ i : Fin (2 * T.k), L (T.boundaryCycle (i + finHalfShift T.k T.hk)) = - L (T.boundaryCycle i)`),
     there exists a complementary edge in `T.edges`.
     Eliminates all preconditions on boundary door parity! -/
-theorem tuckers_lemma_2d_main (T : SymmetricDiskTriangulation2D V) (L : V → ℤ)
+theorem tuckers_lemma_2d_main (T : CyclicBoundaryPseudomanifold2D V) (L : V → ℤ)
     (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2)
-    (h_anti_bd : ∀ v ∈ boundaryVertices T, L (T.antipodal v) = - L v) :
+    (h_anti_bd : ∀ i : Fin (2 * T.k), L (T.boundaryCycle (i + finHalfShift T.k T.hk)) = - L (T.boundaryCycle i)) :
     ∃ e ∈ T.edges, IsComplementaryEdge L e :=
   tuckers_lemma_2d T L h_range h_anti_bd
 

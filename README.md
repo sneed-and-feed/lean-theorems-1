@@ -37,7 +37,7 @@ construction with its exact cardinality are fully proved.
 | 21 | **Erdős–Szekeres Convex Polygon Theorem (Happy Ending)** | [`erdos_szekeres_convex_polygon`](Formalization/ErdosSzekeresConvex.lean), [`erdos_szekeres_triangle`](Formalization/ErdosSzekeresConvex.lean), [`erdos_szekeres_four_points`](Formalization/ErdosSzekeresConvex.lean) | Discrete & Combinatorial Geometry | Erdős & Szekeres (1935), Klein (1935) |
 | 22 | **The Crossing Lemma** | [`crossing_lemma`](Formalization/CrossingLemma.lean) | Topological Graph Theory & Discrete Geometry | Ajtai, Chvátal, Newborn, Szemerédi (1982), Leighton (1983) |
 | 23 | **Kneser's Graph Coloring Upper Bound** | [`kneser_graph_colorable`](Formalization/KneserLovasz.lean) | Combinatorics & Graph Coloring | Kneser (1955), Lovász (1978) |
-| 24 | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem** | [`tucker_2d_theorem`](Formalization/TuckersLemma.lean), [`tuckers_lemma`](Formalization/TuckersLemma.lean), [`octahedron_tuckers_lemma`](Formalization/TuckersLemma.lean), [`tucker_1d`](Formalization/TuckersLemma.lean), [`double_counting_doors`](Formalization/TuckersLemma.lean) | Topological Combinatorics & Parity Invariants | Tucker (1945), Fan (1952), Freund & Todd (1981) |
+| 24 | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem** | [`tucker_2d_theorem`](Formalization/TuckersLemma.lean), [`tuckers_lemma`](Formalization/TuckersLemma.lean), [`tuckers_lemma_2d`](Formalization/TuckersLemma.lean), [`octahedron_tuckers_lemma`](Formalization/TuckersLemma.lean), [`tucker_1d`](Formalization/TuckersLemma.lean), [`double_counting_doors`](Formalization/TuckersLemma.lean) | Topological Combinatorics & Parity Invariants | Tucker (1945), Fan (1952), Freund & Todd (1981) |
 | 25 | **The Friendship Windmill Structure Theorem** | [`friendship_windmill`](Formalization/FriendshipWindmill.lean), [`friendship_matching_on_punctured`](Formalization/FriendshipWindmill.lean), [`friendship_windmill_edge_count`](Formalization/FriendshipWindmill.lean) | Extremal & Structural Graph Theory | Erdős, Rényi, & Sós (1966) |
 | 26 | **General $n$-Dimensional Sperner's Lemma & Specializations** | [`sperner_nd_parity`](Formalization/SpernerND.lean), [`sperner_nd_odd`](Formalization/SpernerND.lean), [`sperner_nd_exists`](Formalization/SpernerND.lean), [`sperner_3d_parity`](Formalization/Sperner3D.lean) | Topological Combinatorics & Simplicial Topology | Sperner (1928), Kuhn (1968) |
 | 27 | **Frankl–Wilson Theorem on Restricted Intersections** | [`frankl_wilson_uniform`](Formalization/FranklWilson.lean), [`frankl_wilson_general`](Formalization/FranklWilson.lean) | Extremal Combinatorics & Polynomial Method | Frankl & Wilson (1981) |
@@ -263,12 +263,14 @@ construction with its exact cardinality are fully proved.
 * **Modular Package:** [`Formalization/TuckersLemma/`](Formalization/TuckersLemma)
   - `Basic.lean`: Abstract 2D edge-pseudomanifolds with boundary (`EdgePseudomanifold2D`), symmetric triangulations (`SymmetricTriangulation2D`) with fixed-point-free antipodal involutions, door predicates (`isDoor`), and complementary edge predicates (`IsComplementaryEdge`).
   - `DoubleCounting.lean`: Local face door parity invariant $(\text{doors}(L, t) \equiv 1 \pmod 2 \iff \exists u \ne v \in t, L(u) = -L(v))$, global double-counting identity $(\sum \text{doors}(t) = |E_{bd}^{\text{door}}| + 2 |E_{int}^{\text{door}}|)$, parity conservation modulo 2, and constructive existence of complementary edges on triangulations with odd boundary doors without artificial witness premises.
+  - `BoundaryCycle.lean`: Boundary cycle engine on 2D edge-pseudomanifolds with an enumerated cyclic boundary (`CyclicBoundaryPseudomanifold2D`), boundary door potentials, path door step parity modulo 2, proof that non-complementary antipodal boundary labelings force odd boundary door parity (`boundary_doors_odd_of_no_comp`), and unconditional 2D Tucker's lemma on cyclic boundary pseudomanifolds (`tuckers_lemma_2d`).
   - `Dim1.lean`: 1D discrete intermediate value theorem (`exists_adjacent_sign_change`, `tucker_1d`), sign switch counting, and endpoint sign parity conservation (`sign_switch_parity`, `tucker_1d_parity_exists`).
   - `Octahedron.lean`: Concrete 6-vertex octahedral 2-sphere ($S^2_8$) benchmark (`octahedron_triangulation`, `octahedron_tuckers_lemma`) proving every antipodal labeling $L : \text{OctV} \to \{\pm 1, \pm 2\}$ contains a complementary edge.
-* **Theorems:** `tucker_2d_theorem`, `tuckers_lemma`, `octahedron_tuckers_lemma`, `tucker_1d`, `sign_switch_parity`, `double_counting_doors`, `parity_conservation`, `combinatorial_borsuk_ulam`
+* **Theorems:** `tucker_2d_theorem`, `tuckers_lemma`, `tuckers_lemma_2d`, `boundary_doors_odd_of_no_comp`, `octahedron_tuckers_lemma`, `tucker_1d`, `sign_switch_parity`, `double_counting_doors`, `parity_conservation`, `combinatorial_borsuk_ulam`
 * **Mathematical Statement:**
   - **1D Tucker's Lemma:** Any sequence of signs on a 1D discrete path with opposite endpoints contains an odd number of adjacent sign transitions, guaranteeing an adjacent complementary edge.
   - **2D Tucker Parity Theorem (1945):** For any labeling $L : V \to \{\pm 1, \pm 2\}$ of a 2D simplicial edge-pseudomanifold, the sum of face door counts modulo 2 equals the number of boundary door edges modulo 2. If the boundary door count is odd, there exists a complementary edge $\{u, v\}$ with $L(u) = -L(v)$.
+  - **Boundary Cycle Engine & 2D Tucker's Lemma (Freund & Todd 1981, *Journal of Combinatorial Theory, Series A*):** For any 2D edge-pseudomanifold equipped with an enumerated antipodal cyclic boundary of even length $2k$ (`CyclicBoundaryPseudomanifold2D`), any vertex labeling $L : V \to \{\pm 1, \pm 2\}$ that is antipodal on the boundary cycle and avoids complementary boundary edges forces the boundary door count to be odd (`boundary_doors_odd_of_no_comp`), establishing Tucker's lemma unconditionally (`tuckers_lemma_2d`).
   - **Discrete Borsuk–Ulam Theorem:** Any antipodal labeling of a symmetric triangulation of the 2-sphere cannot avoid an adjacent pair with opposite labels.
 
 ---
@@ -388,7 +390,7 @@ graph TD
         SND["SpernerND.lean (General n-D)"]
         S3D["Sperner3D.lean"]
         S12["SpernersLemma.lean (1D & 2D)"]
-        TL["TuckersLemma/ (4 Submodules)"]
+        TL["TuckersLemma/ (5 Submodules)"]
         AG["ArtGalleryTheorem.lean (Fisk 3-Color)"]
         CM["CombinatorialMap/ (5 Submodules)"]
         EP["EulerPolyhedron.lean (Freek #13)"]
@@ -498,6 +500,7 @@ graph TD
 │   ├── TuckersLemma.lean                         # 24. Tucker's Combinatorial Lemma & Borsuk–Ulam (Master Interface)
 │   ├── TuckersLemma/                             # 24. Modular Tucker's Lemma Package
 │   │   ├── Basic.lean                            #     - Edge-pseudomanifolds, antipodal involutions, & door predicates
+│   │   ├── BoundaryCycle.lean                    #     - Boundary cycle engine & 2D cyclic pseudomanifolds
 │   │   ├── DoubleCounting.lean                   #     - Face door parity invariant, double counting, & parity theorem
 │   │   ├── Dim1.lean                             #     - 1D discrete sign change & transition parity conservation
 │   │   └── Octahedron.lean                       #     - Concrete octahedral 2-sphere S²₈ certification benchmark

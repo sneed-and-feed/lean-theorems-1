@@ -45,7 +45,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `091d5a34846d58dd5c6417e5e6f66ec2f9ce2876` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
+| **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite**<br>1D sign-change parity; 2D face door double counting & parity conservation on edge-pseudomanifolds; boundary cycle engine on 2D edge-pseudomanifolds with an enumerated cyclic boundary (`CyclicBoundaryPseudomanifold2D`) under antipodal boundary labeling proving that non-complementary boundary labelings force odd boundary door parity, establishing 2D Tucker's lemma unconditionally (Freund & Todd 1981, *J. Combin. Theory Ser. A*); concrete 6-vertex octahedral 2-sphere ($S^2_8$) certification benchmark | `tuckers_lemma` | `11f963c7cad7f51780674ecf1344698f99f6a910` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
 
 ---
 

@@ -12,9 +12,10 @@ project:
     and the combinatorial Borsuk–Ulam theorem in 1D and 2D without artificial conditions. Formalizes
     four foundational pillars: (1) 1D discrete sign-change parity and antipodal interval subdivision lemma;
     (2) 2D combinatorial double counting of face doors and modulo-2 parity conservation on edge-pseudomanifolds;
-    (3) the boundary cycle engine on antipodally symmetric disk triangulations proving that non-complementary
-    boundary labelings have odd boundary door parity, thereby establishing the full, unconditional 2D Tucker's Lemma;
-    and (4) the concrete 6-vertex, 8-face, 12-edge octahedral 2-sphere S^2_8 triangulation.
+    (3) the boundary cycle engine on 2D edge-pseudomanifolds with an enumerated cyclic boundary (CyclicBoundaryPseudomanifold2D)
+    under antipodal boundary labeling, proving that non-complementary boundary labelings force odd boundary door parity,
+    thereby establishing the 2D Tucker's Lemma on cyclic boundary pseudomanifolds, retracting previous claims of full
+    topological disk coverage; and (4) the concrete 6-vertex, 8-face, 12-edge octahedral 2-sphere S^2_8 triangulation.
     All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 classification:
@@ -30,29 +31,34 @@ sources:
       - "Albert W. Tucker"
     relationship: formalizes
     note: >-
-      Formalizes Tucker's 1945 combinatorial lemma for 1D antipodal paths and 2D triangulated disks
+      Formalizes Tucker's 1945 combinatorial lemma for 1D antipodal paths and 2D edge-pseudomanifolds
       and spheres, establishing complementary edge existence under antipodal sign labelings.
   - title: "A generalization of Tucker's combinatorial lemma with topological applications"
     type: paper
     year: 1952
     venue: "Annals of Mathematics"
+    doi: "https://doi.org/10.2307/1969651"
     authors:
       - "Ky Fan"
     relationship: adapts
     note: >-
       Adapts Ky Fan's multidimensional antipodal labeling perspective to discrete combinatorial triangulations
       and concrete octahedral spheres.
-  - title: "A constructive proof of Tucker's combinatorial lemma for primitive sets"
+  - title: "A Constructive Proof of Tucker's Combinatorial Lemma"
     type: paper
     year: 1981
-    venue: "Mathematics of Operations Research"
+    venue: "Journal of Combinatorial Theory, Series A"
+    volume: "30"
+    issue: "3"
+    pages: "321-349"
+    doi: "https://doi.org/10.1016/0097-3165(81)90027-3"
     authors:
       - "Robert M. Freund"
       - "Michael J. Todd"
     relationship: adapts
     note: >-
-      Formalizes Freund and Todd's door-counting double-counting identity and local triangular face
-      parity invariant on 2D edge-pseudomanifolds.
+      Adapts Freund and Todd's door-counting double-counting identity and local triangular face
+      parity invariant to 2D edge-pseudomanifolds with an enumerated cyclic boundary.
 
 automation:
   methods:

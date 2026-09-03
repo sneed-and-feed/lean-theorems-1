@@ -74,15 +74,11 @@ lemma triangle_edges_eq {u v w : V} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠
 
 lemma distinct_edges {u v w : V} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠ w) :
     ({u, v} : Finset V) ∉ ({{u, w}, {v, w}} : Finset (Finset V)) ∧
-    ({u, w} : Finset V) ∉ ({{v, w}} : Finset (Finset V)) ∧
-    ({u, v} : Finset V) ≠ ({u, w} : Finset V) ∧
-    ({u, v} : Finset V) ≠ ({v, w} : Finset V) ∧
-    ({u, w} : Finset V) ≠ ({v, w} : Finset V) := by
-  have h1 : ({u, v} : Finset V) ≠ {u, w} := fun h => by have := Finset.ext_iff.mp h v; clear h; simp_all
-  have h2 : ({u, v} : Finset V) ≠ {v, w} := fun h => by have := Finset.ext_iff.mp h u; clear h; simp_all
-  have h3 : ({u, w} : Finset V) ≠ {v, w} := fun h => by have := Finset.ext_iff.mp h u; clear h; simp_all
-  simp only [Finset.mem_insert, Finset.mem_singleton, not_or, ne_eq]
-  exact ⟨⟨h1, h2⟩, h3, h1, h2, h3⟩
+    ({u, w} : Finset V) ∉ ({{v, w}} : Finset (Finset V)) := by
+  simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+  refine ⟨⟨fun h => by have := Finset.ext_iff.mp h v; clear h; simp_all,
+           fun h => by have := Finset.ext_iff.mp h u; clear h; simp_all⟩,
+          fun h => by have := Finset.ext_iff.mp h u; clear h; simp_all⟩
 
 lemma doors_eq {u v w : V} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠ w) (L : V → ℤ) :
     doors L {u, v, w} =
@@ -93,7 +89,7 @@ lemma doors_eq {u v w : V} (huv : u ≠ v) (huw : u ≠ w) (hvw : v ≠ w) (L : 
   have h_filter : ({u, v, w} : Finset V).powerset.filter (isDoor L) =
       (({u, v, w} : Finset V).powerset.filter (fun e => e.card = 2)).filter (fun e => e.image L = {1, 2}) := by
     ext e; simp only [mem_filter, mem_powerset, isDoor, and_assoc]
-  have ⟨h_disj1, h_disj2, _, _, _⟩ := distinct_edges huv huw hvw
+  have ⟨h_disj1, h_disj2⟩ := distinct_edges huv huw hvw
   rw [h_filter, triangle_edges_eq huv huw hvw, card_filter,
       sum_insert h_disj1, sum_insert h_disj2, sum_singleton]
   simp only [image_insert, image_singleton]
@@ -163,9 +159,7 @@ theorem double_counting_doors (T : EdgePseudomanifold2D V) (L : V → ℤ) :
     The total face door count modulo 2 is identically equal to the number of boundary doors modulo 2. -/
 theorem parity_conservation (T : EdgePseudomanifold2D V) (L : V → ℤ) :
     (∑ t ∈ T.faces, doors L t) % 2 = (T.boundaryEdges.filter (isDoor L)).card % 2 := by
-  rw [double_counting_doors, Nat.add_mod]
-  have : (2 * (T.interiorEdges.filter (isDoor L)).card) % 2 = 0 := by omega
-  rw [this, add_zero, Nat.mod_mod]
+  rw [double_counting_doors]; omega
 
 lemma sum_even_of_all_even {β : Type*} (s : Finset β) (f : β → ℕ)
     (h_even : ∀ x ∈ s, f x % 2 = 0) : (∑ x ∈ s, f x) % 2 = 0 := by

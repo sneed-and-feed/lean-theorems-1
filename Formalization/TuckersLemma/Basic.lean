@@ -10,8 +10,8 @@ open Finset
 # 2D Symmetric Triangulations and Pseudomanifolds for Tucker's Lemma
 
 This module defines the basic combinatorial structures for **Tucker's Lemma** (1945):
-- 2-dimensional edge-pseudomanifolds with boundary
-- Antipodally symmetric triangulations
+- 2-dimensional edge-pseudomanifolds with boundary (pure 2-complexes where every edge is incident to 1 or 2 faces)
+- Antipodally symmetric simplicial complexes (edge-pseudomanifolds equipped with a simplicial fixed-point-free involution)
 - Door predicates and door counting functions
 - Complementary edges under integer sign labelings
 -/
@@ -23,21 +23,28 @@ section Structures
 variable {V : Type*} [DecidableEq V]
 
 /-- An abstract 2-dimensional edge-pseudomanifold with boundary.
-    - `faces`: finite collection of 3-element subsets of vertices `V`.
-    - Every edge (2-element subset of a face) belongs to either 1 face (boundary) or 2 faces (interior). -/
+    - `faces`: finite collection of 3-element subsets (triangles / 2-simplices) of vertices `V`.
+    - Every edge (2-element subset of a face) belongs to either 1 face (boundary) or 2 faces (interior).
+    In combinatorial topology, an edge-pseudomanifold is a pure simplicial complex where every
+    codimension-1 face satisfies the manifold non-branching condition. -/
 structure EdgePseudomanifold2D (V : Type*) [DecidableEq V] where
   faces : Finset (Finset V)
   face_card : ∀ t ∈ faces, t.card = 3
   incident_card : ∀ e ∈ faces.biUnion (fun t => t.powerset.filter (fun s => s.card = 2)),
     (faces.filter (fun t => e ⊆ t)).card = 1 ∨ (faces.filter (fun t => e ⊆ t)).card = 2
 
-/-- An abstract 2D antipodally symmetric triangulation.
-    Combines an `EdgePseudomanifold2D` structure with an antipodal involution `antipodal : V ≃ V`
-    satisfying `antipodal (antipodal v) = v` and `antipodal v ≠ v`. -/
+/-- An abstract 2D antipodally symmetric simplicial complex / triangulation.
+    Combines an `EdgePseudomanifold2D` structure with a fixed-point-free antipodal involution
+    `antipodal : V ≃ V` preserving the simplicial complex structure:
+    - `antipodal_sq`: Involution on vertices (`antipodal (antipodal v) = v`).
+    - `antipodal_ne`: Fixed-point-free (`antipodal v ≠ v`).
+    - `face_antipodal`: Simplicial face invariance mapping every face $t \in \text{faces}$
+      to an antipodal face $t.\text{image antipodal} \in \text{faces}$. -/
 structure SymmetricTriangulation2D (V : Type*) [DecidableEq V] extends EdgePseudomanifold2D V where
   antipodal : V ≃ V
   antipodal_sq : ∀ v, antipodal (antipodal v) = v
   antipodal_ne : ∀ v, antipodal v ≠ v
+  face_antipodal : ∀ t ∈ faces, t.image antipodal ∈ faces
 
 namespace EdgePseudomanifold2D
 
