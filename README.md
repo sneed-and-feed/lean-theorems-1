@@ -105,13 +105,13 @@ construction with its exact cardinality are fully proved.
 ### 7. Euler's Polyhedron Formula, Topological Genus Invariants & Non-Planarity Obstructions (Freek Wiedijk #13)
 * **Module:** [`Formalization/EulerPolyhedron.lean`](Formalization/EulerPolyhedron.lean)
 * **Modular Package:** [`Formalization/CombinatorialMap/`](Formalization/CombinatorialMap)
-  - `Basic.lean`: Darts, edge involution $\alpha$, vertex permutation $\sigma$, faces $\phi = \sigma \alpha$, and topological genus $\operatorname{genus}(M) := 1 - \chi(M)/2$.
+  - `Basic.lean`: Darts, edge involution $\alpha$, vertex permutation $\sigma$, faces $\phi = \sigma \alpha$, and topological genus $\mathrm{genus}(M) := 1 - \chi(M)/2$.
   - `FaceDegree.lean`: Cycle sum theory on permutations (`k_mul_card_le_sum`) and face degree handshaking ($3F \le 2E$ and $4F \le 2E$).
-  - `Obstructions.lean`: Classical planar edge bounds ($E \le 3V - 6$, $E \le 2V - 4$) and authentic topological genus obstructions for $K_5$ ($\chi \le 0, \operatorname{genus} \ge 1, \chi \ne 2$) and $K_{3,3}$ ($\chi \le 0, \operatorname{genus} \ge 1, \chi \ne 2$).
+  - `Obstructions.lean`: Classical planar edge bounds ($E \le 3V - 6$, $E \le 2V - 4$) and authentic topological genus obstructions for $K_5$ ($\chi \le 0, \mathrm{genus} \ge 1, \chi \ne 2$) and $K_{3,3}$ ($\chi \le 0, \mathrm{genus} \ge 1, \chi \ne 2$).
   - `Parity.lean`: Tutte–Edmonds rotation systems and topological parity theorem $(-1)^{V+E+F} = 1 \implies \chi(M) \equiv 0 \pmod 2$.
-  - `Concrete.lean`: Explicit map coordinates for tetrahedron, cube, triangle, square, and kernel-verified toroidal embedding of $K_5$ ($\chi = 0, \operatorname{genus} = 1$) certifying tightness of the genus obstruction.
+  - `Concrete.lean`: Explicit map coordinates for tetrahedron, cube, triangle, square, and kernel-verified toroidal embedding of $K_5$ ($\chi = 0, \mathrm{genus} = 1$) certifying tightness of the genus obstruction.
 * **Theorems:** `tree_euler_formula`, `planar_edge_bound`, `planar_edge_bound_triangle_free`, `average_degree_lt_six`, `k5_eulerChar_le_zero`, `k5_genus_ge_one`, `k5_not_planar`, `k33_eulerChar_le_zero`, `k33_genus_ge_one`, `k33_not_planar`, `k5_torus_eulerChar`, `k5_torus_genus`, `tetrahedron_eulerChar`, `combinatorialMap_eulerChar_is_even`
-* **Mathematical Statement:** For any tree $T$, $V - E + 1 = 2$. For any combinatorial map $M$, $\chi(M) = V - E + F$ is even. A simple map has $3F \le 2E$, implying $E \le 3V - 6$ for planar maps ($\chi = 2$), while $K_5$ and $K_{3,3}$ satisfy $\chi \le 0$ and $\operatorname{genus} \ge 1$, precluding planar embeddings.
+* **Mathematical Statement:** For any tree $T$, $V - E + 1 = 2$. For any combinatorial map $M$, $\chi(M) = V - E + F$ is even. A simple map has $3F \le 2E$, implying $E \le 3V - 6$ for planar maps ($\chi = 2$), while $K_5$ and $K_{3,3}$ satisfy $\chi \le 0$ and $\mathrm{genus} \ge 1$, precluding planar embeddings.
 
 
 ---
@@ -146,7 +146,7 @@ construction with its exact cardinality are fully proved.
   - **Auxiliary Counting & Linear Equation Modules (Library):**
     - [`Formalization/SchursTheorem/Quantitative.lean`](Formalization/SchursTheorem/Quantitative.lean): Exact count $\frac{(N-1)N}{2}$ for 1-colorings ($r = 1$) and disjoint-block counting relation $k \le N \cdot |\text{monoSchurTriples } \chi N|$ for $N \ge k B_r$.
     - [`Formalization/SchursTheorem/Rado.lean`](Formalization/SchursTheorem/Rado.lean): Constant-solution zero-sum corollary ($\sum c_i = 0$) and Schur equation $(1, 1, -1)$ regularity.
-* **Mathematical Statement:** For every $r \ge 1$, any $r$-coloring of the integers $\{1, \dots, B_r\}$, or of the quotient/difference set $S^{-1}S$ (or $S - S$) of any group $G$ containing a subset with $|S| \ge B_r = \text{ramseyTriangleBound } r$, contains non-trivial monochromatic solutions to $x + y = z$ or $x \cdot y = z$. All statements rigorously maintain bound fidelity ($B_r \ge R_r(3) \ge S(r)$).
+* **Mathematical Statement:** For every $r \ge 1$, any $r$-coloring of the integers $\{1, \dots, B_r\}$, or of the quotient/difference set $S^{-1}S$ (or $S - S$) of any group $G$ containing a subset with $|S| \ge B_r = \text{ramseyTriangleBound } r$, contains non-trivial monochromatic solutions to $x + y = z$ or $x \cdot y = z$. All statements rigorously maintain bound fidelity $(B_r \ge R_r(3) \ge S(r))$.
 
 ---
 
@@ -200,7 +200,7 @@ construction with its exact cardinality are fully proved.
   - `Dim1.lean`: Classical 1D Tverberg theorem (`tverberg_1d`, `tverberg_1d_of_card_ge`) via symmetric-rank pairing.
   - `Colorful.lean`: 1D Colorful Tverberg Theorem (`colorful_tverberg_1d`, Bárány–Larman–Pach 1992) across two color classes of size $r$.
 * **Theorems:** `tverbergs_theorem`, `tverbergs_theorem_of_card_ge`, `tverberg_bridge`, `tverberg_1d`, `colorful_tverberg_1d`, `sarkaria_tverberg`
-* **Mathematical Statement:** For any $d \ge 0$ and $r \ge 1$, any finite set $S \subset \mathbb{R}^d$ of cardinality $N = (r - 1)(d + 1) + 1$ can be partitioned into $r$ pairwise disjoint subsets $A_1, \dots, A_r$ whose convex hulls share a common point of intersection ($\bigcap_{i=1}^r \operatorname{conv}(A_i) \ne \emptyset$).
+* **Mathematical Statement:** For any $d \ge 0$ and $r \ge 1$, any finite set $S \subset \mathbb{R}^d$ of cardinality $N = (r - 1)(d + 1) + 1$ can be partitioned into $r$ pairwise disjoint subsets $A_1, \dots, A_r$ whose convex hulls share a common point of intersection $(\bigcap_{i=1}^r \mathrm{conv}(A_i) \ne \emptyset)$.
 
 
 ---
@@ -262,7 +262,7 @@ construction with its exact cardinality are fully proved.
 * **Root Module:** [`Formalization/TuckersLemma.lean`](Formalization/TuckersLemma.lean)
 * **Modular Package:** [`Formalization/TuckersLemma/`](Formalization/TuckersLemma)
   - `Basic.lean`: Abstract 2D edge-pseudomanifolds with boundary (`EdgePseudomanifold2D`), symmetric triangulations (`SymmetricTriangulation2D`) with fixed-point-free antipodal involutions, door predicates (`isDoor`), and complementary edge predicates (`IsComplementaryEdge`).
-  - `DoubleCounting.lean`: Local face door parity invariant ($\text{doors}(L, t) \equiv 1 \pmod 2 \iff \exists u \ne v \in t, L(u) = -L(v)$), global double-counting identity ($\sum \text{doors}(t) = |E_{bd}^{\text{door}}| + 2 |E_{int}^{\text{door}}|$), parity conservation modulo 2, and constructive existence of complementary edges on triangulations with odd boundary doors without artificial witness premises.
+  - `DoubleCounting.lean`: Local face door parity invariant $(\text{doors}(L, t) \equiv 1 \pmod 2 \iff \exists u \ne v \in t, L(u) = -L(v))$, global double-counting identity $(\sum \text{doors}(t) = |E_{bd}^{\text{door}}| + 2 |E_{int}^{\text{door}}|)$, parity conservation modulo 2, and constructive existence of complementary edges on triangulations with odd boundary doors without artificial witness premises.
   - `Dim1.lean`: 1D discrete intermediate value theorem (`exists_adjacent_sign_change`, `tucker_1d`), sign switch counting, and endpoint sign parity conservation (`sign_switch_parity`, `tucker_1d_parity_exists`).
   - `Octahedron.lean`: Concrete 6-vertex octahedral 2-sphere ($S^2_8$) benchmark (`octahedron_triangulation`, `octahedron_tuckers_lemma`) proving every antipodal labeling $L : \text{OctV} \to \{\pm 1, \pm 2\}$ contains a complementary edge.
 * **Theorems:** `tucker_2d_theorem`, `tuckers_lemma`, `octahedron_tuckers_lemma`, `tucker_1d`, `sign_switch_parity`, `double_counting_doors`, `parity_conservation`, `combinatorial_borsuk_ulam`
@@ -347,7 +347,7 @@ construction with its exact cardinality are fully proved.
   - `Selection.lean`: 1D Centerpoint Theorem, Bárány's 1982 First Selection Lemma in 1D, and 1D Colorful Selection Lemma.
 * **Theorems:** `colorful_caratheodory_point`, `colorful_caratheodory_origin`, `colorful_caratheodory_dim1`, `colorful_caratheodory_dim2`, `caratheodory_classical`, `caratheodory_classical_deduction`, `centerpoint_1d`, `first_selection_lemma_1d`, `colorful_selection_lemma_1d`
 * **Mathematical Statement:**
-  - **Colorful Carathéodory (Bárány 1982):** For any $d+1$ color classes $S_0, \dots, S_d \subset \mathbb{R}^d$ whose convex hulls all contain $p$, there exists a colorful transversal $f$ ($f(i) \in S_i$) such that $p \in \operatorname{conv}(\operatorname{range} f)$.
+  - **Colorful Carathéodory (Bárány 1982):** For any $d+1$ color classes $S_0, \dots, S_d \subset \mathbb{R}^d$ whose convex hulls all contain $p$, there exists a colorful transversal $f$ $(f(i) \in S_i)$ such that $p \in \mathrm{conv}(\mathrm{range} f)$.
   - **1D First Selection Lemma (Bárány 1982):** Any finite set of $n \ge 2$ points in $\mathbb{R}^1$ has a median point with halfspace depth $\ge \lfloor (n+1)/2 \rfloor = \lceil n/2 \rceil$ contained in at least $\lfloor n/2 \rfloor \cdot \lceil n/2 \rceil \ge \frac{n^2 - 1}{4}$ spanned intervals ($c_1 = 1/2$).
   - **1D Centerpoint Theorem (Rado 1946):** The median point of any finite point set in $\mathbb{R}^1$ has halfspace depth $\ge \lfloor (n+1)/2 \rfloor = \lceil n/2 \rceil$.
 
@@ -356,9 +356,9 @@ construction with its exact cardinality are fully proved.
 ### 35. Kőnig–Egerváry Duality Theorem & Gallai Identities
 * **Module:** [`Formalization/KonigMatching.lean`](Formalization/KonigMatching.lean)
 * **Submodules:**
-  - `Basic.lean`: Matching, vertex cover, independent set predicates, invariants ($\nu, \tau, \alpha$), and Weak Duality ($\nu(G) \le \tau(G)$).
+  - `Basic.lean`: Matching, vertex cover, independent set predicates, invariants ($\nu, \tau, \alpha$), and Weak Duality $(\nu(G) \le \tau(G))$.
   - `Defect.lean`: Maximal defect subsets, augmented neighborhood family, Hall's defect condition, and matching extraction.
-  - `Duality.lean`: Strong Duality ($\nu(G) = \tau(G)$), Gallai's identity ($\alpha(G) + \tau(G) = |V|$), and Kőnig independence formula ($\alpha(G) + \nu(G) = |V|$).
+  - `Duality.lean`: Strong Duality $(\nu(G) = \tau(G))$, Gallai's identity $(\alpha(G) + \tau(G) = |V|)$, and Kőnig independence formula $(\alpha(G) + \nu(G) = |V|)$.
 * **Theorems:** `konig_duality`, `konig_duality_le`, `weak_duality`, `matching_card_le_vertexCover_card`, `gallai_independence_vertex_cover`, `konig_independence_matching`
 * **Mathematical Statement:**
   - **Weak Duality:** For any finite simple graph $G$, the matching number is bounded by the vertex cover number: $\nu(G) \le \tau(G)$.
