@@ -7,11 +7,6 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.unusedTactic false
-set_option linter.style.haveILetI false
-set_option linter.deprecated false
 
 open scoped Classical
 
@@ -197,7 +192,7 @@ lemma lineThrough_eq_of_mem (p q u v : Point2D) (hpq : p ≠ q)
   have ht_ne : paramVal p q v - paramVal p q u ≠ 0 := by
     intro h; apply huv; rw [hu_eq, hv_eq, sub_eq_zero.mp h]
   ext r
-  simp only [lineThrough, Set.mem_setOf_eq, Collinear]
+  simp only [lineThrough, Set.mem_ofPred_eq, Collinear]
   have h_cross : crossProd u v r = crossProd (paramPoint p q (paramVal p q u)) (paramPoint p q (paramVal p q v)) r := by
     calc crossProd u v r
       _ = crossProd (paramPoint p q (paramVal p q u)) v r := congrArg (fun x => crossProd x v r) hu_eq
@@ -294,7 +289,7 @@ lemma pointsOnLine_eq_of_mem (P : Finset Point2D) {p q u v : Point2D}
   have hv_line : v ∈ lineThrough p q := (Finset.mem_filter.mp hv).2
   have h_line_eq := lineThrough_eq_of_mem p q u v hpq hu_line hv_line huv
   ext r
-  simp only [pointsOnLine, Finset.mem_filter, lineThrough, Set.mem_setOf_eq] at hu_line hv_line ⊢
+  simp only [pointsOnLine, Finset.mem_filter, lineThrough, Set.mem_ofPred_eq] at hu_line hv_line ⊢
   constructor
   · intro hr
     have hr_line : r ∈ lineThrough u v := hr.2
@@ -466,7 +461,7 @@ theorem pair_counting_bound_real (P : Finset Point2D) :
 
 /-- Lower bound on the number of spanned lines when max collinear points is bounded:
     |ℒ(P)| ≥ n(n-1) / (k(k-1)). -/
-theorem spanned_lines_bound_of_max_collinear (P : Finset Point2D) (hn : 2 ≤ P.card)
+theorem spanned_lines_bound_of_max_collinear (P : Finset Point2D) (_hn : 2 ≤ P.card)
     (hk_pos : 0 < (maxCollinearPoints P : ℝ) - 1) :
     (spannedLinesCount P : ℝ) ≥
       ((P.card : ℝ) * ((P.card : ℝ) - 1)) / ((maxCollinearPoints P : ℝ) * ((maxCollinearPoints P : ℝ) - 1)) := by
@@ -478,8 +473,8 @@ theorem spanned_lines_bound_of_max_collinear (P : Finset Point2D) (hn : 2 ≤ P.
 
 /-- Beck's Dichotomy with explicit threshold parameter α ∈ (0, 1):
     Either maxCollinearPoints(P) ≥ α|P|, or |ℒ(P)| · (α|P|)² ≥ |P|(|P| - 1). -/
-theorem becks_dichotomy_parameterized (P : Finset Point2D) (hn : 3 ≤ P.card)
-    (α : ℝ) (hα_pos : 0 < α) (hα_le_one : α ≤ 1) :
+theorem becks_dichotomy_parameterized (P : Finset Point2D) (_hn : 3 ≤ P.card)
+    (α : ℝ) (_hα_pos : 0 < α) (_hα_le_one : α ≤ 1) :
     (maxCollinearPoints P : ℝ) ≥ α * (P.card : ℝ) ∨
     (spannedLinesCount P : ℝ) * (α * (P.card : ℝ))^2 ≥ (P.card : ℝ) * ((P.card : ℝ) - 1) := by
   by_cases h_case : (maxCollinearPoints P : ℝ) ≥ α * (P.card : ℝ)

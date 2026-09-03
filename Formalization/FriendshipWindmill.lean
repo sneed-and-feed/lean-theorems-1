@@ -5,10 +5,6 @@ import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic.Ring
 import Formalization.FriendshipTheorem
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
-
 open Finset SimpleGraph
 
 namespace FriendshipWindmill
@@ -23,11 +19,13 @@ def HasFriendshipProperty (G : SimpleGraph V) [DecidableRel G.Adj] : Prop :=
 def IsUniversalVertex (G : SimpleGraph V) (w : V) : Prop :=
   ∀ v : V, v ≠ w → G.Adj w v
 
+omit [Nonempty V] in
 theorem politician_degree (G : SimpleGraph V) [DecidableRel G.Adj] (w : V)
     (h_univ : IsUniversalVertex G w) : G.degree w = Fintype.card V - 1 := by
   rw [degree, show G.neighborFinset w = Finset.univ.erase w by ext u; simp [mem_neighborFinset]; exact ⟨fun h => h.ne.symm, h_univ u⟩]
   rw [card_erase_of_mem (mem_univ w), card_univ]
 
+omit [Nonempty V] in
 theorem induced_non_politician_degree_one (G : SimpleGraph V) [DecidableRel G.Adj]
     (h_friend : HasFriendshipProperty G) (w : V)
     (h_univ : IsUniversalVertex G w) (v : V) (hv : v ≠ w) :
@@ -37,6 +35,7 @@ theorem induced_non_politician_degree_one (G : SimpleGraph V) [DecidableRel G.Ad
   have h := h_univ u
   aesop
 
+omit [Nonempty V] in
 lemma card_ne_two_of_friendship (G : SimpleGraph V) [DecidableRel G.Adj]
     (h_friend : HasFriendshipProperty G) : Fintype.card V ≠ 2 := by
   intro h_two
@@ -66,15 +65,18 @@ lemma exists_universal_of_friendship (G : SimpleGraph V) [DecidableRel G.Adj]
 def windmillMatching (G : SimpleGraph V) [DecidableRel G.Adj] (w : V) : Finset (Finset V) :=
   ((Finset.univ.erase w).powersetCard 2).filter (fun e => ∃ u ∈ e, ∃ v ∈ e, u ≠ v ∧ G.Adj u v)
 
+omit [Nonempty V] in
 lemma mem_windmillMatching_iff {G : SimpleGraph V} [DecidableRel G.Adj] {w : V} {e : Finset V} :
     e ∈ windmillMatching G w ↔ e.card = 2 ∧ (∀ x ∈ e, x ≠ w) ∧ (∃ u ∈ e, ∃ v ∈ e, u ≠ v ∧ G.Adj u v) := by
   simp [windmillMatching, subset_erase]; aesop
 
+omit [Nonempty V] in
 lemma pair_mem_windmillMatching {G : SimpleGraph V} [DecidableRel G.Adj] {w u v : V}
     (hu : u ≠ w) (hv : v ≠ w) (hadj : G.Adj u v) : ({u, v} : Finset V) ∈ windmillMatching G w := by
   rw [mem_windmillMatching_iff]; have hne := hadj.ne
   refine ⟨Finset.card_pair hne, by aesop, u, by simp, v, by simp, hne, hadj⟩
 
+omit [Nonempty V] in
 lemma get_nbr_in_windmill {G : SimpleGraph V} [DecidableRel G.Adj] {w x y: V} {e : Finset V}
     (he : e ∈ windmillMatching G w) (hx : x ∈ e) (hy : y ∈ e.erase x) :
     y ∈ (G.neighborFinset x).erase w := by
@@ -98,6 +100,7 @@ lemma get_nbr_in_windmill {G : SimpleGraph V} [DecidableRel G.Adj] {w x y: V} {e
     · exact hadj.symm
     · exact (hyne rfl).elim
 
+omit [Nonempty V] in
 lemma windmillMatching_disjoint {G : SimpleGraph V} [DecidableRel G.Adj]
     (h_friend : HasFriendshipProperty G) (w : V) (hw : IsUniversalVertex G w) :
     ∀ e₁ ∈ windmillMatching G w, ∀ e₂ ∈ windmillMatching G w, e₁ ≠ e₂ → Disjoint e₁ e₂ := by
@@ -128,6 +131,7 @@ lemma windmillMatching_disjoint {G : SimpleGraph V} [DecidableRel G.Adj]
       _ = e₂ := insert_erase hx2
   exact hne heq
 
+omit [Nonempty V] in
 lemma biUnion_windmillMatching (G : SimpleGraph V) [DecidableRel G.Adj]
     (h_friend : HasFriendshipProperty G) (w : V) (hw : IsUniversalVertex G w) :
     ((windmillMatching G w).biUnion id) = Finset.univ.erase w := by
@@ -201,6 +205,7 @@ theorem friendship_is_windmill (G : SimpleGraph V) [DecidableRel G.Adj]
       · exact hadj0.symm
       · exact (hne0 rfl).elim
 
+omit [Nonempty V] in
 /-- The total edge count of any friendship graph on $2k + 1$ vertices is exactly $3k$. -/
 theorem friendship_edge_count (G : SimpleGraph V) [DecidableRel G.Adj]
     (h_friend : HasFriendshipProperty G) (w : V) (k : ℕ)

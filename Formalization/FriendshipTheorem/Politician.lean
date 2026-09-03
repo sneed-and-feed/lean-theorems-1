@@ -25,10 +25,6 @@ This module establishes the degree properties of vertices in a friendship graph:
 
 namespace FriendshipTheorem
 
-set_option linter.deprecated false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 open Finset SimpleGraph
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
@@ -278,7 +274,7 @@ lemma even_degree_of_friendship (h_friend : HasFriendshipProperty G) (u : V) :
       commonNeighbor h_friend (h_ne_of_mem hx)
     else x
   have hf_def {x : V} (hx : x ∈ G.neighborFinset u) : f x = commonNeighbor h_friend (h_ne_of_mem hx) := by
-    dsimp [f]; rw [dif_pos hx]
+    dsimp [f]; rw [dite_eq_left hx]
   have hf_mem : ∀ x ∈ G.neighborFinset u, f x ∈ G.neighborFinset u := by
     intro x hx
     rw [hf_def hx]
@@ -320,25 +316,25 @@ lemma sum_double_restrict (s : Finset V) (P : V → V → Prop) [DecidableRel P]
       (∑ v : V, if P u v ∧ u ∈ s ∧ v ∈ s then (1 : ℕ) else 0) =
       if u ∈ s then (∑ v ∈ s, if P u v then (1 : ℕ) else 0) else 0 := by
     by_cases hu : u ∈ s
-    · rw [if_pos hu]
+    · rw [ite_eq_left hu]
       have h_sd := Finset.sum_sdiff (Finset.subset_univ s)
         (f := fun v => if P u v ∧ u ∈ s ∧ v ∈ s then (1 : ℕ) else 0)
       have h_zero : ∑ v ∈ Finset.univ \ s, (if P u v ∧ u ∈ s ∧ v ∈ s then 1 else 0) = 0 := by
         apply Finset.sum_eq_zero
         intro v hv
         rw [Finset.mem_sdiff] at hv
-        rw [if_neg (by rintro ⟨-, -, hvs⟩; exact hv.2 hvs)]
+        rw [ite_eq_right (by rintro ⟨-, -, hvs⟩; exact hv.2 hvs)]
       rw [h_zero, zero_add] at h_sd
       rw [← h_sd]
       apply Finset.sum_congr rfl
       intro v hv
       by_cases hP : P u v
-      · rw [if_pos ⟨hP, hu, hv⟩, if_pos hP]
-      · rw [if_neg (by rintro ⟨h1, -⟩; exact hP h1), if_neg hP]
-    · rw [if_neg hu]
+      · rw [ite_eq_left ⟨hP, hu, hv⟩, ite_eq_left hP]
+      · rw [ite_eq_right (by rintro ⟨h1, -⟩; exact hP h1), ite_eq_right hP]
+    · rw [ite_eq_right hu]
       apply Finset.sum_eq_zero
       intro v _
-      rw [if_neg (by rintro ⟨-, hus, -⟩; exact hu hus)]
+      rw [ite_eq_right (by rintro ⟨-, hus, -⟩; exact hu hus)]
   have : (∑ u : V, ∑ v : V, if P u v ∧ u ∈ s ∧ v ∈ s then (1 : ℕ) else 0) =
       ∑ u : V, (if u ∈ s then (∑ v ∈ s, if P u v then (1 : ℕ) else 0) else 0) := by
     apply Finset.sum_congr rfl
@@ -351,13 +347,14 @@ lemma sum_double_restrict (s : Finset V) (P : V → V → Prop) [DecidableRel P]
     apply Finset.sum_eq_zero
     intro u hu
     rw [Finset.mem_sdiff] at hu
-    rw [if_neg hu.2]
+    rw [ite_eq_right hu.2]
   rw [h_zero, zero_add] at h_sd
   rw [← h_sd]
   apply Finset.sum_congr rfl
   intro u hu
-  rw [if_pos hu]
+  rw [ite_eq_left hu]
 
+omit [Fintype V] in
 lemma sum_ite_ne (s : Finset V) (u : V) (hu : u ∈ s) :
     (∑ v ∈ s, (if u ≠ v then (1 : ℕ) else 0)) = s.card - 1 := by
   have h_eq : (s.filter (fun v => u ≠ v)) = s \ {u} := by
@@ -369,6 +366,7 @@ lemma sum_ite_ne (s : Finset V) (u : V) (hu : u ∈ s) :
     simp
   rw [this, h_card]
 
+omit [Fintype V] in
 lemma sum_pairs_ne (s : Finset V) :
     (∑ u ∈ s, ∑ v ∈ s, (if u ≠ v then (1 : ℕ) else 0)) = s.card * (s.card - 1) := by
   have : (∑ u ∈ s, ∑ v ∈ s, (if u ≠ v then (1 : ℕ) else 0)) = ∑ u ∈ s, (s.card - 1) := by
@@ -425,18 +423,18 @@ lemma card_V_eq_k_mul_k_sub_one_add_one (h_friend : HasFriendshipProperty G)
       rw [h_inter u v]
       by_cases huv : u = v
       · subst huv
-        rw [if_neg (by intro h; exact h rfl)]
+        rw [ite_eq_right (by intro h; exact h rfl)]
         rw [Finset.sum_eq_zero]
         intro w _
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨h1, -⟩
         exact h1 rfl
-      · rw [if_pos huv]
+      · rw [ite_eq_left huv]
         apply Finset.sum_congr rfl
         intro w _
         by_cases hw : u ∈ G.neighborFinset w ∧ v ∈ G.neighborFinset w
-        · rw [if_pos hw, if_pos ⟨huv, hw⟩]
-        · rw [if_neg hw, if_neg (by rintro ⟨-, h2⟩; exact hw h2)]
+        · rw [ite_eq_left hw, ite_eq_left ⟨huv, hw⟩]
+        · rw [ite_eq_right hw, ite_eq_right (by rintro ⟨-, h2⟩; exact hw h2)]
     rw [h_step, sum3_comm]
     have h_w (w : V) : (∑ u : V, ∑ v : V, (if u ≠ v ∧ u ∈ G.neighborFinset w ∧ v ∈ G.neighborFinset w then (1 : ℕ) else 0)) =
         k * (k - 1) := by

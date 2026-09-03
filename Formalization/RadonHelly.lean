@@ -45,8 +45,6 @@ and **Helly's Theorem on Convex Sets** (E. Helly, 1923) completely from
 * F. Wiedijk (2008), *Formalizing 100 Theorems*, #99.
 -/
 
-set_option linter.deprecated false
-
 namespace RadonHelly
 
 open Finset
@@ -294,11 +292,11 @@ lemma hellys_theorem_card {ι : Type*} [DecidableEq ι] (n : ℕ)
           intro i hi
           dsimp [C']
           by_cases hia : i = a
-          · rw [if_pos hia]
+          · rw [ite_eq_left hia]
             have h_a_in : a ∈ J_orig := Finset.mem_insert_of_mem haJ
             have h_b_in : b ∈ J_orig := Finset.mem_insert_self b J
             exact ⟨Set.mem_iInter₂.mp hy a h_a_in, Set.mem_iInter₂.mp hy b h_b_in⟩
-          · rw [if_neg hia]
+          · rw [ite_eq_right hia]
             have hi_in : i ∈ J_orig := Finset.mem_insert_of_mem hi
             exact Set.mem_iInter₂.mp hy i hi_in
         · have hJ_sub_S : J ⊆ S := hJ.trans (Finset.erase_subset b S)
@@ -308,7 +306,7 @@ lemma hellys_theorem_card {ι : Type*} [DecidableEq ι] (n : ℕ)
           intro i hi
           have hia : i ≠ a := fun h ↦ haJ (h ▸ hi)
           dsimp [C']
-          rw [if_neg hia]
+          rw [ite_eq_right hia]
           exact Set.mem_iInter₂.mp hy i hi
       have h_ih_S' := ih (n - 1) (by omega) C' h_convex' S' hS'_card h_inter'
       obtain ⟨z, hz⟩ := h_ih_S'
@@ -319,15 +317,15 @@ lemma hellys_theorem_card {ι : Type*} [DecidableEq ι] (n : ℕ)
       · subst hib
         have h_za := Set.mem_iInter₂.mp hz a ha_in_S'
         dsimp [C'] at h_za
-        rw [if_pos rfl] at h_za
+        rw [ite_eq_left rfl] at h_za
         exact h_za.2
       · have hi_S' : i ∈ S' := Finset.mem_erase.mpr ⟨hib, hi⟩
         have h_zi := Set.mem_iInter₂.mp hz i hi_S'
         dsimp [C'] at h_zi
         by_cases hia : i = a
-        · rw [if_pos hia] at h_zi
+        · rw [ite_eq_left hia] at h_zi
           exact hia ▸ h_zi.1
-        · rw [if_neg hia] at h_zi
+        · rw [ite_eq_right hia] at h_zi
           exact h_zi
 
 /-- **Helly's Theorem for Finite Families of Convex Sets (1923, Freek Wiedijk #99):**

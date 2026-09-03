@@ -5,9 +5,6 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
 
 open Finset
 
@@ -162,11 +159,11 @@ lemma choose_cup_cap_split (a b : ℕ) (ha : 4 ≤ a) (hb : 4 ≤ b) :
 
 /-- Helper lemma for cup-cap theorem by strong induction on total size `s = a + b`. -/
 lemma cup_cap_induction (s : ℕ) :
-    ∀ (a b : ℕ) (ha : 3 ≤ a) (hb : 3 ≤ b) (h_sum : a + b = s)
+    ∀ (a b : ℕ) (_ha : 3 ≤ a) (_hb : 3 ≤ b) (_h_sum : a + b = s)
       (S : Finset Point2D)
-      (h_dist : HasDistinctX S)
-      (h_card : Nat.choose (a + b - 4) (a - 2) + 1 ≤ S.card)
-      (h_gen : InGeneralPosition S),
+      (_h_dist : HasDistinctX S)
+      (_h_card : Nat.choose (a + b - 4) (a - 2) + 1 ≤ S.card)
+      (_h_gen : InGeneralPosition S),
       (∃ cup : List Point2D, IsCup cup a ∧ ∀ p ∈ cup, p ∈ S) ∨
       (∃ cap : List Point2D, IsCap cap b ∧ ∀ p ∈ cap, p ∈ S) := by
   induction' s using Nat.strong_induction_on with s ih
@@ -333,7 +330,7 @@ lemma cup_cap_induction (s : ℕ) :
       have hb4 : 4 ≤ b := by omega
       let is_end (p : Point2D) : Prop :=
         ∃ c : List Point2D, IsCup c (a - 1) ∧ (∀ q ∈ c, q ∈ S) ∧ c.getLast? = some p
-      haveI : DecidablePred is_end := fun p => Classical.dec (is_end p)
+      have : DecidablePred is_end := fun p => Classical.dec (is_end p)
       let E := S.filter is_end
       by_cases h_cup_S : ∃ cup : List Point2D, IsCup cup a ∧ ∀ p ∈ cup, p ∈ S
       · exact Or.inl h_cup_S

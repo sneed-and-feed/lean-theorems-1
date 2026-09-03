@@ -9,8 +9,6 @@ import Mathlib.Tactic.Ring
 open scoped BigOperators
 open Classical
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Hall Defect and Matching Extraction in Bipartite Graphs
 

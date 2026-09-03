@@ -6,10 +6,6 @@ import Mathlib.Data.Finset.Image
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
-set_option linter.deprecated false
 
 open scoped Real
 
@@ -44,7 +40,7 @@ $$|A + A| \cdot |A \cdot A| \ge c |A|^{5/2}$$
 lemma sq_le_sq_of_nonneg {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) : a^2 ≤ b^2 := by nlinarith
 
 /-- Extraction of square inequality for non-negative reals. -/
-lemma le_of_sq_le_sq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : a^2 ≤ b^2) : a ≤ b := by nlinarith
+lemma le_of_sq_le_sq {a b : ℝ} (_ha : 0 ≤ a) (hb : 0 ≤ b) (h : a^2 ≤ b^2) : a ≤ b := by nlinarith
 
 /-- Square of the $5/2$-power function: for $x \ge 0$, $(x^{5/2})^2 = x^5$. -/
 lemma rpow_five_halves_sq (x : ℝ) (hx : 0 ≤ x) : (x ^ (5 / 2 : ℝ))^2 = x^5 := by
@@ -80,7 +76,7 @@ lemma scaled_bound_sq_four (N : ℝ) (hN : 0 ≤ N) :
   rw [mul_pow, rpow_five_fourths_sq N hN]; ring
 
 /-- Fundamental product-to-maximum upper bound for non-negative reals: $u \cdot v \le \max(u, v)^2$. -/
-lemma mul_le_max_sq (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) : u * v ≤ (max u v)^2 := by
+lemma mul_le_max_sq (u v : ℝ) (hu : 0 ≤ u) (_hv : 0 ≤ v) : u * v ≤ (max u v)^2 := by
   have := le_max_left u v; have := le_max_right u v; nlinarith
 
 -- ============================================================================
@@ -177,7 +173,7 @@ lemma scaled_five_halves_le_one_of_le_two {N : ℝ} (hN1 : 1 ≤ N) (hN2 : N ≤
 /-- Dense regime cubic inequality for Elekes configurations with $N \ge 2$:
     $N^9 / 8 \le 32 P^2 N^4$. -/
 lemma dense_cubic_bound (conf : ElekesConfiguration) (hN2 : 2 ≤ conf.N)
-    (h_dense : 4 * conf.P_card ≤ conf.e)
+    (_h_dense : 4 * conf.P_card ≤ conf.e)
     (h_cube : conf.e^3 ≤ 32 * conf.P_card^2 * conf.L_card^2) :
     conf.N^9 / 8 ≤ 32 * conf.P_card^2 * conf.N^4 := by
   have h_sub : conf.N^3 / 2 ≤ conf.e := by

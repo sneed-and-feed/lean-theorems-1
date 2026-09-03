@@ -9,9 +9,6 @@ import Mathlib.Tactic
 
 open Finset
 
-set_option linter.deprecated false
-set_option linter.unusedVariables false
-
 /-!
 # Single-Equation Rado Partition Regularity & Linear Systems
 
@@ -182,7 +179,7 @@ $\sum c_i \cdot 1 = \sum c_i = 0$ and is monochromatic under any coloring.
 (For non-zero-sum equations satisfying Rado's condition $\sum_{i \in I} c_i = 0$ for $I \subsetneq \{0,\dots,k-1\}$,
 constant solutions fail and deeper Ramsey machinery such as Deuber / van der Waerden is required.) -/
 theorem rado_zero_sum_partition_regular (k : ℕ) [NeZero k] (c : Fin k → ℤ)
-    (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
+    (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (_hr : 1 ≤ r) (χ : ℕ → Fin r) :
     HasNonzeroMonoSol c χ :=
   ⟨fun _ => 1, fun _ => le_rfl, isLinearSol_const c 1 h_sum, isMonoSol_const χ 1⟩
 
@@ -199,14 +196,14 @@ theorem rado_zero_sum_partition_regular_of_le (k : ℕ) (hk : 1 ≤ k) (c : Fin 
 For any zero-sum equation and any cutoff $N \ge 1$, there exists a monochromatic solution
 in $\{1, \dots, N\}$. -/
 theorem rado_zero_sum_interval (k : ℕ) [NeZero k] (c : Fin k → ℤ)
-    (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r)
+    (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (_hr : 1 ≤ r) (χ : ℕ → Fin r)
     (N : ℕ) (hN : 1 ≤ N) :
     HasIntervalMonoSol c χ N :=
   ⟨fun _ => 1, fun _ => ⟨le_rfl, hN⟩, isLinearSol_const c 1 h_sum, isMonoSol_const χ 1⟩
 
 /-- Scaled monochromatic solution for zero-sum equations at any positive integer base $m \ge 1$. -/
 theorem rado_zero_sum_scaled (k : ℕ) [NeZero k] (c : Fin k → ℤ)
-    (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) (m : ℕ) (hm : 1 ≤ m) :
+    (h_sum : ∑ i : Fin k, c i = 0) (r : ℕ) (_hr : 1 ≤ r) (χ : ℕ → Fin r) (m : ℕ) (_hm : 1 ≤ m) :
     ∃ x : Fin k → ℕ, (∀ i, m ≤ x i ∧ x i ≤ m) ∧ IsLinearSol c x ∧ IsMonoSol χ x :=
   ⟨fun _ => m, fun _ => ⟨le_rfl, le_rfl⟩, isLinearSol_const c m h_sum, isMonoSol_const χ m⟩
 
@@ -349,7 +346,7 @@ theorem monoAP3_of_monoSol {r : ℕ} (χ : ℕ → Fin r) (x : Fin 3 → ℕ)
   exact ⟨by rw [hd]; exact h_mono.1.symm, by rw [hd, h2d]; exact h_mono.1.trans h_mono.2.symm⟩
 
 /-- Trivial monochromatic 3-AP with difference $d = 0$ for any starting value $a \ge 1$. -/
-theorem exists_mono_ap3_trivial (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) (a : ℕ) (ha : 1 ≤ a) :
+theorem exists_mono_ap3_trivial (r : ℕ) (_hr : 1 ≤ r) (χ : ℕ → Fin r) (a : ℕ) (ha : 1 ≤ a) :
     1 ≤ a ∧ IsMonoAP3 χ a 0 :=
   ⟨ha, rfl, rfl⟩
 

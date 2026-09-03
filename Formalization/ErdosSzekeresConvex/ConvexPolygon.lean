@@ -6,9 +6,6 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Analysis.Convex.Hull
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
 
 open Finset
 
@@ -59,7 +56,7 @@ lemma orientationDet_pos_pqs_of_pqr_qrs (p q r s : Point2D)
   nlinarith
 
 lemma isCup_orientationDet_pos (pts : List Point2D) (a : ℕ) (hcup : IsCup pts a) :
-    ∀ i j l (hi : i < pts.length) (hj : j < pts.length) (hl : l < pts.length) (hij : i < j) (hjl : j < l),
+    ∀ i j l (hi : i < pts.length) (hj : j < pts.length) (hl : l < pts.length) (_hij : i < j) (_hjl : j < l),
       0 < orientationDet (pts.get ⟨i, hi⟩) (pts.get ⟨j, hj⟩) (pts.get ⟨l, hl⟩) := by
   intro i j l hi hj hl hij hjl
   have h_diff : ∃ d, l - i = d + 2 := ⟨l - i - 2, by omega⟩
@@ -182,7 +179,7 @@ lemma orientationDet_neg_pqs_of_pqr_qrs (p q r s : Point2D)
   nlinarith
 
 lemma isCap_orientationDet_neg (pts : List Point2D) (b : ℕ) (hcap : IsCap pts b) :
-    ∀ i j l (hi : i < pts.length) (hj : j < pts.length) (hl : l < pts.length) (hij : i < j) (hjl : j < l),
+    ∀ i j l (hi : i < pts.length) (hj : j < pts.length) (hl : l < pts.length) (_hij : i < j) (_hjl : j < l),
       orientationDet (pts.get ⟨i, hi⟩) (pts.get ⟨j, hj⟩) (pts.get ⟨l, hl⟩) < 0 := by
   intro i j l hi hj hl hij hjl
   have h_diff : ∃ d, l - i = d + 2 := ⟨l - i - 2, by omega⟩

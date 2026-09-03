@@ -70,9 +70,6 @@ namespace SchursTheorem
 
 open Finset
 
-set_option linter.deprecated false
-set_option linter.unusedVariables false
-
 /-! ### 1. Monochromatic Schur Triples Definition & Basic Properties -/
 
 /-- The set of monochromatic Schur triples `(x, y, z)` in `{1, ..., N}` under an `r`-coloring `χ`.
@@ -211,14 +208,14 @@ lemma diffColor_symm {r : ℕ} (χ : ℕ → Fin r) (hr : 1 ≤ r) (u v : ℕ) :
     diffColor χ hr u v = diffColor χ hr v u := by
   dsimp [diffColor]
   rcases lt_trichotomy u v with h | rfl | h
-  · rw [if_pos h, if_neg (asymm h), if_pos h]
+  · rw [ite_eq_left h, ite_eq_right (asymm h), ite_eq_left h]
   · rfl
-  · rw [if_neg (asymm h), if_pos h, if_pos h]
+  · rw [ite_eq_right (asymm h), ite_eq_left h, ite_eq_left h]
 
 lemma diffColor_of_lt {r : ℕ} (χ : ℕ → Fin r) (hr : 1 ≤ r) {u v : ℕ} (h : u < v) :
     diffColor χ hr u v = χ (v - u) := by
   dsimp [diffColor]
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 /-- A monochromatic graph triangle in the complete graph on $\{0, \dots, N\}$ with
     difference coloring $\chi(|u - v|)$. Represented as an ordered vertex triple

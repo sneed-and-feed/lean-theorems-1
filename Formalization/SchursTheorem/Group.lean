@@ -56,10 +56,6 @@ extremal Schur / Ramsey numbers $S(r)$ and $R_r(3)$.
 
 namespace SchursTheorem
 
-set_option linter.deprecated false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-- Helper lemma: Any monochromatic triangle in a finite linear order can be sorted
 into an ascending chain $a < b < c$ preserving the edge colors. -/
 lemma sorted_mono_triangle {n : ℕ} {C : Type*} (edgeColor : Fin n → Fin n → C)
@@ -115,18 +111,18 @@ theorem group_schurs_theorem {G : Type*} [Group G] [DecidableEq G]
     intro i j
     dsimp [edgeColor]
     rcases lt_trichotomy i j with h | rfl | h
-    · rw [if_pos h, if_neg (asymm h), if_pos h]
+    · rw [ite_eq_left h, ite_eq_right (asymm h), ite_eq_left h]
     · rfl
-    · rw [if_neg (asymm h), if_pos h, if_pos h]
+    · rw [ite_eq_right (asymm h), ite_eq_left h, ite_eq_left h]
   rcases ramsey_triangle r hr Finset.univ edgeColor h_edgeColor_symm h_ramsey_bound with
     ⟨i, j, k, col, -, -, -, hij, hik, hjk, hc_ij, hc_ik, hc_jk⟩
   rcases sorted_mono_triangle edgeColor h_edgeColor_symm hij hik hjk hc_ij hc_ik hc_jk with
     ⟨a, b, c, hab, hbc, hc_ab, hc_bc, hc_ac⟩
   have hac : a < c := lt_trans hab hbc
   dsimp only [edgeColor] at hc_ab hc_bc hc_ac
-  rw [if_pos hab] at hc_ab
-  rw [if_pos hbc] at hc_bc
-  rw [if_pos hac] at hc_ac
+  rw [ite_eq_left hab] at hc_ab
+  rw [ite_eq_left hbc] at hc_bc
+  rw [ite_eq_left hac] at hc_ac
   let u := l.get a; let v := l.get b; let w := l.get c
   have h_nodup := S.nodup_toList
   have huv : u ≠ v := fun h => (ne_of_lt hab) ((List.Nodup.get_inj_iff h_nodup).mp h)
@@ -256,18 +252,18 @@ theorem addGroup_schurs_theorem {A : Type*} [AddGroup A] [DecidableEq A]
     intro i j
     dsimp [edgeColor]
     rcases lt_trichotomy i j with h | rfl | h
-    · rw [if_pos h, if_neg (asymm h), if_pos h]
+    · rw [ite_eq_left h, ite_eq_right (asymm h), ite_eq_left h]
     · rfl
-    · rw [if_neg (asymm h), if_pos h, if_pos h]
+    · rw [ite_eq_right (asymm h), ite_eq_left h, ite_eq_left h]
   rcases ramsey_triangle r hr Finset.univ edgeColor h_edgeColor_symm h_ramsey_bound with
     ⟨i, j, k, col, -, -, -, hij, hik, hjk, hc_ij, hc_ik, hc_jk⟩
   rcases sorted_mono_triangle edgeColor h_edgeColor_symm hij hik hjk hc_ij hc_ik hc_jk with
     ⟨a, b, c, hab, hbc, hc_ab, hc_bc, hc_ac⟩
   have hac : a < c := lt_trans hab hbc
   dsimp only [edgeColor] at hc_ab hc_bc hc_ac
-  rw [if_pos hab] at hc_ab
-  rw [if_pos hbc] at hc_bc
-  rw [if_pos hac] at hc_ac
+  rw [ite_eq_left hab] at hc_ab
+  rw [ite_eq_left hbc] at hc_bc
+  rw [ite_eq_left hac] at hc_ac
   let u := l.get a; let v := l.get b; let w := l.get c
   have h_nodup := S.nodup_toList
   have huv : u ≠ v := fun h => (ne_of_lt hab) ((List.Nodup.get_inj_iff h_nodup).mp h)

@@ -15,11 +15,6 @@ import Mathlib.Tactic.Linarith
 
 
 
-
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
-
 open Finset
 
 /-!
@@ -50,7 +45,7 @@ smaller diameter, famously **disproving Borsuk's Conjecture (1933)**.
 -- Section 1: Modulo-p Intersection Families
 -- ============================================================================
 
-variable {α : Type*} [Fintype α] [DecidableEq α]
+variable {α : Type*} [DecidableEq α]
 
 /-- A family of subsets whose pairwise intersection cardinalities mod p lie in L. -/
 structure ModuloPIntersectingFamily (p : ℕ) [Fact (Nat.Prime p)] (L : Finset (ZMod p)) where
@@ -234,6 +229,8 @@ lemma evalPoly_mem_degSubmodule (p : ℕ) (L : Finset (ZMod p)) (A : Finset α) 
 -- Section 5: Dimension Bounds and Subsets Counting
 -- ============================================================================
 
+variable [Fintype α]
+
 lemma card_filter_le_card_subsets (s : ℕ) :
     (Finset.univ.filter (fun (I : Finset α) ↦ I.card ≤ s)).card =
       ∑ i ∈ Finset.range (s + 1), Nat.choose (Fintype.card α) i := by
@@ -296,6 +293,7 @@ def exactSubmodule (p : ℕ) (k : ℕ) (s : ℕ) :
     (Set.range (fun (I : {I : Finset α // I.card = s}) ↦
       (fun (B : {B : Finset α // B.card = k}) ↦ monomial p I.1 B.1)))
 
+omit [DecidableEq α] in
 lemma fintype_card_subtype_eq_card (s : ℕ) :
     Fintype.card {I : Finset α // I.card = s} = Nat.choose (Fintype.card α) s := by
   rw [Fintype.card_subtype]

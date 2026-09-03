@@ -37,8 +37,6 @@ of Radon's theorem ($r = 2$) and low-order Tverberg partitions ($r \le 2$).
   Math. Ann. 83:113–115.
 -/
 
-set_option linter.deprecated false
-
 namespace TverbergsTheorem
 
 open Finset BigOperators
@@ -190,8 +188,8 @@ lemma colorful_zero_sum_two (D : ℕ) : ∀ (N : ℕ) (_hN : D + 1 ≤ N)
     refine ⟨fun _ ↦ 0, fun i ↦ if i = ⟨0, hN_pos⟩ then 1 else 0,
       fun i ↦ by dsimp; split_ifs <;> linarith, ?_, funext fun t ↦ Fin.elim0 t⟩
     dsimp; rw [Finset.sum_eq_single ⟨0, hN_pos⟩]
-    · rw [if_pos rfl]
-    · intro i _ hi; rw [if_neg hi]
+    · rw [ite_eq_left rfl]
+    · intro i _ hi; rw [ite_eq_right hi]
     · intro h; exact (h (Finset.mem_univ _)).elim
   | succ D ih =>
     intro N hN v hv
@@ -202,12 +200,12 @@ lemma colorful_zero_sum_two (D : ℕ) : ∀ (N : ℕ) (_hN : D + 1 ≤ N)
     · refine ⟨fun _ ↦ k0, fun i ↦ if i = i0 then 1 else 0,
         fun i ↦ by dsimp; split_ifs <;> linarith, ?_, ?_⟩
       · dsimp; rw [Finset.sum_eq_single i0]
-        · rw [if_pos rfl]
-        · intro i _ hi; rw [if_neg hi]
+        · rw [ite_eq_left rfl]
+        · intro i _ hi; rw [ite_eq_right hi]
         · intro h; exact (h (Finset.mem_univ _)).elim
       · dsimp; rw [Finset.sum_eq_single i0]
-        · rw [if_pos rfl, one_smul, hu]
-        · intro i _ hi; rw [if_neg hi, zero_smul]
+        · rw [ite_eq_left rfl, one_smul, hu]
+        · intro i _ hi; rw [ite_eq_right hi, zero_smul]
         · intro h; exact (h (Finset.mem_univ _)).elim
     · obtain ⟨j0, hj0_ne⟩ : ∃ j : Fin (D + 1), v i0 k0 j ≠ 0 := by
         contrapose! hu; ext j; exact hu j

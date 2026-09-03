@@ -31,13 +31,12 @@ and 3-colorability as external preconditions.
 * J. O'Rourke (1987), *Art Gallery Theorems and Algorithms*, Oxford University Press.
 -/
 
-set_option linter.unusedSectionVars false
 
 namespace ArtGalleryTheorem
 
 open Finset
 
-variable {V : Type*} [Fintype V] [DecidableEq V]
+variable {V : Type*} [Fintype V]
 
 /-- A valid proper 3-coloring of the vertices of graph `G`. -/
 def IsThreeColoring (G : SimpleGraph V) (c : V → Fin 3) : Prop :=
@@ -70,7 +69,7 @@ lemma min_color_class_le_k {k : ℕ} (hk : 0 < k) (c : V → Fin k) :
 /-- **Fisk's Triangulation Guard Partition Lemma (1978):**
 Given a graph `G` on `n` vertices equipped with a valid proper 3-coloring `c` (such as a 3-colored
 polygon triangulation), there exists a guard set `S` of size at most `n / 3` covering all triangles (3-cliques). -/
-theorem art_gallery_theorem (G : SimpleGraph V) (c : V → Fin 3) (hc : IsThreeColoring G c) :
+theorem art_gallery_theorem [DecidableEq V] (G : SimpleGraph V) (c : V → Fin 3) (hc : IsThreeColoring G c) :
     ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S := by
   classical
   obtain ⟨k, hk_card⟩ := min_color_class_le_k (by decide) c
@@ -79,7 +78,7 @@ theorem art_gallery_theorem (G : SimpleGraph V) (c : V → Fin 3) (hc : IsThreeC
   rcases fin3_cases_of_pairwise_ne (c u) (c v) (c w) (hc u v huv) (hc v w hvw) (hc w u hwu) k with rfl | rfl | rfl <;> simp
 
 /-- Fisk's Guard Partition Lemma formulated using Mathlib's native `SimpleGraph.Coloring` type. -/
-theorem art_gallery_theorem_coloring (G : SimpleGraph V) (c : G.Coloring (Fin 3)) :
+theorem art_gallery_theorem_coloring [DecidableEq V] (G : SimpleGraph V) (c : G.Coloring (Fin 3)) :
     ∃ S : Finset V, S.card ≤ Fintype.card V / 3 ∧ CoversTriangles G S :=
   art_gallery_theorem G c (fun _ _ huv ↦ c.valid huv)
 

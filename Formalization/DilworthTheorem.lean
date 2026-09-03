@@ -9,15 +9,13 @@ import Mathlib.Order.Antichain
 import Mathlib.Tactic
 
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
 
 namespace DilworthTheorem
 
 open Finset
 open Classical
 
-variable {α : Type*} [DecidableEq α] [PartialOrder α]
+variable {α : Type*} [PartialOrder α]
 
 /-- A subset of `α` is a chain if every two elements are comparable. -/
 def IsChain (s : Set α) : Prop :=

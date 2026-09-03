@@ -30,8 +30,6 @@ and the fundamental Tverberg partition predicate.
 * K. S. Sarkaria (1992), *A generalized van Kampen-Flores theorem*, Proc. Amer. Math. Soc. 115:339–346.
 -/
 
-set_option linter.deprecated false
-
 namespace TverbergsTheorem
 
 open Finset BigOperators

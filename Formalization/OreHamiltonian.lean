@@ -46,9 +46,7 @@ lemma exists_maximal_path (G : SimpleGraph V) [Nonempty V] :
   have := Finset.le_max' s q.length hq_mem
   omega
 
-set_option linter.unusedSectionVars false
-
-
+omit [Fintype V] in
 lemma neighbor_start_mem_support_of_maximal {G : SimpleGraph V} {u v : V} {p : G.Walk u v}
     (hp : p.IsPath)
     (hmax : ∀ {u' v' : V} (q : G.Walk u' v'), q.IsPath → q.length ≤ p.length)
@@ -57,6 +55,7 @@ lemma neighbor_start_mem_support_of_maximal {G : SimpleGraph V} {u v : V} {p : G
   have hlen := hmax (p.cons hw.symm) (by simp [Walk.isPath_def, hnot, hp.support_nodup])
   revert hlen; simp [Walk.length_cons]
 
+omit [Fintype V] in
 lemma neighbor_end_mem_support_of_maximal {G : SimpleGraph V} {u v : V} {p : G.Walk u v}
     (hp : p.IsPath)
     (hmax : ∀ {u' v' : V} (q : G.Walk u' v'), q.IsPath → q.length ≤ p.length)
@@ -276,6 +275,7 @@ def oreCycle {G : SimpleGraph V} {u v : V} (p : G.Walk u v) (i : ℕ)
   let p2 := (p.drop (i + 1)).reverse
   (p1.append p2).concat hadj_u.symm
 
+omit [Fintype V] [DecidableEq V] in
 lemma oreCycle_length {G : SimpleGraph V} {u v : V} (p : G.Walk u v) (i : ℕ) (hi : i < p.length)
     (hadj_u : G.Adj u (p.getVert (i + 1)))
     (hadj_v : G.Adj v (p.getVert i)) :
@@ -284,6 +284,7 @@ lemma oreCycle_length {G : SimpleGraph V} {u v : V} (p : G.Walk u v) (i : ℕ) (
     Walk.length_reverse, Walk.drop_length]
   omega
 
+omit [Fintype V] [DecidableEq V] in
 lemma oreCycle_support_tail_perm {G : SimpleGraph V} {u v : V} {p : G.Walk u v} (i : ℕ)
     (hi : i < p.length)
     (hadj_u : G.Adj u (p.getVert (i + 1)))
@@ -352,6 +353,7 @@ lemma oreCycle_support_tail_perm {G : SimpleGraph V} {u v : V} {p : G.Walk u v} 
       rfl
     exact ((h1.trans h2).trans h3).trans (by rw [h4])
 
+omit [Fintype V] [DecidableEq V] in
 lemma oreCycle_isCycle {G : SimpleGraph V} {u v : V} {p : G.Walk u v} (i : ℕ)
 
     (hi : i < p.length)
@@ -375,6 +377,7 @@ lemma oreCycle_isCycle {G : SimpleGraph V} {u v : V} {p : G.Walk u v} (i : ℕ)
     exact hnodup
   exact Walk.isCycle_iff_isPath_tail_and_le_length.mpr ⟨hpath_tail, hlen⟩
 
+omit [Fintype V] in
 lemma mem_support_oreCycle_iff {G : SimpleGraph V} {u v : V} {p : G.Walk u v} (i : ℕ)
     (hi : i < p.length)
     (hadj_u : G.Adj u (p.getVert (i + 1)))
@@ -535,10 +538,9 @@ theorem dirac_hamiltonian {V : Type*} [Fintype V] [DecidableEq V]
 
 section PathHelpers
 
-set_option linter.unusedSectionVars false
-
 variable {V : Type*} [Fintype V] [DecidableEq V]
 
+omit [Fintype V] in
 /-- Every Hamiltonian cycle yields a Hamiltonian path by dropping the last edge. -/
 lemma isHamiltonian_dropLast_of_isHamiltonianCycle {G : SimpleGraph V} {v : V} {C : G.Walk v v}
     (hC : C.IsHamiltonianCycle) :

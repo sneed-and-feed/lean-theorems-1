@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linarith
 open scoped BigOperators
 open Classical
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Strong Duality and Gallai Identities for Bipartite Graphs
 

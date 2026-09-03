@@ -1,3 +1,5 @@
+import Mathlib.Data.Set.Basic
+
 namespace DesarguesProjective
 
 /-- An axiomatic projective plane consists of points, lines, and an incidence relation. -/

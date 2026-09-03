@@ -7,9 +7,6 @@ import Mathlib.Data.Fintype.Basic
 open SimpleGraph
 open Classical
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 namespace TutteOneFactor
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
@@ -57,6 +54,7 @@ noncomputable def oddCompCount (G : SimpleGraph V) (U : Finset V) : ℕ :=
 
 /-! ## 3. Necessity and Tutte's 1-Factor Theorem -/
 
+omit [DecidableEq V] in
 /-- **Tutte's 1-Factor Theorem (Necessity Direction):**
 If `G` has a 1-factor, then for every subset `U ⊆ V`, the number of odd components `q(G \ U) ≤ |U|`. -/
 theorem tutte_necessity (G : SimpleGraph V) (hM : HasOneFactor G) (U : Set V) :
@@ -65,11 +63,13 @@ theorem tutte_necessity (G : SimpleGraph V) (hM : HasOneFactor G) (U : Set V) :
   have := not_isTutteViolator_of_isPerfectMatching hM U
   rwa [IsTutteViolator, not_lt] at this
 
+omit [DecidableEq V] in
 /-- If `G` has a 1-factor, the total vertex count `|V|` must be even. -/
 theorem even_card_of_hasOneFactor (G : SimpleGraph V) (hM : HasOneFactor G) :
     Even (Fintype.card V) := by
   obtain ⟨M, hM⟩ := hM; exact hM.even_card
 
+omit [DecidableEq V] in
 /-- **Tutte's 1-Factor Theorem (Equivalence):**
 A graph `G` has a 1-factor if and only if for all subsets `U ⊆ V`, `q(G \ U) ≤ |U|`. -/
 theorem tutte_1factor_theorem (G : SimpleGraph V) :
@@ -95,10 +95,12 @@ noncomputable def tutteBergeBound (G : SimpleGraph V) (U : Finset V) : ℤ :=
 noncomputable def tutteBergeMin (G : SimpleGraph V) : ℤ :=
   Finset.univ.image (fun U : Finset V => tutteBergeBound G U) |>.min' (by simp)
 
+omit [DecidableEq V] in
 theorem tutteBergeBound_eq (G : SimpleGraph V) (U : Finset V) :
     tutteBergeBound G U = (Fintype.card V : ℤ) - defect G U := by
   dsimp [tutteBergeBound, defect]; ring
 
+omit [DecidableEq V] in
 /-- The Tutte–Berge minimum is exactly `|V| - matchingDefect G`. -/
 theorem tutte_berge_min_eq_card_sub_defect (G : SimpleGraph V) :
     tutteBergeMin G = (Fintype.card V : ℤ) - matchingDefect G := by
@@ -118,6 +120,7 @@ theorem tutte_berge_min_eq_card_sub_defect (G : SimpleGraph V) :
     show (Fintype.card V : ℤ) - S.max' (by simp [S]) ≤ (Fintype.card V : ℤ) - d
     omega
 
+omit [DecidableEq V] in
 /-- The matching defect is nonpositive if and only if `G` has a 1-factor. -/
 theorem matchingDefect_nonpos_iff_hasOneFactor (G : SimpleGraph V) :
     matchingDefect G ≤ 0 ↔ HasOneFactor G := by
@@ -234,6 +237,7 @@ lemma card_crossDarts_ge_three_of_odd (G : SimpleGraph V) (hbridge : IsBridgeles
   have := hbridge S hSne hSuniv
   obtain ⟨k, hk⟩ := hodd; omega
 
+omit [DecidableEq V] in
 lemma even_card_of_cubic (G : SimpleGraph V) (hcubic : IsCubic G) :
     Even (Fintype.card V) := by
   have hsum := G.sum_degrees_eq_twice_card_edges
@@ -254,11 +258,13 @@ def IsTwoFactorDecomposition (G : SimpleGraph V) (r : ℕ) (factors : Fin r → 
   (Pairwise (fun i j => Disjoint (factors i).edgeSet (factors j).edgeSet)) ∧
   (⋃ i : Fin r, (factors i).edgeSet) = G.edgeSet
 
+omit [DecidableEq V] in
 /-- Every 2-regular graph is itself a 2-factor (the base case r = 1 of Petersen's 2-factor theorem). -/
 theorem two_regular_is_two_factor (G : SimpleGraph V) (h2 : IsKRegular G 2) :
     IsTwoFactor (⊤ : G.Subgraph) :=
   ⟨fun _ => Set.mem_univ _, by rwa [Subgraph.spanningCoe_top]⟩
 
+omit [DecidableEq V] in
 /-- **Petersen's 2-Factor Theorem (Base Case r = 1):**
 Every 2-regular graph admits a 2-factor decomposition (into 1 factor). -/
 theorem petersen_2factor_theorem_one (G : SimpleGraph V) (h2 : IsKRegular G 2) :
@@ -282,6 +288,7 @@ noncomputable def neighborhoodA (G : SimpleGraph (A ⊕ B)) (S : Finset A) : Fin
 def HallCondition (G : SimpleGraph (A ⊕ B)) : Prop :=
   ∀ S : Finset A, S.card ≤ (neighborhoodA G S).card
 
+omit [Fintype A] [DecidableEq A] [DecidableEq B] in
 /-- Necessity of Hall's condition from existence of a 1-factor. -/
 theorem hall_necessary_of_one_factor (G : SimpleGraph (A ⊕ B)) (hbip : IsBipartite G)
     (hM : HasOneFactor G) : HallCondition G := by
@@ -307,6 +314,7 @@ theorem hall_necessary_of_one_factor (G : SimpleGraph (A ⊕ B)) (hbip : IsBipar
     exact Subtype.ext (by injection this)
   simpa using Fintype.card_le_of_injective f hf_inj
 
+omit [DecidableEq A] [DecidableEq B] in
 /-- **Hall's Marriage Theorem derived from Tutte's 1-Factor Theorem:**
 If Tutte's odd-component condition holds for all vertex subsets `U ⊆ A ⊕ B` in a bipartite graph `G`,
 then Hall's condition holds for all subsets `S ⊆ A`. -/

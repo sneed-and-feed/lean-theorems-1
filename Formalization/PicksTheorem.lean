@@ -3,10 +3,6 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
-
 /-!
 # Pick's Theorem on Lattice Polygons (Freek Wiedijk 100 Theorems #92)
 
@@ -226,8 +222,8 @@ def areaReal (P : LatticePolygonData) : ℝ :=
     - New interior points: i_new = i₁ + i₂ + (k - 2)
     - New boundary points: b_new = b₁ + b₂ - 2(k - 1) = b₁ + b₂ - 2k + 2
     - New doubled area: areaTwo_new = areaTwo₁ + areaTwo₂ -/
-def glue (P₁ P₂ : LatticePolygonData) (k : ℕ) (hk : 2 ≤ k)
-    (hk_le₁ : k ≤ P₁.b) (hk_le₂ : k ≤ P₂.b)
+def glue (P₁ P₂ : LatticePolygonData) (k : ℕ) (_hk : 2 ≤ k)
+    (_hk_le₁ : k ≤ P₁.b) (_hk_le₂ : k ≤ P₂.b)
     (h_b_sum : 3 ≤ P₁.b + P₂.b - 2 * k + 2) : LatticePolygonData where
   i := P₁.i + P₂.i + (k - 2)
   b := P₁.b + P₂.b - 2 * k + 2
@@ -301,8 +297,8 @@ theorem gridRectangle_satisfiesPick (w h : ℕ) (hw : 1 ≤ w) (hh : 1 ≤ h) :
     - Boundary points: w + h + g
     - Interior points: i_diag where 2 * i_diag = (w - 1) * (h - 1) - (g - 1)
     - Area: (w * h) / 2, so areaTwo = w * h -/
-def gridRightTriangle (w h g i_diag : ℕ) (hw : 1 ≤ w) (hh : 1 ≤ h) (hg : 1 ≤ g)
-    (h_int : 2 * (i_diag : ℤ) = ((w - 1 : ℕ) : ℤ) * ((h - 1 : ℕ) : ℤ) - ((g - 1 : ℕ) : ℤ))
+def gridRightTriangle (w h g i_diag : ℕ) (_hw : 1 ≤ w) (_hh : 1 ≤ h) (_hg : 1 ≤ g)
+    (_h_int : 2 * (i_diag : ℤ) = ((w - 1 : ℕ) : ℤ) * ((h - 1 : ℕ) : ℤ) - ((g - 1 : ℕ) : ℤ))
     (h_b_ge : 3 ≤ w + h + g) : LatticePolygonData where
   i := i_diag
   b := w + h + g

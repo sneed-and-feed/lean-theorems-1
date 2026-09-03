@@ -1,9 +1,6 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
 
 /-!
 # Székely's Algebraic Expectation Amplification Lemma for Graph Crossings (1997)
@@ -73,7 +70,7 @@ lemma szekely_poly_identity (v e : ℝ) (hv : 0 < v) (he : 0 < e) :
     If a drawing with v vertices, e edges, and cr crossings satisfies the sub-sampling
     expectation relation p² e - 3 p v ≤ p⁴ cr for p = 4v / e, then e³ ≤ 64 v² cr. -/
 theorem szekely_crossing_amplification (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
-    (h_dense : 4 * v ≤ e)
+    (_h_dense : 4 * v ≤ e)
     (h_expect : (4 * v / e)^2 * e - 3 * (4 * v / e) * v ≤ (4 * v / e)^4 * cr) :
     e^3 ≤ 64 * v^2 * cr := by
   rw [szekely_poly_identity v e hv he] at h_expect
@@ -88,7 +85,7 @@ For any graph parameters with $e \ge 4v$ satisfying the random sub-sampling expe
 inequality $p^2 e - 3 p v \le p^4 \text{cr}$ for $p = 4v / e$ (derived from the planar Euler base condition),
 the crossing bound $\text{cr} \ge e^3 / (64 v^2)$ holds. -/
 theorem crossing_lemma (v e cr : ℝ) (hv : 0 < v) (he : 0 < e)
-    (h_dense : 4 * v ≤ e)
+    (_h_dense : 4 * v ≤ e)
     (h_expect : (4 * v / e)^2 * e - 3 * (4 * v / e) * v ≤ (4 * v / e)^4 * cr) :
     e^3 / (64 * v^2) ≤ cr := by
   rw [szekely_poly_identity v e hv he] at h_expect

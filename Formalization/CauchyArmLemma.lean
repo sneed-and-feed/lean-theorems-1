@@ -28,8 +28,6 @@ The general $n$-chain Cauchy Arm Lemma reduces inductively to this 2-chain base 
 * M. Aigner & G. M. Ziegler (2018), *Proofs from THE BOOK*, Springer, Chapter 15 (Cauchy's Rigidity Theorem).
 -/
 
-set_option linter.unusedSectionVars false
-set_option linter.deprecated false
 
 namespace CauchyArmLemma
 

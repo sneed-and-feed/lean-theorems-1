@@ -9,10 +9,6 @@ import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.Ring.Parity
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
-
 open Finset
 
 variable {α : Type*} [DecidableEq α]

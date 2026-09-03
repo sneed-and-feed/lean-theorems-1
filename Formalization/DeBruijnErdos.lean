@@ -10,10 +10,6 @@ import Mathlib.Tactic.Positivity
 
 open Finset BigOperators
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.unusedTactic false
-set_option linter.deprecated false
 
 namespace DeBruijnErdos
 
@@ -81,6 +77,7 @@ noncomputable def lineThrough {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) (p q : α) (hp : p ∈ P) (hq : q ∈ P) (hne : p ≠ q) : Finset α :=
   Classical.choose (ExistsUnique.exists (h.unique_line p hp q hq hne))
 
+omit [DecidableEq α] in
 lemma lineThrough_mem {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) (p q : α) (hp : p ∈ P) (hq : q ∈ P) (hne : p ≠ q) :
     lineThrough h p q hp hq hne ∈ L ∧
@@ -96,12 +93,12 @@ lemma card_line_le_pointDegree {P : Finset α} {L : Finset (Finset α)}
   have h_img_sub : l.image f ⊆ L.filter (fun k => p ∈ k) := by
     intro k hk
     obtain ⟨q, hq, rfl⟩ := mem_image.mp hk
-    simp only [f, dif_pos hq]
+    simp only [f, dite_eq_left hq]
     exact mem_filter.mpr ⟨(lineThrough_mem ..).1, (lineThrough_mem ..).2.1⟩
   have h_inj : ∀ q1 ∈ l, ∀ q2 ∈ l, f q1 = f q2 → q1 = q2 := by
     intro q1 hq1 q2 hq2 h_eq
     by_contra h_ne
-    simp only [f, dif_pos hq1, dif_pos hq2] at h_eq
+    simp only [f, dite_eq_left hq1, dite_eq_left hq2] at h_eq
     have hq1_P := h.line_subset l hl hq1
     have hq2_P := h.line_subset l hl hq2
     obtain ⟨l', hl', h_uniq⟩ := h.unique_line q1 hq1_P q2 hq2_P h_ne
@@ -118,6 +115,7 @@ lemma two_le_pointDegree {P : Finset α} {L : Finset (Finset α)}
   obtain ⟨l, hl, hp_nl⟩ := exists_line_not_mem h hp
   exact (h.line_card_ge_two l hl).trans (card_line_le_pointDegree h hl hp hp_nl)
 
+omit [DecidableEq α] in
 lemma card_line_lt_card_points {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) {l : Finset α} (hl : l ∈ L) :
     l.card < P.card :=
@@ -137,7 +135,7 @@ lemma double_sum_swap (P : Finset α) (L : Finset (Finset α)) (g : α → Finse
 
 lemma sum_lines_eq_card_lines {P : Finset α} {L : Finset (Finset α)}
     (h : LinearSpace P L) :
-    ∑ l ∈ L, ∑ p ∈ P \ l, (1 / ((P.card : ℝ) - (l.card : ℝ))) = (L.card : ℝ) := by
+    ∑ l ∈ L, ∑ _p ∈ P \ l, (1 / ((P.card : ℝ) - (l.card : ℝ))) = (L.card : ℝ) := by
   trans ∑ l ∈ L, (1 : ℝ)
   · apply sum_congr rfl
     intro l hl
@@ -146,7 +144,7 @@ lemma sum_lines_eq_card_lines {P : Finset α} {L : Finset (Finset α)}
   · simp
 
 lemma sum_points_eval (P : Finset α) (L : Finset (Finset α)) :
-    ∑ p ∈ P, ∑ l ∈ L.filter (fun k => p ∉ k), (1 / ((P.card : ℝ) - (pointDegree L p : ℝ))) =
+    ∑ p ∈ P, ∑ _l ∈ L.filter (fun k => p ∉ k), (1 / ((P.card : ℝ) - (pointDegree L p : ℝ))) =
     ∑ p ∈ P, (((L.card : ℝ) - (pointDegree L p : ℝ)) / ((P.card : ℝ) - (pointDegree L p : ℝ))) := by
   apply Finset.sum_congr rfl
   intro p _

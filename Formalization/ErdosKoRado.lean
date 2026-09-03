@@ -11,9 +11,6 @@ import Mathlib.Order.Interval.Finset.Nat
 import Mathlib.Combinatorics.KatonaCircle
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.style.haveILetI false
-set_option linter.unusedVariables false
 
 open Finset
 
@@ -297,6 +294,7 @@ variable {α : Type*} [DecidableEq α] [Fintype α]
 def arcOf (e : α ≃ ZMod n) (k : ℕ) (i : ZMod n) : Finset α :=
   (cyclicArc n k i).image e.symm
 
+omit [Fintype α] in
 lemma mem_arcOf_iff {n k : ℕ} (e : α ≃ ZMod n) (i : ZMod n) (x : α) :
     x ∈ arcOf e k i ↔ e x ∈ cyclicArc n k i := by
   rw [arcOf, mem_image]
@@ -306,11 +304,13 @@ lemma mem_arcOf_iff {n k : ℕ} (e : α ≃ ZMod n) (i : ZMod n) (x : α) :
   · intro h
     exact ⟨e x, h, e.symm_apply_apply x⟩
 
+omit [Fintype α] in
 lemma arcOf_card {n k : ℕ} (e : α ≃ ZMod n) (i : ZMod n) (hkn : k ≤ n) (hn : 0 < n) :
     (arcOf e k i).card = k := by
   rw [arcOf, card_image_of_injective _ e.symm.injective]
   exact cyclicArc_card i hkn hn
 
+omit [Fintype α] in
 lemma not_disjoint_arcOf_iff {n k : ℕ} (e : α ≃ ZMod n) (i j : ZMod n) :
     ¬ Disjoint (arcOf e k i) (arcOf e k j) ↔ ¬ Disjoint (cyclicArc n k i) (cyclicArc n k j) := by
   rw [arcOf, arcOf, Finset.disjoint_image e.symm.injective]
@@ -322,6 +322,7 @@ def shiftEquiv (n : ℕ) (i : ZMod n) : ZMod n ≃ ZMod n where
   left_inv x := sub_add_cancel x i
   right_inv x := add_sub_cancel_right x i
 
+omit [Fintype α] in
 lemma arcOf_shift {n k : ℕ} (e : α ≃ ZMod n) (i : ZMod n) :
     arcOf (e.trans (shiftEquiv n i)) k 0 = arcOf e k i := by
   ext x
@@ -358,6 +359,7 @@ def equivToNumbering {n : ℕ} [NeZero n] (hn : Fintype.card α = n) (e : α ≃
     Numbering α :=
   e.trans ((zmodFinEquiv n).trans (finCongr hn.symm))
 
+omit [DecidableEq α] in
 lemma equivToNumbering_apply {n : ℕ} [NeZero n] (hn : Fintype.card α = n) (e : α ≃ ZMod n) (x : α) :
     ((equivToNumbering hn e x : Fin (Fintype.card α)) : ℕ) = (e x).val := rfl
 
@@ -578,7 +580,7 @@ def starFamily (x : α) (k : ℕ) : Finset (Finset α) :=
   ((Finset.univ : Finset α).powersetCard k).filter (fun A => x ∈ A)
 
 /-- The cardinality of any full star family on an `n`-element set is `Nat.choose (n - 1) (k - 1)`. -/
-lemma card_starFamily {n k : ℕ} (hn : Fintype.card α = n) (hk : 1 ≤ k) (hkn : k ≤ n) (x : α) :
+lemma card_starFamily {n k : ℕ} (hn : Fintype.card α = n) (hk : 1 ≤ k) (_hkn : k ≤ n) (x : α) :
     (starFamily x k).card = Nat.choose (n - 1) (k - 1) := by
   dsimp [starFamily]
   have h_filter : (filter (fun A => x ∈ A) ((Finset.univ : Finset α).powersetCard k)) =
@@ -594,6 +596,7 @@ lemma card_starFamily {n k : ℕ} (hn : Fintype.card α = n) (hk : 1 ≤ k) (hkn
   rw [h_card]
   rw [Finset.card_univ, hn, h_card_singleton]
 
+omit [Fintype α] in
 /-- A nonempty pairwise-intersecting family of one-element sets consists of exactly one singleton. -/
 theorem one_uniform_intersecting_eq_singleton
     (F : Finset (Finset α)) (hF_nonempty : F.Nonempty)
@@ -614,6 +617,7 @@ theorem one_uniform_intersecting_eq_singleton
   · rintro rfl
     exact hAF
 
+omit [Fintype α] in
 /-- **EKR equality/uniqueness for `k = 1`.** Any intersecting one-uniform family attaining
 the EKR bound `Nat.choose (n - 1) (1 - 1) = 1` is the unique singleton family centered
 at one point, hence is a star. -/
@@ -787,6 +791,7 @@ theorem exists_hiltonMilner_extremizer {n k : ℕ} (hn : Fintype.card α = n)
     hiltonMilnerFamily_not_star hk x B hBcard hxB, ?_⟩
   exact card_hiltonMilnerFamily hn (by omega) (by omega) x B hBcard hxB
 
+omit [Fintype α] in
 private lemma exists_pair_eq_of_mem_of_card_eq_two {B : Finset α} {y : α}
     (hyB : y ∈ B) (hB : B.card = 2) :
     ∃ z, y ≠ z ∧ B = {y, z} := by
@@ -800,6 +805,7 @@ private lemma exists_pair_eq_of_mem_of_card_eq_two {B : Finset α} {y : α}
     exact (B.notMem_erase y) this
   · simpa [hz] using (insert_erase hyB).symm
 
+omit [Fintype α] in
 private lemma eq_pair_of_card_eq_two_of_mem {D : Finset α} {a b : α}
     (hD : D.card = 2) (hab : a ≠ b) (haD : a ∈ D) (hbD : b ∈ D) :
     D = {a, b} := by
@@ -812,6 +818,7 @@ private lemma eq_pair_of_card_eq_two_of_mem {D : Finset α} {a b : α}
   apply (Finset.eq_of_subset_of_card_le (s := {a, b}) (t := D) hsub ?_).symm
   rw [hD, card_pair_eq_two_iff.mpr hab]
 
+omit [Fintype α] in
 private lemma mem_or_mem_of_not_disjoint_pair {D : Finset α} {a b : α}
     (h : ¬ Disjoint D {a, b}) : a ∈ D ∨ b ∈ D := by
   obtain ⟨q, hqD, hq⟩ := Finset.not_disjoint_iff.mp h
@@ -820,6 +827,7 @@ private lemma mem_or_mem_of_not_disjoint_pair {D : Finset α} {a b : α}
   · exact Or.inl hqD
   · exact Or.inr hqD
 
+omit [Fintype α] in
 /-- **Triangle classification for non-star intersecting two-uniform families.**
 Every pairwise-intersecting family of two-element sets with no common element is exactly
 the three edges on three distinct vertices. -/
@@ -898,6 +906,7 @@ theorem two_uniform_intersecting_not_star_eq_triangle
     · simpa [hB] using hBF
     · simpa [hC] using hCF
 
+omit [Fintype α] in
 /-- A non-star pairwise-intersecting family of two-element sets has exactly three members. -/
 theorem two_uniform_intersecting_not_star_card_eq_three
     [Nonempty α] (F : Finset (Finset α))
@@ -933,7 +942,7 @@ theorem hilton_milner_stability_two {n : ℕ}
     (h_not_star : ¬ IsStarFamily F) :
     F.card ≤ hiltonMilnerBound n 2 := by
   have hnpos : 0 < Fintype.card α := by omega
-  haveI : Nonempty α := Fintype.card_pos_iff.mp hnpos
+  have : Nonempty α := Fintype.card_pos_iff.mp hnpos
   have hcard := two_uniform_intersecting_not_star_card_eq_three
     F hF_two h_inter h_not_star
   rw [hiltonMilnerBound_two h4n, hcard]

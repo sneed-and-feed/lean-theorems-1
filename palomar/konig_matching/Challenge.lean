@@ -13,8 +13,6 @@ import Mathlib.Tactic.Ring
 open scoped BigOperators
 open Classical
 
-set_option linter.unusedSectionVars false
-
 /-!
 # Kőnig–Egerváry Duality Theorem
 

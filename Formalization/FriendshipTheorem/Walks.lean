@@ -27,10 +27,6 @@ existence of $k$-regular friendship graphs with $k \ge 3$:
 
 namespace FriendshipTheorem
 
-set_option linter.deprecated false
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 open Finset SimpleGraph
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
@@ -52,16 +48,15 @@ lemma walkCount_two (h_friend : HasFriendshipProperty G) (k : ℕ)
   have h1 (x : V) : walkCount G x v 1 = if x ∈ G.neighborFinset v then (1 : ℕ) else 0 := by
     rw [walkCount_one]
     by_cases hxv : v ∈ G.neighborFinset x
-    · rw [if_pos hxv]
-      rw [G.mem_neighborFinset] at hxv
-      have : x ∈ G.neighborFinset v := by rwa [G.mem_neighborFinset, G.adj_comm]
-      rw [if_pos this]
-    · rw [if_neg hxv]
-      have : x ∉ G.neighborFinset v := by
+    · have hxv' : x ∈ G.neighborFinset v := by
+        rw [G.mem_neighborFinset] at hxv ⊢
+        rwa [G.adj_comm]
+      simp only [hxv, hxv', ↓reduceIte]
+    · have hxv' : x ∉ G.neighborFinset v := by
         intro h
         rw [G.mem_neighborFinset, G.adj_comm] at h
         exact hxv (by rwa [G.mem_neighborFinset])
-      rw [if_neg this]
+      simp only [hxv, hxv', ↓reduceIte]
   have h2 : (∑ x ∈ G.neighborFinset u, walkCount G x v 1) =
       ∑ x ∈ G.neighborFinset u, if x ∈ G.neighborFinset v then 1 else 0 := by
     apply Finset.sum_congr rfl
@@ -77,8 +72,10 @@ lemma walkCount_two (h_friend : HasFriendshipProperty G) (k : ℕ)
   rw [h3]
   by_cases huv : u = v
   · subst huv
-    rw [if_pos rfl, Finset.inter_self, show (G.neighborFinset u).card = k from h_reg u]
-  · rw [if_neg huv, h_friend u v huv]
+    simp only [↓reduceIte, Finset.inter_self]
+    exact h_reg u
+  · simp only [huv, ↓reduceIte]
+    exact h_friend u v huv
 
 lemma walkCount_zmod (h_friend : HasFriendshipProperty G) (k : ℕ)
     (h_reg : ∀ v : V, G.degree v = k) {p : ℕ} (hpk : (k : ZMod p) = 1)
@@ -87,8 +84,9 @@ lemma walkCount_zmod (h_friend : HasFriendshipProperty G) (k : ℕ)
   induction' m, hm using Nat.le_induction with m hm ih generalizing u
   · rw [walkCount_two h_friend k h_reg]
     by_cases huv : u = v
-    · rw [if_pos huv, hpk]
-    · rw [if_neg huv]
+    · subst huv
+      simp only [↓reduceIte, hpk]
+    · simp only [huv, ↓reduceIte]
       push_cast
       rfl
   · dsimp [walkCount]
@@ -190,10 +188,10 @@ lemma card_walkVec (u v : V) (m : ℕ) :
   · dsimp [walkCount]
     by_cases huv : u = v
     · subst huv
-      rw [if_pos rfl]
+      simp only [↓reduceIte]
       have : WalkVec G u u 0 ≃ Unit := walkVecZeroEquiv u u rfl
       rw [Fintype.card_congr this, Fintype.card_unit]
-    · rw [if_neg huv]
+    · simp only [huv, ↓reduceIte]
       have : IsEmpty (WalkVec G u v 0) := ⟨by
         rintro ⟨w, hw0, hw_last, _⟩
         have : u = v := hw0.symm.trans hw_last
@@ -235,6 +233,7 @@ instance {p : ℕ} [NeZero p] : MulAction (Multiplicative (ZMod p)) (ClosedWalk 
     change w.1 (i + (Multiplicative.toAdd g1 + Multiplicative.toAdd g2)) = w.1 (i + Multiplicative.toAdd g1 + Multiplicative.toAdd g2)
     rw [add_assoc])
 
+omit [Fintype V] [DecidableEq V] [DecidableRel G.Adj] in
 lemma closedWalk_fixedPoints_empty {p : ℕ} [Fact p.Prime] (_hp : 3 ≤ p) :
     IsEmpty (MulAction.fixedPoints (Multiplicative (ZMod p)) (ClosedWalk G p)) := by
   constructor
@@ -247,6 +246,7 @@ lemma closedWalk_fixedPoints_empty {p : ℕ} [Fact p.Prime] (_hp : 3 ≤ p) :
   rw [zero_add, h0] at hadj
   exact hadj.ne rfl
 
+omit [DecidableEq V] in
 lemma card_closedWalk_mod_p {p : ℕ} [Fact p.Prime] (hp : 3 ≤ p) :
     (Fintype.card (ClosedWalk G p) : ZMod p) = 0 := by
   have h_pg : IsPGroup p (Multiplicative (ZMod p)) := by

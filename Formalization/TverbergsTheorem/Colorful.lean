@@ -36,8 +36,6 @@ lies in all intervals, providing a common point in the convex hulls of all $r$ c
 * J. Matoušek (2002), *Lectures on Discrete Geometry*, GTM 212, Springer, §8.4.
 -/
 
-set_option linter.deprecated false
-
 namespace TverbergsTheorem
 
 open Finset BigOperators

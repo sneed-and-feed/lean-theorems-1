@@ -6,9 +6,6 @@ import Mathlib.Tactic
 
 open Finset
 
-set_option linter.deprecated false
-set_option linter.unusedVariables false
-
 /-!
 # Foundational & Classical Schur's Theorem
 
@@ -267,9 +264,9 @@ theorem schurs_theorem (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
     intro u v
     dsimp [edgeColor]
     rcases lt_trichotomy u v with h | rfl | h
-    · rw [if_pos h, if_neg (asymm h), if_pos h]
+    · rw [ite_eq_left h, ite_eq_right (asymm h), ite_eq_left h]
     · rfl
-    · rw [if_neg (asymm h), if_pos h, if_pos h]
+    · rw [ite_eq_right (asymm h), ite_eq_left h, ite_eq_left h]
   rcases ramsey_triangle r hr S edgeColor h_edgeColor_symm h_ramsey_bound with
     ⟨u, v, w, col, hu, hv, hw, huv, huw, hvw, hc_uv, hc_uw, hc_vw⟩
   rw [Finset.mem_range] at hu hv hw
@@ -306,13 +303,13 @@ theorem schurs_theorem (r : ℕ) (hr : 1 ≤ r) (χ : ℕ → Fin r) :
   have h_sum_eq : x + y = z := by dsimp [x, y, z]; omega
   have hc_ab_val : edgeColor a b = χ x := by
     dsimp [edgeColor, x]
-    rw [if_pos hab]
+    rw [ite_eq_left hab]
   have hc_bc_val : edgeColor b c = χ y := by
     dsimp [edgeColor, y]
-    rw [if_pos hbc]
+    rw [ite_eq_left hbc]
   have hc_ac_val : edgeColor a c = χ z := by
     dsimp [edgeColor, z]
-    rw [if_pos hac]
+    rw [ite_eq_left hac]
   rw [hc_ab_val] at hc_ab
   rw [hc_bc_val] at hc_bc
   rw [hc_ac_val] at hc_ac

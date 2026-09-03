@@ -3,9 +3,6 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic
 
-set_option linter.unusedSectionVars false
-set_option linter.style.haveILetI false
-
 /-!
 # Hall's Marriage Theorem (Freek Wiedijk #87)
 
@@ -42,6 +39,7 @@ def HallCondition (A : ι → Finset α) : Prop :=
 def IsSDR (A : ι → Finset α) (f : ι → α) : Prop :=
   Function.Injective f ∧ ∀ i : ι, f i ∈ A i
 
+omit [DecidableEq ι] [Fintype ι] in
 /-- **Hall's Marriage Theorem (Necessity):**
 If a system of distinct representatives exists, then Hall's condition holds. -/
 theorem hall_marriage_necessary (A : ι → Finset α) (f : ι → α) (hf : IsSDR A f) :
@@ -49,6 +47,7 @@ theorem hall_marriage_necessary (A : ι → Finset α) (f : ι → α) (hf : IsS
   (card_image_of_injective J hf.1).symm.trans_le <|
     card_le_card (fun x hx => by rcases mem_image.1 hx with ⟨i, hi, rfl⟩; exact mem_biUnion.2 ⟨i, hi, hf.2 i⟩)
 
+omit [DecidableEq ι] [Fintype ι] in
 lemma biUnion_sdiff (J : Finset ι) (A : ι → Finset α) (T : Finset α) :
     (J.biUnion (fun i => A i \ T)) = (J.biUnion A) \ T := by
   ext; simp; aesop
@@ -64,6 +63,7 @@ lemma card_sdiff_singleton_ge (U : Finset α) (x : α) :
     rw [sdiff_eq_self_of_disjoint hdisj]
     exact Nat.sub_le U.card 1
 
+omit [Fintype ι] in
 lemma hall_marriage_finset [Nonempty α] (n : ℕ) (A : ι → Finset α) (S : Finset ι) (hn : S.card = n)
     (h_hall : ∀ J ⊆ S, J.card ≤ (J.biUnion A).card) :
     ∃ f : ι → α, (∀ i ∈ S, f i ∈ A i) ∧ (∀ i ∈ S, ∀ j ∈ S, f i = f j → i = j) := by
@@ -257,7 +257,7 @@ theorem hall_marriage_theorem (A : ι → Finset α) :
       have h_sing := hH {i0}
       rw [card_singleton, singleton_biUnion] at h_sing
       rcases card_pos.1 (Nat.zero_lt_one.trans_le h_sing) with ⟨x0, _⟩
-      haveI : Nonempty α := ⟨x0⟩
+      have : Nonempty α := ⟨x0⟩
       rcases hall_marriage_finset Finset.univ.card A Finset.univ rfl (fun J _ => hH J) with ⟨f, hf_mem, hf_inj⟩
       exact ⟨f, fun i j hij => hf_inj i (mem_univ i) j (mem_univ j) hij, fun i => hf_mem i (mem_univ i)⟩
 
@@ -279,6 +279,7 @@ such that every edge $a \in A i$ has $i \in C_ι$ or $a \in C_α$. -/
 def IsVertexCover (A : ι → Finset α) (C : Finset ι × Finset α) : Prop :=
   ∀ i : ι, ∀ a ∈ A i, i ∈ C.1 ∨ a ∈ C.2
 
+omit [Fintype ι] in
 /-- **Weak Kőnig Duality:**
 The cardinality of any matching in the bipartite incidence graph is at most
 the cardinality of any vertex cover. -/

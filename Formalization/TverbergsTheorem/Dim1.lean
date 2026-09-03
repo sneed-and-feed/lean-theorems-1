@@ -35,8 +35,6 @@ Since $x_c \le x_{r-1} \le x_{2r-2-c}$, the median lies in the convex hull of ev
   Discrete Comput. Geom. 50:520–535, §2.2.
 -/
 
-set_option linter.deprecated false
-
 namespace TverbergsTheorem
 
 open Finset BigOperators

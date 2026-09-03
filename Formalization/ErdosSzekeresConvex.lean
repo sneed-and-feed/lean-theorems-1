@@ -3,9 +3,6 @@ import Formalization.ErdosSzekeresConvex.Sorting
 import Formalization.ErdosSzekeresConvex.CupCap
 import Formalization.ErdosSzekeresConvex.ConvexPolygon
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-set_option linter.style.haveILetI false
 
 open Finset
 
@@ -98,7 +95,7 @@ theorem esther_klein_theorem (S : Finset Point2D)
     Proven for k = 3 (ES=3), k = 4 (ES=5, Esther Klein), k = 5 (ES=9, Kalbfleisch et al.),
     and k = 6 (ES=17, Szekeres–Peters 2006). Open for k ≥ 7. -/
 def ErdosSzekeresConjecture : Prop :=
-  ∀ (k : ℕ) (hk : 3 ≤ k) (S : Finset Point2D),
+  ∀ (k : ℕ) (_hk : 3 ≤ k) (S : Finset Point2D),
     2^(k - 2) + 1 ≤ S.card →
     InGeneralPosition S →
     FormsConvexPolygon S k

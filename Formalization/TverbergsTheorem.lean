@@ -62,8 +62,6 @@ $$\bigcap_{i=1}^r \operatorname{conv}(A_i) \ne \emptyset$$
 * J. Matoušek (2002), *Lectures on Discrete Geometry*, GTM 212, Springer, Chapter 8.
 -/
 
-set_option linter.deprecated false
-
 namespace TverbergsTheorem
 
 /-- **Tverberg's Theorem (Helge Tverberg, 1966)**:
