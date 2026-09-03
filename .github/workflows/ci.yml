@@ -1,0 +1,58 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - '.vscode/**'
+      - 'LICENSE'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  static-analysis:
+    name: Format & Specification Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify static format & declaration integrity
+        run: python scripts/verify_integrity.py
+
+  lean-build:
+    name: Lean 4 Build & Constant Verification
+    needs: static-analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Check toolchain versions
+        run: |
+          lean --version
+          lake --version
+
+      - name: Fetch Mathlib precompiled cache
+        run: |
+          lake exe cache get
+
+      - name: Build formalization libraries
+        run: |
+          lake build Formalization Challenge Solution
+
+      - name: Verify constant and AST equivalence
+        run: |
+          lake env lean --run scripts/compare.lean
