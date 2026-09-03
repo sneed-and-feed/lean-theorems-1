@@ -104,7 +104,7 @@ lemma pigeonhole_labels (x y z : ℤ)
 theorem octahedron_tuckers_lemma (L : OctV → ℤ)
     (h_anti : ∀ v, L (OctV.antipodal v) = - L v)
     (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2) :
-    ∃ e ∈ octahedron_triangulation.edges, IsComplementaryEdge L e := by
+    ∃ e ∈ octahedron_edges, IsComplementaryEdge L e := by
   have hm2 : L OctV.m2 = - L OctV.p2 := h_anti OctV.p2
   have hm3 : L OctV.m3 = - L OctV.p3 := h_anti OctV.p3
   have hp := pigeonhole_labels (L OctV.p1) (L OctV.p2) (L OctV.p3)

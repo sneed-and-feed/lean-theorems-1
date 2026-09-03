@@ -5,6 +5,7 @@ import Mathlib.Data.Int.Basic
 import Mathlib.Logic.Equiv.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.BigOperators.Ring.Finset
 
 open Finset
 
@@ -219,7 +220,7 @@ def octahedron_triangulation : SymmetricTriangulation2D OctV where
 theorem octahedron_tuckers_lemma (L : OctV → ℤ)
     (h_anti : ∀ v, L (OctV.antipodal v) = - L v)
     (h_range : ∀ v, L v = 1 ∨ L v = -1 ∨ L v = 2 ∨ L v = -2) :
-    ∃ e ∈ octahedron_triangulation.edges, IsComplementaryEdge L e := sorry
+    ∃ e ∈ octahedron_edges, IsComplementaryEdge L e := sorry
 
 end Octahedron
 
