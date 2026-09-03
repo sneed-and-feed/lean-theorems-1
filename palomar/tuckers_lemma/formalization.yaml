@@ -1,21 +1,22 @@
 version: "v0.4"
 
 project:
-  name: "Tucker's Combinatorial Lemma and Discrete Borsuk–Ulam Suite"
+  name: "Conditional 2D Door-Parity and Concrete Octahedral Tucker Suite"
   authors:
     - "Noah Cohen"
   responsible_maintainers:
     - "Noah Cohen"
   license: "CC0-1.0"
   description: >-
-    A complete machine-checked Lean 4 formalization of Tucker's Combinatorial Lemma (Albert W. Tucker, 1945)
-    and the discrete Borsuk–Ulam theorem across 1D paths, 2D edge-pseudomanifolds, and the octahedral 2-sphere.
-    Formalizes the 1D discrete sign-change parity theorem and antipodal interval lemma; the 2D combinatorial
-    double-counting identity summing door counts over triangular faces; the modulo-2 parity conservation theorem
-    equating face door parity to boundary door parity; and the genuine 2D existence theorem establishing
-    complementary edges (opposite-signed adjacent vertices) on symmetric triangulations with odd boundary door count
-    with zero artificial premise hypotheses. Additionally certifies a concrete 6-vertex, 8-face, 12-edge closed
-    symmetric triangulation of the octahedral 2-sphere S^2_8.
+    A machine-checked Lean 4 formalization of discrete path parity, conditional 2D door-counting
+    invariants, and concrete octahedral Tucker labeling. Formalizes the 1D discrete sign-change
+    parity theorem and antipodal interval lemma; the 2D combinatorial double-counting identity
+    summing door counts over triangular faces; the modulo-2 parity conservation theorem equating
+    face door parity to boundary door parity; and the conditional 2D existence theorem establishing
+    complementary edges on 2D pseudomanifolds conditioned on an assumed odd boundary door count.
+    The global boundary-symmetry argument deriving odd boundary door parity from antipodal disk
+    boundary triangulations is absent; genuine antipodal existence is certified for the concrete
+    6-vertex, 8-face, 12-edge octahedral 2-sphere S^2_8.
     To the maintainers' knowledge, these theorems were not found in an exact declaration name,
     docstring, and type signature search of the pinned Mathlib revision (Mathlib v4.34.0-rc1).
 
@@ -30,7 +31,11 @@ sources:
     venue: "Proceedings of the First Canadian Mathematical Congress, Montreal"
     authors:
       - "Albert W. Tucker"
-    relationship: formalizes
+    relationship: adapts
+    note: >-
+      The formalization proves the 1D path-parity lemma and a concrete 2D octahedral sphere case;
+      the general 2D pseudomanifold theorem takes odd boundary door count as an explicit conditional
+      premise rather than formalizing Tucker's global disk boundary-symmetry derivation.
   - title: "A generalization of Tucker's combinatorial lemma with topological applications"
     type: paper
     year: 1952
@@ -39,8 +44,8 @@ sources:
       - "Ky Fan"
     relationship: adapts
     note: >-
-      Formalization adapts Ky Fan's multidimensional antipodal labeling generalization to 1D paths and 2D
-      pseudomanifolds.
+      Formalization adapts Ky Fan's multidimensional antipodal labeling perspective to 1D discrete paths
+      and concrete octahedral spherical triangulations.
   - title: "A constructive proof of Tucker's combinatorial lemma for primitive sets"
     type: paper
     year: 1981
@@ -50,15 +55,16 @@ sources:
       - "Michael J. Todd"
     relationship: adapts
     note: >-
-      Formalization adapts Freund and Todd's constructive door-counting combinatorial arguments
-      and parity conservation to 2D edge-pseudomanifolds and symmetric triangulations.
+      Formalizes Freund and Todd's constructive door-counting double-counting identity and local face
+      parity invariant on 2D edge-pseudomanifolds.
 
 automation:
   methods:
     - method: agent
       tool_setup: >-
-        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification.
+        Formalized using an agentic Lean 4 workflow powered by Google DeepMind Gemini models (Gemini Flash
+        agent pipeline via the Antigravity system) paired with Lean LSP MCP interactive tooling for proof
+        tactic exploration, AST comparison, and verification under maintainer direction and human oversight.
         All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
@@ -67,6 +73,6 @@ review:
     - "Noah Cohen"
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
-    while all definitions and theorem statements are completely specified with 100% AST parity. Solution verified through
-    maintainer audit with 0 errors, 0 sorries, and strictly standard kernel axioms.
-
+    while all definitions and theorem statements are completely specified with 100% AST parity.
+    Human review verified mathematical statements, carrier fidelity, absence of custom axioms,
+    and clean sequential Lean 4 builds.
