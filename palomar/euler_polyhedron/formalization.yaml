@@ -16,7 +16,7 @@ project:
     chi(M) via the permutation signature homomorphism, face-cycle sum handshaking inequalities 3F <= 2E
     and 4F <= 2E, classical planar edge bounds E <= 3V - 6 and E <= 2V - 4, average degree bound 2E < 6V,
     authentic topological genus obstructions for K5 (chi <= 0, genus >= 1, chi != 2) and K3,3 (chi <= 0,
-    genus >= 1, chi != 2) eliminating numerical pseudo-contradictions (AP-05), and a concrete tightness
+    genus >= 1, chi != 2) eliminating numerical pseudo-contradictions, and a concrete tightness
     certificate via the toroidal embedding of K5 on 20 darts with chi = 0 and genus = 1;
     (2) SimpleGraph Trees (Euler 1758, Cauchy 1813), proving Euler's formula for trees V - E + 1 = 2
     on genuine SimpleGraph carriers.
