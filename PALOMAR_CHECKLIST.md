@@ -38,14 +38,17 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **18** | **The Kőnig–Egerváry Theorem & Gallai Invariant Identities** | `87f8794c71218c0174f51248bde1396f3793abdd` | [PALOMAR-2026-09-02-000010](https://palomar-registry.org/entry?id=PALOMAR-2026-09-02-000010) | [x] **LIVE** |
 | **19** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `158960bb6af03687ca349ef89e2fd0a56b0febc0` | [PALOMAR-2026-09-03-000001](https://palomar-registry.org/entry?id=PALOMAR-2026-09-03-000001) | [x] **LIVE** |
 | **20** | **Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)** | `d932843c58b449bfc1172686ddeef94945eb3c57` | [PALOMAR-2026-09-03-000003](https://palomar-registry.org/entry?id=PALOMAR-2026-09-03-000003) | [x] **LIVE** |
+| **21** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Theorem** | `932380aafde3af51cea2aa43f0e9612acca48dc6` | [PALOMAR-2026-09-03-000007](https://palomar-registry.org/entry?id=PALOMAR-2026-09-03-000007) | [x] **LIVE** |
 
 ---
 
 ## 🚀 Tier-1 Verified Submission Queue (Audited, Packaged & Paper-Worthy)
 
+*All 21 Tier-1 candidate formalizations across Repo 1 (`lean-theorems-1`) have been verified, submitted, and registered on the Palomar Registry.*
+
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite**<br>1D sign-change parity; 2D face door double counting & parity conservation on edge-pseudomanifolds; boundary cycle engine on 2D edge-pseudomanifolds with an enumerated cyclic boundary (`CyclicBoundaryPseudomanifold2D`) under antipodal boundary labeling proving that non-complementary boundary labelings force odd boundary door parity, establishing 2D Tucker's lemma unconditionally (Freund & Todd 1981, *J. Combin. Theory Ser. A*); concrete 6-vertex octahedral 2-sphere ($S^2_8$) certification benchmark | `tuckers_lemma` | `11f963c7cad7f51780674ecf1344698f99f6a910` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
+| — | *(Queue Complete — All Candidates Registered)* | — | — | — | — |
 
 ---
 
