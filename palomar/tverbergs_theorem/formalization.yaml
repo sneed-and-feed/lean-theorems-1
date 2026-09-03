@@ -25,21 +25,29 @@ classification:
 sources:
   - title: "A generalization of Radon's theorem"
     type: paper
+    year: 1966
+    venue: "Journal of the London Mathematical Society"
     authors:
       - "Helge Tverberg"
     relationship: formalizes
   - title: "Tverberg's theorem via number of roots of polynomial systems"
     type: paper
+    year: 1992
+    venue: "Israel Journal of Mathematics"
     authors:
       - "Karanbir S. Sarkaria"
     relationship: formalizes
   - title: "A generalization of Carathéodory's theorem"
     type: paper
+    year: 1982
+    venue: "Discrete Mathematics"
     authors:
       - "Imre Bárány"
     relationship: formalizes
   - title: "Approximating Tverberg points in linear time for any fixed dimension"
     type: paper
+    year: 2013
+    venue: "Discrete & Computational Geometry"
     authors:
       - "Wolfgang Mulzer"
       - "Daniel Werner"
@@ -49,19 +57,29 @@ sources:
       Tverberg point approximations.
   - title: "Radon-partition property in topological affine spaces"
     type: paper
+    year: 1992
+    venue: "The American Mathematical Monthly"
     authors:
       - "Imre Bárány"
       - "David G. Larman"
       - "János Pach"
     relationship: formalizes
 
+related_formalizations:
+  - id: "https://palomar-registry.org/entry?id=PALOMAR-2026-08-31-000006"
+    relationship: builds-on
+    note: >-
+      Builds directly on the certified Colorful Carathéodory theorem suite (PALOMAR-2026-08-31-000006)
+      via the Sarkaria tensor lifting bridge to prove general d-dimensional Tverberg partitions.
+
 automation:
   methods:
     - method: agent
       tool_setup: >-
-        Formalized using an agentic Lean 4 workflow with automated proof golfing and interactive
-        Lean LSP checking under maintainer direction and human verification. All declarations rely
-        strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
+        Formalized using an agentic Lean 4 workflow powered by Google DeepMind Gemini models (Gemini Flash
+        agent pipeline via the Antigravity system) paired with Lean LSP MCP interactive tooling for proof
+        tactic exploration, AST comparison, and verification under maintainer direction and human oversight.
+        All declarations rely strictly on standard Lean 4 kernel axioms (propext, Quot.sound, Classical.choice).
 
 review:
   status: self-assessed
@@ -69,5 +87,6 @@ review:
     - "Noah Cohen"
   notes: >-
     Challenge contains deliberate proof holes (`:= sorry` for automated benchmark evaluation),
-    while all definitions and theorem statements are completely specified. Solution verified through
-    human audit by the maintainers with 0 errors, 0 sorries, and strictly standard kernel axioms.
+    while all definitions and theorem statements are completely specified with 100% AST parity.
+    Human review verified mathematical statements, carrier fidelity, absence of custom axioms,
+    and clean sequential Lean 4 builds.

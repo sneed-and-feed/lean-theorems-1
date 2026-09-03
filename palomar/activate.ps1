@@ -46,6 +46,10 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Lake build failed for Challenge in $Slug
 & lake build Solution
 if ($LASTEXITCODE -ne 0) { Write-Error "Lake build failed for Solution in $Slug!"; exit 1 }
 
+Write-Output "==> Running automated AST & transitive constant verification..."
+& lake env lean --run "$root\palomar\compare.lean"
+if ($LASTEXITCODE -ne 0) { Write-Error "Comparator verification failed!"; exit 1 }
+
 Write-Output "==> Committing and pushing to origin main..."
 git -C $root add Challenge.lean Solution.lean comparator.json formalization.yaml Formalization/ palomar/
 git -C $root commit -m "feat(palomar): activate $Slug for Palomar submission"
