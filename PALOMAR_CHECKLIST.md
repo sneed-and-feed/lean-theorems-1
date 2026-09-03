@@ -37,6 +37,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | **17** | **The De Bruijn–Erdős Theorem & Near-Pencil Tightness** | `14283c4b8b8648afe8342429f2127a27fc7f6732` | [PALOMAR-2026-09-02-000005](https://palomar-registry.org/entry?id=PALOMAR-2026-09-02-000005) | [x] **LIVE** |
 | **18** | **The Kőnig–Egerváry Theorem & Gallai Invariant Identities** | `87f8794c71218c0174f51248bde1396f3793abdd` | [PALOMAR-2026-09-02-000010](https://palomar-registry.org/entry?id=PALOMAR-2026-09-02-000010) | [x] **LIVE** |
 | **19** | **Ore's and Dirac's Theorems on Hamiltonian Cycles** | `158960bb6af03687ca349ef89e2fd0a56b0febc0` | [PALOMAR-2026-09-03-000001](https://palomar-registry.org/entry?id=PALOMAR-2026-09-03-000001) | [x] **LIVE** |
+| **20** | **Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)** | `d932843c58b449bfc1172686ddeef94945eb3c57` | [PALOMAR-2026-09-03-000003](https://palomar-registry.org/entry?id=PALOMAR-2026-09-03-000003) | [x] **LIVE** |
 
 ---
 
@@ -45,8 +46,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 | # | Theorem Title | Slug | Dedicated Commit SHA to Enter | Comparator Path | Mathematical Domain |
 | :---: | :--- | :--- | :--- | :--- | :--- |
 | **1** | **Tucker's Combinatorial Lemma & Discrete Borsuk–Ulam Suite** | `tuckers_lemma` | `d9d006584ab0d9ecb0e2ca3c2e052282f7a2db7d` | `palomar/tuckers_lemma/comparator.json` | 2D Combinatorial Topology / Parity |
-| **2** | **Tverberg's Partition Theorem (General Dimension $d$ & Partition $r$)** | `tverbergs_theorem` | `9e363535fc3d2d704c80a1f0fd221c7e2cbc49e6` | `palomar/tverbergs_theorem/comparator.json` | Combinatorial Convex Geometry / Discrete Geometry |
-| **3** | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | `euler_polyhedron` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/euler_polyhedron/comparator.json` | Topological Graph Theory / Discrete Geometry |
+| **2** | **Euler's Polyhedron Formula, Topological Genus Invariants & Obstructions** | `euler_polyhedron` | `404fdaaa59eafc3c909ef04b94198efbdd7bb6cc` | `palomar/euler_polyhedron/comparator.json` | Topological Graph Theory / Discrete Geometry |
 
 ---
 
@@ -54,7 +54,7 @@ All packages have completed rigorous pre-flight audits matching Palomar mechanic
 
 | Slug | Core Finding & Reason for Early Retirement | Status |
 | :--- | :--- | :---: |
-| `tverbergs_theorem` | Promoted to Tier-1: AP-10/18 eliminated via Colorful Carathéodory – Sarkaria tensor bridge. | [x] **PROMOTED** |
+| `tverbergs_theorem` | Promoted to Tier-1 and successfully registered: [PALOMAR-2026-09-03-000003](https://palomar-registry.org/entry?id=PALOMAR-2026-09-03-000003). | [x] **REGISTERED** |
 | `euler_polyhedron` | Promoted to Tier-1: AP-05 eliminated via structural genus obstructions and toroidal certificate. | [x] **PROMOTED** |
 | `desargues_theorem` | Synthetic projective geometry equivalences did not meet external research-grade interest floor. | [-] **REJECTED** |
 | `schurs_theorem` | Classical sum-free integer coloring & group reparameterization with crude bound lacks research-grade depth. | [-] **REJECTED** |
