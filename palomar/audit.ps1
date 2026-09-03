@@ -102,6 +102,11 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Build failed for Challenge!"; exit 1 }
 & lake build Solution
 if ($LASTEXITCODE -ne 0) { Write-Error "Build failed for Solution!"; exit 1 }
 
+# 7. Automated AST Comparator Verification (AP-20 & AP-31)
+Write-Host "==> Running automated AST expression comparator verification..." -ForegroundColor Cyan
+& lake env lean --run "$root\palomar\compare.lean"
+if ($LASTEXITCODE -ne 0) { Write-Error "Comparator AST expression mismatch detected!"; exit 1 }
+
 Write-Host ""
 Write-Host "====================================================" -ForegroundColor Green
 Write-Host "  AUDIT SUCCESS: No blocking findings for '$Slug'" -ForegroundColor Green
