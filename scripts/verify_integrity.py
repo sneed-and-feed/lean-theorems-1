@@ -56,7 +56,7 @@ def main() -> None:
         if s.startswith("import ") and not (s.startswith("import Mathlib") or s.startswith("import Lean")):
             sys.exit(f"[FAIL] Challenge.lean imports non-library module: {s}")
 
-    # 4. Axiom and proof hole check: Solution.lean must have zero sorry and zero custom axioms
+    # 4. Axiom and proof hole check in Solution.lean
     sol_path = os.path.join(root_dir, "Solution.lean")
     with open(sol_path, "r", encoding="utf-8") as f:
         sol_content = f.read()
@@ -67,23 +67,52 @@ def main() -> None:
     if re.search(r"^\s*axiom\s+", sol_content, re.MULTILINE):
         sys.exit("[FAIL] Solution.lean introduces custom 'axiom' declarations.")
 
-    # 5. Check declaration presence in Challenge.lean and Solution (including imported Formalization modules)
-    imported_texts = []
+    # 5. Check declaration presence in Challenge.lean and Solution (recursively resolving Formalization modules)
+    visited_files = set()
+
+    def load_module_and_submodules(mod_name: str) -> str:
+        text = ""
+        parts = mod_name.split(".")
+        if len(parts) > 1 and parts[0] == "Formalization":
+            file_path = os.path.join(root_dir, *parts) + ".lean"
+            if os.path.isfile(file_path) and file_path not in visited_files:
+                visited_files.add(file_path)
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                    if re.search(r"\bsorry\b", content):
+                        sys.exit(f"[FAIL] {file_path} contains incomplete proofs ('sorry').")
+                    if re.search(r"^\s*axiom\s+", content, re.MULTILINE):
+                        sys.exit(f"[FAIL] {file_path} introduces custom 'axiom'.")
+                    text += "\n" + content
+                    for l in content.splitlines():
+                        l = l.strip()
+                        if l.startswith("import Formalization."):
+                            next_mod = l.split("import ")[1].split()[0]
+                            text += load_module_and_submodules(next_mod)
+
+            dir_path = os.path.join(root_dir, *parts)
+            if os.path.isdir(dir_path):
+                for r, _, files in os.walk(dir_path):
+                    for file in files:
+                        if file.endswith(".lean"):
+                            fp = os.path.join(r, file)
+                            if fp not in visited_files:
+                                visited_files.add(fp)
+                                with open(fp, "r", encoding="utf-8") as f:
+                                    content = f.read()
+                                    if re.search(r"\bsorry\b", content):
+                                        sys.exit(f"[FAIL] {fp} contains incomplete proofs ('sorry').")
+                                    if re.search(r"^\s*axiom\s+", content, re.MULTILINE):
+                                        sys.exit(f"[FAIL] {fp} introduces custom 'axiom'.")
+                                    text += "\n" + content
+        return text
+
+    combined_sol_search = sol_content
     for line in sol_content.splitlines():
         line = line.strip()
         if line.startswith("import Formalization."):
-            mod_part = line.split("import Formalization.")[1].strip()
-            rel_path = os.path.join(root_dir, "Formalization", *mod_part.split(".")) + ".lean"
-            if os.path.exists(rel_path):
-                with open(rel_path, "r", encoding="utf-8") as f:
-                    txt = f.read()
-                    if re.search(r"\bsorry\b", txt):
-                        sys.exit(f"[FAIL] Imported module {mod_part} contains 'sorry'.")
-                    if re.search(r"^\s*axiom\s+", txt, re.MULTILINE):
-                        sys.exit(f"[FAIL] Imported module {mod_part} introduces custom 'axiom'.")
-                    imported_texts.append(txt)
-
-    combined_sol_search = sol_content + "\n" + "\n".join(imported_texts)
+            mod_name = line.split("import ")[1].split()[0]
+            combined_sol_search += load_module_and_submodules(mod_name)
 
     for thm in theorem_names:
         ident = thm.split(".")[-1]
