@@ -108,7 +108,7 @@ def switchCount1D (n : ℕ) (s : Fin (n + 1) → ℤ) : ℕ :=
     The number of sign switches along a path is odd if and only if the endpoints have opposite signs. -/
 theorem sign_switch_parity (n : ℕ) (s : Fin (n + 1) → ℤ)
     (h_range : ∀ i, s i = 1 ∨ s i = -1) :
-    (switchCount1D n s) % 2 = if s 0 ≠ s ⟨n, by omega⟩ then 1 else 0 := sorry
+    (switchCount1D n s) % 2 = if s 0 ≠ s (Fin.last n) then 1 else 0 := sorry
 
 end Dim1
 

@@ -71,16 +71,18 @@ lemma switchCount1D_succ (n : ℕ) (s : Fin (n + 2) → ℤ) :
     The number of sign switches along a path is odd if and only if the endpoints have opposite signs. -/
 theorem sign_switch_parity (n : ℕ) (s : Fin (n + 1) → ℤ)
     (h_range : ∀ i, s i = 1 ∨ s i = -1) :
-    (switchCount1D n s) % 2 = if s 0 ≠ s ⟨n, by omega⟩ then 1 else 0 := by
+    (switchCount1D n s) % 2 = if s 0 ≠ s (Fin.last n) then 1 else 0 := by
   induction n with
-  | zero => simp [switchCount1D]
+  | zero =>
+    have : (Fin.last 0 : Fin 1) = 0 := rfl
+    simp [switchCount1D, this]
   | succ n ih =>
     rw [switchCount1D_succ n s, Nat.add_mod]
     have ih_g := ih (fun i => s i.succ) (fun i => h_range i.succ)
-    have h_trans := sign_trans_parity (s 0) (s 1) (s ⟨n + 1, by omega⟩)
-      (h_range 0) (h_range 1) (h_range ⟨n + 1, by omega⟩)
+    have h_trans := sign_trans_parity (s 0) (s 1) (s (Fin.last (n + 1)))
+      (h_range 0) (h_range 1) (h_range (Fin.last (n + 1)))
     have h_one : (Fin.succ (0 : Fin (n + 1))) = 1 := rfl
-    have h_last : (Fin.succ (⟨n, by omega⟩ : Fin (n + 1))) = ⟨n + 1, by omega⟩ := rfl
+    have h_last : (Fin.succ (Fin.last n)) = Fin.last (n + 1) := rfl
     rw [h_one, h_last] at ih_g
     rw [ih_g]
     omega
@@ -88,7 +90,7 @@ theorem sign_switch_parity (n : ℕ) (s : Fin (n + 1) → ℤ)
 /-- Existence of adjacent sign switch from odd switch count parity. -/
 theorem tucker_1d_parity_exists (n : ℕ) (s : Fin (n + 1) → ℤ)
     (h_range : ∀ i, s i = 1 ∨ s i = -1)
-    (h_diff : s 0 ≠ s ⟨n, by omega⟩) :
+    (h_diff : s 0 ≠ s (Fin.last n)) :
     ∃ i : Fin n, s i.castSucc = - s i.succ := by
   have h_odd : (switchCount1D n s) % 2 = 1 := by
     rw [sign_switch_parity n s h_range]
