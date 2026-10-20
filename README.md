@@ -1,5 +1,10 @@
 # Formalization of Open Combinatorial and Geometric Theorems in Lean 4
 
+> [!NOTE]
+> **Companion Suites:**
+> - **Part II ([`lean-theorems-2`](https://github.com/sneed-and-feed/lean-theorems-2)):** Formalizations across spectral graph theory, Ramsey theory, matrix theory, modular forms, discrete geometry, and combinatorial optimization (Sperner's Antichain & LYM, Van der Waerden, Turán, Vizing, Ihara–Bass, Cayley's Formula, Hoffman–Singleton, Birkhoff–von Neumann, Stanley's $\mathfrak{sl}(2)$, etc.).
+> - **Suite III ([`lean-theorems-3`](https://github.com/sneed-and-feed/lean-theorems-3)):** Landmark theorems across expander graphs, additive combinatorics, differential topology, gauge theory, spectral geometry, mirror symmetry, mixed Hodge theory, and counterexamples (Expander Mixing, Discrete Cheeger, Tanner, Kelley–Meka, Brieskorn 28 Exotic 7-Spheres, Selberg Trace, Picard–Fuchs, Deligne–Schmid, Jenrich's 64D Borsuk, Shitov's Hedetniemi, 7D Keller Bridge, etc.).
+
 This repository provides machine-checked formalizations of classical theorems in combinatorics, graph theory, algebra, extremal set theory, discrete geometry, and incidence geometry, not found in an exact declaration, docstring, and signature search of the pinned Mathlib revision (v4.34.0-rc1 / `leanprover-community/mathlib4` git commit in `lakefile.toml`).
 
 The primary declarations listed below and their proof dependencies are machine-checked without
